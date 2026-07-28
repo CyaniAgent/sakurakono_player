@@ -5,6 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
 
 import 'package:skf/adapters/bilibili/pages/subscription_detail/controller.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/subscription_detail/widget/sub_video_card.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
@@ -88,7 +89,7 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
                     _subDetailController.onLoadMore();
                   }
                   return SubVideoCardH(
-                    videoItem: response[index] as dynamic,
+                    videoItem: ModelConverters.subDetailItem(response[index]),
                   );
                 },
                 itemCount: response.length,

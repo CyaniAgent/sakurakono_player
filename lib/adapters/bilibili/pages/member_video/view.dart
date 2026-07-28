@@ -9,6 +9,7 @@ import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/member/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/widgets/video_card_h_member_video.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -200,7 +201,7 @@ class _MemberVideoState extends State<MemberVideo>
                         _controller.onLoadMore();
                       }
                       return VideoCardHMemberVideo(
-                        videoItem: response[index] as dynamic,
+                        videoItem: ModelConverters.spaceArchiveItem(response[index]),
                         fromViewAid: _controller.fromViewAid,
                       );
                     },

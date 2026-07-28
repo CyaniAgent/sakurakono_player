@@ -5,6 +5,7 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_v.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _RcmdPageState extends State<RcmdPage>
                         ? index - 1
                         : index;
                     return VideoCardV(
-                      videoItem: response[actualIndex],
+                      videoItem: ModelConverters.rcmdItem(response[actualIndex]),
                       onRemove: () {
                         if (controller.lastRefreshAt != null &&
                             actualIndex < controller.lastRefreshAt!) {
@@ -111,7 +112,7 @@ class _RcmdPageState extends State<RcmdPage>
                     );
                   } else {
                     return VideoCardV(
-                      videoItem: response[index],
+                      videoItem: ModelConverters.rcmdItem(response[index]),
                       onRemove: () => controller.loadingState
                         ..value.data!.removeAt(index)
                         ..refresh(),

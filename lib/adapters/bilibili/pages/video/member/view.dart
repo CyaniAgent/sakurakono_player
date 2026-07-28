@@ -18,6 +18,7 @@ import 'package:skf/adapters/bilibili/pages/member_video/widgets/video_card_h_me
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/member/controller.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -193,7 +194,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 2),
                         child: VideoCardHMemberVideo(
-                          videoItem: videoItem as dynamic,
+                          videoItem: ModelConverters.spaceArchiveItem(videoItem),
                           bvid: _bvid,
                           onTap: () {
                             Get.back();

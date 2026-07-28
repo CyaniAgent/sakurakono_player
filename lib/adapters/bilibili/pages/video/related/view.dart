@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/pages/video/related/controller.dart';
 import 'package:skf/utils/extension/get_ext.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -44,7 +45,7 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel> with GridMixin {
                 gridDelegate: gridDelegate,
                 itemBuilder: (context, index) {
                   return VideoCardH(
-                    videoItem: response[index] as dynamic,
+                    videoItem: ModelConverters.hotVideoItem(response[index]),
                     onRemove: () => _relatedController.loadingState
                       ..value.data!.removeAt(index)
                       ..refresh(),

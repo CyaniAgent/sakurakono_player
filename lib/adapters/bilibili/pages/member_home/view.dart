@@ -14,6 +14,7 @@ import 'package:skf/adapters/bilibili/pages/member_comic/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/member_contribute/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_home/widgets/fav_item.dart';
 import 'package:skf/adapters/bilibili/pages/member_home/widgets/video_card_v_member_home.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/member_like_arc/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_pgc/widgets/pgc_card_v_member_pgc.dart';
 import 'package:skf/utils/extension/context_ext.dart';
@@ -89,7 +90,9 @@ class _MemberHomeState extends State<MemberHome>
                         gridDelegate: gridDelegateV,
                         itemBuilder: (context, index) {
                           return VideoCardVMemberHome(
-                            videoItem: res.coreArchive!.item![index] as dynamic,
+                            videoItem: ModelConverters.archiveItem(
+                              res.coreArchive!.item![index],
+                            ),
                           );
                         },
                         itemCount: min(
@@ -132,7 +135,9 @@ class _MemberHomeState extends State<MemberHome>
                         gridDelegate: gridDelegateV,
                         itemBuilder: (context, index) {
                           return VideoCardVMemberHome(
-                            videoItem: res.coreCoinArchive!.item![index] as dynamic,
+                            videoItem: ModelConverters.coinLikeItem(
+                              res.coreCoinArchive!.item![index],
+                            ),
                           );
                         },
                         itemCount: min(
@@ -158,7 +163,9 @@ class _MemberHomeState extends State<MemberHome>
                         gridDelegate: gridDelegateV,
                         itemBuilder: (context, index) {
                           return VideoCardVMemberHome(
-                            videoItem: res.coreLikeArchive!.item![index] as dynamic,
+                            videoItem: ModelConverters.coinLikeItem(
+                              res.coreLikeArchive!.item![index],
+                            ),
                           );
                         },
                         itemCount: min(

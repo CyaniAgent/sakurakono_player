@@ -5,6 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/adapters/bilibili/pages/music/video/controller.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/music/widget/music_video_card_h.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
@@ -62,7 +63,7 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
             ? SliverGrid.builder(
                 gridDelegate: gridDelegate,
                 itemBuilder: (context, index) =>
-                    MusicVideoCardH(videoItem: response[index] as dynamic),
+                    MusicVideoCardH(videoItem: ModelConverters.bgmRecommend(response[index])),
                 itemCount: response.length,
               )
             : HttpError(onReload: _controller.onReload),

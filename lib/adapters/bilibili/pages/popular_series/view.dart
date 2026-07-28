@@ -8,9 +8,11 @@ import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dar
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
+import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/core/models/video_types.dart' show CoreHotVideoItemModel;
 
 import 'package:skf/adapters/bilibili/pages/popular_series/controller.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
@@ -66,13 +68,18 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
             itemBuilder: (context, index) {
               final item = response[index];
               return VideoCardH(
-                videoItem: item as dynamic,
+                videoItem: ModelConverters.hotVideoItem(item),
                 onTap: () {
                   final config = _controller.config.value;
                   PageUtils.toVideoPage(
                     bvid: item.bvid,
                     cid: item.cid!,
-                    dimension: item.dimension as dynamic,
+                    dimension: item.dimension != null
+                        ? Dimension(
+                            width: item.dimension!['width'] as int?,
+                            height: item.dimension!['height'] as int?,
+                          )
+                        : null,
                     extraArguments: {
                       'sourceType': SourceType.playlist,
                       'favTitle': '每周必看 ${config == null ? '' : (config['label'] ?? '')}',
