@@ -25,12 +25,16 @@ abstract final class Accounts {
   // static set main(Account account) => set(AccountType.main, account);
 
   static Future<void> init() async {
-    account = await Hive.openBox(
-      'account',
-      compactionStrategy: (int entries, int deletedEntries) {
-        return deletedEntries > 2;
-      },
-    );
+    if (Hive.isBoxOpen('account')) {
+      account = Hive.box<LoginAccount>('account');
+    } else {
+      account = await Hive.openBox<LoginAccount>(
+        'account',
+        compactionStrategy: (int entries, int deletedEntries) {
+          return deletedEntries > 2;
+        },
+      );
+    }
   }
 
   static Future<void> refresh() {
