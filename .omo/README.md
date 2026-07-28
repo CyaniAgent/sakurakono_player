@@ -4,27 +4,28 @@
 
 | SPES | 标题 | 状态 |
 |------|------|------|
-| 002 | 仓库重组 — B站 代码迁移到 `adapters/bilibili/` | ✓ |
-| 003 | 循环依赖修复 | ✓ |
-| 005 | 核心接口定义 | ✓ |
-| 006 | B站 适配器桥接 | ✓ |
-| 007 | 构建恢复与验证 | ✓ |
-| **008** | **Bridge 修复 + B站 全面解耦** | **✓** |
-| **009** | **重命名 PiliPlus → skf** | **✓** |
-| **010** | **数据层重构（Repository 模式）** | **✓** |
-| **011** | **仓库接口与实现解耦** | **✓** |
-| **012** | **Core 类型前缀重命名** | **✓** |
-| **013** | **级联错误修复（692→322 errors）** | **✓** |
-| **014** | **View 层类型不匹配修复（322→0 errors）** | **✓** |
+| 002-009 | 仓库重组、重命名、Bridge | ✓ |
+| 010-012 | Repository 模式、Core 类型 | ✓ |
+| 013 | 级联错误修复（692→322） | ✓ |
+| 014 | View 层类型修复（322→0） | ✓ |
 
-## 执行中
+## 额外完成
 
-暂无
+| 工作 | 状态 |
+|------|------|
+| LoadingState 统一 + ValidateHttp 抽象 | ✓ |
+| 插件架构（Plugin + Registry + LocalFilePlugin） | ✓ |
+| Common/ 完全解耦 | ✓ |
+| 24 Repository 测试（72 tests） | ✓ |
+| 根目录清理 + warning 修复 + AGENTS.md 更新 | ✓ |
+| core/ 架构边界修复（media_id 迁移） | ✓ |
 
-## 验证记录 (2026-07-27)
+## 最终验证 (2026-07-28)
 
-SPES-013 验收:
-- ✅ 修复 112 个文件
-- ✅ 错误数从 692 降至 322（↓53%）
-- ✅ 所有 72 测试通过
-- ⚠️ 剩余 322 个结构性 Core*/adapter 类型不匹配 → SPES-014
+| 检查项 | 结果 |
+|--------|------|
+| flutter analyze errors | 0 |
+| flutter analyze warnings | 0 |
+| flutter test | 72/72 pass |
+| adapter imports in core/ | 0 |
+| adapter imports in common/ | 0 |
