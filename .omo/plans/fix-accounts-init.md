@@ -25,3 +25,6 @@ flutter run -d windows  # verify app starts without crash
 ```
 fix: add missing Accounts.init() call before Accounts.refresh()
 ```
+
+## TODOs
+1. [x] Fix Accounts.init() missing call in main.dart

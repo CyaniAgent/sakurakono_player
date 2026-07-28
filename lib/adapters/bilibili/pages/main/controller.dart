@@ -234,8 +234,8 @@ class MainController extends GetxController
           .toList();
     }
     this.navigationBars = navigationBars;
-    final defPage = Pref.defaultHomePage;
-    selectedIndex.value = navigationBars.indexOf(defPage);
+    final defPage = Pref.defaultHomePageIndex;
+    selectedIndex.value = defPage.clamp(0, navigationBars.length - 1);
   }
 
   void checkDefaultSearch([bool shouldCheck = false]) {
