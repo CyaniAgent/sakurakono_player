@@ -8,6 +8,7 @@ import 'package:skf/common/widgets/route_aware_mixin.dart';
 import 'package:skf/common/widgets/scale_app.dart';
 import 'package:skf/common/widgets/scroll_behavior.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
+import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
 import 'package:skf/router/app_pages.dart';
@@ -96,6 +97,7 @@ void main() async {
     if (kDebugMode) debugPrint('GStorage init error: $e');
     exit(0);
   }
+  await Accounts.init();
   ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
   await Future.wait([
     _initDownPath(),
