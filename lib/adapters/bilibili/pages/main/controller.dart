@@ -35,7 +35,7 @@ class MainController extends GetxController
   RxDouble? barOffset;
   RxBool? showBottomBar;
   late final bool hideBottomBar;
-  late final barHideType = Pref.barHideType;
+  late final barHideType = BarHideType.values[Pref.barHideType as int];
   bool useBottomNav = false;
   late dynamic controller;
   final RxInt selectedIndex = 0.obs;
@@ -51,7 +51,7 @@ class MainController extends GetxController
   late bool hasHome = false;
   late final homeController = Get.putOrFind(HomeController.new);
 
-  late DynamicBadgeMode msgBadgeMode = Pref.msgBadgeMode;
+  late DynamicBadgeMode msgBadgeMode = DynamicBadgeMode.values[Pref.msgBadgeMode as int];
   late Set<MsgUnReadType> msgUnReadTypes = Pref.msgUnReadTypeV2;
   late final RxString msgUnReadCount = ''.obs;
   late int lastCheckUnreadAt = 0;
@@ -99,7 +99,7 @@ class MainController extends GetxController
       }
     }
 
-    dynamicBadgeMode = Pref.dynamicBadgeMode;
+    dynamicBadgeMode = DynamicBadgeMode.values[Pref.dynamicBadgeMode as int];
 
     hasDyn = navigationBars.contains(NavigationBarType.dynamics);
     if (dynamicBadgeMode != DynamicBadgeMode.hidden) {
