@@ -1,13 +1,24 @@
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/extra_hittest_stack.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/models/common/avatar_badge_type.dart';
-import 'package:PiliPlus/models/common/image_type.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:skf/common/assets.dart';
+import 'package:skf/common/style.dart';
+import 'package:skf/common/widgets/extra_hittest_stack.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/core/models/ui/image_type.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+
+enum BadgeType {
+  none(),
+  vip('大会员'),
+  person('认证个人', Color(0xFFFFCC00)),
+  institution('认证机构', Colors.lightBlueAccent),
+  ;
+
+  final String? desc;
+  final Color? color;
+  const BadgeType([this.desc, this.color]);
+}
 
 class PendantAvatar extends StatelessWidget {
   const PendantAvatar(
@@ -74,7 +85,7 @@ class PendantAvatar extends StatelessWidget {
       src: url,
       width: size,
       height: size,
-      type: ImageType.avatar,
+      type: CoreImageType.avatar,
     );
     if (onTap != null) {
       avatar = GestureDetector(
@@ -109,7 +120,7 @@ class PendantAvatar extends StatelessWidget {
     return Positioned(
       bottom: liveBottom ?? 0.0,
       child: GestureDetector(
-        onTap: () => PageUtils.toLiveRoom(roomId),
+        onTap: () => Get.toNamed('/liveRoom', arguments: roomId),
         child: Container(
           padding: const .symmetric(horizontal: 5, vertical: 1),
           decoration: BoxDecoration(

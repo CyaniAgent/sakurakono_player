@@ -1,5 +1,5 @@
-import 'package:PiliPlus/common/skeleton/skeleton.dart';
-import 'package:PiliPlus/utils/global_data.dart';
+import 'package:skf/common/skeleton/skeleton.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 
 class DynamicCardSkeleton extends StatelessWidget {
@@ -90,7 +90,7 @@ class DynamicCardSkeleton extends StatelessWidget {
               height: 13,
               margin: const EdgeInsets.only(bottom: 7),
             ),
-            if (GlobalData().dynamicsWaterfallFlow) const Spacer(),
+            if (Pref.dynamicsWaterfallFlow) const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: const ['转发', '评论', '点赞']

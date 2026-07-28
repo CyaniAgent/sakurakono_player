@@ -3,24 +3,19 @@ import 'dart:io' show File, Platform;
 import 'dart:math' as math;
 import 'dart:typed_data' show Uint8List;
 
-import 'package:PiliPlus/common/constants.dart';
-import 'package:PiliPlus/http/init.dart';
-import 'package:PiliPlus/utils/cache_manager.dart';
-import 'package:PiliPlus/utils/device_utils.dart';
-import 'package:PiliPlus/utils/extension/file_ext.dart';
-import 'package:PiliPlus/utils/extension/string_ext.dart';
-import 'package:PiliPlus/utils/global_data.dart';
-import 'package:PiliPlus/utils/path_utils.dart';
-import 'package:PiliPlus/utils/permission_handler.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
-import 'package:PiliPlus/utils/share_utils.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:skf/common/constants.dart';
+import 'package:skf/utils/cache_manager.dart';
+import 'package:skf/utils/device_utils.dart';
+import 'package:skf/utils/extension/string_ext.dart';
+import 'package:skf/utils/permission_handler.dart';
+import 'package:skf/utils/platform_utils.dart';
+import 'package:skf/utils/share_utils.dart';
+import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:live_photo_maker/live_photo_maker.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -86,60 +81,6 @@ abstract final class ImageUtils {
       }
     }
     return requestPer();
-  }
-
-  static Future<bool> downloadLivePhoto({
-    required String url,
-    required String liveUrl,
-    required int width,
-    required int height,
-  }) async {
-    try {
-      if (PlatformUtils.isMobile && !await checkPermissionDependOnSdkInt()) {
-        return false;
-      }
-      if (!silentDownImg) SmartDialog.showLoading(msg: '正在下载');
-
-      String videoName = "video_${Utils.getFileName(liveUrl)}";
-      String videoPath = '$tmpDirPath/$videoName';
-
-      final res = await Request().downloadFile(liveUrl.http2https, videoPath);
-      if (res.statusCode != 200) throw '${res.statusCode}';
-
-      if (Platform.isIOS) {
-        final imageFile = await CacheManager.manager.getSingleFile(
-          url.http2https,
-        );
-        if (!silentDownImg) SmartDialog.showLoading(msg: '正在保存');
-        bool success = await LivePhotoMaker.create(
-          coverImage: imageFile.path,
-          imagePath: null,
-          voicePath: videoPath,
-          width: width,
-          height: height,
-        ).whenComplete(File(videoPath).tryDel);
-        if (success) {
-          SmartDialog.showToast(' 已保存 ');
-        } else {
-          SmartDialog.showToast('保存失败');
-          return false;
-        }
-      } else {
-        if (!silentDownImg) SmartDialog.showLoading(msg: '正在保存');
-        await saveFileImg(
-          filePath: videoPath,
-          fileName: videoName,
-          type: FileType.video,
-          needToast: true,
-        );
-      }
-      return true;
-    } catch (err) {
-      SmartDialog.showToast(err.toString());
-      return false;
-    } finally {
-      if (!silentDownImg) SmartDialog.dismiss(status: SmartStatus.loading);
-    }
   }
 
   static Future<bool> downloadImg(List<String> imgList) async {
@@ -227,7 +168,7 @@ abstract final class ImageUtils {
   );
   static String thumbnailUrl(String? src, [int maxQuality = 1]) {
     if (src != null && maxQuality != 100) {
-      maxQuality = math.max(maxQuality, GlobalData().imgQuality);
+      maxQuality = math.max(maxQuality, 0);
       bool hasMatch = false;
       src = src.splitMapJoin(
         _thumbRegex,

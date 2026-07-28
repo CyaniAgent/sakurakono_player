@@ -1,9 +1,22 @@
-part of 'package:PiliPlus/pages/dynamics/widgets/content_panel.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/common/widgets/selection_text.dart';
+import 'package:skf/utils/extension/iterable_ext.dart';
+import 'package:skf/utils/extension/selectable_region_ext.dart';
+
+/// Lightweight emoji data decoupled from adapter models.
+class _EmojiData {
+  final String? url;
+  final num size;
+  const _EmojiData({this.url, required this.size});
+}
 
 Widget dynTextMenuBuilder(
   SelectableRegionState state,
   String text,
-  ModuleDynamicModel? moduleDynamic,
+  /* ModuleDynamicModel? */ dynamic moduleDynamic,
 ) {
   final buttonItems = state.contextMenuButtonItems
     ..insertOrAdd(
@@ -34,18 +47,22 @@ Widget dynTextMenuBuilder(
   );
 }
 
-void _showEmoteDialog(ModuleDynamicModel? moduleDynamic) {
+void _showEmoteDialog(/* ModuleDynamicModel? */ dynamic moduleDynamic) {
   if (moduleDynamic == null) return;
-  final richTextNodes =
-      moduleDynamic.desc?.richTextNodes ??
-      moduleDynamic.major?.opus?.summary?.richTextNodes;
+  final dynamic desc = moduleDynamic.desc;
+  final dynamic major = moduleDynamic.major;
+  final List? richTextNodes = desc?.richTextNodes ??
+      major?.opus?.summary?.richTextNodes;
   if (richTextNodes == null || richTextNodes.isEmpty) return;
-  Map<String, Emoji>? emotes;
+  Map<String, _EmojiData>? emotes;
   for (final e in richTextNodes) {
     if (e.type == 'RICH_TEXT_NODE_TYPE_EMOJI') {
-      emotes ??= <String, Emoji>{};
+      emotes ??= <String, _EmojiData>{};
       if (!emotes.containsKey(e.origText)) {
-        emotes[e.origText!] = e.emoji!;
+        emotes[e.origText] = _EmojiData(
+          url: e.emoji?.url,
+          size: e.emoji?.size ?? 1,
+        );
       }
     }
   }

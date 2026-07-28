@@ -1,22 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:PiliPlus/models/model_owner.dart';
-import 'package:PiliPlus/models/user/danmaku_rule_adapter.dart';
-import 'package:PiliPlus/models/user/info.dart';
-import 'package:PiliPlus/utils/accounts.dart';
-import 'package:PiliPlus/utils/accounts/account_adapter.dart';
-import 'package:PiliPlus/utils/accounts/account_type_adapter.dart';
-import 'package:PiliPlus/utils/accounts/cookie_jar_adapter.dart';
-import 'package:PiliPlus/utils/path_utils.dart';
-import 'package:PiliPlus/utils/set_int_adapter.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:skf/utils/path_utils.dart';
+import 'package:skf/utils/set_int_adapter.dart';
+import 'package:skf/utils/utils.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as path;
 
 abstract final class GStorage {
-  static late final Box<UserInfoData> userInfo;
+  static late final Box<dynamic> userInfo;
+  static late final Box _accountBox;
   static late final Box<dynamic> historyWord;
   static late final Box<dynamic> localCache;
   static late final Box<dynamic> setting;
@@ -30,7 +23,7 @@ abstract final class GStorage {
 
     await Future.wait([
       // 登录用户信息
-      Hive.openBox<UserInfoData>(
+      Hive.openBox<dynamic>(
         'userInfo',
         compactionStrategy: (int entries, int deletedEntries) {
           return deletedEntries > 2;
@@ -54,7 +47,12 @@ abstract final class GStorage {
       ).then((res) => historyWord = res),
       // 视频设置
       Hive.openBox('video').then((res) => video = res),
-      Accounts.init(),
+      Hive.openBox(
+        'account',
+        compactionStrategy: (int entries, int deletedEntries) {
+          return deletedEntries > 2;
+        },
+      ).then((res) => _accountBox = res),
       Hive.openBox<int>(
         'watchProgress',
         keyComparator: _intStrDescKeyComparator,
@@ -64,7 +62,7 @@ abstract final class GStorage {
       ).then((res) => watchProgress = res),
     ]);
 
-    if (Pref.saveReply) {
+    if (setting.get('saveReply', defaultValue: true) as bool) {
       reply = await Hive.openBox<Uint8List>(
         'reply',
         keyComparator: _intStrDescKeyComparator,
@@ -97,15 +95,7 @@ abstract final class GStorage {
   }
 
   static void regAdapter() {
-    Hive
-      ..registerAdapter(OwnerAdapter())
-      ..registerAdapter(UserInfoDataAdapter())
-      ..registerAdapter(LevelInfoAdapter())
-      ..registerAdapter(BiliCookieJarAdapter())
-      ..registerAdapter(LoginAccountAdapter())
-      ..registerAdapter(AccountTypeAdapter())
-      ..registerAdapter(SetIntAdapter())
-      ..registerAdapter(RuleFilterAdapter());
+    Hive.registerAdapter(SetIntAdapter());
   }
 
   static Future<List<void>> compact() {
@@ -115,7 +105,7 @@ abstract final class GStorage {
       localCache.compact(),
       setting.compact(),
       video.compact(),
-      Accounts.account.compact(),
+      _accountBox.compact(),
       watchProgress.compact(),
       ?reply?.compact(),
     ]);
@@ -128,7 +118,7 @@ abstract final class GStorage {
       localCache.close(),
       setting.close(),
       video.close(),
-      Accounts.account.close(),
+      _accountBox.close(),
       watchProgress.close(),
       ?reply?.close(),
     ]);
@@ -141,7 +131,7 @@ abstract final class GStorage {
       localCache.clear(),
       setting.clear(),
       video.clear(),
-      Accounts.clear(),
+      _accountBox.clear(),
       watchProgress.clear(),
       ?reply?.clear(),
     ]);

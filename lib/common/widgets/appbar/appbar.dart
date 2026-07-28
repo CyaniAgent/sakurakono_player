@@ -1,10 +1,10 @@
-import 'package:PiliPlus/pages/common/multi_select/base.dart';
+import 'package:skf/core/models/ui/multi_select_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MultiSelectAppBarWidget extends StatelessWidget
     implements PreferredSizeWidget {
-  final MultiSelectBase ctr;
+  final CoreMultiSelectController ctr;
   final bool? visible;
   final AppBar child;
   final List<Widget>? actions;

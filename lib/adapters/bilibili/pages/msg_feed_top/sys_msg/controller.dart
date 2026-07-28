@@ -1,0 +1,61 @@
+import 'package:skf/core/repository/msg_repository.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/models/msg_types.dart';
+import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
+
+class SysMsgController
+    extends CommonListController<List<CoreMsgSysItem>?, CoreMsgSysItem> {
+  int? cursor;
+
+  @override
+  void onInit() {
+    super.onInit();
+    queryData();
+  }
+
+  @override
+  void handleListResponse(List<CoreMsgSysItem> dataList) {
+    if (cursor == null) {
+      msgSysUpdateCursor(dataList.first.cursor);
+    }
+    cursor = dataList.last.cursor;
+  }
+
+  void msgSysUpdateCursor(int? cursor) {
+    if (cursor != null) {
+      Get.find<MsgRepository>().msgSysUpdateCursor(cursor);
+    }
+  }
+
+  @override
+  Future<void> onRefresh() {
+    cursor = null;
+    return super.onRefresh();
+  }
+
+  Future<void> onRemove(dynamic id, int index) async {
+    try {
+      final res = await Get.find<MsgRepository>().delSysMsg(id);
+      if (res.isSuccess) {
+        loadingState
+          ..value.data!.removeAt(index)
+          ..refresh();
+        SmartDialog.showToast('删除成功');
+      } else {
+        res.toast();
+      }
+    } catch (_) {}
+  }
+
+  @override
+  Future<LoadingState<List<CoreMsgSysItem>?>> customGetData() async {
+    final result = await Get.find<MsgRepository>().msgFeedNotify(cursor: cursor);
+    return switch (result) {
+      Loading() => LoadingState.loading(),
+      Success(:final response) => Success(response),
+      Error(:final errMsg) => Error(errMsg),
+    };
+  }
+}

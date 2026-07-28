@@ -1,11 +1,32 @@
-part of 'package:PiliPlus/pages/video/reply/widgets/reply_item_grpc.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/common/widgets/dialog/dialog.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/common/widgets/selection_text.dart';
+import 'package:skf/utils/extension/iterable_ext.dart';
+import 'package:skf/utils/extension/selectable_region_ext.dart';
+import 'package:skf/utils/storage.dart';
+import 'package:skf/utils/storage_key.dart';
+
+/// Simple data class for emote display, decoupled from protobuf types.
+class EmoteData {
+  final String url;
+  final double size;
+
+  const EmoteData({required this.url, required this.size});
+}
 
 void showReplyCopyDialog(
   BuildContext context,
   String message,
-  Map<String, Emote> emotes,
-) {
+  Map<String, EmoteData> emotes, {
+  bool enableFilter = false,
+  RegExp? replyRegExp,
+  ValueChanged<String>? onAddFilter,
+}) {
   bool showEmote = false;
+  final effectiveRegExp = replyRegExp ?? RegExp('');
   showDialog(
     context: context,
     builder: (context) => Dialog(
@@ -19,7 +40,7 @@ void showReplyCopyDialog(
                     children: emotes.entries.mapIndexed(
                       (i, e) {
                         final emote = e.value;
-                        final size = emote.size.toInt() * 25.0;
+                        final size = emote.size * 25.0;
                         return TextSpan(
                           children: [
                             if (i != 0) const TextSpan(text: '\n\n'),
@@ -68,14 +89,14 @@ void showReplyCopyDialog(
                             ?.getSelectedContent()
                             ?.plainText;
                         String text = RegExp.escape(selectedText);
-                        if (ReplyGrpc.enableFilter) text = '|$text';
+                        if (enableFilter) text = '|$text';
 
                         showConfirmDialog(
                           context: context,
                           title: const Text('是否确认评论过滤的变更：'),
                           content: Text.rich(
                             TextSpan(
-                              text: ReplyGrpc.replyRegExp.pattern,
+                              text: effectiveRegExp.pattern,
                               children: [
                                 TextSpan(
                                   text: text,
@@ -88,16 +109,12 @@ void showReplyCopyDialog(
                             ),
                           ),
                           onConfirm: () {
-                            final filter = ReplyGrpc.replyRegExp.pattern + text;
-                            ReplyGrpc.replyRegExp = RegExp(
-                              filter,
-                              caseSensitive: true,
-                            );
-                            ReplyGrpc.enableFilter = true;
+                            final filter = effectiveRegExp.pattern + text;
                             GStorage.setting.put(
                               SettingBoxKey.banWordForReply,
                               filter,
                             );
+                            onAddFilter?.call(filter);
                             SmartDialog.showToast('已保存');
                           },
                         );

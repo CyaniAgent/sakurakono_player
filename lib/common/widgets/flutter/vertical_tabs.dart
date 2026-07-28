@@ -7,13 +7,10 @@
 import 'dart:math' as math;
 import 'dart:ui' show SemanticsRole, lerpDouble;
 
-import 'package:PiliPlus/pages/main/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
 
 const double _kTabWidth = 51.0;
 const double _kTextAndIconTabWidth = 72.0;
@@ -908,6 +905,7 @@ class VerticalTabBar extends StatefulWidget {
     this.tabAlignment,
     this.textScaler,
     this.indicatorAnimation,
+    this.scrollOffsetAdjustment = 0.0,
   }) : _isPrimary = true,
        assert(indicator != null || (indicatorWeight > 0.0));
 
@@ -963,6 +961,7 @@ class VerticalTabBar extends StatefulWidget {
     this.tabAlignment,
     this.textScaler,
     this.indicatorAnimation,
+    this.scrollOffsetAdjustment = 0.0,
   }) : _isPrimary = false,
        assert(indicator != null || (indicatorWeight > 0.0));
 
@@ -1362,6 +1361,11 @@ class VerticalTabBar extends StatefulWidget {
   ///  * [TabIndicatorAnimation], which specifies the animation behavior of the tab indicator.
   final TabIndicatorAnimation? indicatorAnimation;
 
+  /// Additional scroll offset adjustment for tab bar.
+  ///
+  /// Used to adjust tab scroll position for bottom navigation bars.
+  final double scrollOffsetAdjustment;
+
   /// Returns whether the [VerticalTabBar] contains a tab with both text and icon.
   ///
   /// [VerticalTabBar] uses this to give uniform padding to all tabs in cases where
@@ -1628,8 +1632,6 @@ class _VerticalTabBarState extends State<VerticalTabBar> {
 
   int get maxTabIndex => _indicatorPainter!.maxTabIndex;
 
-  final _mainCtr = Get.find<MainController>();
-
   double _tabScrollOffset(
     int index,
     double viewportWidth,
@@ -1655,13 +1657,7 @@ class _VerticalTabBarState extends State<VerticalTabBar> {
       tabCenter +
           paddingTop -
           viewportWidth / 2.0 +
-          (_mainCtr.useBottomNav &&
-                  switch (_mainCtr.barHideType) {
-                    .instant => _mainCtr.showBottomBar?.value ?? true,
-                    .sync => (_mainCtr.barOffset?.value ?? 0) == 0,
-                  }
-              ? 80.0
-              : 0.0),
+          widget.scrollOffsetAdjustment,
       minExtent,
       maxExtent,
     );

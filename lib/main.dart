@@ -1,34 +1,30 @@
 import 'dart:io';
 
-import 'package:PiliPlus/build_config.dart';
-import 'package:PiliPlus/common/constants.dart';
-import 'package:PiliPlus/common/widgets/back_detector.dart';
-import 'package:PiliPlus/common/widgets/custom_toast.dart';
-import 'package:PiliPlus/common/widgets/route_aware_mixin.dart';
-import 'package:PiliPlus/common/widgets/scale_app.dart';
-import 'package:PiliPlus/common/widgets/scroll_behavior.dart';
-import 'package:PiliPlus/http/init.dart';
-import 'package:PiliPlus/models/common/theme/theme_color_type.dart';
-import 'package:PiliPlus/plugin/pl_player/utils/fullscreen.dart';
-import 'package:PiliPlus/router/app_pages.dart';
-import 'package:PiliPlus/services/account_service.dart';
-import 'package:PiliPlus/services/download/download_service.dart';
-import 'package:PiliPlus/services/logger.dart';
-import 'package:PiliPlus/services/service_locator.dart';
-import 'package:PiliPlus/utils/cache_manager.dart';
-import 'package:PiliPlus/utils/calc_window_position.dart';
-import 'package:PiliPlus/utils/date_utils.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
-import 'package:PiliPlus/utils/json_file_handler.dart';
-import 'package:PiliPlus/utils/max_screen_size.dart';
-import 'package:PiliPlus/utils/path_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
-import 'package:PiliPlus/utils/request_utils.dart';
-import 'package:PiliPlus/utils/storage.dart';
-import 'package:PiliPlus/utils/storage_key.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:PiliPlus/utils/theme_utils.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:skf/build_config.dart';
+import 'package:skf/common/constants.dart';
+import 'package:skf/common/widgets/back_detector.dart';
+import 'package:skf/common/widgets/custom_toast.dart';
+import 'package:skf/common/widgets/route_aware_mixin.dart';
+import 'package:skf/common/widgets/scale_app.dart';
+import 'package:skf/common/widgets/scroll_behavior.dart';
+import 'package:skf/adapters/bilibili/bridge.dart';
+import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
+import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
+import 'package:skf/router/app_pages.dart';
+import 'package:skf/adapters/bilibili/services/logger.dart';
+import 'package:skf/utils/cache_manager.dart';
+import 'package:skf/utils/calc_window_position.dart';
+import 'package:skf/utils/date_utils.dart';
+import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
+import 'package:skf/adapters/bilibili/utils/bili_json_handler.dart';
+import 'package:skf/utils/max_screen_size.dart';
+import 'package:skf/utils/path_utils.dart';
+import 'package:skf/utils/platform_utils.dart';
+import 'package:skf/utils/storage.dart';
+import 'package:skf/utils/storage_key.dart';
+import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/utils/theme_utils.dart';
+import 'package:skf/utils/utils.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -92,6 +88,7 @@ void main() async {
   ScaledWidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   await _initAppPath();
+  BiliBridge.initHive();
   try {
     await GStorage.init();
   } catch (e) {
@@ -105,16 +102,13 @@ void main() async {
     _initTmpPath(),
     CacheManager.ensureInitialized(),
   ]);
-  Get
-    ..lazyPut(AccountService.new)
-    ..lazyPut(DownloadService.new);
+  BiliBridge.register();
   HttpOverrides.global = _CustomHttpOverrides();
 
   if (PlatformUtils.isMobile) {
     if (Platform.isAndroid) MaxScreenSize.init();
     await Future.wait([
       if (Pref.horizontalScreen) ?fullMode() else ?portraitUpMode(),
-      setupServiceLocator(),
     ]);
   } else if (Platform.isWindows) {
     if (await WebViewEnvironment.getAvailableVersion() != null) {
@@ -125,12 +119,7 @@ void main() async {
       );
     }
   } else if (Platform.isMacOS) {
-    await setupServiceLocator();
   }
-
-  Request();
-  Request.setCookie();
-  RequestUtils.syncHistoryStatus();
 
   SmartDialog.config.toast = SmartConfigToast(displayType: .onlyRefresh);
 
@@ -197,7 +186,7 @@ void main() async {
       'MPV Api Version':
           '${NativePlayer.apiVersion >> 16}.${NativePlayer.apiVersion & 0xFFFF}',
     };
-    final fileHandler = await JsonFileHandler.init();
+    final fileHandler = await BiliJsonFileHandler.init();
 
     Catcher2(
       [?fileHandler, const ConsoleHandler()],

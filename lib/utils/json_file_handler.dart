@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:PiliPlus/services/logger.dart';
 import 'package:catcher_2/catcher_2.dart';
+import 'package:logger/logger.dart';
 
 class JsonFileHandler extends ReportHandler {
   final bool enableDeviceParameters;
@@ -11,11 +11,9 @@ class JsonFileHandler extends ReportHandler {
   final bool enableCustomParameters;
   final bool printLogs;
   final bool handleWhenRejected;
+  final Logger? _logger;
 
-  static Future<RandomAccessFile> _future = LoggerUtils.getLogsPath()
-      .then((file) => file.open(mode: FileMode.writeOnlyAppend))
-      .then((raf) => raf.writeFrom(const []))
-      .then(_flush);
+  static Future<RandomAccessFile>? _future;
 
   JsonFileHandler._({
     this.enableDeviceParameters = true,
@@ -24,9 +22,12 @@ class JsonFileHandler extends ReportHandler {
     this.enableCustomParameters = true,
     this.printLogs = false,
     this.handleWhenRejected = false,
+    this._logger,
   });
 
   static Future<JsonFileHandler?> init({
+    required Future<File> Function() getLogsPath,
+    Logger? logger,
     bool enableDeviceParameters = true,
     bool enableApplicationParameters = true,
     bool enableStackTrace = true,
@@ -35,6 +36,10 @@ class JsonFileHandler extends ReportHandler {
     bool handleWhenRejected = false,
   }) async {
     try {
+      _future = getLogsPath()
+          .then((file) => file.open(mode: FileMode.writeOnlyAppend))
+          .then((raf) => raf.writeFrom(const []))
+          .then(_flush);
       await _future;
       return JsonFileHandler._(
         enableDeviceParameters: enableDeviceParameters,
@@ -43,9 +48,10 @@ class JsonFileHandler extends ReportHandler {
         enableCustomParameters: enableCustomParameters,
         printLogs: printLogs,
         handleWhenRejected: handleWhenRejected,
+        logger: logger,
       );
     } catch (e, s) {
-      logger.e('Init log file', error: e, stackTrace: s);
+      logger?.e('Init log file', error: e, stackTrace: s);
       return null;
     }
   }
@@ -55,7 +61,11 @@ class JsonFileHandler extends ReportHandler {
   static Future<RandomAccessFile> add(
     Future<RandomAccessFile> Function(RandomAccessFile) onValue,
   ) {
-    return _future = _future.then(onValue).then(_flush);
+    final future = _future;
+    if (future == null) {
+      return Future.error(StateError('JsonFileHandler not initialized'));
+    }
+    return _future = future.then(onValue).then(_flush);
   }
 
   @override
@@ -64,7 +74,7 @@ class JsonFileHandler extends ReportHandler {
       await _processReport(report);
       return true;
     } catch (exc, stackTrace) {
-      logger.e(
+      _logger?.e(
         'Write Json Exception occurred',
         error: exc,
         stackTrace: stackTrace,
@@ -75,7 +85,7 @@ class JsonFileHandler extends ReportHandler {
 
   Future<void> _processReport(Report report) {
     if (printLogs) {
-      logger.d('Writing report to file');
+      _logger?.d('Writing report to file');
     }
     final json = report.toJson(
       enableDeviceParameters: enableDeviceParameters,

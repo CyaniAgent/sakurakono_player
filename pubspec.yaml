@@ -1,5 +1,5 @@
-name: PiliPlus
-description: A new Flutter project.
+name: skf
+description: SakuraKono Player Framework — plugin-based video player.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -236,6 +236,7 @@ dev_dependencies:
       url: https://github.com/dart-lang/native.git
       path: pkgs/jnigen
       ref: 55520836d363aac7f1ebae47387d03a30302be7b
+  mockito: ^5.7.0
 
 flutter_launcher_icons:
   android: true

@@ -1,0 +1,130 @@
+import 'dart:async' show StreamSubscription;
+
+import 'package:skf/core/models/search_types.dart';
+import 'package:skf/core/result/loading_state.dart';
+
+import 'package:skf/core/repository/search_repository.dart';
+import 'package:get/get.dart';
+import 'package:skf/adapters/bilibili/models/common/search/article_search_type.dart';
+import 'package:skf/adapters/bilibili/models/common/search/user_search_type.dart';
+import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dart';
+import 'package:skf/adapters/bilibili/models/search/result.dart';
+import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/adapters/bilibili/pages/search_result/controller.dart';
+import 'package:skf/utils/extension/scroll_controller_ext.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
+class SearchPanelController<R extends SearchNumData<T>, T>
+    extends CommonListController<R, T> {
+  SearchPanelController({
+    required this.keyword,
+    required this.searchType,
+    required this.tag,
+  });
+  final String tag;
+  final String keyword;
+  final CoreSearchType searchType;
+
+  // sort
+  // common
+  String order = '';
+
+  // video
+  VideoDurationType? videoDurationType; // int duration
+  VideoZoneType? videoZoneType; // int? tids;
+  int? pubBegin;
+  int? pubEnd;
+
+  // user
+  Rx<UserOrderType>? userOrderType;
+  Rx<UserType>? userType;
+
+  // article
+  Rx<ArticleZoneType>? articleZoneType; // int? categoryId;
+
+  SearchResultController? searchResultController;
+
+  void onSortSearch({
+    bool getBack = true,
+    String? label,
+  }) {
+    if (getBack) Get.back();
+    SmartDialog.dismiss();
+    if (label != null) {
+      SmartDialog.showToast("「」的筛选结果");
+    }
+    SmartDialog.showLoading(msg: 'loading');
+    onReload().whenComplete(SmartDialog.dismiss);
+  }
+
+  StreamSubscription? _listener;
+
+  void cancelListener() {
+    _listener?.cancel();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    try {
+      searchResultController = Get.find<SearchResultController>(tag: tag);
+      _listener = searchResultController!.toTopIndex.listen((index) {
+        if (index == searchType.index) {
+          scrollController.animToTop();
+        }
+      });
+    } catch (_) {}
+    queryData();
+  }
+
+  @override
+  List<T>? getDataList(R response) {
+    return response.list;
+  }
+
+  @override
+  bool customHandleResponse(bool isRefresh, Success<R> response) {
+    if (isRefresh) {
+      searchResultController?.count[searchType.index] =
+          response.response.numResults ?? 0;
+    }
+    return false;
+  }
+
+  String? gaiaVtoken;
+
+  @override
+  Future<LoadingState<R>> customGetData() async {
+    // Both SearchNumData and CoreSearchNumData share the same shape (numResults, list),
+    // making the cast safe.
+    final result = await (Get.find<SearchRepository>() as dynamic).searchByType(
+      searchType: searchType,
+      keyword: keyword,
+      page: page,
+      order: order,
+      duration: videoDurationType?.index,
+      tids: videoZoneType?.tids,
+      orderSort: userOrderType?.value.orderSort,
+      userType: userType?.value.index,
+      categoryId: articleZoneType?.value.categoryId,
+      pubBegin: pubBegin,
+      pubEnd: pubEnd,
+      gaiaVtoken: gaiaVtoken,
+      onSuccess: (String gaiaVtoken) {
+        this.gaiaVtoken = gaiaVtoken;
+        queryData(page == 1);
+      },
+    ) as LoadingState<R>;
+    return switch (result) {
+      Loading _ => LoadingState.loading(),
+      Success(:final response) => Success(response),
+      Error(:final errMsg, :final code) => Error(errMsg, code: code),
+    };
+  }
+
+  @override
+  Future<void> onReload() {
+    scrollController.jumpToTop();
+    return super.onReload();
+  }
+}

@@ -1,6 +1,6 @@
-import 'package:PiliPlus/utils/extension/iterable_ext.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
+import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 extension SelectableRegionStateExt on SelectableRegionState {
   void addLaunchMenuIfNeeded(
@@ -21,7 +21,7 @@ extension SelectableRegionStateExt on SelectableRegionState {
               hideToolbar();
               clearSelection();
               if (text != null && text.isNotEmpty) {
-                PageUtils.launchURL(text);
+                launchUrl(Uri.parse(text));
               }
             },
           ),

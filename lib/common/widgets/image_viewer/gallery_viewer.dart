@@ -1,47 +1,46 @@
 /*
- * This file is part of PiliPlus
+ * This file is part of SakuraKono
  *
- * PiliPlus is free software: you can redistribute it and/or modify
+ * SakuraKono is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * PiliPlus is distributed in the hope that it will be useful,
+ * SakuraKono is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PiliPlus.  If not, see <https://www.gnu.org/licenses/>.
+ * along with SakuraKono.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:io' show File, Platform;
 
-import 'package:PiliPlus/common/widgets/colored_box_transition.dart';
-import 'package:PiliPlus/common/widgets/dialog/simple_dialog_option.dart';
-import 'package:PiliPlus/common/widgets/flutter/page/page_view.dart';
-import 'package:PiliPlus/common/widgets/gesture/image_horizontal_drag_gesture_recognizer.dart';
-import 'package:PiliPlus/common/widgets/image_viewer/image.dart';
-import 'package:PiliPlus/common/widgets/image_viewer/loading_indicator.dart';
-import 'package:PiliPlus/common/widgets/image_viewer/viewer.dart';
-import 'package:PiliPlus/common/widgets/scroll_physics.dart';
-import 'package:PiliPlus/main.dart' show tmpPadding;
-import 'package:PiliPlus/models/common/image_preview_type.dart';
-import 'package:PiliPlus/plugin/pl_player/utils/fullscreen.dart';
-import 'package:PiliPlus/utils/device_utils.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/extension/string_ext.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/max_screen_size.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:skf/common/widgets/colored_box_transition.dart';
+import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:skf/common/widgets/flutter/page/page_view.dart';
+import 'package:skf/common/widgets/gesture/image_horizontal_drag_gesture_recognizer.dart';
+import 'package:skf/common/widgets/image_viewer/image.dart';
+import 'package:skf/common/widgets/image_viewer/loading_indicator.dart';
+import 'package:skf/common/widgets/image_viewer/viewer.dart';
+import 'package:skf/common/widgets/scroll_physics.dart';
+import 'package:skf/main.dart' show tmpPadding;
+import 'package:skf/core/models/ui/image_preview_type.dart';
+import 'package:skf/utils/device_utils.dart';
+import 'package:skf/utils/extension/num_ext.dart';
+import 'package:skf/utils/extension/string_ext.dart';
+import 'package:skf/utils/image_utils.dart';
+import 'package:skf/utils/max_screen_size.dart';
+import 'package:skf/utils/platform_utils.dart';
+import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/utils/utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image, PageView;
-import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:flutter/services.dart' show HapticFeedback, SystemChrome, SystemUiMode, SystemUiOverlay;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -60,15 +59,22 @@ class GalleryViewer extends StatefulWidget {
     this.initIndex = 0,
     this.onPageChanged,
     this.tag = '',
+    this.onDownloadLivePhoto,
   });
 
   final double minScale;
   final double maxScale;
   final int quality;
-  final List<SourceModel> sources;
+  final List<CoreSourceModel> sources;
   final int initIndex;
   final ValueChanged<int>? onPageChanged;
   final String tag;
+  final Future<bool> Function({
+    required String url,
+    required String liveUrl,
+    required int width,
+    required int height,
+  })? onDownloadLivePhoto;
 
   @override
   State<GalleryViewer> createState() => _GalleryViewerState();
@@ -179,17 +185,13 @@ class _GalleryViewerState extends State<GalleryViewer>
 
   void _initHideSystemBar() {
     if (Platform.isAndroid) {
-      if (showSystemBar_) {
-        final size = DeviceUtils.size;
-        _hideSystemBar = !MaxScreenSize.isWindowMode(
-          width: size.width,
-          height: size.height,
-        );
-      } else {
-        _hideSystemBar = false;
-      }
+      final size = DeviceUtils.size;
+      _hideSystemBar = !MaxScreenSize.isWindowMode(
+        width: size.width,
+        height: size.height,
+      );
     } else if (Platform.isIOS) {
-      _hideSystemBar = showSystemBar_;
+      _hideSystemBar = true;
     } else {
       _hideSystemBar = false;
     }
@@ -204,7 +206,8 @@ class _GalleryViewerState extends State<GalleryViewer>
       _initHideSystemBar();
       if (_hideSystemBar) {
         tmpPadding = padding;
-        hideSystemBar()!.whenComplete(
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)
+            .whenComplete(
           () => WidgetsBinding.instance.addPostFrameCallback(
             (_) => tmpPadding = null,
           ),
@@ -295,7 +298,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     _longPressGestureRecognizer.dispose();
     if (widget.quality != _quality) {
       for (final item in widget.sources) {
-        if (item.sourceType == SourceType.networkImage) {
+        if (item.sourceType == CoreSourceType.networkImage) {
           CachedNetworkImageProvider(_getActualUrl(item.url)).evict();
         }
       }
@@ -303,7 +306,12 @@ class _GalleryViewerState extends State<GalleryViewer>
     Future.delayed(const Duration(milliseconds: 200), _currIndex.close);
     super.dispose();
     if (_hideSystemBar) {
-      showSystemBar();
+      SystemChrome.setEnabledSystemUIMode(
+        Platform.isAndroid && DeviceUtils.sdkInt < 29
+            ? SystemUiMode.manual
+            : SystemUiMode.edgeToEdge,
+        overlays: SystemUiOverlay.values,
+      );
     }
   }
 
@@ -379,7 +387,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     ),
   );
 
-  void _playIfNeeded(SourceModel item) {
+  void _playIfNeeded(CoreSourceModel item) {
     if (item.sourceType == .livePhoto) {
       if (_player != null) {
         _player!.open(Media(item.liveUrl!));
@@ -418,7 +426,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     final item = widget.sources[index];
     final Widget child;
     switch (item.sourceType) {
-      case SourceType.fileImage:
+      case CoreSourceType.fileImage:
         child = Image.file(
           key: _key,
           File(item.url),
@@ -433,7 +441,7 @@ class _GalleryViewerState extends State<GalleryViewer>
           horizontalDragGestureRecognizer: _horizontalDragGestureRecognizer,
           onChangePage: _onChangePage,
         );
-      case SourceType.networkImage:
+      case CoreSourceType.networkImage:
         final isLongPic = item.isLongPic;
         child = Image(
           key: _key,
@@ -492,7 +500,7 @@ class _GalleryViewerState extends State<GalleryViewer>
         if (isLongPic) {
           return child;
         }
-      case SourceType.livePhoto:
+      case CoreSourceType.livePhoto:
         child = Obx(
           key: _key,
           () => _currIndex.value == index && _videoController != null
@@ -565,7 +573,7 @@ class _GalleryViewerState extends State<GalleryViewer>
             DialogOption(
               onPressed: () {
                 Get.back();
-                PageUtils.launchURL(item.url);
+                launchUrl(Uri.parse(item.url));
               },
               child: const Text('网页打开', style: TextStyle(fontSize: 14)),
             )
@@ -579,11 +587,11 @@ class _GalleryViewerState extends State<GalleryViewer>
               },
               child: const Text('保存全部图片', style: TextStyle(fontSize: 14)),
             ),
-          if (item.sourceType == SourceType.livePhoto)
+          if (item.sourceType == CoreSourceType.livePhoto)
             DialogOption(
               onPressed: () {
                 Get.back();
-                ImageUtils.downloadLivePhoto(
+                widget.onDownloadLivePhoto?.call(
                   url: item.url,
                   liveUrl: item.liveUrl!,
                   width: item.width!,
@@ -605,7 +613,12 @@ class _GalleryViewerState extends State<GalleryViewer>
     if (item.sourceType == .fileImage) return;
     showMenu(
       context: context,
-      position: PageUtils.menuPosition(details.globalPosition),
+      position: RelativeRect.fromLTRB(
+        details.globalPosition.dx,
+        details.globalPosition.dy,
+        details.globalPosition.dx,
+        0,
+      ),
       items: [
         PopupMenuItem(
           height: 42,
@@ -619,13 +632,13 @@ class _GalleryViewerState extends State<GalleryViewer>
         ),
         PopupMenuItem(
           height: 42,
-          onTap: () => PageUtils.launchURL(item.url),
+          onTap: () => launchUrl(Uri.parse(item.url)),
           child: const Text('网页打开', style: TextStyle(fontSize: 14)),
         ),
-        if (item.sourceType == SourceType.livePhoto)
+        if (item.sourceType == CoreSourceType.livePhoto)
           PopupMenuItem(
             height: 42,
-            onTap: () => ImageUtils.downloadLivePhoto(
+            onTap: () => widget.onDownloadLivePhoto?.call(
               url: item.url,
               liveUrl: item.liveUrl!,
               width: item.width!,

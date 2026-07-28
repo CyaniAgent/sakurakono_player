@@ -1,16 +1,20 @@
+import 'package:skf/core/app_meta.dart';
+
 abstract final class BuildConfig {
   static const int versionCode = int.fromEnvironment(
-    'pili.code',
+    '${AppMeta.buildConfigPrefix}.code',
     defaultValue: 1,
   );
   static const String versionName = String.fromEnvironment(
-    'pili.name',
+    '${AppMeta.buildConfigPrefix}.name',
     defaultValue: 'SNAPSHOT',
   );
 
-  static const int buildTime = int.fromEnvironment('pili.time');
+  static const int buildTime = int.fromEnvironment(
+    '${AppMeta.buildConfigPrefix}.time',
+  );
   static const String commitHash = String.fromEnvironment(
-    'pili.hash',
+    '${AppMeta.buildConfigPrefix}.hash',
     defaultValue: 'N/A',
   );
 }

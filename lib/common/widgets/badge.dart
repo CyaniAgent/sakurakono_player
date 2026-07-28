@@ -1,6 +1,6 @@
-import 'package:PiliPlus/models/common/badge_type.dart';
-import 'package:PiliPlus/utils/extension/string_ext.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
+import 'package:skf/core/models/ui/badge_type.dart';
+import 'package:skf/utils/extension/string_ext.dart';
+import 'package:skf/utils/theme_ext.dart';
 import 'package:flutter/material.dart';
 
 class PBadge extends StatelessWidget {
@@ -13,8 +13,8 @@ class PBadge extends StatelessWidget {
   final double? left;
   final EdgeInsets? padding;
 
-  final PBadgeType type;
-  final PBadgeSize size;
+  final CorePBadgeType type;
+  final CorePBadgeSize size;
 
   final double fontSize;
   final bool isBold;
@@ -27,8 +27,8 @@ class PBadge extends StatelessWidget {
     this.right,
     this.bottom,
     this.left,
-    this.type = PBadgeType.primary,
-    this.size = PBadgeSize.medium,
+    this.type = CorePBadgeType.primary,
+    this.size = CorePBadgeSize.medium,
     this.isStack = true,
     this.fontSize = 11,
     this.isBold = true,
@@ -49,16 +49,16 @@ class PBadge extends StatelessWidget {
     Color borderColor = Colors.transparent;
 
     switch (type) {
-      case PBadgeType.primary:
+      case CorePBadgeType.primary:
         bgColor = theme.primary;
         color = theme.onPrimary;
-      case PBadgeType.secondary:
+      case CorePBadgeType.secondary:
         bgColor = theme.secondaryContainer.withValues(alpha: 0.5);
         color = theme.onSecondaryContainer;
-      case PBadgeType.gray:
+      case CorePBadgeType.gray:
         bgColor = Colors.black45;
         color = Colors.white;
-      case PBadgeType.error:
+      case CorePBadgeType.error:
         if (theme.isDark) {
           bgColor = theme.errorContainer;
           color = theme.onErrorContainer;
@@ -66,18 +66,18 @@ class PBadge extends StatelessWidget {
           bgColor = theme.error;
           color = theme.onError;
         }
-      case PBadgeType.line_primary:
+      case CorePBadgeType.line_primary:
         color = theme.primary;
         bgColor = Colors.transparent;
         borderColor = theme.primary;
-      case PBadgeType.line_secondary:
+      case CorePBadgeType.line_secondary:
         color = theme.secondary;
         bgColor = Colors.transparent;
         borderColor = theme.secondary;
-      case PBadgeType.free:
+      case CorePBadgeType.free:
         bgColor = theme.freeColor;
         color = Colors.white;
-      case PBadgeType.shop:
+      case CorePBadgeType.shop:
         bgColor = theme.secondaryContainer.withValues(alpha: 0.5);
         color = theme.onSurfaceVariant;
     }

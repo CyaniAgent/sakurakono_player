@@ -1,9 +1,13 @@
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:flutter/cupertino.dart' show CupertinoThemeData;
 import 'package:flutter/foundation.dart' show PlatformDispatcher;
 import 'package:flutter/material.dart';
+import 'package:skf/common/style.dart';
+import 'package:skf/utils/storage_pref.dart';
+
+extension on Color {
+  /// Darkens the color by blending with black.
+  Color darken([double amount = .5]) => Color.lerp(this, Colors.black, amount)!;
+}
 
 abstract final class ThemeUtils {
   static late ThemeData lightTheme;
@@ -21,7 +25,7 @@ abstract final class ThemeUtils {
     return lightTheme;
   }
 
-  static bool get isDarkMode => theme.isDark;
+  static bool get isDarkMode => theme.brightness == Brightness.dark;
 
   static String themeUrl(bool isDark) =>
       'native.theme=${isDark ? 2 : 1}&night=${isDark ? 1 : 0}';

@@ -1,24 +1,24 @@
 /*
- * This file is part of PiliPlus
+ * This file is part of SakuraKono
  *
- * PiliPlus is free software: you can redistribute it and/or modify
+ * SakuraKono is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * PiliPlus is distributed in the hope that it will be useful,
+ * SakuraKono is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PiliPlus.  If not, see <https://www.gnu.org/licenses/>.
+ * along with SakuraKono.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:math';
 
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/models/common/image_type.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/core/models/ui/image_type.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -768,7 +768,7 @@ class RichTextEditingController extends TextEditingController {
                     src: emote.url,
                     width: 22, // emote.width,
                     height: 22, // emote.height,
-                    type: ImageType.emote,
+                    type: CoreImageType.emote,
                     fit: BoxFit.contain,
                   ),
                 ),

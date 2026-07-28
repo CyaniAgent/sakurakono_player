@@ -107,7 +107,6 @@ abstract final class SettingBoxKey {
       showSeekPreview = 'showSeekPreview',
       showDmChart = 'showDmChart',
       enableCommAntifraud = 'enableCommAntifraud',
-      biliSendCommAntifraud = 'biliSendCommAntifraud',
       enableCreateDynAntifraud = 'enableCreateDynAntifraud',
       coinWithLike = 'coinWithLike',
       isPureBlackTheme = 'isPureBlackTheme',
@@ -242,9 +241,7 @@ abstract final class LocalCacheKey {
   static const String historyPause = 'historyPause',
       blackMids = 'blackMids',
       danmakuFilterRules = 'danmakuFilterRules',
-      mixinKey = 'mixinKey',
-      timeStamp = 'timeStamp',
-      buvid = 'buvid';
+      timeStamp = 'timeStamp';
 }
 
 abstract final class VideoBoxKey {

@@ -1,9 +1,9 @@
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/models/common/image_type.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:skf/common/assets.dart';
+import 'package:skf/common/style.dart';
+import 'package:skf/core/models/ui/image_type.dart';
+import 'package:skf/utils/extension/num_ext.dart';
+import 'package:skf/utils/image_utils.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +27,7 @@ class NetworkImgLayer extends StatelessWidget {
   final String? src;
   final double width;
   final double height;
-  final ImageType type;
+  final CoreImageType type;
   final Duration fadeOutDuration;
   final Duration fadeInDuration;
   final int quality;
@@ -42,8 +42,8 @@ class NetworkImgLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isEmote = type == ImageType.emote;
-    final isAvatar = type == ImageType.avatar;
+    final isEmote = type == CoreImageType.emote;
+    final isAvatar = type == CoreImageType.avatar;
     if (src?.isNotEmpty == true) {
       Widget child = _buildImage(context, isEmote: isEmote, isAvatar: isAvatar);
       if (isEmote) {

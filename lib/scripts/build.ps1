@@ -31,13 +31,13 @@ try {
     $buildTime = [int]([DateTimeOffset]::Now.ToUnixTimeSeconds())
 
     $data = @{
-        'pili.name' = $versionName
-        'pili.code' = $versionCode
-        'pili.hash' = $commitHash
-        'pili.time' = $buildTime
+        'skf.name' = $versionName
+        'skf.code' = $versionCode
+        'skf.hash' = $commitHash
+        'skf.time' = $buildTime
     }
 
-    $data | ConvertTo-Json -Compress | Out-File 'pili_release.json' -Encoding UTF8
+    $data | ConvertTo-Json -Compress | Out-File 'skf_release.json' -Encoding UTF8
 
     Add-Content -Path $env:GITHUB_ENV -Value "version=$versionName+$versionCode"
 }

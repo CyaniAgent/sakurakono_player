@@ -149,4 +149,10 @@ pili_release.json
 
 dist
 
-test*
+test_results/
+
+# Generated mock files (regenerate via `dart run build_runner build`)
+*.mocks.dart
+
+# OpenCode run continuation cache
+.omo/run-continuation/

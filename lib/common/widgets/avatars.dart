@@ -1,11 +1,10 @@
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/models/model_owner.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 Widget avatars({
   required ColorScheme colorScheme,
-  required Iterable<Owner> users,
+  required Iterable<dynamic> users,
   double gap = 6.0,
 }) {
   const size = 22.0;

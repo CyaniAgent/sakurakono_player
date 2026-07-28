@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+    // MCP (Model Context Protocol) 服务器配置
+    "mcp": {
+        // Dart 语言的 MCP 服务器（由 Dart SDK 提供）
+        "dart-mcp-server": {
+          "type": "local",                  // 类型：本地进程
+          "command": ["dart", "mcp-server"], // 启动命令和参数
+          "enabled": true,                 // 启用状态：true 为启用
+          "environment": {}                // 环境变量（此处为空）
+        },
+    }
+}

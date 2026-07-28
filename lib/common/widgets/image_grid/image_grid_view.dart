@@ -1,35 +1,37 @@
 /*
- * This file is part of PiliPlus
+ * This file is part of SakuraKono
  *
- * PiliPlus is free software: you can redistribute it and/or modify
+ * SakuraKono is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * PiliPlus is distributed in the hope that it will be useful,
+ * SakuraKono is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PiliPlus.  If not, see <https://www.gnu.org/licenses/>.
+ * along with SakuraKono.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/badge.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/image_grid/image_grid_builder.dart';
-import 'package:PiliPlus/models/common/image_preview_type.dart';
-import 'package:PiliPlus/utils/extension/context_ext.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/extension/size_ext.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:skf/common/assets.dart';
+import 'package:skf/common/style.dart';
+import 'package:skf/common/widgets/badge.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/common/widgets/image_grid/image_grid_builder.dart';
+import 'package:skf/core/models/ui/image_preview_type.dart';
+import 'package:skf/utils/extension/context_ext.dart';
+import 'package:skf/utils/extension/num_ext.dart';
+import 'package:skf/utils/extension/size_ext.dart';
+import 'package:skf/core/models/ui/image_action_delegate.dart';
+import 'package:skf/utils/image_action_delegate_impl.dart';
+import 'package:skf/utils/image_utils.dart';
+import 'package:skf/utils/platform_utils.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:get/get_core/src/get_main.dart';
@@ -67,11 +69,16 @@ class ImageGridView extends StatelessWidget {
     required this.picArr,
     this.onViewImage,
     this.fullScreen = false,
+    this.actionDelegate,
   });
 
   final List<ImageModel> picArr;
   final VoidCallback? onViewImage;
   final bool fullScreen;
+
+  /// Optional delegate for adapter-specific image actions.
+  /// Defaults to [DefaultImageActionDelegate] which wraps Bilibili adapter.
+  final CoreImageActionDelegate? actionDelegate;
 
   static bool horizontalPreview = Pref.horizontalPreview;
   static final _regex = RegExp(r'/videoV|/dynamicDetail$|/articlePage');
@@ -80,7 +87,7 @@ class ImageGridView extends StatelessWidget {
     final imgList = picArr.map(
       (item) {
         bool isLive = item.isLivePhoto;
-        return SourceModel(
+        return CoreSourceModel(
           sourceType: isLive ? .livePhoto : .networkImage,
           url: item.url,
           liveUrl: isLive ? item.liveUrl : null,
@@ -90,6 +97,7 @@ class ImageGridView extends StatelessWidget {
         );
       },
     ).toList();
+    final delegate = actionDelegate ?? const DefaultImageActionDelegate();
     if (horizontalPreview &&
         !fullScreen &&
         Get.currentRoute.startsWith(_regex) &&
@@ -97,7 +105,7 @@ class ImageGridView extends StatelessWidget {
       final scaffoldState = Scaffold.maybeOf(context);
       if (scaffoldState != null) {
         onViewImage?.call();
-        PageUtils.onHorizontalPreviewState(
+        delegate.onHorizontalPreviewState(
           scaffoldState,
           imgList,
           index,
@@ -105,7 +113,7 @@ class ImageGridView extends StatelessWidget {
         return;
       }
     }
-    PageUtils.imageView(
+    delegate.imageView(
       initialPage: index,
       imgList: imgList,
       tag: hashCode.toString(),
@@ -144,7 +152,7 @@ class ImageGridView extends StatelessWidget {
     final item = picArr[index];
     showMenu(
       context: context,
-      position: PageUtils.menuPosition(offset),
+      position: RelativeRect.fromLTRB(offset.dx, offset.dy, offset.dx, 0),
       items: [
         if (PlatformUtils.isMobile)
           PopupMenuItem(
@@ -160,7 +168,10 @@ class ImageGridView extends StatelessWidget {
         if (PlatformUtils.isDesktop)
           PopupMenuItem(
             height: 42,
-            onTap: () => PageUtils.launchURL(item.url),
+            onTap: () {
+              final delegate = actionDelegate ?? const DefaultImageActionDelegate();
+              unawaited(delegate.launchURL(item.url));
+            },
             child: const Text('网页打开', style: TextStyle(fontSize: 14)),
           )
         else if (picArr.length > 1)
@@ -173,12 +184,15 @@ class ImageGridView extends StatelessWidget {
         if (item.isLivePhoto)
           PopupMenuItem(
             height: 42,
-            onTap: () => ImageUtils.downloadLivePhoto(
-              url: item.url,
-              liveUrl: item.liveUrl!,
-              width: item.width.toInt(),
-              height: item.height.toInt(),
-            ),
+            onTap: () {
+              final delegate = actionDelegate ?? const DefaultImageActionDelegate();
+              unawaited(delegate.downloadLivePhoto(
+                url: item.url,
+                liveUrl: item.liveUrl!,
+                width: item.width.toInt(),
+                height: item.height.toInt(),
+              ));
+            },
             child: Text(
               '保存${Platform.isIOS ? '实况' : '视频'}',
               style: const TextStyle(fontSize: 14),
