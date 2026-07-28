@@ -86,7 +86,7 @@ class FavDetailController
   late final account = Accounts.main;
 
   late double dx = 0;
-  late final RxBool isPlayAll = Pref.enablePlayAll.obs;
+  late final RxBool isPlayAll = (Pref.enablePlayAll as bool).obs;
 
   void setIsPlayAll(bool isPlayAll) {
     if (this.isPlayAll.value == isPlayAll) return;

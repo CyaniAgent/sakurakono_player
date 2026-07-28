@@ -155,7 +155,7 @@ class VideoDetailController extends GetxController
   late VideoDecodeFormatType currentDecodeFormats;
 
   // 是否开始自动播放 存在多p的情况下，第二p需要为true
-  final RxBool _autoPlay = Pref.autoPlayEnable.obs;
+  final RxBool _autoPlay = (Pref.autoPlayEnable as bool).obs;
 
   final videoPlayerKey = GlobalKey();
   final childKey = GlobalKey<ScaffoldState>();

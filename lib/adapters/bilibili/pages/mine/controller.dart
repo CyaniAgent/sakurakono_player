@@ -32,7 +32,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   // 用户状态 动态、关注、粉丝
   final Rx<CoreUserStat> userStat = const CoreUserStat().obs;
 
-  final Rx<ThemeType> themeType = Pref.themeType.obs;
+  final Rx<ThemeType> themeType = ThemeType.values[Pref.themeType as int].obs;
 
   ThemeType get nextThemeType =>
       ThemeType.values[(themeType.value.index + 1) % ThemeType.values.length];

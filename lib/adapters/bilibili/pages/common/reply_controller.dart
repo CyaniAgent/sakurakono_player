@@ -44,9 +44,9 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
   @override
   void onInit() {
     super.onInit();
-    final cacheSortType = Pref.replySortType;
-    sortType = cacheSortType.obs;
-    mode = cacheSortType == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
+    final cacheSortType = Pref.replySortType as int;
+    sortType = ReplySortType.values[cacheSortType].obs;
+    mode = ReplySortType.values[cacheSortType] == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
   }
 
   @override

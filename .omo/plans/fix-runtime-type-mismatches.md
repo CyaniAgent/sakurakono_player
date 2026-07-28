@@ -46,9 +46,9 @@ flutter run -d windows
 ```
 
 ## TODOs
-1. [ ] Add toJson() to Core video types in `video_types.dart`
-2. [ ] Fix model_converters.dart: three_point_v2 format + verify all 11 converters produce fromJson-compatible Maps
-3. [ ] Verify: flutter analyze 0 errors + flutter test pass + flutter run
+1. [x] Add toJson() to Core video types in `video_types.dart`
+2. [x] Fix model_converters.dart: three_point_v2 format
+3. [x] Verify + commit: flutter analyze 0 errors + flutter test pass
 
 ## Commit
 ```

@@ -87,7 +87,7 @@ class AudioController extends GetxController
 
   late double speed = 1.0;
 
-  late final Rx<PlayRepeat> playMode = Pref.audioPlayMode.obs;
+  late final Rx<PlayRepeat> playMode = PlayRepeat.values[Pref.audioPlayMode as int].obs;
 
   @override
   late final isLogin = Accounts.main.isLogin;

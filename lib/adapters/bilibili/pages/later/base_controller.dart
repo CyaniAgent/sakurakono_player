@@ -11,7 +11,7 @@ class LaterBaseController extends GetxController {
   RxList<int> counts = List.filled(LaterViewType.values.length, -1).obs;
 
   late double dx = 0;
-  late final RxBool isPlayAll = Pref.enablePlayAll.obs;
+  late final RxBool isPlayAll = (Pref.enablePlayAll as bool).obs;
 
   void setIsPlayAll(bool isPlayAll) {
     if (this.isPlayAll.value == isPlayAll) return;

@@ -56,7 +56,7 @@ class BaseSearchController extends GetxController {
 
   late final Rx<LoadingState<CoreSearchTrendingData>> trendingState;
 
-  final recordSearchHistory = Pref.recordSearchHistory.obs;
+  final recordSearchHistory = (Pref.recordSearchHistory as bool).obs;
   final searchSuggestion = Pref.searchSuggestion;
   final enableTrending = Pref.enableTrending;
   final enableSearchRcmd = Pref.enableSearchRcmd;
