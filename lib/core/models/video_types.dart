@@ -129,6 +129,23 @@ class CoreBaseVideoItemModel {
     this.stat,
     this.dimension,
   });
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (aid != null) 'aid': aid,
+        if (bvid != null) 'bvid': bvid,
+        if (cid != null) 'cid': cid,
+        if (cover != null) 'pic': cover,
+        if (title != null) 'title': title,
+        if (duration != null) 'duration': duration,
+        if (pubdate != null) 'pubdate': pubdate,
+        if (desc != null) 'desc': desc,
+        if (progress != null) 'progress': progress,
+        if (redirectUrl != null) 'redirect_url': redirectUrl,
+        if (badge != null) 'pgc_label': badge,
+        if (owner != null) 'owner': owner,
+        if (stat != null) 'stat': stat,
+        if (dimension != null) 'dimension': dimension,
+      };
 }
 
 /// Base recommended video item.
@@ -161,6 +178,15 @@ class CoreBaseRcmdVideoItemModel extends CoreBaseVideoItemModel {
     this.param,
     this.pgcBadge,
   });
+
+  @override
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        ...super.toJson(),
+        if (goto != null) 'goto': goto,
+        if (uri != null) 'uri': uri,
+        if (param != null) 'param': param,
+        if (pgcBadge != null) 'cover_right_text': pgcBadge,
+      };
 }
 
 /// Web-end recommended video item.
@@ -197,6 +223,25 @@ class CoreRcmdVideoItemModel extends CoreBaseRcmdVideoItemModel {
         uri: json['uri'],
         rcmdReason: json['rcmd_reason']?['content'],
       );
+
+  @override
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': aid,
+        if (bvid != null) 'bvid': bvid,
+        if (cid != null) 'cid': cid,
+        if (cover != null) 'pic': cover,
+        if (title != null) 'title': title,
+        if (duration != null) 'duration': duration,
+        if (pubdate != null) 'pubdate': pubdate,
+        if (owner != null) 'owner': owner,
+        if (stat != null) 'stat': stat,
+        if (goto != null) 'goto': goto,
+        if (uri != null) 'uri': uri,
+        if (rcmdReason != null)
+          'rcmd_reason': <String, dynamic>{'content': rcmdReason},
+        if (param != null) 'param': param,
+        if (pgcBadge != null) 'cover_right_text': pgcBadge,
+      };
 }
 
 /// App-end recommended video item.
@@ -257,10 +302,45 @@ class CoreRcmdVideoItemAppModel extends CoreBaseRcmdVideoItemModel {
         talkBack: json['talk_back'],
         cardType: json['card_type'],
         threePoint: json['three_point_v2'] != null
-            ? {'dislikeReasons': json['three_point_v2']}
+            ? {'three_point_v2': json['three_point_v2']}
             : null,
         desc: json['desc'],
       );
+
+  @override
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'player_args': <String, dynamic>{
+          if (aid != null) 'aid': aid,
+          if (cid != null) 'cid': cid,
+          if (duration != null) 'duration': duration,
+        },
+        if (bvid != null) 'bvid': bvid,
+        if (cover != null) 'cover': cover,
+        if (title != null) 'title': title,
+        if (param != null) 'param': '$param',
+        if (goto != null) 'goto': goto,
+        if (uri != null) 'uri': uri,
+        'rcmd_reason': isFollowed ? null : rcmdReason,
+        if (pgcBadge != null) 'cover_right_text': pgcBadge,
+        if (talkBack != null) 'talk_back': talkBack,
+        if (cardType != null) 'card_type': cardType,
+        if (desc != null) 'desc': desc,
+        if (owner != null) ...{
+          'args': <String, dynamic>{
+            'up_name': owner!['name'],
+            'up_id': owner!['mid'],
+          },
+          'desc_button': <String, dynamic>{
+            'text': owner!['name'],
+          },
+        },
+        if (stat != null) ...{
+          'cover_left_text_1': '${stat!['view'] ?? ''}',
+          'cover_left_text_2': '${stat!['danmu'] ?? ''}',
+        },
+        if (threePoint case {'three_point_v2': final v} when v != null)
+          'three_point_v2': v,
+      };
 }
 
 /// Hot / popular video item.
@@ -324,6 +404,19 @@ class CoreHotVideoItemModel extends CoreBaseVideoItemModel {
         progress: json['progress'],
         badge: json['pgc_label'],
       );
+
+  @override
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        ...super.toJson(),
+        if (videos != null) 'videos': videos,
+        if (tid != null) 'tid': tid,
+        if (tname != null) 'tname': tname,
+        if (copyright != null) 'copyright': copyright,
+        if (ctime != null) 'ctime': ctime,
+        if (state != null) 'state': state,
+        if (firstFrame != null) 'first_frame': firstFrame,
+        if (pubLocation != null) 'pub_location': pubLocation,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -402,6 +495,30 @@ class CorePlayUrlModel {
         clipInfoList:
             (json['clip_info_list'] as List?)?.cast<Map<String, dynamic>>(),
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (from != null) 'from': from,
+        if (result != null) 'result': result,
+        if (message != null) 'message': message,
+        if (quality != null) 'quality': quality,
+        if (format != null) 'format': format,
+        if (timeLength != null) 'timelength': timeLength,
+        if (acceptFormat != null) 'accept_format': acceptFormat,
+        if (acceptDesc != null) 'accept_description': acceptDesc,
+        if (acceptQuality != null) 'accept_quality': acceptQuality,
+        if (videoCodecid != null) 'video_codecid': videoCodecid,
+        if (seekParam != null) 'seek_param': seekParam,
+        if (seekType != null) 'seek_type': seekType,
+        if (dash != null) 'dash': dash,
+        if (durl != null) 'durl': durl,
+        if (supportFormats != null) 'support_formats': supportFormats,
+        if (volume != null) 'volume': volume,
+        if (lastPlayTime != null) 'last_play_time': lastPlayTime,
+        if (lastPlayCid != null) 'last_play_cid': lastPlayCid,
+        if (curLanguage != null) 'cur_language': curLanguage,
+        if (language != null) 'language': language,
+        if (clipInfoList != null) 'clip_info_list': clipInfoList,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -422,6 +539,13 @@ class CorePgcLCF {
         isOriginal: json['is_original'],
         like: json['like'],
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (coinNumber != null) 'coin_number': coinNumber,
+        if (favorite != null) 'favorite': favorite,
+        if (isOriginal != null) 'is_original': isOriginal,
+        if (like != null) 'like': like,
+      };
 }
 
 class CorePgcTriple {
@@ -452,6 +576,16 @@ class CorePgcTriple {
         like: json['like'],
         relation: json['relation'],
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (coin != null) 'coin': coin,
+        if (coinNumber != null) 'coin_number': coinNumber,
+        if (favorite != null) 'favorite': favorite,
+        if (fmid != null) 'fmid': fmid,
+        if (follow != null) 'follow': follow,
+        if (like != null) 'like': like,
+        if (relation != null) 'relation': relation,
+      };
 }
 
 class CoreUgcTriple {
@@ -468,6 +602,13 @@ class CoreUgcTriple {
         fav: json['fav'],
         multiply: json['multiply'],
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (like != null) 'like': like,
+        if (coin != null) 'coin': coin,
+        if (fav != null) 'fav': fav,
+        if (multiply != null) 'multiply': multiply,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -551,6 +692,32 @@ class CoreVideoDetailData {
         staff: (json['staff'] as List?)?.cast<Map<String, dynamic>>(),
         redirectUrl: json['redirect_url'] as String?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (bvid != null) 'bvid': bvid,
+        if (aid != null) 'aid': aid,
+        if (videos != null) 'videos': videos,
+        if (copyright != null) 'copyright': copyright,
+        if (pic != null) 'pic': pic,
+        if (title != null) 'title': title,
+        if (pubdate != null) 'pubdate': pubdate,
+        if (ctime != null) 'ctime': ctime,
+        if (desc != null) 'desc': desc,
+        if (descV2 != null) 'desc_v2': descV2,
+        if (duration != null) 'duration': duration,
+        if (rights != null) 'rights': rights,
+        if (owner != null) 'owner': owner,
+        if (stat != null) 'stat': stat,
+        if (argueInfo != null) 'argue_info': argueInfo,
+        if (cid != null) 'cid': cid,
+        if (dimension != null) 'dimension': dimension,
+        if (seasonId != null) 'season_id': seasonId,
+        if (isUpowerExclusive != null) 'is_upower_exclusive': isUpowerExclusive,
+        if (pages != null) 'pages': pages,
+        if (ugcSeason != null) 'ugc_season': ugcSeason,
+        if (staff != null) 'staff': staff,
+        if (redirectUrl != null) 'redirect_url': redirectUrl,
+      };
 }
 
 class CoreVideoRelation {
@@ -578,6 +745,15 @@ class CoreVideoRelation {
         dislike: json['dislike'] as bool?,
         coin: json['coin'] as num?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (attention != null) 'attention': attention,
+        if (favorite != null) 'favorite': favorite,
+        if (seasonFav != null) 'season_fav': seasonFav,
+        if (like != null) 'like': like,
+        if (dislike != null) 'dislike': dislike,
+        if (coin != null) 'coin': coin,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -596,6 +772,10 @@ class CoreAiConclusionData {
       CoreAiConclusionData(
         modelResult: json['model_result'] as Map<String, dynamic>?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (modelResult != null) 'model_result': modelResult,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -622,6 +802,13 @@ class CorePlayInfoData {
             (json['view_points'] as List?)?.cast<Map<String, dynamic>>(),
         interaction: json['interaction'] as Map<String, dynamic>?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (lastPlayCid != null) 'last_play_cid': lastPlayCid,
+        if (subtitle != null) 'subtitle': subtitle,
+        if (viewPoints != null) 'view_points': viewPoints,
+        if (interaction != null) 'interaction': interaction,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -656,6 +843,16 @@ class CoreVideoShotData {
         image: (json['image'] as List).cast<String>(),
         index: (json['index'] as List).cast<int>(),
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (pvdata != null) 'pvdata': pvdata,
+        'img_x_len': imgXLen,
+        'img_y_len': imgYLen,
+        'img_x_size': imgXSize,
+        'img_y_size': imgYSize,
+        'image': image,
+        'index': index,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -672,6 +869,11 @@ class CoreVideoNoteData {
         list: (json['list'] as List?)?.cast<Map<String, dynamic>>(),
         page: json['page'] as Map<String, dynamic>?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (list != null) 'list': list,
+        if (page != null) 'page': page,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -689,6 +891,11 @@ class CorePopularSeriesListItem {
         number: json['number'] as int?,
         name: json['name'] as String?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (number != null) 'number': number,
+        if (name != null) 'name': name,
+      };
 }
 
 class CorePopularSeriesOneData {
@@ -706,6 +913,13 @@ class CorePopularSeriesOneData {
             ?.map((e) => CoreHotVideoItemModel.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (config != null) 'config': config,
+        if (reminder != null) 'reminder': reminder,
+        if (list != null)
+          'list': list!.map((e) => e.toJson()).toList(),
+      };
 }
 
 class CorePopularPreciousData {
@@ -721,6 +935,12 @@ class CorePopularPreciousData {
             ?.map((e) => CoreHotVideoItemModel.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (mediaId != null) 'media_id': mediaId,
+        if (list != null)
+          'list': list!.map((e) => e.toJson()).toList(),
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -750,6 +970,14 @@ class CorePgcRankItemModel {
         title: json['title'] as String?,
         url: json['url'] as String?,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (cover != null) 'cover': cover,
+        if (newEp != null) 'new_ep': newEp,
+        if (stat != null) 'stat': stat,
+        if (title != null) 'title': title,
+        if (url != null) 'url': url,
+      };
 }
 
 // ---------------------------------------------------------------------------
@@ -776,4 +1004,14 @@ class CoreVideoTagItem {
         liked: json['liked'],
         cover: json['cover'],
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (tagId != null) 'tag_id': tagId,
+        if (tagName != null) 'tag_name': tagName,
+        if (tagType != null) 'tag_type': tagType,
+        if (musicId != null) 'music_id': musicId,
+        if (count != null) 'count': count,
+        if (liked != null) 'liked': liked,
+        if (cover != null) 'cover': cover,
+      };
 }

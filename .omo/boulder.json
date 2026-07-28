@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "active_work_id": "fix-runtime-type-mismatches-90fac7d6",
+  "works": {
+    "fix-runtime-type-mismatches-90fac7d6": {
+      "work_id": "fix-runtime-type-mismatches-90fac7d6",
+      "active_plan": "D:\\Users\\li\\Documents\\GitHub\\sakurakono_player\\.omo\\plans\\fix-runtime-type-mismatches.md",
+      "plan_name": "fix-runtime-type-mismatches",
+      "status": "active",
+      "started_at": "2026-07-28T10:17:04.813Z",
+      "updated_at": "2026-07-28T10:17:04.813Z",
+      "session_ids": [
+        "opencode:ses_05b18a383ffeXXd6a27B5xxKEA"
+      ],
+      "session_origins": {
+        "opencode:ses_05b18a383ffeXXd6a27B5xxKEA": "direct"
+      },
+      "agent": "atlas",
+      "task_sessions": {}
+    }
+  },
+  "active_plan": "D:\\Users\\li\\Documents\\GitHub\\sakurakono_player\\.omo\\plans\\fix-runtime-type-mismatches.md",
+  "started_at": "2026-07-28T10:17:04.813Z",
+  "status": "active",
+  "updated_at": "2026-07-28T10:17:04.813Z",
+  "session_ids": [
+    "opencode:ses_05b18a383ffeXXd6a27B5xxKEA"
+  ],
+  "session_origins": {
+    "opencode:ses_05b18a383ffeXXd6a27B5xxKEA": "direct"
+  },
+  "plan_name": "fix-runtime-type-mismatches",
+  "task_sessions": {},
+  "agent": "atlas"
+}

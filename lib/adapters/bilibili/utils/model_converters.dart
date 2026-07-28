@@ -209,8 +209,8 @@ abstract final class ModelConverters {
         'cover_left_text_1': '${core.stat?['view'] ?? ''}',
         'cover_left_text_2': '${core.stat?['danmu'] ?? ''}',
         'desc_button': <String, dynamic>{'text': core.owner?['name']},
-        if (core.threePoint != null)
-          'three_point_v2': core.threePoint!['dislikeReasons'],
+        if (core.threePoint case {'three_point_v2': final v} when v != null)
+          'three_point_v2': v,
       });
 
   /// [CoreRcmdVideoItemModel] (web) → [RcmdVideoItemModel].
