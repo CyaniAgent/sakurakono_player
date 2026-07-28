@@ -1,5 +1,6 @@
 import 'package:skf/adapters/bilibili/http/video.dart';
-import 'package:skf/core/models/media_id.dart';
+import 'package:skf/adapters/bilibili/player/media_ids.dart';
+import 'package:skf/core/models/media_id.dart' show CoreMediaId;
 import 'package:skf/core/player/playback_reporter.dart';
 
 class BiliReporter implements PlaybackReporter {
