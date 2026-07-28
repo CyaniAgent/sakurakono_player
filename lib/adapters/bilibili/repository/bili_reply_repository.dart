@@ -1,7 +1,6 @@
 import 'package:fixnum/fixnum.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
-    show DetailListReply, DialogListReply, MainListReply, Mode, SearchItemReply,
-        SearchItemType, TranslateReplyResp;
+    show Mode, SearchItemType;
 import 'package:skf/adapters/bilibili/grpc/reply.dart';
 import 'package:skf/adapters/bilibili/http/reply.dart';
 import 'package:skf/core/models/reply_types.dart';

@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dar
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
-import 'package:skf/core/models/video_types.dart' show CoreHotVideoItemModel, CorePopularSeriesListItem;
+import 'package:skf/core/models/video_types.dart' show CoreHotVideoItemModel;
 
 import 'package:skf/adapters/bilibili/pages/popular_series/controller.dart';
 import 'package:skf/utils/grid.dart';

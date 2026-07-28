@@ -4,9 +4,9 @@ import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/adapters/bilibili/models/common/search/search_type.dart'
     show SearchType;
 import 'package:skf/adapters/bilibili/models/search/result.dart'
-    show SearchAllData, SearchNumData;
+    show SearchAllData;
 import 'package:skf/adapters/bilibili/models/search/suggest.dart'
-    show SearchSuggestModel, SearchSuggestItem;
+    show SearchSuggestModel;
 import 'package:skf/adapters/bilibili/models_new/dynamic/dyn_topic_pub_search/data.dart'
     show TopicPubSearchData;
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/result.dart'

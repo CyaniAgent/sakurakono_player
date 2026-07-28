@@ -14,7 +14,7 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
-    show ReplyInfo, ReplyControl, Content, Url, ReplyControl_VoteOption, Emote;
+    show ReplyInfo, ReplyControl, Content, Url, ReplyControl_VoteOption;
 import 'package:skf/adapters/bilibili/grpc/reply.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/http/reply.dart';

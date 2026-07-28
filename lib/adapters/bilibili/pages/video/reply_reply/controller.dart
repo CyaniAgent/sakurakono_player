@@ -1,7 +1,7 @@
 import 'package:skf/core/models/reply_types.dart' show CoreMode;
 import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
-    show ReplyInfo, DetailListReply, Mode;
+    show ReplyInfo, DetailListReply;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 

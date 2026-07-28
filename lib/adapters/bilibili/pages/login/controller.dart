@@ -75,11 +75,7 @@ class LoginPageController extends GetxController
     final res = await LoginHttp.getHDcode();
     if (res case Success(:final response)) {
       qrCodeTimer?.cancel();
-      codeInfo.value = switch (res) {
-              Loading() => LoadingState.loading(),
-              Success(:final response) => Success(response),
-              Error(:final errMsg) => Error(errMsg),
-            };
+      codeInfo.value = res;
       qrCodeTimer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
         final left = 180 - t.tick;
         if (left <= 0) {

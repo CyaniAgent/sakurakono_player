@@ -2,7 +2,7 @@ import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 
 import 'package:skf/adapters/bilibili/models/user/info.dart'
-    show UserInfoData, LevelInfo;
+    show UserInfoData;
 import 'package:skf/adapters/bilibili/models/user/stat.dart' show UserStat;
 import 'package:skf/adapters/bilibili/models_new/coin_log/data.dart'
     show CoinLogData;

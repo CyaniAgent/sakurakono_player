@@ -11,7 +11,6 @@ class MemberVideoWebCtr
           CoreVListItemModel,
           CoreArchiveOrderTypeWeb
         > {
-  int? _totalCount;
   @override
   final Rx<CoreArchiveOrderTypeWeb> order = Rx(CoreArchiveOrderTypeWeb.pubdate);
 
@@ -32,9 +31,6 @@ class MemberVideoWebCtr
     if (isRefresh) {
       final data = response.response;
       if (data.corePage?.count case final count?) {
-        if (tid == 0 && specialType == null) {
-          _totalCount = count;
-        }
         this.count = count;
         totalPage = (count / ps).ceil();
       }
