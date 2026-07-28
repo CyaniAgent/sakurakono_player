@@ -1,6 +1,5 @@
 import 'package:skf/common/widgets/self_sized_horizontal_list.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
-import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models/common/member/archive_order_type_web.dart';
 import 'package:skf/adapters/bilibili/models_new/member/search_archive/data.dart';
 import 'package:skf/adapters/bilibili/models_new/member/search_archive/vlist.dart';
@@ -45,10 +44,6 @@ class _MemberVideoWebState
   BaseVideoWebCtr<SearchArchiveData, VListItemModel, ArchiveOrderTypeWeb> get controller =>
       _webCtr as BaseVideoWebCtr<SearchArchiveData, VListItemModel, ArchiveOrderTypeWeb>;
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   List<ArchiveOrderTypeWeb> get values => ArchiveOrderTypeWeb.values;

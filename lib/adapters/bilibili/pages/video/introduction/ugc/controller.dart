@@ -147,7 +147,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         cid.value = pages.first.cid!;
       }
       queryUserStat(response.staff
-          ?.map((e) => Staff.fromJson(e))
+          ?.map(Staff.fromJson)
           .toList());
     } else {
       SmartDialog.showToast(res.toString());

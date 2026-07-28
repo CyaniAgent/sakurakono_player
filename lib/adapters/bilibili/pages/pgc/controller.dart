@@ -10,7 +10,6 @@ import 'package:skf/adapters/bilibili/services/account_service.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
-import 'package:get/get.dart';
 
 class PgcController
     extends CommonListController<List<CorePgcIndexItem>?, CorePgcIndexItem>

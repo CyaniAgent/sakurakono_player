@@ -10,7 +10,6 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/post/view.dart';

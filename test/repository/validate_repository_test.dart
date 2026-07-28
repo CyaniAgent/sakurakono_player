@@ -18,7 +18,7 @@ void main() {
   group('ValidateRepository', () {
     test('happy: gaiaVgateRegister() returns Success with data', () async {
       when(mockRepo.gaiaVgateRegister(any)).thenAnswer(
-        (_) async => Success(<String, dynamic>{'voucher': 'test'}),
+        (_) async => const Success(<String, dynamic>{'voucher': 'test'}),
       );
       final result = await mockRepo.gaiaVgateRegister('voucher123');
       expect(result, isA<Success<Map?>>());

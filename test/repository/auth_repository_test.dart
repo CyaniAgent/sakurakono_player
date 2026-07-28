@@ -9,7 +9,7 @@ import 'auth_repository_test.mocks.dart';
 
 void main() {
   provideDummy<LoadingState<({String authCode, String url})>>(
-    Success((authCode: '', url: '')),
+    const Success((authCode: '', url: '')),
   );
   late MockAuthRepository mockRepo;
 
@@ -20,7 +20,7 @@ void main() {
   group('AuthRepository', () {
     test('happy: getQRCode() returns Success with data', () async {
       when(mockRepo.getQRCode()).thenAnswer(
-        (_) async => Success((authCode: 'code123', url: 'https://example.com')),
+        (_) async => const Success((authCode: 'code123', url: 'https://example.com')),
       );
       final result = await mockRepo.getQRCode();
       expect(result, isA<Success<({String authCode, String url})>>());
@@ -37,7 +37,7 @@ void main() {
 
     test('edge: getQRCode() handles empty strings correctly', () async {
       when(mockRepo.getQRCode()).thenAnswer(
-        (_) async => Success((authCode: '', url: '')),
+        (_) async => const Success((authCode: '', url: '')),
       );
       final result = await mockRepo.getQRCode();
       expect(result.isSuccess, true);

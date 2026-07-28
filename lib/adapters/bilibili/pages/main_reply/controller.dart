@@ -5,7 +5,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
     show ReplyInfo;
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
-import 'package:get/get.dart';
 
 class MainReplyController extends ReplyController<CoreMainListReply> {
   late final int oid;

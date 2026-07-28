@@ -3,7 +3,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
-import 'package:get/get.dart';
 
 class CoreMusicDetailController extends CommonDynController {
   @override

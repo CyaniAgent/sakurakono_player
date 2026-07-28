@@ -79,7 +79,7 @@ class BiliFavRepository implements FavRepository {
 
   Map<String, dynamic> _favFolderDataToMap(FavFolderData d) => <String, dynamic>{
     'count': d.count,
-    'list': d.list?.map((e) => _favFolderInfoToMap(e)).toList(),
+    'list': d.list?.map(_favFolderInfoToMap).toList(),
     'has_more': d.hasMore,
   };
 
@@ -106,7 +106,7 @@ class BiliFavRepository implements FavRepository {
 
   Map<String, dynamic> _favDetailToMap(FavDetailData d) => <String, dynamic>{
     'info': d.info == null ? null : _favFolderInfoToMap(d.info!),
-    'medias': d.medias?.map((e) => _favDetailItemToMap(e)).toList(),
+    'medias': d.medias?.map(_favDetailItemToMap).toList(),
     'has_more': d.hasMore,
   };
 
@@ -148,7 +148,7 @@ class BiliFavRepository implements FavRepository {
 
   Map<String, dynamic> _subDetailToMap(SubDetailData d) => <String, dynamic>{
     'info': d.info == null ? null : _subItemToMap(d.info!),
-    'medias': d.medias?.map((e) => _subDetailItemToMap(e)).toList(),
+    'medias': d.medias?.map(_subDetailItemToMap).toList(),
   };
 
   // ---- SpaceCheeseItem -> CoreSpaceCheeseItem ----
@@ -171,7 +171,7 @@ class BiliFavRepository implements FavRepository {
   // ---- SpaceCheeseData -> CoreSpaceCheeseData ----
 
   Map<String, dynamic> _spaceCheeseToMap(SpaceCheeseData d) => <String, dynamic>{
-    'items': d.items?.map((e) => _spaceCheeseItemToMap(e)).toList(),
+    'items': d.items?.map(_spaceCheeseItemToMap).toList(),
     'page': d.page == null ? null : _spaceCheesePageToMap(d.page!),
   };
 
@@ -191,7 +191,7 @@ class BiliFavRepository implements FavRepository {
   // ---- TopicList -> CoreTopicList ----
 
   Map<String, dynamic> _topicListToMap(TopicList d) => <String, dynamic>{
-    'topic_items': d.topicItems?.map((e) => _favTopicItemToMap(e)).toList(),
+    'topic_items': d.topicItems?.map(_favTopicItemToMap).toList(),
     'page_info': d.pageInfo == null ? null : _pageInfoToMap(d.pageInfo!),
   };
 
@@ -229,7 +229,7 @@ class BiliFavRepository implements FavRepository {
   // ---- FavArticleData -> CoreFavArticleData ----
 
   Map<String, dynamic> _favArticleToMap(FavArticleData d) => <String, dynamic>{
-    'items': d.items?.map((e) => _favArticleItemToMap(e)).toList(),
+    'items': d.items?.map(_favArticleItemToMap).toList(),
     'has_more': d.hasMore,
   };
 
@@ -267,7 +267,7 @@ class BiliFavRepository implements FavRepository {
   // ---- FavPgcData -> CoreFavPgcData ----
 
   Map<String, dynamic> _favPgcToMap(FavPgcData d) => <String, dynamic>{
-    'list': d.list?.map((e) => _favPgcItemToMap(e)).toList(),
+    'list': d.list?.map(_favPgcItemToMap).toList(),
     'total': d.total,
   };
 
@@ -299,7 +299,7 @@ class BiliFavRepository implements FavRepository {
 
   Map<String, dynamic> _mediaListResponseToMap(MediaListResponse d) => <String, dynamic>{
     'count': d.count,
-    'list': d.list?.map((e) => _spaceFavItemToMap(e)).toList(),
+    'list': d.list?.map(_spaceFavItemToMap).toList(),
   };
 
   // ---- SpaceFavData -> CoreSpaceFavData ----

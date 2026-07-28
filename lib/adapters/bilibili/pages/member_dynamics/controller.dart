@@ -60,7 +60,7 @@ class MemberDynamicsController
     if (res.isSuccess) {
       loadingState
         ..value.data!
-            .removeWhere((item) => (item as CoreDynamicItemModel).idStr == dynamicId)
+            .removeWhere((item) => (item).idStr == dynamicId)
         ..refresh();
       SmartDialog.showToast('删除成功');
     } else {
@@ -82,7 +82,7 @@ class MemberDynamicsController
         SmartDialog.showToast('取消置顶成功');
       } else {
         final item = list.firstWhere((item) => item.idStr == dynamicId);
-        (item as CoreDynamicItemModel).modules!
+        (item).modules!
           ..coreModuleTag = CoreModuleTag(text: '置顶')
           ..moduleAuthor?.isTop = true;
         list

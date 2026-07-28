@@ -136,7 +136,7 @@ class BiliReplyRepository implements ReplyRepository {
     );
     if (result case Success(response: final r)) {
       return Success(CoreTranslateReplyResp(
-        translatedReplies: r.translatedReplies?.map(
+        translatedReplies: r.translatedReplies.map(
           (key, value) => MapEntry(key.toInt(), value),
         ),
       ));
@@ -151,7 +151,7 @@ class BiliReplyRepository implements ReplyRepository {
     required Object rpid,
     required bool isUpTop,
   }) async {
-    return await ReplyHttp.replyTop(
+    return ReplyHttp.replyTop(
       oid: oid,
       type: type,
       rpid: rpid,
@@ -165,7 +165,7 @@ class BiliReplyRepository implements ReplyRepository {
     required int type,
     required int action,
   }) async {
-    return await ReplyHttp.replySubjectModify(
+    return ReplyHttp.replySubjectModify(
       oid: oid,
       type: type,
       action: action,

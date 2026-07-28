@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
 import 'package:skf/adapters/bilibili/pages/common/search/common_search_controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
-import 'package:get/get.dart';
 
 class FavSearchController
     extends CommonSearchController<CoreFavDetailData, CoreFavDetailItemModel>

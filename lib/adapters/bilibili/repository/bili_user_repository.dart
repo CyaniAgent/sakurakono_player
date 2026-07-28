@@ -14,20 +14,14 @@ import 'package:skf/adapters/bilibili/models_new/follow/list.dart'
     show FollowItemModel;
 import 'package:skf/adapters/bilibili/models_new/history/data.dart'
     show HistoryData;
-import 'package:skf/adapters/bilibili/models_new/history/history.dart'
-    show History;
 import 'package:skf/adapters/bilibili/models_new/history/list.dart'
     show HistoryItemModel;
-import 'package:skf/adapters/bilibili/models_new/history/tab.dart'
-    show HistoryTab;
 import 'package:skf/adapters/bilibili/models_new/later/data.dart'
     show LaterData;
 import 'package:skf/adapters/bilibili/models_new/later/list.dart'
     show LaterItemModel;
 import 'package:skf/adapters/bilibili/models_new/login_log/data.dart'
     show LoginLogData;
-import 'package:skf/adapters/bilibili/models_new/login_log/list.dart'
-    show LoginLogItem;
 import 'package:skf/adapters/bilibili/models_new/media_list/data.dart'
     show MediaListData;
 import 'package:skf/adapters/bilibili/models_new/media_list/media_list.dart'
@@ -42,8 +36,6 @@ import 'package:skf/adapters/bilibili/models_new/sub/sub/list.dart'
     show SubItemModel;
 import 'package:skf/adapters/bilibili/models_new/user_real_name/data.dart'
     show UserRealNameData;
-import 'package:skf/adapters/bilibili/models_new/user_real_name/reject_page.dart'
-    show RejectPage;
 import 'package:skf/adapters/bilibili/models_new/video/video_tag/data.dart'
     show VideoTagItem;
 import 'package:skf/core/models/follow_data.dart' show CoreFollowData;
@@ -92,15 +84,15 @@ class BiliUserRepository implements UserRepository {
     String? bvid,
     Object? aid,
   }) async =>
-      await UserHttp.toViewLater(bvid: bvid, aid: aid);
+      UserHttp.toViewLater(bvid: bvid, aid: aid);
 
   @override
   Future<LoadingState<void>> toViewDel({required String aids}) async =>
-      await UserHttp.toViewDel(aids: aids);
+      UserHttp.toViewDel(aids: aids);
 
   @override
   Future<LoadingState<void>> toViewClear([int? cleanType]) async =>
-      await UserHttp.toViewClear(cleanType);
+      UserHttp.toViewClear(cleanType);
 
   // ── History ──────────────────────────────────────────────────────
 
@@ -124,21 +116,21 @@ class BiliUserRepository implements UserRepository {
   @override
   Future<LoadingState<void>> pauseHistory(bool switchStatus,
           {Object? account}) async =>
-      await UserHttp.pauseHistory(switchStatus,
+      UserHttp.pauseHistory(switchStatus,
           account: account as Account?);
 
   @override
   Future<LoadingState<bool>> historyStatus({Object? account}) async =>
-      await UserHttp.historyStatus(account: account as Account?);
+      UserHttp.historyStatus(account: account as Account?);
 
   @override
   Future<LoadingState<void>> clearHistory({Object? account}) async =>
-      await UserHttp.clearHistory(account: account as Account?);
+      UserHttp.clearHistory(account: account as Account?);
 
   @override
   Future<LoadingState<void>> delHistory(String kid,
           {Object? account}) async =>
-      await UserHttp.delHistory(kid, account: account as Account?);
+      UserHttp.delHistory(kid, account: account as Account?);
 
   @override
   Future<LoadingState<CoreHistoryData>> searchHistory({
@@ -220,7 +212,7 @@ class BiliUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<num?>> getCoin() async =>
-      await UserHttp.getCoin();
+      UserHttp.getCoin();
 
   @override
   Future<LoadingState<CoreCoinLogData>> coinLog() async =>
@@ -235,7 +227,7 @@ class BiliUserRepository implements UserRepository {
     required int reasonType,
     String? reasonDesc,
   }) async =>
-      await UserHttp.dynamicReport(
+      UserHttp.dynamicReport(
         mid: mid,
         dynId: dynId,
         reasonType: reasonType,
@@ -252,20 +244,20 @@ class BiliUserRepository implements UserRepository {
   Future<LoadingState<void>> spaceSettingMod(
     Map<String, dynamic> data,
   ) async =>
-      await UserHttp.spaceSettingMod(data);
+      UserHttp.spaceSettingMod(data);
 
   @override
   Future<LoadingState<void>> spaceReserve({
     required Object sid,
     required bool isFollow,
   }) async =>
-      await UserHttp.spaceReserve(sid: sid, isFollow: isFollow);
+      UserHttp.spaceReserve(sid: sid, isFollow: isFollow);
 
   // ── VIP ──────────────────────────────────────────────────────────
 
   @override
   Future<LoadingState<void>> vipExpAdd() async =>
-      await UserHttp.vipExpAdd();
+      UserHttp.vipExpAdd();
 
   // ── Logs ─────────────────────────────────────────────────────────
 

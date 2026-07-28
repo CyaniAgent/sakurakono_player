@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/pages/common/search/common_search_controll
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class HistorySearchController
     extends CommonSearchController<CoreHistoryData, CoreHistoryItemModel>

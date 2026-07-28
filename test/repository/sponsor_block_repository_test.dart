@@ -10,7 +10,7 @@ import 'sponsor_block_repository_test.mocks.dart';
 
 void main() {
   provideDummy<LoadingState<List<CoreSegmentItemModel>>>(
-    Success(<CoreSegmentItemModel>[]),
+    const Success(<CoreSegmentItemModel>[]),
   );
   provideDummy<LoadingState<void>>(const Success<void>(null));
   late MockSponsorBlockRepository mockRepo;
@@ -25,7 +25,7 @@ void main() {
         bvid: anyNamed('bvid'),
         cid: anyNamed('cid'),
       )).thenAnswer(
-        (_) async => Success(<CoreSegmentItemModel>[]),
+        (_) async => const Success(<CoreSegmentItemModel>[]),
       );
       final result = await mockRepo.getSkipSegments(bvid: 'BV1', cid: 1);
       expect(result, isA<Success<List<CoreSegmentItemModel>>>());
@@ -45,7 +45,7 @@ void main() {
         bvid: anyNamed('bvid'),
         cid: anyNamed('cid'),
       )).thenAnswer(
-        (_) async => Success(<CoreSegmentItemModel>[]),
+        (_) async => const Success(<CoreSegmentItemModel>[]),
       );
       final result = await mockRepo.getSkipSegments(bvid: '', cid: 0);
       expect(result.isSuccess, true);

@@ -9,7 +9,7 @@ import 'im_repository_test.mocks.dart';
 @GenerateMocks([ImRepository])
 
 void main() {
-  provideDummy<LoadingState<CoreImRspSendMsg>>(Success(CoreImRspSendMsg()));
+  provideDummy<LoadingState<CoreImRspSendMsg>>(const Success(CoreImRspSendMsg()));
   provideDummy<LoadingState<void>>(const Success<void>(null));
   late MockImRepository mockRepo;
 
@@ -23,7 +23,7 @@ void main() {
         senderUid: anyNamed('senderUid'),
         receiverId: anyNamed('receiverId'),
         content: anyNamed('content'),
-      )).thenAnswer((_) async => Success(CoreImRspSendMsg()));
+      )).thenAnswer((_) async => const Success(CoreImRspSendMsg()));
       final result = await mockRepo.sendMsg(
         senderUid: 1, receiverId: 2, content: 'hello',
       );
@@ -47,7 +47,7 @@ void main() {
         senderUid: anyNamed('senderUid'),
         receiverId: anyNamed('receiverId'),
         content: anyNamed('content'),
-      )).thenAnswer((_) async => Success(CoreImRspSendMsg()));
+      )).thenAnswer((_) async => const Success(CoreImRspSendMsg()));
       final result = await mockRepo.sendMsg(
         senderUid: 0, receiverId: 0, content: '',
       );

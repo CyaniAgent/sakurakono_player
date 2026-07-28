@@ -6,7 +6,6 @@ import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/adapters/bilibili/pages/follow_type/controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class FansController extends FollowTypeController {
   FansController(this.showName);

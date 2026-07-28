@@ -4,7 +4,6 @@ import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
-import 'package:get/get.dart';
 
 class PgcIndexController
     extends CommonListController<CorePgcIndexResult, CorePgcIndexItem> {

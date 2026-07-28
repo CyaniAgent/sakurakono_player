@@ -9,7 +9,7 @@ import 'space_repository_test.mocks.dart';
 @GenerateMocks([SpaceRepository])
 
 void main() {
-  provideDummy<LoadingState<CoreOpusSpaceFlowResp>>(Success(CoreOpusSpaceFlowResp()));
+  provideDummy<LoadingState<CoreOpusSpaceFlowResp>>(const Success(CoreOpusSpaceFlowResp()));
   late MockSpaceRepository mockRepo;
 
   setUp(() {
@@ -21,7 +21,7 @@ void main() {
       when(mockRepo.opusSpaceFlow(
         hostMid: anyNamed('hostMid'),
         filterType: anyNamed('filterType'),
-      )).thenAnswer((_) async => Success(CoreOpusSpaceFlowResp()));
+      )).thenAnswer((_) async => const Success(CoreOpusSpaceFlowResp()));
       final result = await mockRepo.opusSpaceFlow(
         hostMid: 123, filterType: 'all',
       );
@@ -43,7 +43,7 @@ void main() {
       when(mockRepo.opusSpaceFlow(
         hostMid: anyNamed('hostMid'),
         filterType: anyNamed('filterType'),
-      )).thenAnswer((_) async => Success(CoreOpusSpaceFlowResp()));
+      )).thenAnswer((_) async => const Success(CoreOpusSpaceFlowResp()));
       final result = await mockRepo.opusSpaceFlow(
         hostMid: 0, filterType: '',
       );

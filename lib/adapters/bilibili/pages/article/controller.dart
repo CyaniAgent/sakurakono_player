@@ -120,7 +120,7 @@ class ArticleController extends CommonDynController {
     } else {
       loadingState.value = switch (res) {
         Error(:final errMsg, :final code) => Error(errMsg, code: code),
-        _ => Error(null),
+        _ => const Error(null),
       };
       return false;
     }
@@ -142,7 +142,7 @@ class ArticleController extends CommonDynController {
     } else {
       loadingState.value = switch (res) {
         Error(:final errMsg, :final code) => Error(errMsg, code: code),
-        _ => Error(null),
+        _ => const Error(null),
       };
       return false;
     }

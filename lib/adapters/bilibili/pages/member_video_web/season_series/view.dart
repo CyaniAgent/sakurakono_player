@@ -46,10 +46,6 @@ class _MemberSSWebState
   BaseVideoWebCtr<SeasonWebData, SeasonArchive, ArchiveSortTypeApp> get controller =>
       _ssCtr as BaseVideoWebCtr<SeasonWebData, SeasonArchive, ArchiveSortTypeApp>;
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   List<ArchiveSortTypeApp> get values => ArchiveSortTypeApp.values;

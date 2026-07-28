@@ -19,7 +19,6 @@ import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
@@ -77,14 +76,14 @@ class AuthorPanel extends StatelessWidget {
           fontSize: theme.textTheme.labelSmall!.fontSize,
         ),
       );
-      if (moduleAuthor.badgeText case final _badgeText?) {
+      if (moduleAuthor.badgeText case final badgeText?) {
         pubTs = Row(
           mainAxisSize: .min,
           spacing: 5,
           children: [
             pubTs,
             Text(
-              _badgeText,
+              badgeText,
               style: TextStyle(
                 color: theme.colorScheme.secondary,
                 fontSize: theme.textTheme.labelSmall!.fontSize,

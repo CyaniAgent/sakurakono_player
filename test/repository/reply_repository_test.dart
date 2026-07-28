@@ -9,7 +9,7 @@ import 'reply_repository_test.mocks.dart';
 @GenerateMocks([ReplyRepository])
 
 void main() {
-  provideDummy<LoadingState<CoreMainListReply>>(Success(CoreMainListReply()));
+  provideDummy<LoadingState<CoreMainListReply>>(const Success(CoreMainListReply()));
   provideDummy<LoadingState<void>>(const Success<void>(null));
   late MockReplyRepository mockRepo;
 
@@ -25,7 +25,7 @@ void main() {
         mode: anyNamed('mode'),
         offset: anyNamed('offset'),
         cursorNext: anyNamed('cursorNext'),
-      )).thenAnswer((_) async => Success(CoreMainListReply()));
+      )).thenAnswer((_) async => const Success(CoreMainListReply()));
       final result = await mockRepo.mainList(
         type: 1, oid: 123, mode: CoreMode.defaultMode,
         offset: null, cursorNext: 0,
@@ -55,7 +55,7 @@ void main() {
         mode: anyNamed('mode'),
         offset: anyNamed('offset'),
         cursorNext: anyNamed('cursorNext'),
-      )).thenAnswer((_) async => Success(CoreMainListReply()));
+      )).thenAnswer((_) async => const Success(CoreMainListReply()));
       final result = await mockRepo.mainList(
         type: 0, oid: 0, mode: CoreMode.defaultMode,
         offset: null, cursorNext: 0,

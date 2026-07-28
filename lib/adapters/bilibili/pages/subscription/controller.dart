@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class SubController extends CommonListController<CoreSubData, CoreSubItemModel> {
   late final account = Accounts.main;

@@ -1,7 +1,6 @@
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dyn_content.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/module_panel.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';

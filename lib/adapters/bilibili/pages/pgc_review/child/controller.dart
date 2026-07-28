@@ -5,7 +5,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class PgcReviewController
     extends CommonListController<CorePgcReviewData, CorePgcReviewItemModel> {

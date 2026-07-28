@@ -6,7 +6,6 @@ import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/member/tab_type.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/elec.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/nested_scroll_ext.dart';

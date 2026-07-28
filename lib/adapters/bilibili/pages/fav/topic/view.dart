@@ -6,7 +6,6 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart'
     show m3eLoading;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/models_new/fav/fav_topic/topic_item.dart';
 import 'package:skf/adapters/bilibili/pages/fav/topic/controller.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/platform_utils.dart';

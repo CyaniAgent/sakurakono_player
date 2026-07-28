@@ -2,7 +2,6 @@ import 'package:skf/common/skeleton/video_card_h.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
-import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_fav/data.dart';
 import 'package:skf/adapters/bilibili/pages/member_favorite/controller.dart';

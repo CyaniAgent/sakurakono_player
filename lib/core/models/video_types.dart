@@ -1,4 +1,5 @@
 /// Core video types — adapter-independent models for [VideoRepository].
+library;
 
 // ---------------------------------------------------------------------------
 // Enums

@@ -14,7 +14,6 @@ import 'package:skf/core/models/music_types.dart';
 import 'package:skf/adapters/bilibili/http/music.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/models_new/music/bgm_detail.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/music/controller.dart';
 import 'package:skf/adapters/bilibili/pages/music/video/view.dart';

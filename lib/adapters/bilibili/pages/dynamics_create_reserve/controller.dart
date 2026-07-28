@@ -3,7 +3,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/utils/utils.dart';
-import 'package:get/get.dart';
 
 class CreateReserveController extends GetxController {
   CreateReserveController(this.sid);

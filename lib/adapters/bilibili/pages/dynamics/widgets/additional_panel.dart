@@ -5,7 +5,6 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/adapters/bilibili/http/dynamics.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/num_utils.dart';

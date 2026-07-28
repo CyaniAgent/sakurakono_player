@@ -1172,11 +1172,11 @@ class VideoDetailController extends GetxController
       }
 
       if (plPlayerController.showViewPoints &&
-          (response.viewPoints?.firstOrNull as Map<String, dynamic>?)?['type'] ==
+          (response.viewPoints?.firstOrNull)?['type'] ==
               2) {
         try {
           viewPointList.value = response.viewPoints!.map((item) {
-            final itemMap = item as Map<String, dynamic>;
+            final itemMap = item;
             final end = ((itemMap['to'] as num) / (data.timeLength! / 1000))
                 .clamp(0.0, 1.0);
             return ViewPointSegment(
@@ -1190,7 +1190,7 @@ class VideoDetailController extends GetxController
         } catch (_) {}
       }
 
-      if ((response.subtitle as Map<String, dynamic>?)?['subtitles']
+      if ((response.subtitle)?['subtitles']
           case final List sub? when (sub.isNotEmpty)) {
         _setSubtitle(sub.cast<Subtitle>());
       } else if (!Accounts.main.isLogin) {
@@ -1457,7 +1457,7 @@ class VideoDetailController extends GetxController
       try {
         ugcIntroController = Get.find<UgcIntroController>(tag: heroTag);
         videoDetail = ugcIntroController.videoDetail.value;
-        if (videoDetail?.ugcSeason?.sections case final sections?) {
+        if (videoDetail.ugcSeason?.sections case final sections?) {
           episodes = <ugc.BaseEpisodeItem>[];
           for (final i in sections) {
             if (i.episodes case final e?) {
@@ -1465,7 +1465,7 @@ class VideoDetailController extends GetxController
             }
           }
         } else {
-          episodes = videoDetail?.pages;
+          episodes = videoDetail.pages;
         }
       } catch (e, s) {
         if (kDebugMode) {

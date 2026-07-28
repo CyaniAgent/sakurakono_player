@@ -6,7 +6,6 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
 import 'package:skf/adapters/bilibili/pages/common/search/common_search_controller.dart';
 import 'package:skf/adapters/bilibili/pages/later/controller.dart' show BaseLaterController;
-import 'package:get/get.dart';
 
 class LaterSearchController
     extends CommonSearchController<CoreLaterData, CoreLaterItemModel>

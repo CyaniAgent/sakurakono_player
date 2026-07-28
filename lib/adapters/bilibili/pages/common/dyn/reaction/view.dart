@@ -5,7 +5,6 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/models_new/dynamic/dyn_reaction/item.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/reaction/controller.dart';
 import 'package:flutter/material.dart' hide ListTile;

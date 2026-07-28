@@ -6,7 +6,6 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/adapters/bilibili/models_new/member_guard/guard_top_list.dart';
 import 'package:skf/adapters/bilibili/pages/member_guard/controller.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:skf/utils/platform_utils.dart';

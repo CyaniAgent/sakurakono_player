@@ -936,7 +936,7 @@ class BiliMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<Map>> memberStat({int? mid}) async {
-    return await MemberHttp.memberStat(mid: mid);
+    return MemberHttp.memberStat(mid: mid);
   }
 
   @override
@@ -1025,12 +1025,12 @@ class BiliMemberRepository implements MemberRepository {
     int? fid,
     bool isAdd = true,
   }) async {
-    return await MemberHttp.specialAction(fid: fid, isAdd: isAdd);
+    return MemberHttp.specialAction(fid: fid, isAdd: isAdd);
   }
 
   @override
   Future<LoadingState<void>> addUsers(String fids, String tagids) async {
-    return await MemberHttp.addUsers(fids, tagids);
+    return MemberHttp.addUsers(fids, tagids);
   }
 
   @override
@@ -1051,7 +1051,7 @@ class BiliMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<int>> createFollowTag(String tagName) async {
-    return await MemberHttp.createFollowTag(tagName);
+    return MemberHttp.createFollowTag(tagName);
   }
 
   @override
@@ -1059,12 +1059,12 @@ class BiliMemberRepository implements MemberRepository {
     Object tagid,
     Object name,
   ) async {
-    return await MemberHttp.updateFollowTag(tagid, name);
+    return MemberHttp.updateFollowTag(tagid, name);
   }
 
   @override
   Future<LoadingState<void>> delFollowTag(Object tagid) async {
-    return await MemberHttp.delFollowTag(tagid);
+    return MemberHttp.delFollowTag(tagid);
   }
 
   @override
@@ -1077,7 +1077,7 @@ class BiliMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<Map>> memberView({required int mid}) async {
-    return await MemberHttp.memberView(mid: mid);
+    return MemberHttp.memberView(mid: mid);
   }
 
   @override

@@ -4,7 +4,6 @@ import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/adapters/bilibili/models/common/dm_block_type.dart';
-import 'package:skf/adapters/bilibili/models/user/danmaku_block.dart' show SimpleRule;
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku_block/controller.dart';
 import 'package:skf/core/models/danmaku_block.dart' show CoreSimpleRule;

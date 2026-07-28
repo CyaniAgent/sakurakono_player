@@ -104,7 +104,7 @@ class BiliPgcRepository implements PgcRepository {
     required Object mediaId,
     required Object reviewId,
   }) async {
-    return await PgcHttp.pgcReviewLike(
+    return PgcHttp.pgcReviewLike(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -115,7 +115,7 @@ class BiliPgcRepository implements PgcRepository {
     required Object mediaId,
     required Object reviewId,
   }) async {
-    return await PgcHttp.pgcReviewDislike(
+    return PgcHttp.pgcReviewDislike(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -128,7 +128,7 @@ class BiliPgcRepository implements PgcRepository {
     required String content,
     bool shareFeed = false,
   }) async {
-    return await PgcHttp.pgcReviewPost(
+    return PgcHttp.pgcReviewPost(
       mediaId: mediaId,
       score: score,
       content: content,
@@ -143,7 +143,7 @@ class BiliPgcRepository implements PgcRepository {
     required String content,
     required reviewId,
   }) async {
-    return await PgcHttp.pgcReviewMod(
+    return PgcHttp.pgcReviewMod(
       mediaId: mediaId,
       score: score,
       content: content,
@@ -156,7 +156,7 @@ class BiliPgcRepository implements PgcRepository {
     required Object mediaId,
     required Object reviewId,
   }) async {
-    return await PgcHttp.pgcReviewDel(
+    return PgcHttp.pgcReviewDel(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -164,7 +164,7 @@ class BiliPgcRepository implements PgcRepository {
 
   @override
   Future<LoadingState<Map>> seasonStatus(Object seasonId) async {
-    return await PgcHttp.seasonStatus(seasonId);
+    return PgcHttp.seasonStatus(seasonId);
   }
 
   static PgcReviewType _adaptPgcReviewType(CorePgcReviewType type) =>

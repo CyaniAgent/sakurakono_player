@@ -1,6 +1,5 @@
 import 'package:fixnum/fixnum.dart';
 import 'package:skf/adapters/bilibili/grpc/audio.dart';
-import 'package:skf/adapters/bilibili/grpc/bilibili/app/archive/middleware/v1.pb.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pb.dart';
 
 import 'package:skf/core/models/audio_types.dart';

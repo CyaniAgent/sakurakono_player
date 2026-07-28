@@ -5,7 +5,6 @@ import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
-import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/pgc_lcf.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
@@ -74,12 +73,8 @@ class BiliVideoRepository implements VideoRepository {
         title: m.title,
         duration: m.duration,
         pubdate: m.pubdate,
-        owner: m.owner != null
-            ? {'mid': m.owner!.mid, 'name': m.owner!.name}
-            : null,
-        stat: m.stat != null
-            ? {'view': m.stat!.view, 'danmaku': m.stat!.danmu}
-            : null,
+        owner: {'mid': m.owner.mid, 'name': m.owner.name},
+        stat: {'view': m.stat.view, 'danmaku': m.stat.danmu},
         isFollowed: m.isFollowed,
         goto: m.goto,
         uri: m.uri,
@@ -96,9 +91,7 @@ class BiliVideoRepository implements VideoRepository {
         duration: m.duration,
         pubdate: m.pubdate,
         desc: m.desc,
-        owner: m.owner != null
-            ? {'name': m.owner!.name ?? '', 'mid': m.owner!.mid ?? 0}
-            : null,
+        owner: {'name': m.owner.name ?? '', 'mid': m.owner.mid ?? 0},
         stat: {
           'view': (m.stat as RcmdStat?)?.view ?? '',
           'danmu': (m.stat as RcmdStat?)?.danmu ?? '',
@@ -126,18 +119,15 @@ class BiliVideoRepository implements VideoRepository {
         duration: m.duration,
         pubdate: m.pubdate,
         desc: m.desc,
-        owner: m.owner != null
-            ? {
-                'mid': m.owner!.mid,
-                'name': m.owner!.name,
+        owner: {
+                'mid': m.owner.mid,
+                'name': m.owner.name,
                 'face': (m.owner as dynamic).face,
-              }
-            : null,
-        stat: m.stat != null
-            ? {
-                'view': m.stat!.view,
-                'like': m.stat!.like,
-                'danmu': m.stat!.danmu,
+              },
+        stat: {
+                'view': m.stat.view,
+                'like': m.stat.like,
+                'danmu': m.stat.danmu,
                 if (m.stat case HotStat s)
                   ...{
                     'reply': s.reply,
@@ -148,8 +138,7 @@ class BiliVideoRepository implements VideoRepository {
                     'his_rank': s.hisRank,
                     'dislike': s.dislike,
                   },
-              }
-            : null,
+              },
         dimension: m.dimension != null
             ? {'width': m.dimension!.width, 'height': m.dimension!.height}
             : null,
@@ -326,19 +315,19 @@ class BiliVideoRepository implements VideoRepository {
       );
 
   static CoreReplyInfo _toCoreReplyInfo(ReplyInfo r) => CoreReplyInfo(
-        id: r.id?.toInt(),
-        oid: r.oid?.toInt(),
-        type: r.type?.toInt(),
-        mid: r.mid?.toInt(),
-        root: r.root?.toInt(),
-        parent: r.parent?.toInt(),
-        dialog: r.dialog?.toInt(),
-        like: r.like?.toInt(),
-        ctime: r.ctime?.toInt(),
-        count: r.count?.toInt(),
-        content: r.content?.toProto3Json() as Map<String, dynamic>?,
-        member: r.member?.toProto3Json() as Map<String, dynamic>?,
-        replyControl: r.replyControl?.toProto3Json() as Map<String, dynamic>?,
+        id: r.id.toInt(),
+        oid: r.oid.toInt(),
+        type: r.type.toInt(),
+        mid: r.mid.toInt(),
+        root: r.root.toInt(),
+        parent: r.parent.toInt(),
+        dialog: r.dialog.toInt(),
+        like: r.like.toInt(),
+        ctime: r.ctime.toInt(),
+        count: r.count.toInt(),
+        content: r.content.toProto3Json() as Map<String, dynamic>?,
+        member: r.member.toProto3Json() as Map<String, dynamic>?,
+        replyControl: r.replyControl.toProto3Json() as Map<String, dynamic>?,
         trackInfo: r.trackInfo,
       );
 
@@ -559,7 +548,7 @@ class BiliVideoRepository implements VideoRepository {
     int selectLike = 0,
   }) async {
     return 
-      await VideoHttp.coinVideo(
+      VideoHttp.coinVideo(
         bvid: bvid,
         multiply: multiply,
         selectLike: selectLike,
@@ -592,7 +581,7 @@ class BiliVideoRepository implements VideoRepository {
     required String bvid,
     required bool type,
   }) async {
-    return await VideoHttp.likeVideo(bvid: bvid, type: type);
+    return VideoHttp.likeVideo(bvid: bvid, type: type);
   }
 
   @override
@@ -600,7 +589,7 @@ class BiliVideoRepository implements VideoRepository {
     required String bvid,
     required bool type,
   }) async {
-    return await VideoHttp.dislikeVideo(bvid: bvid, type: type);
+    return VideoHttp.dislikeVideo(bvid: bvid, type: type);
   }
 
   @override
@@ -609,7 +598,7 @@ class BiliVideoRepository implements VideoRepository {
     required int act,
     required int reSrc,
   }) async {
-    return await VideoHttp.relationMod(
+    return VideoHttp.relationMod(
       mid: mid,
       act: act,
       reSrc: reSrc,
@@ -623,7 +612,7 @@ class BiliVideoRepository implements VideoRepository {
     int? reasonId,
     int? feedbackId,
   }) async {
-    return await VideoHttp.feedDislike(
+    return VideoHttp.feedDislike(
       goto: goto,
       id: id,
       reasonId: reasonId,
@@ -638,7 +627,7 @@ class BiliVideoRepository implements VideoRepository {
     int? reasonId,
     int? feedbackId,
   }) async {
-    return await VideoHttp.feedDislikeCancel(
+    return VideoHttp.feedDislikeCancel(
       goto: goto,
       id: id,
       reasonId: reasonId,
@@ -679,17 +668,17 @@ class BiliVideoRepository implements VideoRepository {
     required int oid,
     required int rpid,
   }) async {
-    return await VideoHttp.replyDel(type: type, oid: oid, rpid: rpid);
+    return VideoHttp.replyDel(type: type, oid: oid, rpid: rpid);
   }
 
   @override
   Future<LoadingState<String>> pgcAdd({int? seasonId}) async {
-    return await VideoHttp.pgcAdd(seasonId: seasonId);
+    return VideoHttp.pgcAdd(seasonId: seasonId);
   }
 
   @override
   Future<LoadingState<String>> pgcDel({int? seasonId}) async {
-    return await VideoHttp.pgcDel(seasonId: seasonId);
+    return VideoHttp.pgcDel(seasonId: seasonId);
   }
 
   @override
@@ -697,7 +686,7 @@ class BiliVideoRepository implements VideoRepository {
     required String seasonId,
     required int status,
   }) async {
-    return await VideoHttp.pgcUpdate(seasonId: seasonId, status: status);
+    return VideoHttp.pgcUpdate(seasonId: seasonId, status: status);
   }
 
   @override
@@ -706,7 +695,7 @@ class BiliVideoRepository implements VideoRepository {
     String? bvid,
     required int cid,
   }) async {
-    return await VideoHttp.onlineTotal(aid: aid, bvid: bvid, cid: cid);
+    return VideoHttp.onlineTotal(aid: aid, bvid: bvid, cid: cid);
   }
 
   @override

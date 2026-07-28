@@ -264,7 +264,7 @@ class BiliLiveRepository implements LiveRepository {
   };
 
   Map<String, dynamic> _cardDataItemToMap(CardDataItem d) => <String, dynamic>{
-    'list': d.list?.map((li) => _cardLiveItemToMap(li)).toList(),
+    'list': d.list?.map(_cardLiveItemToMap).toList(),
     'extra_info': d.extraInfo == null ? null : <String, dynamic>{'total_count': d.extraInfo!.totalCount},
   };
 
@@ -286,7 +286,7 @@ class BiliLiveRepository implements LiveRepository {
     'card_list': [
       if (d.followItem != null) _liveCardListToMap(d.followItem!),
       if (d.areaItem != null) _liveCardListToMap(d.areaItem!),
-      if (d.cardList != null) ...d.cardList!.map((c) => _liveCardListToMap(c)),
+      if (d.cardList != null) ...d.cardList!.map(_liveCardListToMap),
     ],
     'has_more': d.hasMore,
   };
@@ -302,7 +302,7 @@ class BiliLiveRepository implements LiveRepository {
     int replyMid = 0,
     String replayDmid = '',
   }) async {
-    return await LiveHttp.sendLiveMsg(
+    return LiveHttp.sendLiveMsg(
       roomId: roomId,
       msg: msg,
       dmType: dmType,
@@ -446,7 +446,7 @@ class BiliLiveRepository implements LiveRepository {
   Future<LoadingState<void>> setLiveFavTag({
     required String ids,
   }) async {
-    return await LiveHttp.setLiveFavTag(
+    return LiveHttp.setLiveFavTag(
       ids: ids,
     );
   }
@@ -497,7 +497,7 @@ class BiliLiveRepository implements LiveRepository {
     required String type,
     required int level,
   }) async {
-    return await LiveHttp.liveSetSilent(
+    return LiveHttp.liveSetSilent(
       type: type,
       level: level,
     );
@@ -507,7 +507,7 @@ class BiliLiveRepository implements LiveRepository {
   Future<LoadingState<void>> addShieldKeyword({
     required String keyword,
   }) async {
-    return await LiveHttp.addShieldKeyword(
+    return LiveHttp.addShieldKeyword(
       keyword: keyword,
     );
   }
@@ -516,7 +516,7 @@ class BiliLiveRepository implements LiveRepository {
   Future<LoadingState<void>> delShieldKeyword({
     required String keyword,
   }) async {
-    return await LiveHttp.delShieldKeyword(
+    return LiveHttp.delShieldKeyword(
       keyword: keyword,
     );
   }
@@ -545,7 +545,7 @@ class BiliLiveRepository implements LiveRepository {
     required Object uid,
     Object? anchorId,
   }) async {
-    return await LiveHttp.liveLikeReport(
+    return LiveHttp.liveLikeReport(
       clickTime: clickTime,
       roomId: roomId,
       uid: uid,
@@ -576,7 +576,7 @@ class BiliLiveRepository implements LiveRepository {
     required Object ts,
     required Object sign,
   }) async {
-    return await LiveHttp.liveDmReport(
+    return LiveHttp.liveDmReport(
       roomId: roomId,
       mid: mid,
       msg: msg,
@@ -618,7 +618,7 @@ class BiliLiveRepository implements LiveRepository {
     required int ts,
     required String token,
   }) async {
-    return await LiveHttp.superChatReport(
+    return LiveHttp.superChatReport(
       id: id,
       roomId: roomId,
       uid: uid,

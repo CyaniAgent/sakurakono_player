@@ -4,7 +4,6 @@
 /// without any dependency on protobuf or adapter-specific code.
 library;
 
-import 'dart:math' as $math;
 
 // ──────────────────────────── Enums ────────────────────────────
 

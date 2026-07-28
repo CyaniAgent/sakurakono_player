@@ -1,8 +1,6 @@
-import 'package:skf/adapters/bilibili/grpc/bilibili/community/service/dm/v1.pb.dart';
 import 'package:skf/adapters/bilibili/grpc/dm.dart';
 import 'package:skf/adapters/bilibili/http/danmaku.dart';
 
-import 'package:skf/adapters/bilibili/models_new/danmaku/post.dart';
 import 'package:skf/core/models/danmaku_types.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -57,7 +55,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     required int cid,
     required int id,
   }) async {
-    return await DanmakuHttp.danmakuLike(
+    return DanmakuHttp.danmakuLike(
       isLike: isLike,
       cid: cid,
       id: id,
@@ -72,7 +70,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     bool block = false,
     String? content,
   }) async {
-    return await DanmakuHttp.danmakuReport(
+    return DanmakuHttp.danmakuReport(
       reason: reason,
       cid: cid,
       id: id,
@@ -86,7 +84,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     required int cid,
     required int id,
   }) async {
-    return await DanmakuHttp.danmakuRecall(
+    return DanmakuHttp.danmakuRecall(
       cid: cid,
       id: id,
     );
@@ -98,7 +96,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     required Iterable<int> ids,
     required int state,
   }) async {
-    return await DanmakuHttp.danmakuEditState(
+    return DanmakuHttp.danmakuEditState(
       oid: oid,
       ids: ids,
       state: state,

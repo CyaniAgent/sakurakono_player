@@ -6,7 +6,6 @@ import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
-import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';

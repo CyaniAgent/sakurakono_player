@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class MemberFavoriteCtr
     extends CommonDataController<List<CoreSpaceFavData>?, List<CoreSpaceFavData>?> {

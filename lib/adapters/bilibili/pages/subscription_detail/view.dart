@@ -3,7 +3,6 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/core/models/user_types.dart' hide CoreSubItemModel;
 
 import 'package:skf/adapters/bilibili/pages/subscription_detail/controller.dart';
 import 'package:skf/adapters/bilibili/pages/subscription_detail/widget/sub_video_card.dart';
