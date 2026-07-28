@@ -6,7 +6,7 @@ import 'package:skf/adapters/bilibili/utils/login_utils.dart';
 import 'package:hive_ce/hive.dart';
 
 abstract final class Accounts {
-  static late final Box<LoginAccount> account;
+  static late final Box account;
   static final List<Account> accountMode = List.filled(
     AccountType.values.length,
     AnonymousAccount(),
@@ -26,9 +26,9 @@ abstract final class Accounts {
 
   static Future<void> init() async {
     if (Hive.isBoxOpen('account')) {
-      account = Hive.box<LoginAccount>('account');
+      account = Hive.box('account');
     } else {
-      account = await Hive.openBox<LoginAccount>(
+      account = await Hive.openBox(
         'account',
         compactionStrategy: (int entries, int deletedEntries) {
           return deletedEntries > 2;

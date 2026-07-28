@@ -649,7 +649,7 @@ class LoginPageController extends GetxController
     final options = {
       AnonymousAccount(): '0',
       ...Accounts.account.toMap().map(
-        (k, v) => MapEntry(v, k as String),
+        (k, v) => MapEntry(v as Account, k as String),
       ),
     };
     bool quickSelect = selectAccount.every((e) => e == selectAccount.first);

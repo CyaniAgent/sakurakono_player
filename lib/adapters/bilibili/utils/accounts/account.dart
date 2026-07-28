@@ -104,7 +104,7 @@ class LoginAccount extends Account {
       .cookie
       .value;
 
-  late final Box<LoginAccount> _box = Accounts.account;
+  late final Box _box = Accounts.account;
 
   LoginAccount(
     this.cookieJar,
