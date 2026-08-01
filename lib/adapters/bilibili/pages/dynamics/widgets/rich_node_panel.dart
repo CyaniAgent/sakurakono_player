@@ -3,14 +3,15 @@ import 'dart:io' show Platform;
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
-import 'package:skf/adapters/bilibili/http/dynamics.dart';
+import 'package:skf/core/repository/dynamics_repository.dart';
+import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart'
     show CoreSourceModel;
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -242,7 +243,7 @@ TextSpan? richNode(
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () async {
                       try {
-                        final res = await SearchHttp.ab2cWithDimension(
+                        final res = await Get.find<SearchRepository>().ab2cWithDimension(
                           bvid: i.rid,
                         );
                         final cid = res?.cid;
@@ -250,7 +251,7 @@ TextSpan? richNode(
                           PageUtils.toVideoPage(
                             bvid: i.rid,
                             cid: cid,
-                            dimension: res!.dimension,
+                            dimension: ModelConverters.dimension(res!.dimension),
                           );
                         }
                       } catch (err) {
@@ -304,15 +305,15 @@ TextSpan? richNode(
                         return;
                       }
 
-                      DynamicsHttp.dynPic(i.rid).then((res) {
+                      Get.find<DynamicsRepository>().dynPic(i.rid).then((res) {
                         if (res case Success(:final response)) {
                           if (Platform.isAndroid) {
-                            i.pics = response;
+                            i.pics = response as dynamic;
                           } else {
-                            i.dynPic = response;
+                            i.dynPic = response as dynamic;
                           }
                           if (response != null && response.isNotEmpty) {
-                            onView(response);
+                            onView(response as dynamic);
                           }
                         } else {
                           res.toast();

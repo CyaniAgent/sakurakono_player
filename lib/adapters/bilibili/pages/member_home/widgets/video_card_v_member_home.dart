@@ -2,13 +2,15 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
+import 'package:skf/core/repository/search_repository.dart';
+import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +49,13 @@ class VideoCardVMemberHome extends StatelessWidget {
         int? cid = videoItem.cid;
         Dimension? dimension;
         if (cid == null) {
-          if (await SearchHttp.ab2cWithDimension(aid: aid, bvid: bvid)
+          if (await Get.find<SearchRepository>().ab2cWithDimension(
+                aid: int.tryParse(aid ?? ''),
+                bvid: bvid,
+              )
               case final res?) {
             cid = res.cid;
-            dimension = res.dimension;
+            dimension = ModelConverters.dimension(res.dimension);
           }
         }
         if (cid != null) {

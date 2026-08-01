@@ -3,15 +3,17 @@ import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
-import 'package:skf/adapters/bilibili/http/search.dart';
+import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/adapters/bilibili/models_new/sub/sub_detail/media.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // 收藏视频卡片 - 水平布局
 class SubVideoCardH extends StatelessWidget {
@@ -35,7 +37,7 @@ class SubVideoCardH extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () async {
-          final res = await SearchHttp.ab2cWithDimension(bvid: videoItem.bvid);
+          final res = await Get.find<SearchRepository>().ab2cWithDimension(bvid: videoItem.bvid);
           final cid = res?.cid;
           if (cid != null) {
             PageUtils.toVideoPage(
@@ -43,7 +45,7 @@ class SubVideoCardH extends StatelessWidget {
               cid: cid,
               cover: videoItem.cover,
               title: videoItem.title,
-              dimension: res!.dimension,
+              dimension: ModelConverters.dimension(res!.dimension),
             );
           }
         },

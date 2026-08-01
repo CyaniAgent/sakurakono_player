@@ -3,8 +3,8 @@ import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/progress_bar/video_progress_indicator.dart';
 import 'package:skf/common/widgets/select_mask.dart';
-import 'package:skf/adapters/bilibili/http/search.dart';
-import 'package:skf/adapters/bilibili/http/user.dart';
+import 'package:skf/core/repository/search_repository.dart';
+import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/adapters/bilibili/models_new/history/list.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
@@ -12,6 +12,7 @@ import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -82,14 +83,14 @@ class HistoryItem extends StatelessWidget {
                   int? cid = item.history.cid;
                   Dimension? dimension;
                   if (cid == null) {
-                    if (await SearchHttp.ab2cWithDimension(
+                    if (await Get.find<SearchRepository>().ab2cWithDimension(
                           aid: aid,
                           bvid: bvid,
                           part: item.history.page,
                         )
                         case final res?) {
                       cid = res.cid;
-                      dimension = res.dimension;
+                      dimension = ModelConverters.dimension(res.dimension);
                     }
                   }
                   if (cid != null) {
@@ -232,7 +233,7 @@ class HistoryItem extends StatelessWidget {
                       business?.contains('article') != true)
                     PopupMenuItem(
                       onTap: () =>
-                          UserHttp.toViewLater(bvid: item.history.bvid),
+                          Get.find<UserRepository>().toViewLater(bvid: item.history.bvid),
                       height: 38,
                       child: const Row(
                         children: [

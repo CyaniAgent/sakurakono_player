@@ -15,13 +15,18 @@ library;
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/models/music_types.dart';
+import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
 import 'package:skf/adapters/bilibili/models_new/music/bgm_recommend_list.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space_article/item.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space_audio/item.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space_fav/list.dart';
 import 'package:skf/adapters/bilibili/models_new/sub/sub_detail/media.dart';
+import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 
 /// Static converters from Core* models to adapter models.
 ///
@@ -139,17 +144,81 @@ abstract final class ModelConverters {
         'author': '',
       });
 
-  /// [CoreCoinArchiveItem] or [CoreLikeArchiveItem] → [SpaceArchiveItem].
+  /// [CoreCoinArchiveItem] → [SpaceArchiveItem].
   ///
-  /// Used by: member_home page (coin/like sections).
-  /// These Core types are minimal (only title + cover); other fields are null.
-  static SpaceArchiveItem coinLikeItem(Object core) =>
+  /// Used by: member_home page (coin section).
+  /// CoreCoinArchiveItem is minimal (only title + cover); other fields are null.
+  static SpaceArchiveItem coinLikeItem(CoreCoinArchiveItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
-        'title': (core as dynamic).title,
-        'cover': (core as dynamic).cover,
+        'title': core.title,
+        'cover': core.cover,
         'play': 0,
         'danmaku': 0,
         'author': '',
+      });
+
+  /// [CoreLikeArchiveItem] → [SpaceArchiveItem].
+  ///
+  /// Used by: member_home page (like section).
+  /// CoreLikeArchiveItem is minimal (only title + cover); other fields are null.
+  static SpaceArchiveItem likeArchiveItem(CoreLikeArchiveItem core) =>
+      SpaceArchiveItem.fromJson(<String, dynamic>{
+        'title': core.title,
+        'cover': core.cover,
+        'play': 0,
+        'danmaku': 0,
+        'author': '',
+      });
+
+  // ---------------------------------------------------------------------------
+  // MemberHome bridge conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreFavouriteItem] → [SpaceFavItemModel].
+  ///
+  /// Used by: member_home page (favourite section).
+  /// CoreFavouriteItem has only title+cover; mediaId/count/isPublic are null.
+  // TODO(type-safety): Core→adapter bridge — only title/cover mapped
+  static SpaceFavItemModel favouriteItem(CoreFavouriteItem core) =>
+      SpaceFavItemModel.fromJson(<String, dynamic>{
+        'title': core.title,
+        'cover': core.cover,
+      });
+
+  /// [CoreArticleItem] → [SpaceArticleItem].
+  ///
+  /// Used by: member_home page (article section).
+  static SpaceArticleItem articleItem(CoreArticleItem core) =>
+      SpaceArticleItem.fromJson(<String, dynamic>{
+        'title': core.title,
+        'cover': core.cover,
+      });
+
+  /// [CoreAudioItem] → [SpaceAudioItem].
+  ///
+  /// Used by: member_home page (audio section).
+  static SpaceAudioItem audioItem(CoreAudioItem core) =>
+      SpaceAudioItem.fromJson(<String, dynamic>{
+        'title': core.title,
+        'cover': core.cover,
+      });
+
+  /// [CoreComicItem] → [SpaceArchiveItem].
+  ///
+  /// Used by: member_home page (comic section).
+  static SpaceArchiveItem comicItem(CoreComicItem core) =>
+      SpaceArchiveItem.fromJson(<String, dynamic>{
+        'title': core.title,
+        'cover': core.cover,
+      });
+
+  /// [CoreSeasonItem] → [SpaceArchiveItem].
+  ///
+  /// Used by: member_home page (season/PGC section).
+  static SpaceArchiveItem seasonItem(CoreSeasonItem core) =>
+      SpaceArchiveItem.fromJson(<String, dynamic>{
+        'title': core.title,
+        'cover': core.cover,
       });
 
   // ---------------------------------------------------------------------------
@@ -254,4 +323,16 @@ abstract final class ModelConverters {
       'Unknown rcmd item type: ${core.runtimeType}',
     );
   }
+
+  // ---------------------------------------------------------------------------
+  // Dimension conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreDimension] → [Dimension].
+  ///
+  /// Used by: subscription_detail, history, music, member_home,
+  /// member_coin_arc, dynamics (rich node) pages.
+  static Dimension? dimension(CoreDimension? core) => core == null
+      ? null
+      : Dimension(width: core.width, height: core.height);
 }

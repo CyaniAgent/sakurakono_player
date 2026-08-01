@@ -4,15 +4,17 @@ import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_v.dart';
-import 'package:skf/adapters/bilibili/http/search.dart';
+import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/adapters/bilibili/models_new/member/coin_like_arc/item.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MemberCoinLikeItem extends StatelessWidget {
   final CoinLikeArcItem item;
@@ -41,7 +43,9 @@ class MemberCoinLikeItem extends StatelessWidget {
           }
 
           if (item.param != null) {
-            final res = await SearchHttp.ab2cWithDimension(aid: item.param);
+            final res = await Get.find<SearchRepository>().ab2cWithDimension(
+              aid: int.tryParse(item.param ?? ''),
+            );
             final cid = res?.cid;
             if (cid != null) {
               PageUtils.toVideoPage(
@@ -49,7 +53,7 @@ class MemberCoinLikeItem extends StatelessWidget {
                 cid: cid,
                 cover: item.cover,
                 title: item.title,
-                dimension: res!.dimension,
+                dimension: ModelConverters.dimension(res!.dimension),
               );
             }
           }
