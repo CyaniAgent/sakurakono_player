@@ -3,13 +3,14 @@ import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/adapters/bilibili/http/sponsor_block.dart';
+import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
 import 'package:skf/adapters/bilibili/pages/setting/slide_color_picker.dart';
 import 'package:skf/utils/filtering_text.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -58,20 +59,25 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
   }
 
   Future<void> _checkServerStatus() async {
-    _serverStatus.value = (await SponsorBlock.uptimeStatus()).isSuccess;
+    _serverStatus.value = (await Get.find<SponsorBlockRepository>().uptimeStatus()).isSuccess;
   }
 
   Future<void> _getUserInfo() async {
-    final info = await SponsorBlock.userInfo(const [
-      'viewCount',
-      'minutesSaved',
-      'segmentCount',
-    ], userId: _userId);
-    _userInfo.value = switch (info) {
-      Loading() => LoadingState.loading(),
-      Success(:final response) => Success(response),
-      Error(:final errMsg) => Error(errMsg),
-    };
+    final info = await Get.find<SponsorBlockRepository>().userInfo(
+      const [
+        'viewCount',
+        'minutesSaved',
+        'segmentCount',
+      ],
+      userId: _userId,
+    );
+    if (info case Loading()) {
+      _userInfo.value = LoadingState.loading();
+    } else if (info case Success(:final response)) {
+      _userInfo.value = Success(ModelConverters.userInfoConverter(response));
+    } else if (info case Error(:final errMsg)) {
+      _userInfo.value = Error(errMsg);
+    }
   }
 
   Widget _blockLimitItem(

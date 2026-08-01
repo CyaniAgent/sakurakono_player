@@ -83,8 +83,10 @@ import 'package:skf/core/models/member_types.dart' as member
         CoreModuleBlocked,
         CoreOwner;
 import 'package:skf/core/models/user_types.dart' as user;
+import 'package:skf/core/models/live_types.dart' as live;
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
+import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
@@ -99,6 +101,10 @@ import 'package:skf/adapters/bilibili/models_new/space/space_audio/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_fav/list.dart';
 import 'package:skf/adapters/bilibili/models_new/sub/sub_detail/media.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
+import 'package:skf/adapters/bilibili/models/member/tags.dart';
+import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
+import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
+import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
 
 /// Static converters from Core* models to adapter models.
 ///
@@ -752,4 +758,60 @@ abstract final class ModelConverters {
         'season_id': core.id,
         'title': core.title,
       });
+
+  // ---------------------------------------------------------------------------
+  // SponsorBlock conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreSegmentItemModel] → [SegmentItemModel].
+  ///
+  /// Used by: sponsor_block block_mixin (skip segment list).
+  static SegmentItemModel segmentItemConverter(CoreSegmentItemModel core) =>
+      SegmentItemModel(
+        cid: core.cid,
+        category: core.category,
+        actionType: core.actionType,
+        segment: core.segment,
+        uuid: core.uuid,
+        videoDuration: core.videoDuration,
+        votes: core.votes,
+      );
+
+  /// [CoreUserInfo] → [UserInfo].
+  ///
+  /// Used by: sponsor_block page (user info card).
+  static UserInfo userInfoConverter(CoreUserInfo core) => UserInfo(
+    viewCount: core.viewCount,
+    minutesSaved: core.minutesSaved,
+    segmentCount: core.segmentCount,
+  );
+
+  // ---------------------------------------------------------------------------
+  // Member tag conversions
+  // ---------------------------------------------------------------------------
+
+  /// [member.CoreMemberTagItemModel] → [MemberTagItemModel].
+  ///
+  /// Used by: group_panel page (follow-up tags).
+  static MemberTagItemModel memberTagItemConverter(
+    member.CoreMemberTagItemModel core,
+  ) =>
+      MemberTagItemModel(
+        count: core.count,
+        name: core.name,
+        tagid: core.tagid,
+        tip: core.tip,
+      );
+
+  // ---------------------------------------------------------------------------
+  // Medal wall conversions
+  // ---------------------------------------------------------------------------
+
+  /// [live.CoreMedalWallData] → [MedalWallData].
+  ///
+  /// Used by: member page (medal wall dialog). Round-trip via toJson/fromJson;
+  /// key parity for nested medal_info/uinfo_medal verified against the adapter
+  /// models in `models_new/live/live_medal_wall/`.
+  static MedalWallData medalWallDataConverter(live.CoreMedalWallData core) =>
+      MedalWallData.fromJson(core.toJson());
 }

@@ -3,12 +3,14 @@ import 'dart:math' as math;
 
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
+import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/sponsor_block.dart';
+import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_model.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -64,10 +66,13 @@ mixin BlockMixin on GetxController {
   }) async {
     resetBlock();
 
-    final result = await SponsorBlock.getSkipSegments(bvid: bvid, cid: cid);
+    final result = await Get.find<SponsorBlockRepository>().getSkipSegments(
+      bvid: bvid,
+      cid: cid,
+    );
     switch (result) {
-      case Success<List<SegmentItemModel>>(:final response):
-        handleSBData(response);
+      case Success(:final response):
+        handleSBData(response.map(ModelConverters.segmentItemConverter).toList());
       case Error(:final code) when code != 404:
         if (kDebugMode) {
           result.toast();
@@ -247,7 +252,7 @@ mixin BlockMixin on GetxController {
       _showBlockToast('已跳过${item.segmentType.shortTitle}片段');
     }
     if (isBlock && Pref.blockTrack) {
-      SponsorBlock.viewedVideoSponsorTime(item.uuid);
+      Get.find<SponsorBlockRepository>().viewedVideoSponsorTime(item.uuid);
     }
   }
 
@@ -316,7 +321,7 @@ mixin BlockMixin on GetxController {
     );
   }
 
-  void _doVote(String uuid, int type) => SponsorBlock.voteOnSponsorTime(
+  void _doVote(String uuid, int type) => Get.find<SponsorBlockRepository>().voteOnSponsorTime(
     uuid: uuid,
     type: type,
   ).then((i) => SmartDialog.showToast(i.isSuccess ? '投票成功' : '投票失败: $i'));
@@ -333,9 +338,11 @@ mixin BlockMixin on GetxController {
                 dense: true,
                 onTap: () {
                   Get.back();
-                  SponsorBlock.voteOnSponsorTime(
+                  Get.find<SponsorBlockRepository>().voteOnSponsorTime(
                     uuid: segment.uuid,
-                    category: item,
+                    category: CoreSegmentType.values.firstWhere(
+                      (t) => t.name == item.name,
+                    ),
                   ).then((i) {
                     SmartDialog.showToast(
                       '类别更改${i.isSuccess ? '成功' : '失败: $i'}',

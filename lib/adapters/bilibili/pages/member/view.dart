@@ -8,10 +8,13 @@ import 'package:skf/common/widgets/dynamic_sliver_app_bar/dynamic_sliver_app_bar
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
-import 'package:skf/adapters/bilibili/http/live.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/user.dart';
+import 'package:skf/core/repository/live_repository.dart';
+import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/card.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/images.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/live.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space/reservation_card_list.dart';
 import 'package:skf/adapters/bilibili/pages/coin_log/controller.dart';
 import 'package:skf/adapters/bilibili/pages/exp_log/controller.dart';
@@ -22,6 +25,7 @@ import 'package:skf/adapters/bilibili/pages/member/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member/widget/medal_wall.dart';
 import 'package:skf/adapters/bilibili/pages/member/widget/reserve_button.dart';
 import 'package:skf/adapters/bilibili/pages/member/widget/user_info_card.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/member_cheese/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_contribute/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_contribute/view.dart';
@@ -107,16 +111,16 @@ class _MemberPageState extends State<MemberPage> {
                         isOwner:
                             _userController.mid == _userController.account.mid,
                         relation: _userController.relation.value,
-                        card: response.CoreCard! as dynamic,
-                        images: response.images! as dynamic,
+                        card: response.coreCard! as SpaceCard, // TODO(type-safety): CoreSpaceCard → SpaceCard
+                        images: response.images! as SpaceImages, // TODO(type-safety): CoreSpaceImages → SpaceImages
                         onFollow: () => _userController.onFollow(context),
-                        live: _userController.live as dynamic,
+                        live: _userController.live as Live?, // TODO(type-safety): CoreLive → Live
                         silence: _userController.silence,
                         headerControllerBuilder: getHeaderController,
                         showLiveMedalWall: _showLiveMedalWall,
                         charges: _userController.charges,
                         chargeCount: _userController.chargeCount,
-                        guards: _userController.guards?.cast() as dynamic,
+                        guards: _userController.guards,
                         guardCount: _userController.guardCount,
                       ),
                     ),
@@ -217,7 +221,7 @@ class _MemberPageState extends State<MemberPage> {
                     Widget trailing = FilledButton.tonal(
                       onPressed: () async {
                         final isFollow = e.isFollow;
-                        final res = await UserHttp.spaceReserve(
+                        final res = await Get.find<UserRepository>().spaceReserve(
                           sid: e.sid!,
                           isFollow: isFollow,
                         );
@@ -331,7 +335,7 @@ class _MemberPageState extends State<MemberPage> {
 
   List<Widget> _actions(ColorScheme theme) => [
     if (_userController.reserves?.isNotEmpty ?? false)
-      _reserveBtn((_userController.reserves?.cast() ?? []) as dynamic, theme),
+      _reserveBtn((_userController.reserves?.cast<ReservationCardItem>() ?? <ReservationCardItem>[]), theme), // TODO(type-safety): CoreReservationCardItem → ReservationCardItem
     IconButton(
       tooltip: '搜索',
       onPressed: () => Get.toNamed(
@@ -441,7 +445,7 @@ class _MemberPageState extends State<MemberPage> {
           ),
         if (_userController.account.isLogin)
           if (_userController.mid == _userController.account.mid) ...[
-            if (((_userController.loadingState.value.dataOrNull?.CoreCard as dynamic)?.vip?.status ?? 0) > 0)
+            if (_userController.loadingState.value.dataOrNull?.coreCard is SpaceCard && ((_userController.loadingState.value.dataOrNull?.coreCard as SpaceCard).vip?.status ?? 0) > 0)
               PopupMenuItem(
                 onTap: _userController.vipExpAdd,
                 child: const Row(
@@ -619,7 +623,7 @@ class _MemberPageState extends State<MemberPage> {
       onShow();
       return;
     }
-    final res = await UserHttp.userRelation(_mid);
+    final res = await Get.find<UserRepository>().userRelation(_mid);
     if (res case Success(:final response)) {
       if (response.mtime == null) return;
       _cacheFollowTime =
@@ -647,10 +651,10 @@ class _MemberPageState extends State<MemberPage> {
       return;
     }
     SmartDialog.showLoading();
-    final res = await LiveHttp.liveMedalWall(mid: _mid);
+    final res = await Get.find<LiveRepository>().liveMedalWall(mid: _mid);
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
-      _cacheMedalData = response;
+      _cacheMedalData = ModelConverters.medalWallDataConverter(response);
       onShow();
     } else {
       res.toast();

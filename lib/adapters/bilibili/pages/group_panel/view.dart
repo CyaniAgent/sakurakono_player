@@ -1,8 +1,8 @@
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
+import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-
-import 'package:skf/adapters/bilibili/http/member.dart';
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
@@ -40,11 +40,14 @@ class _GroupPanelState extends State<GroupPanel> {
   }
 
   void _queryFollowUpTags() {
-    MemberHttp.followUpTags().then((res) {
+    Get.find<MemberRepository>().followUpTags().then((res) {
       if (mounted) {
         loadingState = switch (res) {
               Loading() => LoadingState.loading(),
-              Success(:final response) => Success(response..removeFirstWhere((e) => e.tagid == 0)),
+              Success(:final response) => Success(
+                response.map(ModelConverters.memberTagItemConverter).toList()
+                  ..removeFirstWhere((e) => e.tagid == 0),
+              ),
               Error(:final errMsg) => Error(errMsg),
             };
         showDefaultBtn.value = tags.isEmpty;
@@ -60,7 +63,8 @@ class _GroupPanelState extends State<GroupPanel> {
     }
     feedBack();
     // 保存
-    final res = await MemberHttp.addUsers(
+    // TODO: MemberRepository.addUsers returns Core types, view expects adapter types
+    final res = await Get.find<MemberRepository>().addUsers(
       widget.mid.toString(),
       tags.isEmpty ? '0' : tags.join(','),
     );
