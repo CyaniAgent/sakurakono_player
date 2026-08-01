@@ -16,7 +16,7 @@ import 'dart:convert';
 
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/fav_types.dart' hide CoreStat, CoreUgc, CoreOwner;
-import 'package:skf/core/models/member_types.dart'
+import 'package:skf/core/models/member_types.dart' as member
     hide
         CoreDynamicsDataModel,
         CoreDynamicItemModel,
@@ -82,6 +82,7 @@ import 'package:skf/core/models/member_types.dart'
         CoreModuleCollection,
         CoreModuleBlocked,
         CoreOwner;
+import 'package:skf/core/models/user_types.dart' as user;
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/models/video_types.dart';
@@ -164,10 +165,10 @@ abstract final class ModelConverters {
   // SpaceArchiveItem conversions
   // ---------------------------------------------------------------------------
 
-  /// [CoreSpaceArchiveItem] → [SpaceArchiveItem].
+  /// [member.CoreSpaceArchiveItem] → [SpaceArchiveItem].
   ///
   /// Used by: member_video, video/member pages.
-  static SpaceArchiveItem spaceArchiveItem(CoreSpaceArchiveItem core) =>
+  static SpaceArchiveItem spaceArchiveItem(member.CoreSpaceArchiveItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
@@ -203,10 +204,10 @@ abstract final class ModelConverters {
         'mid': core.ownerMid,
       });
 
-  /// [CoreArchiveItem] (from space archive) → [SpaceArchiveItem].
+  /// [member.CoreArchiveItem] (from space archive) → [SpaceArchiveItem].
   ///
   /// Used by: member_home page (video section).
-  static SpaceArchiveItem archiveItem(CoreArchiveItem core) =>
+  static SpaceArchiveItem archiveItem(member.CoreArchiveItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
@@ -215,11 +216,11 @@ abstract final class ModelConverters {
         'author': '',
       });
 
-  /// [CoreCoinArchiveItem] → [SpaceArchiveItem].
+  /// [member.CoreCoinArchiveItem] → [SpaceArchiveItem].
   ///
   /// Used by: member_home page (coin section).
   /// CoreCoinArchiveItem is minimal (only title + cover); other fields are null.
-  static SpaceArchiveItem coinLikeItem(CoreCoinArchiveItem core) =>
+  static SpaceArchiveItem coinLikeItem(member.CoreCoinArchiveItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
@@ -228,11 +229,11 @@ abstract final class ModelConverters {
         'author': '',
       });
 
-  /// [CoreLikeArchiveItem] → [SpaceArchiveItem].
+  /// [member.CoreLikeArchiveItem] → [SpaceArchiveItem].
   ///
   /// Used by: member_home page (like section).
   /// CoreLikeArchiveItem is minimal (only title + cover); other fields are null.
-  static SpaceArchiveItem likeArchiveItem(CoreLikeArchiveItem core) =>
+  static SpaceArchiveItem likeArchiveItem(member.CoreLikeArchiveItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
@@ -245,48 +246,48 @@ abstract final class ModelConverters {
   // MemberHome bridge conversions
   // ---------------------------------------------------------------------------
 
-  /// [CoreFavouriteItem] → [SpaceFavItemModel].
+  /// [member.CoreFavouriteItem] → [SpaceFavItemModel].
   ///
   /// Used by: member_home page (favourite section).
   /// CoreFavouriteItem has only title+cover; mediaId/count/isPublic are null.
   // TODO(type-safety): Core→adapter bridge — only title/cover mapped
-  static SpaceFavItemModel favouriteItem(CoreFavouriteItem core) =>
+  static SpaceFavItemModel favouriteItem(member.CoreFavouriteItem core) =>
       SpaceFavItemModel.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
       });
 
-  /// [CoreArticleItem] → [SpaceArticleItem].
+  /// [member.CoreArticleItem] → [SpaceArticleItem].
   ///
   /// Used by: member_home page (article section).
-  static SpaceArticleItem articleItem(CoreArticleItem core) =>
+  static SpaceArticleItem articleItem(member.CoreArticleItem core) =>
       SpaceArticleItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
       });
 
-  /// [CoreAudioItem] → [SpaceAudioItem].
+  /// [member.CoreAudioItem] → [SpaceAudioItem].
   ///
   /// Used by: member_home page (audio section).
-  static SpaceAudioItem audioItem(CoreAudioItem core) =>
+  static SpaceAudioItem audioItem(member.CoreAudioItem core) =>
       SpaceAudioItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
       });
 
-  /// [CoreComicItem] → [SpaceArchiveItem].
+  /// [member.CoreComicItem] → [SpaceArchiveItem].
   ///
   /// Used by: member_home page (comic section).
-  static SpaceArchiveItem comicItem(CoreComicItem core) =>
+  static SpaceArchiveItem comicItem(member.CoreComicItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
       });
 
-  /// [CoreSeasonItem] → [SpaceArchiveItem].
+  /// [member.CoreSeasonItem] → [SpaceArchiveItem].
   ///
   /// Used by: member_home page (season/PGC section).
-  static SpaceArchiveItem seasonItem(CoreSeasonItem core) =>
+  static SpaceArchiveItem seasonItem(member.CoreSeasonItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,
@@ -689,4 +690,66 @@ abstract final class ModelConverters {
               ? null
               : <String, dynamic>{'text': core.check!.text},
         };
+
+  // ---------------------------------------------------------------------------
+  // Duplicate Core model conversions (user_types / member_types → fav_types / video_types)
+  // ---------------------------------------------------------------------------
+
+  /// [user.CoreVideoTagItem] → [CoreVideoTagItem] (video_types).
+  ///
+  /// Used by: ugc introduction page (video tags).
+  static CoreVideoTagItem videoTagItem(user.CoreVideoTagItem core) =>
+      CoreVideoTagItem.fromJson(<String, dynamic>{
+        'tag_id': core.tagId,
+        'tag_name': core.tagName,
+        'tag_type': core.tagType,
+        'music_id': core.musicId,
+      });
+
+  /// [user.CoreSubItemModel] → [CoreSubItemModel] (fav_types).
+  ///
+  /// Used by: subscription page (SubItem widget expects the fav_types variant).
+  static CoreSubItemModel subItemModel(user.CoreSubItemModel core) =>
+      CoreSubItemModel.fromJson(<String, dynamic>{
+        'id': core.id,
+        'fid': core.fid,
+        'mid': core.mid,
+        'attr': core.attr,
+        'title': core.title,
+        'cover': core.cover,
+        'upper': core.upper == null
+            ? null
+            : <String, dynamic>{
+                'mid': core.upper!.mid,
+                'name': core.upper!.name,
+                'face': core.upper!.face,
+              },
+        'cover_type': core.coverType,
+        'intro': core.intro,
+        'ctime': core.ctime,
+        'mtime': core.mtime,
+        'state': core.state,
+        'fav_state': core.favState,
+        'media_count': core.mediaCount,
+        'view_count': core.viewCount,
+        'type': core.type,
+        'cnt_info': core.cntInfo == null
+            ? null
+            : <String, dynamic>{
+                'play': core.cntInfo!.play,
+                'danmaku': core.cntInfo!.danmaku,
+              },
+      });
+
+  /// [member.CoreSpaceCheeseItem] → [CoreSpaceCheeseItem] (fav_types).
+  ///
+  /// Used by: member_cheese page (MemberCheeseItem widget expects the
+  /// fav_types variant). The member variant only has id/title/cover; the
+  /// fav variant's marks/status/ctime stay null (widget guards them).
+  static CoreSpaceCheeseItem spaceCheeseItem(member.CoreSpaceCheeseItem core) =>
+      CoreSpaceCheeseItem.fromJson(<String, dynamic>{
+        'cover': core.cover,
+        'season_id': core.id,
+        'title': core.title,
+      });
 }

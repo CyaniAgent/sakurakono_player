@@ -28,6 +28,7 @@ import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/page.
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/season.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/bili_colors.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/get_ext.dart';
@@ -296,7 +297,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
         if (videoTags == null || videoTags.isEmpty) {
           return const SizedBox.shrink();
         }
-        return _buildTags(videoTags as dynamic);
+        return _buildTags(videoTags.map(ModelConverters.videoTagItem).toList());
       }),
     ),
   ];

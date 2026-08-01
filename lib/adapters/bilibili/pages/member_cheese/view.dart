@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_cheese/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_cheese/widgets/item.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,7 +49,7 @@ class _MemberCheeseState extends State<MemberCheese>
               top: 7,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(_controller.loadingState.value as dynamic)),
+            sliver: Obx(() => _buildBody(_controller.loadingState.value)),
           ),
         ],
       ),
@@ -69,7 +70,9 @@ class _MemberCheeseState extends State<MemberCheese>
                   if (index == response.length - 1) {
                     _controller.onLoadMore();
                   }
-                  return MemberCheeseItem(item: response[index] as dynamic);
+                  return MemberCheeseItem(
+                    item: ModelConverters.spaceCheeseItem(response[index]),
+                  );
                 },
                 itemCount: response.length,
               )

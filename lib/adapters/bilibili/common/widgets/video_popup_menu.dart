@@ -5,6 +5,7 @@ import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart';
 import 'package:skf/adapters/bilibili/models/model_video.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
+import 'package:skf/adapters/bilibili/models_new/video/video_ai_conclusion/model_result.dart';
 import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
 import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/video/ai_conclusion/view.dart';
@@ -80,7 +81,7 @@ class VideoPopupMenu extends StatelessWidget {
                                 child: AiConclusionPanel.buildContent(
                                   context,
                                   Theme.of(context),
-                                  res as dynamic,
+                                  AiConclusionResult.fromJson(res),
                                   tap: false,
                                 ),
                               ),

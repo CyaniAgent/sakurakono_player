@@ -5,6 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/pages/subscription/controller.dart';
 import 'package:skf/adapters/bilibili/pages/subscription/widgets/item.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,7 +54,7 @@ class _SubPageState extends State<SubPage> with GridMixin {
                   }
                   final item = response[index];
                   return SubItem(
-                    item: item as dynamic,
+                    item: ModelConverters.subItemModel(item),
                     cancelSub: () => _subController.cancelSub(item),
                   );
                 },

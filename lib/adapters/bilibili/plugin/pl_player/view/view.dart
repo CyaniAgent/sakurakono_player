@@ -13,14 +13,11 @@ import 'package:skf/common/widgets/gesture/immediate_tap_gesture_recognizer.dart
 import 'package:skf/common/widgets/gesture/mouse_interactive_viewer.dart';
 import 'package:skf/common/widgets/gesture/player_gesture_recognizer.dart';
 import 'package:skf/common/widgets/loading_widget.dart';
-import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/common/widgets/player_bar.dart';
+import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/common/widgets/progress_bar/audio_video_progress_bar.dart';
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/action_type.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/post_segment_model.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.dart';
 import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
@@ -2071,11 +2068,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     final theme = Theme.of(context);
     final currentPos = ctr.positionInMilliseconds / 1000.0;
     final duration = ctr.durationInMilliseconds / 1000.0;
-    final segment = Pair(first: currentPos, second: currentPos);
-    final model = PostSegmentModel(
-      segment: segment,
-      category: SegmentType.sponsor,
-      actionType: ActionType.skip,
+    final model = CorePostSegmentModel(
+      segment: CoreDoublePair(first: currentPos, second: currentPos),
+      category: CoreSegmentType.sponsor,
+      actionType: CoreActionType.skip,
     );
     final isPlay = ctr.playerStatus.isPlaying;
     if (isPlay) ctr.pause();
@@ -2093,7 +2089,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               children: [
                 PostPanel.segmentWidget(
                   theme,
-                  item: model as dynamic,
+                  item: model,
                   currentPos: () => currentPos,
                   videoDuration: duration,
                 ),
@@ -2147,7 +2143,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               ),
               TextButton(
                 onPressed: () {
-                  if (segment.first < segment.second) {
+                  if (model.segment.first < model.segment.second) {
                     Get.back(result: true);
                   }
                 },
@@ -2161,14 +2157,14 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
 
     final progress = 0.0.obs;
     final name =
-        '${ctr.cid}-${segment.first.toStringAsFixed(3)}_${segment.second.toStringAsFixed(3)}.webp';
+        '${ctr.cid}-${model.segment.first.toStringAsFixed(3)}_${model.segment.second.toStringAsFixed(3)}.webp';
     final file = '$tmpDirPath/$name';
 
     final mpv = MpvConvertWebp(
       url!,
       file,
-      segment.first,
-      segment.second,
+      model.segment.first,
+      model.segment.second,
       progress: progress,
       preset: preset,
     );
