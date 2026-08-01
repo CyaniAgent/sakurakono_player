@@ -4,14 +4,14 @@ import 'package:skf/common/widgets/avatars.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/dialog/report.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/http/dynamics.dart';
-
+import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
 import 'package:skf/adapters/bilibili/models_new/followee_votes/vote.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
@@ -55,10 +55,10 @@ class _VotePanelState extends State<VotePanel> {
     super.initState();
     _voteInfo = widget.voteInfo;
     if (isLogin) {
-      DynamicsHttp.followeeVotes(voteId: _voteInfo.voteId).then((res) {
+      Get.find<DynamicsRepository>().followeeVotes(voteId: _voteInfo.voteId).then((res) {
         if (!mounted) return;
         if (res case Success(:final response)) {
-          followeeVote.value = response;
+          followeeVote.value = response?.map(ModelConverters.followeeVote).toList();
         }
       });
     }
@@ -545,7 +545,7 @@ Future<void> showVoteDialog(
   int voteId, [
   int? dynamicId,
 ]) async {
-  final voteInfo = await DynamicsHttp.voteInfo(voteId);
+  final voteInfo = await Get.find<DynamicsRepository>().voteInfo(voteId);
   if (context.mounted) {
     if (voteInfo case Success(:final response)) {
       showDialog(
@@ -555,15 +555,15 @@ Future<void> showVoteDialog(
           child: Padding(
             padding: const .all(24),
             child: VotePanel(
-              voteInfo: response,
-              onVote: (votes, anonymous) async => switch (await DynamicsHttp.doVote(
+              voteInfo: ModelConverters.voteInfo(response),
+              onVote: (votes, anonymous) async => switch (await Get.find<DynamicsRepository>().doVote(
                 voteId: voteId,
                 votes: votes.toList(),
                 anonymous: anonymous,
                 dynamicId: dynamicId,
               )) {
                 Loading() => LoadingState.loading(),
-                Success(:final response) => Success(response),
+                Success(:final response) => Success(ModelConverters.voteInfo(response)),
                 Error(:final errMsg) => Error(errMsg),
               },
             ),

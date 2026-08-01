@@ -10,6 +10,7 @@ import 'package:skf/adapters/bilibili/pages/dynamics/widgets/live_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/live_panel_sub.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/live_rcmd_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/video_panel.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
@@ -71,7 +72,7 @@ Widget module(
       return videoSeasonWidget(
         context,
         theme: theme,
-        item: item as dynamic,
+        item: ModelConverters.moduleItem(item),
         floor: floor,
         isSave: isSave,
         isDetail: isDetail,
@@ -92,7 +93,7 @@ Widget module(
         context,
         theme: theme,
         isDetail: isDetail,
-        item: item as dynamic,
+        item: ModelConverters.moduleItem(item),
         floor: floor,
       );
     // 直播
@@ -100,7 +101,7 @@ Widget module(
       return livePanel(
         context,
         theme: theme,
-        item: item as dynamic,
+        item: ModelConverters.moduleItem(item),
         floor: floor,
         isDetail: isDetail,
       );
@@ -154,7 +155,7 @@ Widget module(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${(common as dynamic).titlePrefix ?? ''}${common.title ?? ''}',
+                        '${common.titlePrefix ?? ''}${common.title ?? ''}',
                         style: TextStyle(color: theme.colorScheme.primary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -306,7 +307,7 @@ Widget module(
         context,
         theme: theme,
         isDetail: isDetail,
-        item: item as dynamic,
+        item: ModelConverters.moduleItem(item),
         floor: floor,
       );
 

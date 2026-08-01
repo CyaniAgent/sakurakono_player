@@ -307,13 +307,16 @@ TextSpan? richNode(
 
                       Get.find<DynamicsRepository>().dynPic(i.rid).then((res) {
                         if (res case Success(:final response)) {
+                          final pics = response
+                              ?.map(ModelConverters.opusPic)
+                              .toList();
                           if (Platform.isAndroid) {
-                            i.pics = response as dynamic;
+                            i.pics = pics;
                           } else {
-                            i.dynPic = response as dynamic;
+                            i.dynPic = pics;
                           }
-                          if (response != null && response.isNotEmpty) {
-                            onView(response as dynamic);
+                          if (pics != null && pics.isNotEmpty) {
+                            onView(pics);
                           }
                         } else {
                           res.toast();

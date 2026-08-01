@@ -12,14 +12,85 @@
 /// models to have `toJson()`.
 library;
 
-import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/core/models/member_types.dart';
+import 'dart:convert';
+
+import 'package:skf/core/models/dynamics_types.dart';
+import 'package:skf/core/models/fav_types.dart' hide CoreStat, CoreUgc, CoreOwner;
+import 'package:skf/core/models/member_types.dart'
+    hide
+        CoreDynamicsDataModel,
+        CoreDynamicItemModel,
+        CoreFallback,
+        CoreBasic,
+        CoreItemModulesModel,
+        CoreArticleContentModel,
+        CoreModuleAuthorModel,
+        CoreDecorate,
+        CoreFan,
+        CoreModuleStatModel,
+        CoreDynamicStat,
+        CoreModuleTag,
+        CoreModuleDynamicModel,
+        CoreDynamicDescModel,
+        CoreRichTextNodeItem,
+        CoreEmoji,
+        CoreDynamicMajorModel,
+        CoreDynamicArchiveModel,
+        CoreBadge,
+        CoreStat,
+        CoreDynamicOpusModel,
+        CoreSummaryModel,
+        CoreOpusPicModel,
+        CoreDynamicLiveModel,
+        CoreWatchedShow,
+        CoreDynamicLive2Model,
+        CoreDynamicNoneModel,
+        CoreCommon,
+        CoreMusic,
+        CoreMedialist,
+        CoreSubscriptionNew,
+        CoreLiveRcmd,
+        CoreLiveRcmdContent,
+        CoreLivePlayInfo,
+        CoreDynamicTopicModel,
+        CoreDynamicAddModel,
+        CoreVote,
+        CoreUgc,
+        CoreReserve,
+        CoreReserveBtn,
+        CoreDesc,
+        CoreGood,
+        CoreGoodItem,
+        CoreUpowerLottery,
+        CoreHint,
+        CoreAddCommon,
+        CoreAddMatch,
+        CoreMatchInfo,
+        CoreTTeam,
+        CoreButton,
+        CoreJumpStyle,
+        CoreCheck,
+        CoreBgImg,
+        CoreModuleInteraction,
+        CoreModuleInteractionItem,
+        CoreModuleDispute,
+        CoreModuleFold,
+        CoreModuleTop,
+        CoreModuleTopDisplay,
+        CoreModuleTopAlbum,
+        CorePic,
+        CoreModuleCollection,
+        CoreModuleBlocked,
+        CoreOwner;
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/models/video_types.dart';
+import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
+import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
+import 'package:skf/adapters/bilibili/models_new/followee_votes/vote.dart';
 import 'package:skf/adapters/bilibili/models_new/music/bgm_recommend_list.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_article/item.dart';
@@ -335,4 +406,287 @@ abstract final class ModelConverters {
   static Dimension? dimension(CoreDimension? core) => core == null
       ? null
       : Dimension(width: core.width, height: core.height);
+
+  // ---------------------------------------------------------------------------
+  // Dynamics vote conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreVoteInfo] → [VoteInfo].
+  ///
+  /// Used by: dynamics vote dialog.
+  static VoteInfo voteInfo(CoreVoteInfo core) => VoteInfo(
+    choiceCnt: core.choiceCnt,
+    defaultShare: core.defaultShare,
+    desc: core.desc,
+    endTime: core.endTime,
+    status: core.status,
+    uid: core.uid,
+    voteId: core.voteId,
+    joinNum: core.joinNum,
+    title: core.title,
+    ctime: core.ctime,
+    myVotes: core.myVotes,
+    options: core.options.map(_option).toList(),
+    optionsCnt: core.optionsCnt,
+    voterLevel: core.voterLevel,
+    face: core.face,
+    name: core.name,
+    type: core.type,
+    votePublisher: core.votePublisher,
+    duration: core.duration,
+    onlyFansLevel: core.onlyFansLevel,
+  );
+
+  /// [CoreOption] → [Option].
+  static Option _option(CoreOption core) => Option(
+    optDesc: core.optDesc,
+    imgUrl: core.imgUrl,
+  )
+    ..optIdx = core.optIdx
+    ..cnt = core.cnt;
+
+  /// [CoreFolloweeVote] → [FolloweeVote].
+  ///
+  /// Used by: dynamics vote panel (followee votes list).
+  static FolloweeVote followeeVote(CoreFolloweeVote core) => FolloweeVote(
+    mid: core.mid,
+    name: core.name,
+    face: core.face,
+    votes: core.votes,
+    ctime: core.ctime,
+  );
+
+  // ---------------------------------------------------------------------------
+  // Dynamics rich text conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreOpusPicModel] → [OpusPicModel].
+  ///
+  /// Used by: dynamics rich node panel (dynPic).
+  static OpusPicModel opusPic(CoreOpusPicModel core) =>
+      OpusPicModel.fromJson(_opusPicMap(core));
+
+  /// [CoreModuleBlocked] → [ModuleBlocked].
+  ///
+  /// Used by: dynamics blocked item.
+  static ModuleBlocked blockedModule(CoreModuleBlocked core) =>
+      ModuleBlocked.fromJson(<String, dynamic>{
+        'bg_img': _bgImgMap(core.bgImg),
+        'blocked_type': core.blockedType,
+        'button': _buttonMap(core.button),
+        'title': core.title,
+        'hint_message': core.hintMessage,
+        'icon': _bgImgMap(core.icon),
+      });
+
+  // ---------------------------------------------------------------------------
+  // Dynamics module bridge conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreDynamicItemModel] → [DynamicItemModel].
+  ///
+  /// Used by: dynamics module and content panels.
+  /// Maps only the fields read by the dynamics widgets; other fields are null.
+  static DynamicItemModel moduleItem(CoreDynamicItemModel core) {
+    final coreDynamic = core.modules?.moduleDynamic;
+    return DynamicItemModel.fromJson(<String, dynamic>{
+      'type': core.type,
+      'id_str': core.idStr,
+      'basic': _basicMap(core.basic),
+      'modules': <String, dynamic>{
+        'module_dynamic': coreDynamic == null
+            ? null
+            : <String, dynamic>{
+                'desc': _descMap(coreDynamic.desc),
+                'major': _majorMap(coreDynamic.major),
+              },
+      },
+    })..linkFolded = core.linkFolded;
+  }
+
+  static Map<String, dynamic>? _basicMap(CoreBasic? core) => core == null
+      ? null
+      : <String, dynamic>{
+          'comment_id_str': core.commentIdStr,
+          'comment_type': core.commentType,
+          'rid_str': core.ridStr,
+        };
+
+  static Map<String, dynamic>? _descMap(CoreDynamicDescModel? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'rich_text_nodes': _richTextNodes(core.richTextNodes),
+              'text': core.text,
+            };
+
+  static Map<String, dynamic>? _summaryMap(CoreSummaryModel? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'rich_text_nodes': _richTextNodes(core.richTextNodes),
+              'text': core.text,
+            };
+
+  static List<Map<String, dynamic>>? _richTextNodes(
+    List<CoreRichTextNodeItem>? nodes,
+  ) =>
+      nodes?.map(_richTextNodeMap).toList();
+
+  static Map<String, dynamic> _richTextNodeMap(CoreRichTextNodeItem core) =>
+      <String, dynamic>{
+        'emoji': core.emoji == null
+            ? null
+            : <String, dynamic>{
+                'webp_url': core.emoji!.url,
+                'size': core.emoji!.size,
+              },
+        'orig_text': core.origText,
+        'text': core.text,
+        'type': core.type,
+        'rid': core.rid,
+        'pics': _opusPicMaps(core.pics),
+        'jump_url': core.jumpUrl,
+      };
+
+  static List<Map<String, dynamic>>? _opusPicMaps(
+    List<CoreOpusPicModel>? pics,
+  ) =>
+      pics?.map(_opusPicMap).toList();
+
+  static Map<String, dynamic> _opusPicMap(CoreOpusPicModel core) =>
+      <String, dynamic>{
+        'width': core.width,
+        'height': core.height,
+        'src': core.src,
+        'url': core.url,
+        'live_url': core.liveUrl,
+        'size': core.size,
+      };
+
+  static Map<String, dynamic>? _majorMap(CoreDynamicMajorModel? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'type': core.type,
+              'archive': _archiveMap(core.archive),
+              'ugc_season': _archiveMap(core.ugcSeason),
+              'pgc': _archiveMap(core.pgc),
+              'courses': _archiveMap(core.courses),
+              'live_rcmd': _liveRcmdMap(core.liveRcmd),
+              'live': _live2Map(core.live),
+              'opus': _opusMap(core.opus),
+              'subscription_new': _subscriptionNewMap(core.subscriptionNew),
+            };
+
+  static Map<String, dynamic>? _archiveMap(CoreDynamicArchiveModel? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'id': core.id,
+              'aid': core.aid,
+              'badge': _badgeMap(core.badge),
+              'bvid': core.bvid,
+              'cover': core.cover,
+              'duration_text': core.durationText,
+              'jump_url': core.jumpUrl,
+              'stat': _statMap(core.stat),
+              'title': core.title,
+              'type': core.type,
+              'epid': core.epid,
+              'season_id': core.seasonId,
+            };
+
+  static Map<String, dynamic>? _badgeMap(CoreBadge? core) => core == null
+      ? null
+      : <String, dynamic>{'text': core.text};
+
+  static Map<String, dynamic>? _statMap(CoreStat? core) => core == null
+      ? null
+      : <String, dynamic>{'danmaku': core.danmu, 'play': core.play};
+
+  static Map<String, dynamic>? _liveRcmdMap(CoreDynamicLiveModel? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'content': jsonEncode(<String, dynamic>{
+                'live_play_info': <String, dynamic>{
+                  'room_id': core.roomId,
+                  'live_status': core.liveStatus,
+                  'cover': core.cover,
+                  'area_name': core.areaName,
+                  'title': core.title,
+                  'watched_show': _watchedShowMap(core.watchedShow),
+                },
+              }),
+            };
+
+  static Map<String, dynamic>? _watchedShowMap(CoreWatchedShow? core) =>
+      core == null ? null : <String, dynamic>{'text_large': core.text};
+
+  static Map<String, dynamic>? _live2Map(CoreDynamicLive2Model? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'badge': _badgeMap(core.badge),
+              'cover': core.cover,
+              'desc_first': core.descFirst,
+              'id': core.id,
+              'live_state': core.liveState,
+              'title': core.title,
+            };
+
+  static Map<String, dynamic>? _opusMap(CoreDynamicOpusModel? core) =>
+      core == null
+          ? null
+          : <String, dynamic>{
+              'pics': _opusPicMaps(core.pics),
+              'summary': _summaryMap(core.summary),
+              'title': core.title,
+            };
+
+  static Map<String, dynamic>? _subscriptionNewMap(
+    CoreSubscriptionNew? core,
+  ) =>
+      core == null
+          ? null
+          : <String, dynamic>{'live_rcmd': _liveRcmdInnerMap(core.liveRcmd)};
+
+  static Map<String, dynamic>? _liveRcmdInnerMap(CoreLiveRcmd? core) {
+    final info = core?.content?.livePlayInfo;
+    return core == null
+        ? null
+        : <String, dynamic>{
+            'content': jsonEncode(<String, dynamic>{
+              'live_play_info': info == null
+                  ? null
+                  : <String, dynamic>{
+                      'room_id': info.roomId,
+                      'live_status': info.liveStatus,
+                      'title': info.title,
+                      'cover': info.cover,
+                      'area_name': info.areaName,
+                      'watched_show': _watchedShowMap(info.watchedShow),
+                    },
+            }),
+          };
+  }
+
+  static Map<String, dynamic>? _bgImgMap(CoreBgImg? core) => core == null
+      ? null
+      : <String, dynamic>{'img_dark': core.imgDark, 'img_day': core.imgDay};
+
+  static Map<String, dynamic>? _buttonMap(CoreButton? core) => core == null
+      ? null
+      : <String, dynamic>{
+          'icon': core.icon,
+          'jump_url': core.jumpUrl,
+          'text': core.text,
+          'jump_style': core.jumpStyle == null
+              ? null
+              : <String, dynamic>{'text': core.jumpStyle!.text},
+          'check': core.check == null
+              ? null
+              : <String, dynamic>{'text': core.check!.text},
+        };
 }

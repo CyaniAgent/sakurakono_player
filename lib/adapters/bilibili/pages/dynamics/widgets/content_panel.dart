@@ -5,6 +5,7 @@ import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
 import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/rich_node_panel.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,11 +20,13 @@ Widget content(
   required bool isSave,
   required bool isDetail,
 }) {
+  final itemVal = ModelConverters.moduleItem(item);
   TextSpan? richNodes = richNode(
     context,
     theme: theme,
-    item: item as dynamic,
+    item: itemVal,
   );
+  item.linkFolded = itemVal.linkFolded;
   final moduleDynamic = item.modules?.moduleDynamic;
   final pics = moduleDynamic?.major?.opus?.pics;
   final text =
