@@ -1,6 +1,7 @@
-import 'package:skf/core/result/loading_state.dart';
+import 'package:get/get.dart';
+import 'package:skf/core/repository/auth_repository.dart';
 
-import 'package:skf/adapters/bilibili/http/login.dart';
+import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/auth_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
 
@@ -19,10 +20,10 @@ class CoreLoginDevicesController
 
   @override
   Future<LoadingState<CoreLoginDevicesData>> customGetData() async {
-    final result = await LoginHttp.loginDevices();
+    final result = await Get.find<AuthRepository>().loginDevices();
     return switch (result) {
       Loading _ => LoadingState.loading(),
-      Success(:final response) => Success(response as dynamic),
+      Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
   }
