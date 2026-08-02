@@ -10,13 +10,14 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/sliver/sliver_to_box_adapter.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/article_content_model.dart' show Pic;
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart' show DynamicStat;
+import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/article/controller.dart';
 import 'package:skf/adapters/bilibili/pages/article/widgets/article_ops.dart';
 import 'package:skf/adapters/bilibili/pages/article/widgets/html_render.dart';
 import 'package:skf/adapters/bilibili/pages/article/widgets/opus_content.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
@@ -174,13 +175,17 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
               case final moduleBlocked?) {
             // if (kDebugMode) debugPrint('moduleBlocked');
             content = SliverToBoxAdapter(
-              child: moduleBlockedItem(context, theme, moduleBlocked as dynamic),
+              child: moduleBlockedItem(
+                context,
+                theme,
+                ModelConverters.blockedModule(moduleBlocked),
+              ),
             );
           } else if (controller.articleData?.content != null) {
             if (controller.articleData?.type == 3) {
               // json
               return ArticleOpus(
-                ops: controller.articleData?.ops as dynamic,
+                ops: ModelConverters.articleOpsList(controller.articleData?.ops),
                 maxWidth: maxWidth,
               );
             }
@@ -211,12 +216,16 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             content = const SliverToBoxAdapter(child: Text('NULL'));
           }
 
+          final topPics =
+              controller.opusData?.modules?.moduleTop?.display?.album?.pics;
+          final moduleCollection =
+              controller.opusData?.modules?.moduleCollection;
           return SliverMainAxisGroup(
             slivers: [
-              if (controller.type != 'read')
-                if (controller.opusData?.modules?.moduleTop?.display?.album?.pics
-                    case final pics? when pics.isNotEmpty)
-                  SliverToBoxAdapter(child: _buildImageGallery(pics as dynamic)),
+              if (controller.type != 'read' && topPics != null)
+                SliverToBoxAdapter(
+                  child: _buildImageGallery(ModelConverters.articlePics(topPics)!),
+                ),
               if (controller.summary.title != null)
                 SliverToBoxWithVisibilityAdapter(
                   onVisibilityChanged: controller.showTitle.call,
@@ -226,13 +235,12 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                   ),
                 ),
               SliverToBoxAdapter(child: _buildAuthor()),
-              if (controller.type != 'read' &&
-                  controller.opusData?.modules?.moduleCollection != null)
+              if (controller.type != 'read' && moduleCollection != null)
                 SliverToBoxAdapter(
                   child: SelectionContainer.disabled(
                     child: opusCollection(
                       theme,
-                      controller.opusData!.modules!.moduleCollection! as dynamic,
+                      ModelConverters.articleCollection(moduleCollection)!,
                     ),
                   ),
                 ),
@@ -347,7 +355,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
     Widget textIconButton({
       required IconData icon,
       required String text,
-      required DynamicStat? stat,
+      required CoreDynamicStat? stat,
       required VoidCallback onPressed,
       IconData? activatedIcon,
     }) {
@@ -411,7 +419,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                         return textIconButton(
                           text: '转发',
                           icon: FontAwesomeIcons.shareFromSquare,
-                          stat: forward as dynamic,
+                          stat: forward,
                           onPressed: () {
                             if (controller.opusData == null &&
                                 controller.articleData?.dynIdStr == null) {
@@ -461,7 +469,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                       icon: FontAwesomeIcons.star,
                       activatedIcon: FontAwesomeIcons.solidStar,
                       text: '收藏',
-                      stat: stats.favorite as dynamic,
+                      stat: stats.favorite,
                       onPressed: controller.onFav,
                     ),
                   ),
@@ -470,7 +478,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                       icon: FontAwesomeIcons.thumbsUp,
                       activatedIcon: FontAwesomeIcons.solidThumbsUp,
                       text: '点赞',
-                      stat: stats.like as dynamic,
+                      stat: stats.like,
                       onPressed: controller.onLike,
                     ),
                   ),

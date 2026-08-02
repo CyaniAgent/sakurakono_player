@@ -88,11 +88,14 @@ import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/video_types.dart';
+import 'package:skf/adapters/bilibili/models/dynamics/article_content_model.dart'
+    show ArticleContentModel, Pic;
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
+import 'package:skf/adapters/bilibili/models_new/article/article_view/ops.dart';
 import 'package:skf/adapters/bilibili/models_new/followee_votes/vote.dart';
 import 'package:skf/adapters/bilibili/models_new/music/bgm_recommend_list.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
@@ -922,4 +925,59 @@ abstract final class ModelConverters {
                 v2MedalColorText: adapter.medalInfo!.v2MedalColorText,
               ),
       );
+
+  // ---------------------------------------------------------------------------
+  // Article page conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreArticleOps] list → [ArticleOps] list.
+  ///
+  /// Used by: article page (json ops renderer). `insert` passes through as-is
+  /// (dynamic on both sides); `attributes` maps 1:1.
+  static List<ArticleOps>? articleOpsList(List<CoreArticleOps>? core) =>
+      core?.map(_articleOpsItem).toList();
+
+  static ArticleOps _articleOpsItem(CoreArticleOps core) => ArticleOps(
+    insert: core.insert,
+    attributes: core.attributes == null
+        ? null
+        : Attributes(clazz: core.attributes!.clazz),
+  );
+
+  /// [CorePic] list → [Pic] list.
+  ///
+  /// Used by: article page (top image gallery). Core `src` maps to adapter
+  /// `url`; `isLongPic` is recomputed by the adapter `fromJson` exactly as at
+  /// the repository boundary.
+  static List<Pic>? articlePics(List<CorePic>? core) =>
+      core?.map(_articlePic).toList();
+
+  static Pic _articlePic(CorePic core) => Pic.fromJson(<String, dynamic>{
+    'url': core.src,
+    'height': core.height,
+    'width': core.width,
+  });
+
+  /// [CoreModuleCollection] → [ModuleCollection].
+  ///
+  /// Used by: article page (collection card).
+  static ModuleCollection? articleCollection(CoreModuleCollection? core) =>
+      core == null
+          ? null
+          : ModuleCollection.fromJson(<String, dynamic>{
+              'count': core.count,
+              'id': core.id,
+              'name': core.name,
+              'title': core.title,
+            });
+
+  /// [CoreArticleContentModel] → [ArticleContentModel].
+  ///
+  /// Used by: article page controller (`opus` getter). The core model is an
+  /// empty placeholder — content is dropped at the repository boundary
+  /// (`_toCoreArticleContentModel`), so the result is an empty adapter model
+  /// that renders the OpusContent fallback branch (previously a runtime
+  /// `TypeError` from the lazy `.cast<ArticleContentModel>()`).
+  static ArticleContentModel articleContent(CoreArticleContentModel core) =>
+      ArticleContentModel.fromJson(const <String, dynamic>{});
 }

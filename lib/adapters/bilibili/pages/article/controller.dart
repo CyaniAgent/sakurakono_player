@@ -9,6 +9,7 @@ import 'package:skf/adapters/bilibili/models/dynamics/article_content_model.dart
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -40,9 +41,9 @@ class ArticleController extends CommonDynController {
   final stats = Rxn<CoreModuleStatModel>();
 
   List<ArticleContentModel>? get opus {
-    final coreContent = opusData?.modules?.moduleContent ??
-        articleData?.opus?.content;
-    return coreContent?.cast<ArticleContentModel>();
+    final coreContent =
+        opusData?.modules?.moduleContent ?? articleData?.opus?.content;
+    return coreContent?.map(ModelConverters.articleContent).toList();
   }
 
   List<CoreSourceModel>? _images;
