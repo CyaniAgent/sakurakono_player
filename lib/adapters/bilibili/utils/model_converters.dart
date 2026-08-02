@@ -16,6 +16,7 @@ import 'dart:convert';
 
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/fav_types.dart' hide CoreStat, CoreUgc, CoreOwner;
+import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/core/models/member_types.dart' as member
     hide
         CoreDynamicsDataModel,
@@ -92,10 +93,12 @@ import 'package:skf/adapters/bilibili/models/dynamics/article_content_model.dart
     show ArticleContentModel, Pic;
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
+import 'package:skf/adapters/bilibili/models/model_avatar.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
 import 'package:skf/adapters/bilibili/models_new/article/article_view/ops.dart';
+import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
 import 'package:skf/adapters/bilibili/models_new/followee_votes/vote.dart';
 import 'package:skf/adapters/bilibili/models_new/history/history.dart';
 import 'package:skf/adapters/bilibili/models_new/history/list.dart';
@@ -820,6 +823,43 @@ abstract final class ModelConverters {
         tagid: core.tagid,
         tip: core.tip,
       );
+
+  /// [MemberTagItemModel] → [member.CoreMemberTagItemModel].
+  ///
+  /// Used by: follow_tag_sort page (persist re-ordered custom tags back into
+  /// the core `tabs` list). All four fields map 1:1.
+  static member.CoreMemberTagItemModel memberTagItemToCore(
+    MemberTagItemModel adapter,
+  ) =>
+      member.CoreMemberTagItemModel(
+        count: adapter.count,
+        name: adapter.name,
+        tagid: adapter.tagid,
+        tip: adapter.tip,
+      );
+
+  // ---------------------------------------------------------------------------
+  // Follow conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreFollowItemModel] → [FollowItemModel].
+  ///
+  /// Used by: follow_type, follow_search and follow child pages. `mid`/`uname`/
+  /// `face` map to the [UpItem] super-parameters; `officialVerify` on the core
+  /// side is a raw JSON map (or null) while the adapter wants a typed
+  /// [BaseOfficialVerify] — non-map payloads (e.g. `0` from legacy APIs) are
+  /// treated as null.
+  static FollowItemModel followItem(CoreFollowItemModel core) => FollowItemModel(
+    mid: core.mid,
+    uname: core.uname,
+    face: core.face,
+    attribute: core.attribute,
+    sign: core.sign,
+    officialVerify: switch (core.officialVerify) {
+      final Map<String, dynamic> m => BaseOfficialVerify.fromJson(m),
+      _ => null,
+    },
+  );
 
   // ---------------------------------------------------------------------------
   // Medal wall conversions

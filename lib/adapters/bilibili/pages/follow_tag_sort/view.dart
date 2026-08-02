@@ -1,9 +1,10 @@
 import 'package:skf/common/widgets/reorder_mixin.dart';
-import 'package:skf/adapters/bilibili/http/follow.dart';
+import 'package:skf/core/repository/follow_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
 import 'package:skf/adapters/bilibili/pages/follow/controller.dart';
 import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -27,9 +28,9 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
     super.initState();
     for (final e in widget.controller.tabs) {
       if (BiliUtils.isCustomFollowTag(e.tagid)) {
-        _customTags.add(e as dynamic);
+        _customTags.add(ModelConverters.memberTagItemConverter(e));
       } else {
-        _defTags.add(e as dynamic);
+        _defTags.add(ModelConverters.memberTagItemConverter(e));
       }
     }
   }
@@ -44,14 +45,14 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
             ? [
                 TextButton(
                   onPressed: () async {
-                    final res = await FollowHttp.sortFollowTag(
+                    final res = await Get.find<FollowRepository>().sortFollowTag(
                       tagids: _customTags.map((e) => e.tagid).join(','),
                     );
                     if (res.isSuccess) {
                       SmartDialog.showToast('排序完成');
                       final tabs = _defTags + _customTags;
                       widget.controller
-                        ..tabs.value = tabs as dynamic
+                        ..tabs.value = tabs.map(ModelConverters.memberTagItemToCore).toList()
                         ..onInitTab()
                         ..followState.value = Success(tabs.hashCode);
                       if (mounted) {

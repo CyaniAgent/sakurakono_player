@@ -5,6 +5,7 @@ import 'package:skf/common/widgets/button/more_btn.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/adapters/bilibili/models/common/follow_order_type.dart';
 import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
 import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
@@ -13,6 +14,7 @@ import 'package:skf/adapters/bilibili/pages/follow/controller.dart';
 import 'package:skf/adapters/bilibili/pages/follow/widgets/follow_item.dart';
 import 'package:skf/adapters/bilibili/pages/follow_type/follow_same/view.dart';
 import 'package:skf/adapters/bilibili/pages/share/view.dart' show UserModel;
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -94,13 +96,13 @@ class _FollowChildPageState extends State<FollowChildPage>
               Obx(
                 () => _buildSameFollowing(
                   colorScheme,
-                  _followController.sameState.value as dynamic,
+                  _mapFollowItems(_followController.sameState.value),
                 ),
               ),
             SliverPadding(
               padding: EdgeInsets.only(bottom: padding.bottom + 100),
               sliver: Obx(
-                () => _buildBody(_followController.loadingState.value as dynamic),
+                () => _buildBody(_mapFollowItems(_followController.loadingState.value)),
               ),
             ),
           ],
@@ -154,6 +156,19 @@ class _FollowChildPageState extends State<FollowChildPage>
     }
     return child;
   }
+
+  /// Maps the controller's core-typed [LoadingState] to the adapter item list
+  /// the widgets render. `Loading`/`Error` carry no payload and pass through
+  /// with their errMsg/code preserved.
+  LoadingState<List<FollowItemModel>?> _mapFollowItems(
+    LoadingState<List<CoreFollowItemModel>?> state,
+  ) =>
+      switch (state) {
+        Success(:final response) =>
+          Success(response?.map(ModelConverters.followItem).toList()),
+        Error(:final errMsg, :final code) => Error(errMsg, code: code),
+        Loading() => LoadingState.loading(),
+      };
 
   Widget _buildBody(LoadingState<List<FollowItemModel>?> loadingState) {
     return switch (loadingState) {

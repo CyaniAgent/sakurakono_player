@@ -2,7 +2,6 @@
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/adapters/bilibili/models/member/tags.dart'; // ignore: adapter import (no core equivalent for MemberTagItemModel)
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -82,7 +81,7 @@ class FollowController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  Future<void> onUpdateTag(MemberTagItemModel item, String tagName) async {
+  Future<void> onUpdateTag(CoreMemberTagItemModel item, String tagName) async {
     final res = await Get.find<MemberRepository>().updateFollowTag(item.tagid!, tagName);
     if (res.isSuccess) {
       item.name = tagName;
