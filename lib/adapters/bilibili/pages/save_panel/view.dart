@@ -136,10 +136,10 @@ class _SavePanelState extends State<SavePanel> {
           }
         } catch (_) {}
       } else if (currentRoute.startsWith('/dynamicDetail')) {
-        DynamicItemModel? dynItem;
+        CoreDynamicItemModel? dynItem;
         try {
-          dynItem = Get.arguments['item'] as DynamicItemModel;
-          uname = dynItem.modules.moduleAuthor?.name;
+          dynItem = Get.arguments['item'] as CoreDynamicItemModel;
+          uname = dynItem.modules?.moduleAuthor?.name;
         } catch (_) {}
         final type = reply.type.toInt();
         final oid = reply.oid;
@@ -151,7 +151,7 @@ class _SavePanelState extends State<SavePanel> {
         } else {
           final enterUri = dynItem == null
               ? ''
-              : 'enterUri=${parseDyn(dynItem)}';
+              : 'enterUri=${parseDyn(ModelConverters.moduleItem(dynItem))}';
           uri =
               'bilibili://comment/detail/$type/$oid/$rootId/?${hasRoot ? 'anchor=${reply.id}&' : ''}$enterUri';
         }
