@@ -155,7 +155,7 @@ class VideoDetailController extends GetxController
   late VideoDecodeFormatType currentDecodeFormats;
 
   // 是否开始自动播放 存在多p的情况下，第二p需要为true
-  final RxBool _autoPlay = (Pref.autoPlayEnable as bool).obs;
+  final RxBool _autoPlay = (Pref.autoPlayEnable).obs;
 
   final videoPlayerKey = GlobalKey();
   final childKey = GlobalKey<ScaffoldState>();
@@ -1192,7 +1192,19 @@ class VideoDetailController extends GetxController
 
       if ((response.subtitle)?['subtitles']
           case final List sub? when (sub.isNotEmpty)) {
-        _setSubtitle(sub.cast<Subtitle>());
+        _setSubtitle(
+          sub
+              .map(
+                (e) => Subtitle(
+                  lan: e['lan'] as String? ?? '',
+                  lanDoc: e['lan_doc'] as String?,
+                  subtitleUrl: (e['subtitle_url'] as String?)
+                      ?.replaceFirst(RegExp('^https?:'), ''),
+                  isAi: e['type'] == 1,
+                ),
+              )
+              .toList(),
+        );
       } else if (!Accounts.main.isLogin) {
         final res = await DmGrpc.dmView(aid, cid.value);
         if (res case Success(:final response)) {

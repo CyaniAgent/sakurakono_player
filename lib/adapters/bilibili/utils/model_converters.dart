@@ -87,13 +87,16 @@ import 'package:skf/core/models/user_types.dart' as user;
 import 'package:skf/core/models/live_types.dart' as live_types;
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
+import 'package:skf/core/models/pgc_types.dart' show CorePgcReviewType;
 import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/video_types.dart';
+import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/article_content_model.dart'
-    show ArticleContentModel, Pic;
+    show ArticleContentModel, Common, Pic;
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
 import 'package:skf/adapters/bilibili/models/model_avatar.dart';
+import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
@@ -114,6 +117,7 @@ import 'package:skf/adapters/bilibili/models_new/space/space_fav/list.dart';
 import 'package:skf/adapters/bilibili/models_new/sub/sub_detail/media.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
+import 'package:skf/adapters/bilibili/models_new/live/live_feed_index/watched_show.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_superchat/item.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
@@ -1066,4 +1070,526 @@ abstract final class ModelConverters {
         tagName: core.tagName,
         liveStatus: core.liveStatus,
       );
+  static T? _mapNullable<T, R>(R? value, T Function(R) mapper) {
+    if (value == null) return null;
+    return mapper(value);
+  }
+
+  static List<T>? _mapList<T, R>(List<R>? list, T Function(R) mapper) {
+    return list?.map(mapper).toList();
+  }
+
+  static CoreOwner _toCoreOwner(Owner m) {
+    return CoreOwner(mid: m.mid, name: m.name, face: m.face);
+  }
+  static CoreDynamicItemModel dynamicItemToCore(DynamicItemModel m) {
+    return CoreDynamicItemModel(
+      basic: _mapNullable(m.basic, _toCoreBasic),
+      idStr: m.idStr,
+      modules: _mapNullable(m.modules, _toCoreItemModulesModel),
+      orig: _mapNullable(m.orig, dynamicItemToCore),
+      type: m.type,
+      visible: m.visible,
+      linkFolded: m.linkFolded,
+      fallback: _mapNullable(m.fallback, _toCoreFallback),
+    );
+  }
+
+  static CoreBasic _toCoreBasic(Basic m) {
+    return CoreBasic(
+      commentIdStr: m.commentIdStr,
+      commentType: m.commentType,
+      ridStr: m.ridStr,
+    );
+  }
+
+  static CoreFallback _toCoreFallback(Fallback m) {
+    return CoreFallback(id: m.id);
+  }
+
+  static CoreItemModulesModel _toCoreItemModulesModel(ItemModulesModel m) {
+    return CoreItemModulesModel(
+      moduleAuthor: _mapNullable(m.moduleAuthor, _toCoreModuleAuthorModel),
+      moduleStat: _mapNullable(m.moduleStat, _toCoreModuleStatModel),
+      moduleTag: _mapNullable(m.moduleTag, _toCoreModuleTag),
+      moduleDynamic: _mapNullable(m.moduleDynamic, _toCoreModuleDynamicModel),
+      moduleInteraction:
+          _mapNullable(m.moduleInteraction, _toCoreModuleInteraction),
+      moduleDispute: _mapNullable(m.moduleDispute, _toCoreModuleDispute),
+      moduleTop: _mapNullable(m.moduleTop, _toCoreModuleTop),
+      moduleCollection:
+          _mapNullable(m.moduleCollection, _toCoreModuleCollection),
+      moduleExtend: _mapList(m.moduleExtend, _toCoreModuleTag),
+      moduleContent: _mapList(m.moduleContent, _toCoreArticleContentModel),
+      moduleBlocked: _mapNullable(m.moduleBlocked, _toCoreModuleBlocked),
+      moduleFold: _mapNullable(m.moduleFold, _toCoreModuleFold),
+    );
+  }
+
+  /// Adapter → core stub: article content is dropped at the repository
+  /// boundary (mirrors the repo's `_toCoreArticleContentModel`).
+  static CoreArticleContentModel _toCoreArticleContentModel(
+    ArticleContentModel m,
+  ) {
+    return CoreArticleContentModel();
+  }
+
+  static CoreModuleAuthorModel _toCoreModuleAuthorModel(ModuleAuthorModel m) {
+    return CoreModuleAuthorModel(
+      face: m.face,
+      name: m.name,
+      mid: m.mid,
+      pubAction: m.pubAction,
+      pubTime: m.pubTime,
+      pubTs: m.pubTs,
+      type: m.type,
+      decorate: _mapNullable(m.decorate, _toCoreDecorate),
+      isTop: m.isTop,
+      badgeText: m.badgeText,
+      pendant: m.pendant?.image,
+      officialVerify: m.officialVerify?.type,
+    );
+  }
+
+  static CoreDecorate _toCoreDecorate(Decorate m) {
+    return CoreDecorate(
+      cardUrl: m.cardUrl,
+      fan: _mapNullable(m.fan, _toCoreFan),
+    );
+  }
+
+  static CoreFan _toCoreFan(Fan m) {
+    return CoreFan(color: m.color, numStr: m.numStr);
+  }
+
+  static CoreModuleStatModel _toCoreModuleStatModel(ModuleStatModel m) {
+    return CoreModuleStatModel(
+      comment: _mapNullable(m.comment, _toCoreDynamicStat),
+      forward: _mapNullable(m.forward, _toCoreDynamicStat),
+      like: _mapNullable(m.like, _toCoreDynamicStat),
+      favorite: _mapNullable(m.favorite, _toCoreDynamicStat),
+    );
+  }
+
+  static CoreDynamicStat _toCoreDynamicStat(DynamicStat m) {
+    return CoreDynamicStat(count: m.count, status: m.status);
+  }
+
+  static CoreModuleTag _toCoreModuleTag(ModuleTag m) {
+    return CoreModuleTag(text: m.text);
+  }
+
+  static CoreModuleDynamicModel _toCoreModuleDynamicModel(
+    ModuleDynamicModel m,
+  ) {
+    return CoreModuleDynamicModel(
+      additional: _mapNullable(m.additional, _toCoreDynamicAddModel),
+      desc: _mapNullable(m.desc, _toCoreDynamicDescModel),
+      major: _mapNullable(m.major, _toCoreDynamicMajorModel),
+      topic: _mapNullable(m.topic, _toCoreDynamicTopicModel),
+    );
+  }
+
+  static CoreDynamicAddModel _toCoreDynamicAddModel(DynamicAddModel m) {
+    return CoreDynamicAddModel(
+      type: m.type,
+      vote: _mapNullable(m.vote, _toCoreVote),
+      ugc: _mapNullable(m.ugc, _toCoreUgc),
+      reserve: _mapNullable(m.reserve, _toCoreReserve),
+      goods: _mapNullable(m.goods, _toCoreGood),
+      upowerLottery: _mapNullable(m.upowerLottery, _toCoreUpowerLottery),
+      common: _mapNullable(m.common, _toCoreAddCommon),
+      match: _mapNullable(m.match, _toCoreAddMatch),
+    );
+  }
+
+  static CoreVote _toCoreVote(Vote m) {
+    return CoreVote(joinNum: m.joinNum, voteId: m.voteId, title: m.title);
+  }
+
+  static CoreUgc _toCoreUgc(Ugc m) {
+    return CoreUgc(
+      cover: m.cover,
+      descSecond: m.descSecond,
+      jumpUrl: m.jumpUrl,
+      title: m.title,
+    );
+  }
+
+  static CoreReserve _toCoreReserve(Reserve m) {
+    return CoreReserve(
+      button: _mapNullable(m.button, _toCoreReserveBtn),
+      desc1: _mapNullable(m.desc1, _toCoreDesc),
+      desc2: _mapNullable(m.desc2, _toCoreDesc),
+      desc3: _mapNullable(m.desc3, _toCoreDesc),
+      reserveTotal: m.reserveTotal,
+      rid: m.rid,
+      state: m.state,
+      title: m.title,
+    );
+  }
+
+  static CoreReserveBtn _toCoreReserveBtn(ReserveBtn m) {
+    return CoreReserveBtn(
+      status: m.status,
+      type: m.type,
+      checkText: m.checkText,
+      uncheckText: m.uncheckText,
+      disable: m.disable,
+      jumpText: m.jumpText,
+      jumpUrl: m.jumpUrl,
+    );
+  }
+
+  static CoreDesc _toCoreDesc(Desc m) {
+    return CoreDesc(text: m.text, jumpUrl: m.jumpUrl);
+  }
+
+  static CoreGood _toCoreGood(Good m) {
+    return CoreGood(items: _mapList(m.items, _toCoreGoodItem));
+  }
+
+  static CoreGoodItem _toCoreGoodItem(GoodItem m) {
+    return CoreGoodItem(
+      cover: m.cover,
+      jumpDesc: m.jumpDesc,
+      jumpUrl: m.jumpUrl,
+      name: m.name,
+      price: m.price,
+    );
+  }
+
+  static CoreUpowerLottery _toCoreUpowerLottery(UpowerLottery m) {
+    return CoreUpowerLottery(
+      button: _mapNullable(m.button, _toCoreButton),
+      desc: _mapNullable(m.desc, _toCoreDesc),
+      hint: _mapNullable(m.hint, _toCoreHint),
+      jumpUrl: m.jumpUrl,
+      title: m.title,
+    );
+  }
+
+  static CoreHint _toCoreHint(Hint m) {
+    return CoreHint(text: m.text);
+  }
+
+  static CoreAddCommon _toCoreAddCommon(AddCommon m) {
+    return CoreAddCommon(
+      button: _mapNullable(m.button, _toCoreButton),
+      cover: m.cover,
+      desc1: m.desc1,
+      desc2: m.desc2,
+      jumpUrl: m.jumpUrl,
+      title: m.title,
+    );
+  }
+
+  static CoreAddMatch _toCoreAddMatch(AddMatch m) {
+    return CoreAddMatch(
+      button: _mapNullable(m.button, _toCoreButton),
+      jumpUrl: m.jumpUrl,
+      matchInfo: _mapNullable(m.matchInfo, _toCoreMatchInfo),
+    );
+  }
+
+  static CoreMatchInfo _toCoreMatchInfo(MatchInfo m) {
+    return CoreMatchInfo(
+      centerBottom: m.centerBottom,
+      centerTop: m.centerTop,
+      leftTeam: _mapNullable(m.leftTeam, _toCoreTTeam),
+      rightTeam: _mapNullable(m.rightTeam, _toCoreTTeam),
+      subTitle: m.subTitle,
+      title: m.title,
+    );
+  }
+
+  static CoreTTeam _toCoreTTeam(TTeam m) {
+    return CoreTTeam(name: m.name, pic: m.pic);
+  }
+
+  static CoreButton _toCoreButton(Button m) {
+    return CoreButton(
+      icon: m.icon,
+      jumpUrl: m.jumpUrl,
+      text: m.text,
+      jumpStyle: _mapNullable(m.jumpStyle, _toCoreJumpStyle),
+      check: _mapNullable(m.check, _toCoreCheck),
+    );
+  }
+
+  static CoreJumpStyle _toCoreJumpStyle(JumpStyle m) {
+    return CoreJumpStyle(text: m.text);
+  }
+
+  static CoreCheck _toCoreCheck(Check m) {
+    return CoreCheck(text: m.text);
+  }
+
+  static CoreBgImg _toCoreBgImg(BgImg m) {
+    return CoreBgImg(imgDark: m.imgDark, imgDay: m.imgDay);
+  }
+
+  static CoreDynamicDescModel _toCoreDynamicDescModel(DynamicDescModel m) {
+    return CoreDynamicDescModel(
+      richTextNodes: _mapList(m.richTextNodes, _toCoreRichTextNodeItem),
+      text: m.text,
+    );
+  }
+
+  static CoreDynamicMajorModel _toCoreDynamicMajorModel(DynamicMajorModel m) {
+    return CoreDynamicMajorModel(
+      archive: _mapNullable(m.archive, _toCoreDynamicArchiveModel),
+      ugcSeason: _mapNullable(m.ugcSeason, _toCoreDynamicArchiveModel),
+      opus: _mapNullable(m.opus, _toCoreDynamicOpusModel),
+      pgc: _mapNullable(m.pgc, _toCoreDynamicArchiveModel),
+      liveRcmd: _mapNullable(m.liveRcmd, _toCoreDynamicLiveModel),
+      live: _mapNullable(m.live, _toCoreDynamicLive2Model),
+      none: _mapNullable(m.none, _toCoreDynamicNoneModel),
+      type: m.type,
+      courses: _mapNullable(m.courses, _toCoreDynamicArchiveModel),
+      common: _mapNullable(m.common, _toCoreCommon),
+      upowerCommon: _mapNullable(m.upowerCommon, _toCoreCommon),
+      music: _mapNullable(m.music, _toCoreMusic),
+      blocked: _mapNullable(m.blocked, _toCoreModuleBlocked),
+      medialist: _mapNullable(m.medialist, _toCoreMedialist),
+      subscriptionNew:
+          _mapNullable(m.subscriptionNew, _toCoreSubscriptionNew),
+    );
+  }
+
+  static CoreDynamicArchiveModel _toCoreDynamicArchiveModel(
+    DynamicArchiveModel m,
+  ) {
+    return CoreDynamicArchiveModel(
+      id: m.id,
+      aid: m.aid,
+      badge: _mapNullable(m.badge, _toCoreBadge),
+      bvid: m.bvid,
+      cover: m.cover,
+      durationText: m.durationText,
+      jumpUrl: m.jumpUrl,
+      stat: _mapNullable(m.stat, _toCoreStat),
+      title: m.title,
+      type: m.type,
+      epid: m.epid,
+      seasonId: m.seasonId,
+    );
+  }
+
+  static CoreBadge _toCoreBadge(Badge m) {
+    return CoreBadge(text: m.text);
+  }
+
+  static CoreStat _toCoreStat(Stat m) {
+    return CoreStat(danmu: m.danmu, play: m.play);
+  }
+
+  static CoreDynamicOpusModel _toCoreDynamicOpusModel(DynamicOpusModel m) {
+    return CoreDynamicOpusModel(
+      pics: _mapList(m.pics, opusPicToCore),
+      summary: _mapNullable(m.summary, _toCoreSummaryModel),
+      title: m.title,
+    );
+  }
+
+  static CoreSummaryModel _toCoreSummaryModel(SummaryModel m) {
+    return CoreSummaryModel(
+      richTextNodes: _mapList(m.richTextNodes, _toCoreRichTextNodeItem),
+      text: m.text,
+    );
+  }
+
+  static CoreOpusPicModel opusPicToCore(OpusPicModel m) {
+    return CoreOpusPicModel(
+      width: m.width,
+      height: m.height,
+      src: m.src,
+      url: m.url,
+      liveUrl: m.liveUrl,
+      size: m.size,
+    );
+  }
+
+  static CoreRichTextNodeItem _toCoreRichTextNodeItem(RichTextNodeItem m) {
+    return CoreRichTextNodeItem(
+      emoji: _mapNullable(m.emoji, _toCoreEmoji),
+      origText: m.origText,
+      text: m.text,
+      type: m.type,
+      rid: m.rid,
+      pics: _mapList(m.pics, opusPicToCore),
+      jumpUrl: m.jumpUrl,
+    );
+  }
+
+  static CoreEmoji _toCoreEmoji(Emoji m) {
+    return CoreEmoji(url: m.url, size: m.size);
+  }
+
+  static CoreDynamicLiveModel _toCoreDynamicLiveModel(DynamicLiveModel m) {
+    return CoreDynamicLiveModel(
+      roomId: m.roomId,
+      liveStatus: m.liveStatus,
+      cover: m.cover,
+      areaName: m.areaName,
+      title: m.title,
+      watchedShow: _mapNullable(m.watchedShow, _toCoreWatchedShow),
+    );
+  }
+
+  static CoreDynamicLive2Model _toCoreDynamicLive2Model(DynamicLive2Model m) {
+    return CoreDynamicLive2Model(
+      badge: _mapNullable(m.badge, _toCoreBadge),
+      cover: m.cover,
+      descFirst: m.descFirst,
+      id: m.id,
+      liveState: m.liveState,
+      title: m.title,
+    );
+  }
+
+  static CoreDynamicNoneModel _toCoreDynamicNoneModel(DynamicNoneModel m) {
+    return CoreDynamicNoneModel(tips: m.tips);
+  }
+
+  static CoreWatchedShow _toCoreWatchedShow(WatchedShow m) {
+    return CoreWatchedShow(text: m.textLarge);
+  }
+
+  static CoreCommon _toCoreCommon(Common m) {
+    return CoreCommon(
+      cover: m.cover,
+      title: m.title,
+      titlePrefix: m.titlePrefix,
+      desc: m.desc,
+      jumpUrl: m.jumpUrl,
+    );
+  }
+
+  static CoreMusic _toCoreMusic(Music m) {
+    return CoreMusic(id: m.id, cover: m.cover, title: m.title, label: m.label);
+  }
+
+  static CoreMedialist _toCoreMedialist(Medialist m) {
+    return CoreMedialist(
+      id: m.id,
+      cover: m.cover,
+      title: m.title,
+      subTitle: m.subTitle,
+      jumpUrl: m.jumpUrl,
+      badge: _mapNullable(m.badge, _toCoreBadge),
+    );
+  }
+
+  static CoreSubscriptionNew _toCoreSubscriptionNew(SubscriptionNew m) {
+    return CoreSubscriptionNew(
+      liveRcmd: _mapNullable(m.liveRcmd, _toCoreLiveRcmd),
+    );
+  }
+
+  static CoreLiveRcmd _toCoreLiveRcmd(LiveRcmd m) {
+    return CoreLiveRcmd(
+      content: _mapNullable(m.content, _toCoreLiveRcmdContent),
+    );
+  }
+
+  static CoreLiveRcmdContent _toCoreLiveRcmdContent(LiveRcmdContent m) {
+    return CoreLiveRcmdContent(
+      livePlayInfo: _mapNullable(m.livePlayInfo, _toCoreLivePlayInfo),
+    );
+  }
+
+  static CoreLivePlayInfo _toCoreLivePlayInfo(LivePlayInfo m) {
+    return CoreLivePlayInfo(
+      roomId: m.roomId,
+      liveStatus: m.liveStatus,
+      title: m.title,
+      cover: m.cover,
+      areaName: m.areaName,
+      watchedShow: _mapNullable(m.watchedShow, _toCoreWatchedShow),
+    );
+  }
+
+  static CoreDynamicTopicModel _toCoreDynamicTopicModel(DynamicTopicModel m) {
+    return CoreDynamicTopicModel(id: m.id, name: m.name);
+  }
+
+  static CoreModuleInteraction _toCoreModuleInteraction(
+    ModuleInteraction m,
+  ) {
+    return CoreModuleInteraction(
+      items: _mapList(m.items, _toCoreModuleInteractionItem),
+    );
+  }
+
+  static CoreModuleInteractionItem _toCoreModuleInteractionItem(
+    ModuleInteractionItem m,
+  ) {
+    return CoreModuleInteractionItem(
+      type: m.type,
+      desc: _mapNullable(m.desc, _toCoreDynamicDescModel),
+    );
+  }
+
+  static CoreModuleDispute _toCoreModuleDispute(ModuleDispute m) {
+    return CoreModuleDispute(
+      title: m.title,
+      desc: m.desc,
+      jumpUrl: m.jumpUrl,
+    );
+  }
+
+  static CoreModuleFold _toCoreModuleFold(ModuleFold m) {
+    return CoreModuleFold(
+      ids: m.ids,
+      statement: m.statement,
+      users: _mapList(m.users, _toCoreOwner),
+    );
+  }
+
+  static CoreModuleTop _toCoreModuleTop(ModuleTop m) {
+    return CoreModuleTop(
+      display: _mapNullable(m.display, _toCoreModuleTopDisplay),
+    );
+  }
+
+  static CoreModuleTopDisplay _toCoreModuleTopDisplay(ModuleTopDisplay m) {
+    return CoreModuleTopDisplay(
+      album: _mapNullable(m.album, _toCoreModuleTopAlbum),
+    );
+  }
+
+  static CoreModuleTopAlbum _toCoreModuleTopAlbum(ModuleTopAlbum m) {
+    return CoreModuleTopAlbum(pics: _mapList(m.pics, _toCorePic));
+  }
+
+  static CorePic _toCorePic(Pic m) {
+    return CorePic(src: m.url, height: m.height, width: m.width);
+  }
+
+  static CoreModuleCollection _toCoreModuleCollection(ModuleCollection m) {
+    return CoreModuleCollection(
+      count: m.count,
+      id: m.id,
+      name: m.name,
+      title: m.title,
+    );
+  }
+
+  static CoreModuleBlocked _toCoreModuleBlocked(ModuleBlocked m) {
+    return CoreModuleBlocked(
+      bgImg: _mapNullable(m.bgImg, _toCoreBgImg),
+      blockedType: m.blockedType,
+      button: _mapNullable(m.button, _toCoreButton),
+      title: m.title,
+      hintMessage: m.hintMessage,
+      icon: _mapNullable(m.icon, _toCoreBgImg),
+    );
+  }
+  static CorePgcReviewType pgcReviewType(PgcReviewType v) {
+    return switch (v) {
+      PgcReviewType.long => CorePgcReviewType.long,
+      PgcReviewType.short => CorePgcReviewType.short,
+    };
+  }
 }

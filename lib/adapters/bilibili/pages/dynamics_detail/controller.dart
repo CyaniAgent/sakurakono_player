@@ -21,7 +21,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   @override
   void onInit() {
     super.onInit();
-    dynItem = Get.arguments['item'];
+    dynItem = Get.arguments['item'] as CoreDynamicItemModel;
     final commentType = dynItem.basic?.commentType;
     final commentIdStr = dynItem.basic?.commentIdStr;
     if (commentType != null &&

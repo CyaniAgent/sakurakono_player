@@ -3,6 +3,7 @@ import 'package:skf/common/constants.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicItemModel;
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
@@ -21,6 +22,7 @@ import 'package:skf/utils/image_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/share_utils.dart';
 import 'package:skf/utils/utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -379,7 +381,14 @@ class _SavePanelState extends State<SavePanel> {
                         ),
                         DynamicItemModel dyn => IgnorePointer(
                           child: DynamicPanel(
-                            item: dyn as dynamic,
+                            item: ModelConverters.dynamicItemToCore(dyn),
+                            isDetail: true,
+                            isSave: true,
+                          ),
+                        ),
+                        CoreDynamicItemModel core => IgnorePointer(
+                          child: DynamicPanel(
+                            item: core,
                             isDetail: true,
                             isSave: true,
                           ),

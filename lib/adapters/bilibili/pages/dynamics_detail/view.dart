@@ -9,11 +9,10 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/common/widgets/sliver/sliver_to_box_adapter.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
-import 'package:skf/adapters/bilibili/http/dynamics.dart';
+import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/reply/reply_option_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/reaction/controller.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/reaction/view.dart';
@@ -26,6 +25,7 @@ import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/share_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -242,7 +242,7 @@ class _DynamicDetailPageState
       context,
       title: opus?.title,
       items: items,
-      pics: opus?.pics?.cast<PicModel>().toList(),
+      pics: opus?.pics?.map(ModelConverters.opusPic).toList(),
       topic: topic,
       replyOption: replyOption ?? .allow,
       isPrivate: item.modules?.moduleAuthor?.badgeText != null,
@@ -255,10 +255,10 @@ class _DynamicDetailPageState
           const Duration(milliseconds: 500),
           () async {
             if (!mounted) return;
-            final res = await DynamicsHttp.dynamicDetail(id: item.idStr);
+            final res = await Get.find<DynamicsRepository>().dynamicDetail(id: item.idStr);
             if (res case Success(:final response)) {
               if (mounted) {
-                controller.dynItem = response as dynamic;
+                controller.dynItem = response;
                 setState(() {});
               }
             }

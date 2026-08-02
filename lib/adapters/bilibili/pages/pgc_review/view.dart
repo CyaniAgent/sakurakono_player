@@ -3,6 +3,7 @@ import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/child/view.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/post/view.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +99,7 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                 children: PgcReviewType.values
                     .map(
                       (e) => PgcReviewChildPage(
-                        type: e as dynamic,
+                        type: ModelConverters.pgcReviewType(e),
                         name: widget.name,
                         mediaId: widget.mediaId,
                       ),

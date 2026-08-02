@@ -27,6 +27,7 @@ import 'package:skf/utils/extension/string_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/adapters/bilibili/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/url_utils.dart';
@@ -137,7 +138,7 @@ abstract final class PageUtils {
         toDupNamed(
           '/dynamicDetail',
           arguments: {
-            'item': response,
+            'item': ModelConverters.dynamicItemToCore(response),
           },
           off: off,
         );
