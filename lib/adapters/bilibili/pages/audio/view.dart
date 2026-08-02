@@ -28,6 +28,7 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
+import 'package:skf/core/models/audio_types.dart' show CoreAudioListOrder;
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
@@ -52,7 +53,7 @@ class AudioPage extends StatefulWidget {
     required int oid,
     List<int>? subId,
     required int itemType,
-    required PlaylistSource from,
+    required int from,
     String? heroTag,
     Duration? start,
     String? audioUrl,
@@ -114,9 +115,9 @@ class _AudioPageState extends State<AudioPage> {
               return PopupMenuButton<ListOrder>(
                 tooltip: '排序',
                 icon: const Icon(Icons.sort, size: 22),
-                initialValue: _controller.order as dynamic,
+                initialValue: ListOrder.valueOf(_controller.order.value),
                 onSelected: (value) {
-                  _controller.onChangeOrder(value as dynamic);
+                  _controller.onChangeOrder(CoreAudioListOrder.fromValue(value.value));
                   (context as Element).markNeedsBuild();
                 },
                 itemBuilder: (context) => ListOrder.values

@@ -52,7 +52,7 @@ class MemberAudioController
       itemType: 3,
       id: item.uid!,
       oid: item.id!,
-      from: PlaylistSource.MEM_SPACE,
+      from: PlaylistSource.MEM_SPACE.value,
     );
   }
 }

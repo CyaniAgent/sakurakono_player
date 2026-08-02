@@ -818,7 +818,7 @@ abstract final class PiliScheme {
           AudioPage.toAudioPage(
             itemType: 3,
             oid: int.parse(oid),
-            from: PlaylistSource.AUDIO_CARD,
+            from: PlaylistSource.AUDIO_CARD.value,
           );
           return true;
         }

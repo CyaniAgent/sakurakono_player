@@ -192,7 +192,7 @@ Widget module(
           onTap: () => AudioPage.toAudioPage(
             oid: music.id!,
             itemType: 3,
-            from: PlaylistSource.AUDIO_CARD,
+            from: PlaylistSource.AUDIO_CARD.value,
           ),
           child: Padding(
             padding: const EdgeInsets.only(

@@ -72,7 +72,7 @@ class FavVideoCardH extends StatelessWidget {
                     AudioPage.toAudioPage(
                       oid: item.id!,
                       itemType: 3,
-                      from: PlaylistSource.AUDIO_CARD,
+                      from: PlaylistSource.AUDIO_CARD.value,
                     );
                     break;
                   case 24:

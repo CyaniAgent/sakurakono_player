@@ -138,7 +138,7 @@ class AudioController extends GetxController
     this.id = id != null ? Int64(id) : oid;
     subId = (args['subId'] as List<int>?)?.map(Int64.new).toList() ?? [oid];
     itemType = args['itemType'];
-    from = CoreAudioPlaylistSource.fromValue((args['from'] as dynamic).value);
+    from = CoreAudioPlaylistSource.fromValue(args['from'] as int);
     _start = args['start'];
     final int? extraId = args['extraId'];
     if (extraId != null) {

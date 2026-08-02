@@ -1440,7 +1440,7 @@ class VideoDetailController extends GetxController
       id: id,
       oid: aid,
       subId: [cid.value],
-      from: from,
+      from: from.value,
       heroTag: _autoPlay.value ? heroTag : null,
       start: playedTime,
       audioUrl: audioUrl,
