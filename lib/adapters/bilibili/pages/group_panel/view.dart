@@ -63,7 +63,6 @@ class _GroupPanelState extends State<GroupPanel> {
     }
     feedBack();
     // 保存
-    // TODO: MemberRepository.addUsers returns Core types, view expects adapter types
     final res = await Get.find<MemberRepository>().addUsers(
       widget.mid.toString(),
       tags.isEmpty ? '0' : tags.join(','),
