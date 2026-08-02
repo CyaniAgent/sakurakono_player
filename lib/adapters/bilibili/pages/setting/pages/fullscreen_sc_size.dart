@@ -8,6 +8,7 @@ import 'package:skf/adapters/bilibili/models_new/live/live_superchat/item.dart'
 import 'package:skf/core/models/live_types.dart' show CoreSuperChatItem;
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
@@ -25,7 +26,7 @@ class FullScreenScSize extends StatefulWidget {
 
 class _FullScreenScSizeState extends State<FullScreenScSize> {
   double _width = Pref.fullScreenSCWidth;
-  final CoreSuperChatItem _randomSC = SuperChatItem.random as dynamic;
+  final CoreSuperChatItem _randomSC = ModelConverters.superChatItemToCore(SuperChatItem.random);
   late EdgeInsets _padding;
   late ColorScheme _colorScheme;
 

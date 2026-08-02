@@ -107,6 +107,7 @@ import 'package:skf/adapters/bilibili/models_new/sub/sub_detail/media.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
+import 'package:skf/adapters/bilibili/models_new/live/live_superchat/item.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
 
@@ -877,4 +878,48 @@ abstract final class ModelConverters {
         'sid': core.rid,
         'name': core.title,
       });
+
+  // ---------------------------------------------------------------------------
+  // SuperChat conversions
+  // ---------------------------------------------------------------------------
+
+  /// [SuperChatItem] → [live_types.CoreSuperChatItem].
+  ///
+  /// Used by: fullscreen_sc_size page (SC size preview card). Maps every field
+  /// 1:1; `expired`/`deleted` keep their defaults (false) — the adapter
+  /// constructor does not expose them and the source (`SuperChatItem.random`)
+  /// never sets them either.
+  static live_types.CoreSuperChatItem superChatItemToCore(
+    SuperChatItem adapter,
+  ) =>
+      live_types.CoreSuperChatItem(
+        id: adapter.id,
+        uid: adapter.uid,
+        price: adapter.price,
+        backgroundImage: adapter.backgroundImage,
+        backgroundColor: adapter.backgroundColor,
+        backgroundBottomColor: adapter.backgroundBottomColor,
+        backgroundPriceColor: adapter.backgroundPriceColor,
+        messageFontColor: adapter.messageFontColor,
+        startSime: adapter.startSime,
+        endTime: adapter.endTime,
+        message: adapter.message,
+        token: adapter.token,
+        ts: adapter.ts,
+        userInfo: live_types.CoreSuperChatUserInfo(
+          face: adapter.userInfo.face,
+          uname: adapter.userInfo.uname,
+          nameColor: adapter.userInfo.nameColor,
+        ),
+        medalInfo: adapter.medalInfo == null
+            ? null
+            : live_types.CoreUinfoMedal(
+                name: adapter.medalInfo!.name,
+                level: adapter.medalInfo!.level,
+                id: adapter.medalInfo!.id,
+                ruid: adapter.medalInfo!.ruid,
+                v2MedalColorStart: adapter.medalInfo!.v2MedalColorStart,
+                v2MedalColorText: adapter.medalInfo!.v2MedalColorText,
+              ),
+      );
 }
