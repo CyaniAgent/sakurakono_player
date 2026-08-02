@@ -593,8 +593,16 @@ class CoreSpaceCard {
   int? mid;
   dynamic relation;
   int? silence;
+  CoreVip? vip;
 
-  CoreSpaceCard({this.face, this.name, this.mid, this.relation, this.silence});
+  CoreSpaceCard({
+    this.face,
+    this.name,
+    this.mid,
+    this.relation,
+    this.silence,
+    this.vip,
+  });
 
   factory CoreSpaceCard.fromJson(Map<String, dynamic> json) => CoreSpaceCard(
         face: json['face'] as String?,
@@ -602,6 +610,9 @@ class CoreSpaceCard {
         mid: json['mid'] as int?,
         relation: json['relation'],
         silence: json['silence'] as int?,
+        vip: json['vip'] == null
+            ? null
+            : CoreVip.fromJson(json['vip'] as Map<String, dynamic>),
       );
 }
 

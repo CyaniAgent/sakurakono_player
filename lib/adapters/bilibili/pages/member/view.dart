@@ -12,9 +12,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/card.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/images.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/live.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space/reservation_card_list.dart';
 import 'package:skf/adapters/bilibili/pages/coin_log/controller.dart';
 import 'package:skf/adapters/bilibili/pages/exp_log/controller.dart';
@@ -111,10 +108,10 @@ class _MemberPageState extends State<MemberPage> {
                         isOwner:
                             _userController.mid == _userController.account.mid,
                         relation: _userController.relation.value,
-                        card: response.coreCard! as SpaceCard, // TODO(type-safety): CoreSpaceCard → SpaceCard
-                        images: response.images! as SpaceImages, // TODO(type-safety): CoreSpaceImages → SpaceImages
+                        card: ModelConverters.spaceCard(response.coreCard!)!,
+                        images: ModelConverters.spaceImages(response.images!)!,
                         onFollow: () => _userController.onFollow(context),
-                        live: _userController.live as Live?, // TODO(type-safety): CoreLive → Live
+                        live: ModelConverters.live(_userController.live),
                         silence: _userController.silence,
                         headerControllerBuilder: getHeaderController,
                         showLiveMedalWall: _showLiveMedalWall,
@@ -335,7 +332,11 @@ class _MemberPageState extends State<MemberPage> {
 
   List<Widget> _actions(ColorScheme theme) => [
     if (_userController.reserves?.isNotEmpty ?? false)
-      _reserveBtn((_userController.reserves?.cast<ReservationCardItem>() ?? <ReservationCardItem>[]), theme), // TODO(type-safety): CoreReservationCardItem → ReservationCardItem
+      _reserveBtn(
+        ModelConverters.reservationCardList(_userController.reserves) ??
+            <ReservationCardItem>[],
+        theme,
+      ),
     IconButton(
       tooltip: '搜索',
       onPressed: () => Get.toNamed(
@@ -445,7 +446,10 @@ class _MemberPageState extends State<MemberPage> {
           ),
         if (_userController.account.isLogin)
           if (_userController.mid == _userController.account.mid) ...[
-            if (_userController.loadingState.value.dataOrNull?.coreCard is SpaceCard && ((_userController.loadingState.value.dataOrNull?.coreCard as SpaceCard).vip?.status ?? 0) > 0)
+            if ((_userController.loadingState.value.dataOrNull?.coreCard?.vip
+                    ?.status ??
+                0) >
+                0)
               PopupMenuItem(
                 onTap: _userController.vipExpAdd,
                 child: const Row(

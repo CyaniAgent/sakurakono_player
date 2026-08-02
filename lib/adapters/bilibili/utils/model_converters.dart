@@ -83,7 +83,7 @@ import 'package:skf/core/models/member_types.dart' as member
         CoreModuleBlocked,
         CoreOwner;
 import 'package:skf/core/models/user_types.dart' as user;
-import 'package:skf/core/models/live_types.dart' as live;
+import 'package:skf/core/models/live_types.dart' as live_types;
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
@@ -98,6 +98,10 @@ import 'package:skf/adapters/bilibili/models_new/music/bgm_recommend_list.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_article/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_audio/item.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/card.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/images.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/live.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/reservation_card_list.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_fav/list.dart';
 import 'package:skf/adapters/bilibili/models_new/sub/sub_detail/media.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
@@ -812,6 +816,65 @@ abstract final class ModelConverters {
   /// Used by: member page (medal wall dialog). Round-trip via toJson/fromJson;
   /// key parity for nested medal_info/uinfo_medal verified against the adapter
   /// models in `models_new/live/live_medal_wall/`.
-  static MedalWallData medalWallDataConverter(live.CoreMedalWallData core) =>
+  static MedalWallData medalWallDataConverter(live_types.CoreMedalWallData core) =>
       MedalWallData.fromJson(core.toJson());
+
+  // ---------------------------------------------------------------------------
+  // Member space card / live / reservation conversions
+  // ---------------------------------------------------------------------------
+
+  /// [member.CoreSpaceCard] → [SpaceCard].
+  ///
+  /// Used by: member page (UserInfoCard header).
+  static SpaceCard? spaceCard(member.CoreSpaceCard? core) => core == null
+      ? null
+      : SpaceCard.fromJson(<String, dynamic>{
+          'face': core.face,
+          'name': core.name,
+          'mid': core.mid?.toString(),
+          'relation': core.relation,
+          'silence': core.silence,
+          'vip': core.vip == null
+              ? null
+              : <String, dynamic>{
+                  'type': core.vip!.type,
+                  'status': core.vip!.status,
+                  'vipType': core.vip!.vipType,
+                  'vipStatus': core.vip!.vipStatus,
+                },
+        });
+
+  /// [member.CoreSpaceImages] → [SpaceImages].
+  ///
+  /// Used by: member page (UserInfoCard header). Core only carries
+  /// `imgCount` which has no adapter counterpart, so the result keeps the
+  /// URL fields null.
+  static SpaceImages? spaceImages(member.CoreSpaceImages? core) => core == null
+      ? null
+      : SpaceImages.fromJson(<String, dynamic>{'img_count': core.imgCount});
+
+  /// [member.CoreLive] → [Live].
+  ///
+  /// Used by: member page (UserInfoCard header).
+  static Live? live(member.CoreLive? core) => core == null
+      ? null
+      : Live.fromJson(<String, dynamic>{'liveStatus': core.liveStatus});
+
+  /// [member.CoreReservationCardItem] list → [ReservationCardItem] list.
+  ///
+  /// Used by: member page (reserve button). Null in → null out; non-null in →
+  /// same-length mapped list. Core carries `rid`/`title` which map to the
+  /// adapter's `sid`/`name` keys.
+  static List<ReservationCardItem>? reservationCardList(
+    List<member.CoreReservationCardItem>? core,
+  ) =>
+      core?.map(_reservationCardItem).toList();
+
+  static ReservationCardItem _reservationCardItem(
+    member.CoreReservationCardItem core,
+  ) =>
+      ReservationCardItem.fromJson(<String, dynamic>{
+        'sid': core.rid,
+        'name': core.title,
+      });
 }

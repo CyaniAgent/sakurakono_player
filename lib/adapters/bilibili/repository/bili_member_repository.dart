@@ -307,6 +307,9 @@ class BiliMemberRepository implements MemberRepository {
     'face': d.face,
     'name': d.name,
     'mid': d.mid is String ? int.tryParse(d.mid as String) : d.mid,
+    'vip': d.vip == null
+        ? null
+        : <String, dynamic>{'type': d.vip.type, 'status': d.vip.status},
   };
 
   Map<String, dynamic> _spaceLiveToMap(dynamic d) => <String, dynamic>{
