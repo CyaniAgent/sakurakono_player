@@ -3,7 +3,7 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_fav/data.dart';
+import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_favorite/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_favorite/widget/item.dart';
 import 'package:skf/utils/grid.dart';
@@ -54,7 +54,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
             sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value as dynamic),
+              () => _buildBody(theme, _controller.loadingState.value),
             ),
           ),
         ],
@@ -64,7 +64,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
 
   Widget _buildBody(
     ThemeData theme,
-    LoadingState<List<SpaceFavData>?> loadingState,
+    LoadingState<List<CoreSpaceFavData>?> loadingState,
   ) {
     return switch (loadingState) {
       Loading() => SliverPadding(
