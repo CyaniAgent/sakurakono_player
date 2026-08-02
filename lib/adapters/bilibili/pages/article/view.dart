@@ -222,7 +222,9 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
               controller.opusData?.modules?.moduleCollection;
           return SliverMainAxisGroup(
             slivers: [
-              if (controller.type != 'read' && topPics != null)
+              if (controller.type != 'read' &&
+                  topPics != null &&
+                  topPics.isNotEmpty)
                 SliverToBoxAdapter(
                   child: _buildImageGallery(ModelConverters.articlePics(topPics)!),
                 ),
