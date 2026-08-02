@@ -5,6 +5,7 @@ import 'package:skf/adapters/bilibili/pages/common/search/common_search_page.dar
 import 'package:skf/adapters/bilibili/pages/later/widgets/video_card_h_later.dart';
 import 'package:skf/adapters/bilibili/pages/later_search/controller.dart';
 import 'package:skf/utils/grid.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/utils.dart';
@@ -78,7 +79,7 @@ class _LaterSearchPageState
               cid: cid,
               cover: item.pic,
               title: item.title,
-              dimension: item.dimension as dynamic,
+              dimension: ModelConverters.dimensionUser(item.dimension),
               extraArguments: {
                 'oid': item.aid,
                 'sourceType': SourceType.watchLater,

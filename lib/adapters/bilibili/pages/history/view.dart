@@ -8,6 +8,7 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/history/base_controller.dart';
 import 'package:skf/adapters/bilibili/pages/history/controller.dart';
 import 'package:skf/adapters/bilibili/pages/history/widgets/item.dart';
@@ -218,7 +219,7 @@ class _HistoryPageState extends State<HistoryPage>
                   }
                   final item = response[index];
                   return HistoryItem(
-                    item: item as dynamic,
+                    item: ModelConverters.historyItem(item),
                     ctr: _historyController,
                     onDelete: (kid, business) =>
                         _historyController.delHistory(item),

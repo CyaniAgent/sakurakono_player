@@ -1,4 +1,5 @@
 import 'package:skf/core/models/user_types.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/search/common_search_page.dart';
 import 'package:skf/adapters/bilibili/pages/history/widgets/item.dart';
@@ -35,7 +36,7 @@ class _HistorySearchPageState
         }
         final item = list[index];
         return HistoryItem(
-          item: item as dynamic,
+          item: ModelConverters.historyItem(item),
           ctr: controller,
           onDelete: (kid, business) =>
               controller.onDelHistory(index, kid, business),

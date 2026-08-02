@@ -9,6 +9,7 @@ import 'package:skf/adapters/bilibili/pages/later/controller.dart';
 import 'package:skf/adapters/bilibili/pages/later/widgets/video_card_h_later.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -84,7 +85,7 @@ class _LaterViewChildPageState extends State<LaterViewChildPage>
                         cid: cid,
                         cover: videoItem.pic,
                         title: videoItem.title,
-                        dimension: videoItem.dimension as dynamic,
+                        dimension: ModelConverters.dimensionUser(videoItem.dimension),
                         extraArguments: _baseCtr.isPlayAll.value
                             ? {
                                 'oid': videoItem.aid,

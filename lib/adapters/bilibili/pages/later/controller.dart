@@ -12,6 +12,7 @@ import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
 import 'package:skf/adapters/bilibili/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/adapters/bilibili/pages/later/base_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
@@ -177,7 +178,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
             cid: item.cid!,
             cover: item.pic,
             title: item.title,
-            dimension: item.dimension as dynamic,
+            dimension: ModelConverters.dimensionUser(item.dimension),
             extraArguments: {
               'sourceType': SourceType.watchLater,
               'count': baseCtr.counts[LaterViewType.all.index],

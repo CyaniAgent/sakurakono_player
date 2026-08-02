@@ -97,6 +97,8 @@ import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
 import 'package:skf/adapters/bilibili/models_new/article/article_view/ops.dart';
 import 'package:skf/adapters/bilibili/models_new/followee_votes/vote.dart';
+import 'package:skf/adapters/bilibili/models_new/history/history.dart';
+import 'package:skf/adapters/bilibili/models_new/history/list.dart';
 import 'package:skf/adapters/bilibili/models_new/music/bgm_recommend_list.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_article/item.dart';
@@ -419,6 +421,14 @@ abstract final class ModelConverters {
   /// Used by: subscription_detail, history, music, member_home,
   /// member_coin_arc, dynamics (rich node) pages.
   static Dimension? dimension(CoreDimension? core) => core == null
+      ? null
+      : Dimension(width: core.width, height: core.height);
+
+  /// [CoreDimension] (user_types variant) → [Dimension].
+  ///
+  /// Used by: later, later_search, child_view pages. Distinct class from the
+  /// search_types [CoreDimension] (identical width/height layout).
+  static Dimension? dimensionUser(user.CoreDimension? core) => core == null
       ? null
       : Dimension(width: core.width, height: core.height);
 
@@ -980,4 +990,40 @@ abstract final class ModelConverters {
   /// `TypeError` from the lazy `.cast<ArticleContentModel>()`).
   static ArticleContentModel articleContent(CoreArticleContentModel core) =>
       ArticleContentModel.fromJson(const <String, dynamic>{});
+
+  // ---------------------------------------------------------------------------
+  // History page conversions
+  // ---------------------------------------------------------------------------
+
+  /// [CoreHistoryItemModel] → [HistoryItemModel].
+  ///
+  /// Used by: history & history_search pages. All scalar fields map 1:1; the
+  /// nested [CoreHistory] maps to the adapter [History] with the same fields.
+  static HistoryItemModel historyItem(user.CoreHistoryItemModel core) =>
+      HistoryItemModel(
+        title: core.title,
+        cover: core.cover,
+        covers: core.covers,
+        uri: core.uri,
+        history: History(
+          oid: core.history.oid,
+          epid: core.history.epid,
+          bvid: core.history.bvid,
+          page: core.history.page,
+          cid: core.history.cid,
+          business: core.history.business,
+        ),
+        videos: core.videos,
+        authorName: core.authorName,
+        authorMid: core.authorMid,
+        viewAt: core.viewAt,
+        progress: core.progress,
+        badge: core.badge,
+        showTitle: core.showTitle,
+        duration: core.duration,
+        isFav: core.isFav,
+        kid: core.kid,
+        tagName: core.tagName,
+        liveStatus: core.liveStatus,
+      );
 }
