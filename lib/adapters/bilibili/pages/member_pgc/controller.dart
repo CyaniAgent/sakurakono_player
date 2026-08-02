@@ -24,7 +24,7 @@ class MemberBangumiCtr
     if (response != null) {
       page = 2;
       final res = response.season!;
-      loadingState.value = Success(res.item as List<CoreSpaceArchiveItem>?);
+      loadingState.value = Success(res.item);
       count = res.count!;
       isEnd = res.item!.length >= count!;
     } else {

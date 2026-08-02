@@ -17,7 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
+abstract class ReplyController<R>
+    extends CommonListController<R, ReplyInfo> {
   final RxInt count = (-1).obs;
 
   late final Rx<ReplySortType> sortType;
@@ -59,7 +60,13 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
 
   @override
   bool customHandleResponse(bool isRefresh, Success<R> response) {
-    final data = response.response as CoreMainListReply;
+    final CoreMainListReply data;
+    switch (response.response) {
+      case final CoreMainListReply core:
+        data = core;
+      default:
+        return false;
+    }
     final cursor = data.cursor as CursorReply?;
     cursorNext = cursor?.next.toInt();
     paginationReply = data.paginationReply as FeedPaginationReply?;

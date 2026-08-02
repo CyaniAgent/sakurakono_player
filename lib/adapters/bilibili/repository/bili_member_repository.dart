@@ -938,7 +938,7 @@ class BiliMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<LoadingState<Map>> memberStat({int? mid}) async {
+  Future<LoadingState<Map>> memberStat({int? mid}) {
     return MemberHttp.memberStat(mid: mid);
   }
 
@@ -1027,12 +1027,12 @@ class BiliMemberRepository implements MemberRepository {
   Future<LoadingState<void>> specialAction({
     int? fid,
     bool isAdd = true,
-  }) async {
+  }) {
     return MemberHttp.specialAction(fid: fid, isAdd: isAdd);
   }
 
   @override
-  Future<LoadingState<void>> addUsers(String fids, String tagids) async {
+  Future<LoadingState<void>> addUsers(String fids, String tagids) {
     return MemberHttp.addUsers(fids, tagids);
   }
 
@@ -1053,7 +1053,7 @@ class BiliMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<LoadingState<int>> createFollowTag(String tagName) async {
+  Future<LoadingState<int>> createFollowTag(String tagName) {
     return MemberHttp.createFollowTag(tagName);
   }
 
@@ -1061,12 +1061,12 @@ class BiliMemberRepository implements MemberRepository {
   Future<LoadingState<void>> updateFollowTag(
     Object tagid,
     Object name,
-  ) async {
+  ) {
     return MemberHttp.updateFollowTag(tagid, name);
   }
 
   @override
-  Future<LoadingState<void>> delFollowTag(Object tagid) async {
+  Future<LoadingState<void>> delFollowTag(Object tagid) {
     return MemberHttp.delFollowTag(tagid);
   }
 
@@ -1079,7 +1079,7 @@ class BiliMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<LoadingState<Map>> memberView({required int mid}) async {
+  Future<LoadingState<Map>> memberView({required int mid}) {
     return MemberHttp.memberView(mid: mid);
   }
 
@@ -1114,7 +1114,7 @@ class BiliMemberRepository implements MemberRepository {
     );
     return _mapSuccess(result, (d) {
       return CoreOpusSpaceFlowResp(
-        itemList: d.items?.cast<dynamic>(),
+        itemList: d.items,
         nextPage: d.offset,
         hostUpOpusCollection: null,
         hostUpNoteNavBar: null,

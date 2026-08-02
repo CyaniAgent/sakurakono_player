@@ -1,4 +1,5 @@
 import 'package:skf/adapters/bilibili/grpc/bilibili/community/service/dm/v1.pb.dart';
+import 'package:skf/core/models/danmaku_block.dart';
 
 class RuleFilter {
   static final _regExp = RegExp(r'^/(.*)/$');
@@ -14,19 +15,22 @@ class RuleFilter {
         count ?? dmFilterString.length + dmRegExp.length + dmUid.length;
   }
 
-  RuleFilter.fromRuleTypeEntries(List<List<Object>> rules) {
-    dmFilterString = rules[0].map((e) => (e as dynamic).filter as String).toList();
+  RuleFilter.fromRuleTypeEntries(List<List<CoreSimpleRule>> rules) {
+    dmFilterString = rules[0].map((e) => e.filter).toList();
 
     dmRegExp = rules[1]
         .map(
-          (e) => RegExp(
-            _regExp.matchAsPrefix((e as dynamic).filter as String)?.group(1) ?? (e as dynamic).filter as String,
-            caseSensitive: false,
-          ),
+          (e) {
+            final rule = e;
+            return RegExp(
+              _regExp.matchAsPrefix(rule.filter)?.group(1) ?? rule.filter,
+              caseSensitive: false,
+            );
+          },
         )
         .toList();
 
-    dmUid = rules[2].map((e) => (e as dynamic).filter as String).toSet();
+    dmUid = rules[2].map((e) => e.filter).toSet();
 
     count = dmFilterString.length + dmRegExp.length + dmUid.length;
   }

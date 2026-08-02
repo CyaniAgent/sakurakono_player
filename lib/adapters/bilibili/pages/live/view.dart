@@ -242,7 +242,7 @@ class _LivePageState extends State<LivePage>
                       );
                     }
                     return LiveCardVApp(
-                      item: item as CoreCardLiveItem,
+                      item: item,
                       showFirstFrame: controller.showFirstFrame,
                     );
                   },

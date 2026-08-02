@@ -273,7 +273,6 @@ abstract final class ModelConverters {
   ///
   /// Used by: member_home page (favourite section).
   /// CoreFavouriteItem has only title+cover; mediaId/count/isPublic are null.
-  // TODO(type-safety): Core→adapter bridge — only title/cover mapped
   static SpaceFavItemModel favouriteItem(member.CoreFavouriteItem core) =>
       SpaceFavItemModel.fromJson(<String, dynamic>{
         'title': core.title,
@@ -307,10 +306,10 @@ abstract final class ModelConverters {
         'cover': core.cover,
       });
 
-  /// [member.CoreSeasonItem] → [SpaceArchiveItem].
+  /// [member.CoreSpaceArchiveItem] → [SpaceArchiveItem].
   ///
   /// Used by: member_home page (season/PGC section).
-  static SpaceArchiveItem seasonItem(member.CoreSeasonItem core) =>
+  static SpaceArchiveItem seasonItem(member.CoreSpaceArchiveItem core) =>
       SpaceArchiveItem.fromJson(<String, dynamic>{
         'title': core.title,
         'cover': core.cover,

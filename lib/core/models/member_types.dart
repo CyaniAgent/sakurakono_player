@@ -101,14 +101,14 @@ class CoreStats {
 }
 
 class CoreSpaceSsData {
-  CoreSpaceSsPage? CorePage;
+  CoreSpaceSsPage? corePage;
   List<CoreSpaceSsModel>? seasonsList;
   List<CoreSpaceSsModel>? seriesList;
 
-  CoreSpaceSsData({this.CorePage, this.seasonsList, this.seriesList});
+  CoreSpaceSsData({this.corePage, this.seasonsList, this.seriesList});
 
   factory CoreSpaceSsData.fromJson(Map<String, dynamic> json) => CoreSpaceSsData(
-        CorePage: json['CorePage'] == null
+        corePage: json['CorePage'] == null
             ? null
             : CoreSpaceSsPage.fromJson(json['CorePage'] as Map<String, dynamic>),
         seasonsList: (json['seasons_list'] as List<dynamic>?)
@@ -369,16 +369,16 @@ class CoreSpaceAudioItem {
 
 class CoreSpaceCheeseData {
   List<CoreSpaceCheeseItem>? items;
-  CoreSpaceCheesePage? CorePage;
+  CoreSpaceCheesePage? corePage;
 
-  CoreSpaceCheeseData({this.items, this.CorePage});
+  CoreSpaceCheeseData({this.items, this.corePage});
 
   factory CoreSpaceCheeseData.fromJson(Map<String, dynamic> json) =>
       CoreSpaceCheeseData(
         items: (json['items'] as List<dynamic>?)
             ?.map((e) => CoreSpaceCheeseItem.fromJson(e as Map<String, dynamic>))
             .toList(),
-        CorePage: json['CorePage'] == null
+        corePage: json['CorePage'] == null
             ? null
             : CoreSpaceCheesePage.fromJson(json['CorePage'] as Map<String, dynamic>),
       );
@@ -425,7 +425,7 @@ class CoreSpaceData {
   String? defaultTab;
   CoreSpaceSetting? setting;
   CoreSpaceTab? tab;
-  CoreSpaceCard? CoreCard;
+  CoreSpaceCard? coreCard;
   CoreSpaceImages? images;
   CoreLive? coreLive;
   CoreElec? coreElec;
@@ -453,7 +453,7 @@ class CoreSpaceData {
     this.defaultTab,
     this.setting,
     this.tab,
-    this.CoreCard,
+    this.coreCard,
     this.images,
     this.coreLive,
     this.coreElec,
@@ -485,7 +485,7 @@ class CoreSpaceData {
         tab: json['tab'] == null
             ? null
             : CoreSpaceTab.fromJson(json['tab'] as Map<String, dynamic>),
-        CoreCard: json['CoreCard'] == null
+        coreCard: json['CoreCard'] == null
             ? null
             : CoreSpaceCard.fromJson(json['CoreCard'] as Map<String, dynamic>),
         images: json['images'] == null
@@ -732,14 +732,14 @@ class CoreArticleItem {
 
 class CoreSpaceSeason {
   int? count;
-  List<CoreSeasonItem>? item;
+  List<CoreSpaceArchiveItem>? item;
 
   CoreSpaceSeason({this.count, this.item});
 
   factory CoreSpaceSeason.fromJson(Map<String, dynamic> json) => CoreSpaceSeason(
         count: json['count'] as int?,
         item: (json['item'] as List<dynamic>?)
-            ?.map((e) => CoreSeasonItem.fromJson(e as Map<String, dynamic>))
+            ?.map((e) => CoreSpaceArchiveItem.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
 }
@@ -1058,14 +1058,14 @@ class CoreMemberInfoModel {
 
 class CoreBaseOfficialVerify {
   int? type;
-  String? CoreDesc;
+  String? coreDesc;
 
-  CoreBaseOfficialVerify({this.type, this.CoreDesc});
+  CoreBaseOfficialVerify({this.type, this.coreDesc});
 
   factory CoreBaseOfficialVerify.fromJson(Map<String, dynamic> json) =>
       CoreBaseOfficialVerify(
         type: json['type'] as int?,
-        CoreDesc: json['CoreDesc'] as String?,
+        coreDesc: json['CoreDesc'] as String?,
       );
 }
 
@@ -1239,7 +1239,7 @@ class CoreListTag {
 class CoreVListItemModel {
   String? title;
   String? author;
-  String? CorePic;
+  String? corePic;
   String? bvid;
   int? play;
   int? videoReview;
@@ -1247,7 +1247,7 @@ class CoreVListItemModel {
   CoreVListItemModel({
     this.title,
     this.author,
-    this.CorePic,
+    this.corePic,
     this.bvid,
     this.play,
     this.videoReview,
@@ -1257,7 +1257,7 @@ class CoreVListItemModel {
       CoreVListItemModel(
         title: json['title'] as String?,
         author: json['author'] as String?,
-        CorePic: json['CorePic'] as String?,
+        corePic: json['CorePic'] as String?,
         bvid: json['bvid'] as String?,
         play: json['play'] as int?,
         videoReview: json['video_review'] as int?,
@@ -1489,14 +1489,14 @@ class CoreItemModulesModel {
 
 class CoreModuleDispute {
   String? title;
-  String? CoreDesc;
+  String? coreDesc;
   String? jumpUrl;
 
-  CoreModuleDispute({this.title, this.CoreDesc, this.jumpUrl});
+  CoreModuleDispute({this.title, this.coreDesc, this.jumpUrl});
 
   factory CoreModuleDispute.fromJson(Map<String, dynamic> json) => CoreModuleDispute(
         title: json['title'] as String?,
-        CoreDesc: json['CoreDesc'] as String?,
+        coreDesc: json['CoreDesc'] as String?,
         jumpUrl: json['jump_url'] as String?,
       );
 }
@@ -1517,14 +1517,14 @@ class CoreModuleInteraction {
 
 class CoreModuleInteractionItem {
   int? type;
-  CoreDynamicDescModel? CoreDesc;
+  CoreDynamicDescModel? coreDesc;
 
-  CoreModuleInteractionItem({this.type, this.CoreDesc});
+  CoreModuleInteractionItem({this.type, this.coreDesc});
 
   factory CoreModuleInteractionItem.fromJson(Map<String, dynamic> json) =>
       CoreModuleInteractionItem(
         type: json['type'] as int?,
-        CoreDesc: json['CoreDesc'] == null
+        coreDesc: json['CoreDesc'] == null
             ? null
             : CoreDynamicDescModel.fromJson(
                 json['CoreDesc'] as Map<String, dynamic>),
@@ -1801,13 +1801,13 @@ class CoreFan {
 
 class CoreModuleDynamicModel {
   CoreDynamicAddModel? additional;
-  CoreDynamicDescModel? CoreDesc;
+  CoreDynamicDescModel? coreDesc;
   CoreDynamicMajorModel? major;
   CoreDynamicTopicModel? topic;
 
   CoreModuleDynamicModel({
     this.additional,
-    this.CoreDesc,
+    this.coreDesc,
     this.major,
     this.topic,
   });
@@ -1818,7 +1818,7 @@ class CoreModuleDynamicModel {
             ? null
             : CoreDynamicAddModel.fromJson(
                 json['additional'] as Map<String, dynamic>),
-        CoreDesc: json['CoreDesc'] == null
+        coreDesc: json['CoreDesc'] == null
             ? null
             : CoreDynamicDescModel.fromJson(
                 json['CoreDesc'] as Map<String, dynamic>),
@@ -1840,7 +1840,7 @@ class CoreDynamicAddModel {
   CoreReserve? coreReserve;
   CoreGood? goods;
   CoreUpowerLottery? coreUpowerLottery;
-  CoreAddCommon? CoreCommon;
+  CoreAddCommon? coreCommon;
   CoreAddMatch? match;
 
   CoreDynamicAddModel({
@@ -1850,7 +1850,7 @@ class CoreDynamicAddModel {
     this.coreReserve,
     this.goods,
     this.coreUpowerLottery,
-    this.CoreCommon,
+    this.coreCommon,
     this.match,
   });
 
@@ -1873,7 +1873,7 @@ class CoreDynamicAddModel {
             ? null
             : CoreUpowerLottery.fromJson(
                 json['upower_lottery'] as Map<String, dynamic>),
-        CoreCommon: json['CoreCommon'] == null
+        coreCommon: json['CoreCommon'] == null
             ? null
             : CoreAddCommon.fromJson(json['CoreCommon'] as Map<String, dynamic>),
         match: json['match'] == null
@@ -1933,13 +1933,13 @@ class CoreMatchInfo {
 
 class CoreTTeam {
   String? name;
-  String? CorePic;
+  String? corePic;
 
-  CoreTTeam({this.name, this.CorePic});
+  CoreTTeam({this.name, this.corePic});
 
   factory CoreTTeam.fromJson(Map<String, dynamic> json) => CoreTTeam(
         name: json['name'] as String?,
-        CorePic: json['CorePic'] as String?,
+        corePic: json['CorePic'] as String?,
       );
 }
 
@@ -2043,7 +2043,7 @@ class CoreUgc {
 }
 
 class CoreReserve {
-  CoreReserveBtn? CoreButton;
+  CoreReserveBtn? coreButton;
   CoreDesc? desc1;
   CoreDesc? desc2;
   CoreDesc? desc3;
@@ -2053,7 +2053,7 @@ class CoreReserve {
   String? title;
 
   CoreReserve({
-    this.CoreButton,
+    this.coreButton,
     this.desc1,
     this.desc2,
     this.desc3,
@@ -2064,7 +2064,7 @@ class CoreReserve {
   });
 
   factory CoreReserve.fromJson(Map<String, dynamic> json) => CoreReserve(
-        CoreButton: json['CoreButton'] == null
+        coreButton: json['CoreButton'] == null
             ? null
             : CoreReserveBtn.fromJson(json['CoreButton'] as Map<String, dynamic>),
         desc1: json['desc1'] == null
@@ -2178,12 +2178,12 @@ class CoreDynamicDescModel {
 }
 
 class CoreDynamicMajorModel {
-  CoreDynamicArchiveModel? CoreArchive;
-  CoreDynamicArchiveModel? CoreUgcSeason;
+  CoreDynamicArchiveModel? coreArchive;
+  CoreDynamicArchiveModel? coreUgcSeason;
   CoreDynamicOpusModel? opus;
   CoreDynamicArchiveModel? pgc;
-  CoreDynamicLiveModel? CoreLiveRcmd;
-  CoreDynamicLive2Model? CoreLive;
+  CoreDynamicLiveModel? coreLiveRcmd;
+  CoreDynamicLive2Model? coreLive;
   CoreDynamicNoneModel? none;
   String? type;
   CoreDynamicArchiveModel? courses;
@@ -2195,12 +2195,12 @@ class CoreDynamicMajorModel {
   CoreSubscriptionNew? coreSubscriptionNew;
 
   CoreDynamicMajorModel({
-    this.CoreArchive,
-    this.CoreUgcSeason,
+    this.coreArchive,
+    this.coreUgcSeason,
     this.opus,
     this.pgc,
-    this.CoreLiveRcmd,
-    this.CoreLive,
+    this.coreLiveRcmd,
+    this.coreLive,
     this.none,
     this.type,
     this.courses,
@@ -2214,11 +2214,11 @@ class CoreDynamicMajorModel {
 
   factory CoreDynamicMajorModel.fromJson(Map<String, dynamic> json) =>
       CoreDynamicMajorModel(
-        CoreArchive: json['CoreArchive'] == null
+        coreArchive: json['CoreArchive'] == null
             ? null
             : CoreDynamicArchiveModel.fromJson(
                 json['CoreArchive'] as Map<String, dynamic>),
-        CoreUgcSeason: json['ugc_season'] == null
+        coreUgcSeason: json['ugc_season'] == null
             ? null
             : CoreDynamicArchiveModel.fromJson(
                 json['ugc_season'] as Map<String, dynamic>),
@@ -2230,11 +2230,11 @@ class CoreDynamicMajorModel {
             ? null
             : CoreDynamicArchiveModel.fromJson(
                 json['pgc'] as Map<String, dynamic>),
-        CoreLiveRcmd: json['live_rcmd'] == null
+        coreLiveRcmd: json['live_rcmd'] == null
             ? null
             : CoreDynamicLiveModel.fromJson(
                 json['live_rcmd'] as Map<String, dynamic>),
-        CoreLive: json['CoreLive'] == null
+        coreLive: json['CoreLive'] == null
             ? null
             : CoreDynamicLive2Model.fromJson(
                 json['CoreLive'] as Map<String, dynamic>),
@@ -2697,15 +2697,15 @@ class CoreDynamicStat {
 class CoreCommon {
   String? cover;
   String? title;
-  String? CoreDesc;
+  String? coreDesc;
   String? jumpUrl;
 
-  CoreCommon({this.cover, this.title, this.CoreDesc, this.jumpUrl});
+  CoreCommon({this.cover, this.title, this.coreDesc, this.jumpUrl});
 
   factory CoreCommon.fromJson(Map<String, dynamic> json) => CoreCommon(
         cover: json['cover'] as String?,
         title: json['title'] as String?,
-        CoreDesc: json['CoreDesc'] as String?,
+        coreDesc: json['CoreDesc'] as String?,
         jumpUrl: json['jump_url'] as String?,
       );
 }
@@ -2759,16 +2759,16 @@ class CoreSpaceOpusData {
 class CoreSpaceOpusItemModel {
   String? content;
   String? opusId;
-  CoreOpusStat? CoreStat;
+  CoreOpusStat? coreStat;
   CoreOpusCover? cover;
 
-  CoreSpaceOpusItemModel({this.content, this.opusId, this.CoreStat, this.cover});
+  CoreSpaceOpusItemModel({this.content, this.opusId, this.coreStat, this.cover});
 
   factory CoreSpaceOpusItemModel.fromJson(Map<String, dynamic> json) =>
       CoreSpaceOpusItemModel(
         content: json['content'] as String?,
         opusId: json['opus_id'] as String?,
-        CoreStat: json['CoreStat'] == null
+        coreStat: json['CoreStat'] == null
             ? null
             : CoreOpusStat.fromJson(json['CoreStat'] as Map<String, dynamic>),
         cover: json['cover'] == null

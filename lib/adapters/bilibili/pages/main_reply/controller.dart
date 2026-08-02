@@ -41,5 +41,5 @@ class MainReplyController extends ReplyController<CoreMainListReply> {
 
   @override
   List<ReplyInfo>? getDataList(CoreMainListReply response) =>
-      response.replies?.cast<ReplyInfo>();
+      response.replies?.whereType<ReplyInfo>().toList();
 }

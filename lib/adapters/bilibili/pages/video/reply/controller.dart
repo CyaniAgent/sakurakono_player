@@ -30,7 +30,7 @@ class VideoReplyController extends ReplyController<CoreMainListReply>
 
   @override
   List<ReplyInfo>? getDataList(CoreMainListReply response) {
-    return response.replies?.cast<ReplyInfo>();
+    return response.replies?.whereType<ReplyInfo>().toList();
   }
 
   @override

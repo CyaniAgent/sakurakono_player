@@ -86,7 +86,10 @@ class _MemberContributeState extends State<MemberContribute>
                 child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _controller.tabController,
-                  children: _controller.items!.cast<SpaceTab2Item>().map(_getPageFromType).toList(),
+                  children: _controller.items!
+                      .whereType<SpaceTab2Item>()
+                      .map(_getPageFromType)
+                      .toList(),
                 ),
               ),
             ],
