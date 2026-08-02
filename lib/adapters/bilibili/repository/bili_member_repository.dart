@@ -4,7 +4,6 @@ import 'package:skf/adapters/bilibili/models/common/member/archive_order_type_we
 import 'package:skf/adapters/bilibili/models/common/member/archive_sort_type_app.dart';
 import 'package:skf/adapters/bilibili/models/common/member/contribute_type.dart';
 import 'package:skf/adapters/bilibili/models/common/member/web_ss_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/models/member/info.dart';
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
 import 'package:skf/adapters/bilibili/models_new/follow/data.dart';
@@ -21,8 +20,10 @@ import 'package:skf/adapters/bilibili/models_new/space/space_cheese/data.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_season_series/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_shop/data.dart';
 import 'package:skf/adapters/bilibili/models_new/upower_rank/data.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
+import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicsDataModel;
 import 'package:skf/core/models/follow_data.dart';
-import 'package:skf/core/models/member_types.dart';
+import 'package:skf/core/models/member_types.dart' hide CoreDynamicsDataModel;
 import 'package:skf/core/models/space_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -501,274 +502,6 @@ class BiliMemberRepository implements MemberRepository {
     'total': d.total,
   };
 
-  // ---- DynamicsDataModel -> CoreDynamicsDataModel ----
-
-  Map<String, dynamic> _dynamicsDataModelToMap(DynamicsDataModel d) => <String, dynamic>{
-    'has_more': d.hasMore,
-    'items': d.items?.map(_dynamicItemToMap).toList(),
-    'offset': d.offset,
-    'total': d.total,
-  };
-
-  Map<String, dynamic> _dynamicItemToMap(DynamicItemModel d) => <String, dynamic>{
-    'basic': d.basic == null ? null : _dynamicBasicToMap(d.basic!),
-    'id_str': d.idStr,
-    'modules': _itemModulesToMap(d.modules),
-    'orig': d.orig == null ? null : _dynamicItemToMap(d.orig!),
-    'type': d.type,
-    'visible': d.visible,
-    'CoreFallback': d.fallback == null ? null : _fallbackToMap(d.fallback!),
-  };
-
-  Map<String, dynamic> _dynamicBasicToMap(dynamic d) => <String, dynamic>{
-    'comment_id_str': d.commentIdStr,
-    'comment_type': d.commentType,
-    'rid_str': d.ridStr,
-  };
-
-  Map<String, dynamic> _itemModulesToMap(ItemModulesModel d) => <String, dynamic>{
-    'module_author': d.moduleAuthor == null ? null : _moduleAuthorToMap(d.moduleAuthor!),
-    'module_dynamic': d.moduleDynamic == null ? null : _moduleDynamicToMap(d.moduleDynamic!),
-    'module_stat': d.moduleStat == null ? null : _moduleStatToMap(d.moduleStat!),
-    'module_tag': d.moduleTag == null ? null : _moduleTagToMap(d.moduleTag!),
-    'module_fold': d.moduleFold == null ? null : _moduleFoldToMap(d.moduleFold!),
-  };
-
-  Map<String, dynamic> _moduleAuthorToMap(dynamic d) => <String, dynamic>{
-    'mid': d.mid,
-    'name': d.name,
-    'face': d.face,
-    'pub_action': d.pubAction,
-    'pub_time': d.pubTime,
-    'pub_ts': d.pubTs,
-    'type': d.type,
-    'CoreDecorate': d.decorate == null ? null : _decorateToMap(d.decorate!),
-    'is_top': d.isTop,
-    'icon_badge': d.badgeText == null ? null : {'text': d.badgeText},
-    'official': d.officialVerify == null ? null : _baseOfficialVerifyToMap(d.officialVerify!),
-  };
-
-  Map<String, dynamic> _decorateToMap(dynamic d) => <String, dynamic>{
-    'card_url': d.cardUrl,
-    'fan': d.fan == null ? null : _fanToMap(d.fan!),
-  };
-
-  Map<String, dynamic> _fanToMap(dynamic d) => <String, dynamic>{
-    'color': d.color,
-    'num_str': d.numStr,
-  };
-
-  Map<String, dynamic> _moduleDynamicToMap(dynamic d) => <String, dynamic>{
-    'additional': d.additional == null ? null : _dynamicAddModelToMap(d.additional!),
-    'desc': d.desc == null ? null : _dynamicDescToMap(d.desc!),
-    'major': d.major == null ? null : _dynamicMajorToMap(d.major!),
-    'topic': d.topic == null ? null : _dynamicTopicToMap(d.topic!),
-  };
-
-  Map<String, dynamic> _dynamicAddModelToMap(dynamic d) => <String, dynamic>{
-    'type': d.type,
-    'vote': d.vote == null ? null : _voteToMap(d.vote!),
-    'ugc': d.ugc == null ? null : _ugcToMap(d.ugc!),
-    'reserve': d.reserve == null ? null : _reserveToMap(d.reserve!),
-    'goods': d.goods == null ? null : _goodsToMap(d.goods!),
-    'upower_lottery': d.upowerLottery == null ? null : _upowerLotteryToMap(d.upowerLottery!),
-  };
-
-  Map<String, dynamic> _voteToMap(dynamic d) => <String, dynamic>{
-    'join_num': d.joinNum,
-    'vote_id': d.voteId,
-    'title': d.title,
-  };
-
-  Map<String, dynamic> _ugcToMap(dynamic d) => <String, dynamic>{
-    'cover': d.cover,
-    'desc_second': d.descSecond,
-    'jump_url': d.jumpUrl,
-    'title': d.title,
-  };
-
-  Map<String, dynamic> _reserveToMap(dynamic d) => <String, dynamic>{
-    'title': d.title,
-    'desc1': d.desc1 == null ? null : _descToMap(d.desc1!),
-    'desc2': d.desc2 == null ? null : _descToMap(d.desc2!),
-    'desc3': d.desc3 == null ? null : _descToMap(d.desc3!),
-    'reserve_total': d.reserveTotal,
-    'rid': d.rid,
-    'state': d.state,
-  };
-
-  Map<String, dynamic> _descToMap(dynamic d) => <String, dynamic>{
-    'text': d.text,
-    'jump_url': d.jumpUrl,
-  };
-
-  Map<String, dynamic> _goodsToMap(dynamic d) => <String, dynamic>{
-    'items': d.items?.map((e) => <String, dynamic>{
-      'cover': e.cover,
-      'jump_desc': e.jumpDesc,
-      'jump_url': e.jumpUrl,
-      'name': e.name,
-      'price': e.price,
-    }).toList(),
-  };
-
-  Map<String, dynamic> _upowerLotteryToMap(dynamic d) => <String, dynamic>{
-    'title': d.title,
-    'desc': d.desc == null ? null : _descToMap(d.desc!),
-    'jump_url': d.jumpUrl,
-  };
-
-  Map<String, dynamic> _dynamicDescToMap(dynamic d) => <String, dynamic>{
-    'rich_text_nodes': d.richTextNodes?.map((e) => <String, dynamic>{
-      'text': e.text,
-      'type': e.type,
-      'orig_text': e.origText,
-      'rid': e.rid,
-      'emoji': e.emoji == null ? null : _emojiToMap(e.emoji!),
-    }).toList(),
-    'text': d.text,
-  };
-
-  Map<String, dynamic> _emojiToMap(dynamic d) => <String, dynamic>{
-    'webp_url': d.url,
-    'gif_url': d.url,
-    'size': d.size,
-  };
-
-  Map<String, dynamic> _dynamicMajorToMap(dynamic d) => <String, dynamic>{
-    'type': d.type,
-    'archive': d.archive == null ? null : _dynamicArchiveToMap(d.archive!),
-    'ugc_season': d.ugcSeason == null ? null : _dynamicArchiveToMap(d.ugcSeason!),
-    'opus': d.opus == null ? null : _dynamicOpusToMap(d.opus!),
-    'pgc': d.pgc == null ? null : _dynamicArchiveToMap(d.pgc!),
-    'live_rcmd': d.liveRcmd == null ? null : _dynamicLiveRcmdToMap(d.liveRcmd!),
-    'live': d.live == null ? null : _dynamicLive2ToMap(d.live!),
-    'courses': d.courses == null ? null : _dynamicArchiveToMap(d.courses!),
-    'common': d.common == null ? null : _commonToMap(d.common!),
-    'music': d.music == null ? null : _musicToMap(d.music!),
-  };
-
-  Map<String, dynamic> _dynamicArchiveToMap(dynamic d) => <String, dynamic>{
-    'id': d.id ?? d.aid,
-    'aid': d.aid,
-    'badge': d.badge == null ? null : _badgeToMap(d.badge!),
-    'bvid': d.bvid,
-    'cover': d.cover,
-    'duration_text': d.durationText,
-    'jump_url': d.jumpUrl,
-    'stat': d.stat == null ? null : _archiveStatToMap(d.stat!),
-    'title': d.title,
-    'type': d.type,
-    'epid': d.epid,
-    'season_id': d.seasonId,
-  };
-
-  Map<String, dynamic> _archiveStatToMap(dynamic d) => <String, dynamic>{
-    'danmaku': d.danmu,
-    'play': d.play,
-  };
-
-  Map<String, dynamic> _dynamicOpusToMap(dynamic d) => <String, dynamic>{
-    'pics': d.pics?.map((e) => <String, dynamic>{
-      'width': e.width,
-      'height': e.height,
-      'url': e.url,
-      'src': e.src,
-    }).toList(),
-    'summary': d.summary == null ? null : _summaryToMap(d.summary!),
-    'title': d.title,
-  };
-
-  Map<String, dynamic> _summaryToMap(dynamic d) => <String, dynamic>{
-    'rich_text_nodes': d.richTextNodes?.map((e) => <String, dynamic>{
-      'text': e.text,
-      'type': e.type,
-      'rid': e.rid,
-    }).toList(),
-    'text': d.text,
-  };
-
-  Map<String, dynamic> _dynamicLiveRcmdToMap(dynamic d) => <String, dynamic>{
-    'content': d.content == null ? null : _liveRcmdContentToMap(d.content!),
-  };
-
-  Map<String, dynamic> _liveRcmdContentToMap(dynamic d) => <String, dynamic>{
-    'live_play_info': d.livePlayInfo == null ? null : _livePlayInfoToMap(d.livePlayInfo!),
-  };
-
-  Map<String, dynamic> _livePlayInfoToMap(dynamic d) => <String, dynamic>{
-    'room_id': d.roomId,
-    'live_status': d.liveStatus,
-    'title': d.title,
-    'cover': d.cover,
-    'area_name': d.areaName,
-  };
-
-  Map<String, dynamic> _dynamicLive2ToMap(dynamic d) => <String, dynamic>{
-    'id': d.id,
-    'title': d.title,
-    'cover': d.cover,
-    'desc_first': d.descFirst,
-    'live_state': d.liveState,
-    'badge': d.badge == null ? null : _badgeToMap(d.badge!),
-  };
-
-  Map<String, dynamic> _commonToMap(dynamic d) => <String, dynamic>{
-    'cover': d.cover,
-    'title': d.title,
-    'desc': d.desc,
-    'jump_url': d.jumpUrl,
-    'button': d.button == null ? null : _buttonToMap(d.button!),
-  };
-
-  Map<String, dynamic> _buttonToMap(dynamic d) => <String, dynamic>{
-    'icon': d.icon,
-    'jump_url': d.jumpUrl,
-    'text': d.text,
-  };
-
-  Map<String, dynamic> _musicToMap(dynamic d) => <String, dynamic>{
-    'id': d.id,
-    'cover': d.cover,
-    'title': d.title,
-    'label': d.label,
-  };
-
-  Map<String, dynamic> _dynamicTopicToMap(dynamic d) => <String, dynamic>{
-    'id': d.id,
-    'name': d.name,
-  };
-
-  Map<String, dynamic> _moduleStatToMap(dynamic d) => <String, dynamic>{
-    'comment': d.comment == null ? null : _dynamicStatToMap(d.comment!),
-    'forward': d.forward == null ? null : _dynamicStatToMap(d.forward!),
-    'like': d.like == null ? null : _dynamicStatToMap(d.like!),
-    'favorite': d.favorite == null ? null : _dynamicStatToMap(d.favorite!),
-  };
-
-  Map<String, dynamic> _dynamicStatToMap(dynamic d) => <String, dynamic>{
-    'count': d.count,
-    'status': d.status,
-  };
-
-  Map<String, dynamic> _moduleTagToMap(dynamic d) => <String, dynamic>{
-    'text': d.text,
-  };
-
-  Map<String, dynamic> _moduleFoldToMap(dynamic d) => <String, dynamic>{
-    'ids': d.ids,
-    'statement': d.statement,
-    'users': d.users?.map((e) => <String, dynamic>{
-      'mid': e.mid,
-      'name': e.name,
-      'face': e.face,
-    }).toList(),
-  };
-
-  Map<String, dynamic> _fallbackToMap(dynamic d) => <String, dynamic>{
-    'id': d.id,
-  };
-
   // ---- MemberGuardData -> CoreMemberGuardData ----
 
   Map<String, dynamic> _memberGuardDataToMap(MemberGuardData d) => <String, dynamic>{
@@ -996,7 +729,13 @@ class BiliMemberRepository implements MemberRepository {
     required int mid,
   }) async {
     final result = await MemberHttp.memberDynamic(offset: offset, mid: mid);
-    return _mapSuccess(result, (data) => CoreDynamicsDataModel.fromJson(_dynamicsDataModelToMap(data)));
+    return _mapSuccess(result, (data) => CoreDynamicsDataModel(
+      hasMore: data.hasMore,
+      items: data.items?.map(ModelConverters.dynamicItemToCore).toList(),
+      offset: data.offset,
+      total: data.total,
+      loadNext: data.loadNext,
+    ));
   }
 
   @override
@@ -1012,7 +751,13 @@ class BiliMemberRepository implements MemberRepository {
       offset: offset,
       keyword: keyword,
     );
-    return _mapSuccess(result, (data) => CoreDynamicsDataModel.fromJson(_dynamicsDataModelToMap(data)));
+    return _mapSuccess(result, (data) => CoreDynamicsDataModel(
+      hasMore: data.hasMore,
+      items: data.items?.map(ModelConverters.dynamicItemToCore).toList(),
+      offset: data.offset,
+      total: data.total,
+      loadNext: data.loadNext,
+    ));
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicItemModel;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/member_dynamics/controller.dart';
 import 'package:skf/adapters/bilibili/utils/global_data.dart';
@@ -68,7 +68,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
           padding: EdgeInsets.only(bottom: padding.bottom + 100),
           sliver: buildPage(
             Obx(
-              () => _buildContent(_memberDynamicController.loadingState.value as dynamic),
+              () => _buildContent(_memberDynamicController.loadingState.value),
             ),
           ),
         ),
@@ -76,7 +76,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
     ),
   );
 
-  Widget _buildContent(LoadingState<List<DynamicItemModel>?> loadingState) {
+  Widget _buildContent(LoadingState<List<CoreDynamicItemModel>?> loadingState) {
     return switch (loadingState) {
       Loading() => dynSkeleton,
       Success(:final response) =>
@@ -102,12 +102,12 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
     };
   }
 
-  Widget _itemBuilder(List<DynamicItemModel> list, int index) {
+  Widget _itemBuilder(List<CoreDynamicItemModel> list, int index) {
     if (index == list.length - 1) {
       _memberDynamicController.onLoadMore();
     }
     return DynamicPanel(
-      item: list[index] as dynamic,
+      item: list[index],
       onRemove: _memberDynamicController.onRemove,
       onSetTop: _memberDynamicController.onSetTop,
     );

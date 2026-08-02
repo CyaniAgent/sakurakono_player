@@ -1,5 +1,6 @@
 import 'package:skf/core/models/follow_data.dart';
-import 'package:skf/core/models/member_types.dart';
+import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicsDataModel;
+import 'package:skf/core/models/member_types.dart' hide CoreDynamicsDataModel;
 import 'package:skf/core/models/space_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -11,7 +12,7 @@ import 'package:skf/core/result/loading_state.dart';
 abstract class MemberRepository {
   /// Report a member for violation.
   Future<void> reportMember(
-    dynamic mid, {
+    int mid, {
     String? reason,
     int? reasonV2,
   });
@@ -57,7 +58,7 @@ abstract class MemberRepository {
   /// Get space overview data.
   Future<LoadingState<CoreSpaceData>> space({
     int? mid,
-    dynamic fromViewAid,
+    int? fromViewAid,
   });
 
   /// Get member info.
@@ -103,7 +104,7 @@ abstract class MemberRepository {
   Future<LoadingState<CoreDynamicsDataModel>> dynSearch({
     required int pn,
     required dynamic mid,
-    required dynamic offset,
+    required String? offset,
     required String keyword,
   });
 

@@ -3,7 +3,7 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/core/models/member_types.dart';
+import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -75,7 +75,7 @@ class MemberDynamicsController
     if (res.isSuccess) {
       final list = loadingState.value.data!;
       list[0].modules!
-        ..coreModuleTag = null
+        ..moduleTag = null
         ..moduleAuthor?.isTop = false;
       if (isTop) {
         loadingState.refresh();
@@ -83,7 +83,7 @@ class MemberDynamicsController
       } else {
         final item = list.firstWhere((item) => item.idStr == dynamicId);
         (item).modules!
-          ..coreModuleTag = CoreModuleTag(text: '置顶')
+          ..moduleTag = CoreModuleTag(text: '置顶')
           ..moduleAuthor?.isTop = true;
         list
           ..remove(item)
