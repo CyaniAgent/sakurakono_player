@@ -3,12 +3,12 @@ import 'dart:async' show StreamSubscription;
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/search/article_search_type.dart';
 import 'package:skf/adapters/bilibili/models/common/search/user_search_type.dart';
 import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
+import 'package:skf/adapters/bilibili/repository/bili_search_repository.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/pages/search_result/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
@@ -95,9 +95,7 @@ class SearchPanelController<R extends SearchNumData<T>, T>
 
   @override
   Future<LoadingState<R>> customGetData() async {
-    // Both SearchNumData and CoreSearchNumData share the same shape (numResults, list),
-    // making the cast safe.
-    final result = await (Get.find<SearchRepository>() as dynamic).searchByType(
+    final result = await (Get.find<BiliSearchRepository>() as dynamic).searchByType<R>(
       searchType: searchType,
       keyword: keyword,
       page: page,
@@ -114,7 +112,7 @@ class SearchPanelController<R extends SearchNumData<T>, T>
         this.gaiaVtoken = gaiaVtoken;
         queryData(page == 1);
       },
-    ) as LoadingState<R>;
+    );
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

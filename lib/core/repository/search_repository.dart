@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -10,23 +9,6 @@ abstract class SearchRepository {
   /// Get search suggestions for the given [term].
   Future<LoadingState<CoreSearchSuggestModel>> searchSuggest({
     required String term,
-  });
-
-  /// Search by type (video, user, live, etc.).
-  Future<LoadingState<R>> searchByType<R extends CoreSearchNumData>({
-    required CoreSearchType searchType,
-    required String keyword,
-    required int page,
-    String? order,
-    int? duration,
-    int? tids,
-    int? orderSort,
-    int? userType,
-    int? categoryId,
-    int? pubBegin,
-    int? pubEnd,
-    String? gaiaVtoken,
-    required ValueChanged<String> onSuccess,
   });
 
   /// Search all types (comprehensive search).

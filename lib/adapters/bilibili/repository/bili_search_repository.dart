@@ -4,7 +4,7 @@ import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/adapters/bilibili/models/common/search/search_type.dart'
     show SearchType;
 import 'package:skf/adapters/bilibili/models/search/result.dart'
-    show SearchAllData;
+    show SearchAllData, SearchNumData;
 import 'package:skf/adapters/bilibili/models/search/suggest.dart'
     show SearchSuggestModel;
 import 'package:skf/adapters/bilibili/models_new/dynamic/dyn_topic_pub_search/data.dart'
@@ -37,8 +37,7 @@ class BiliSearchRepository implements SearchRepository {
     );
   }
 
-  @override
-  Future<LoadingState<R>> searchByType<R extends CoreSearchNumData>({
+  Future<LoadingState<R>> searchByType<R extends SearchNumData<dynamic>>({
     required CoreSearchType searchType,
     required String keyword,
     required int page,
@@ -53,7 +52,7 @@ class BiliSearchRepository implements SearchRepository {
     String? gaiaVtoken,
     required ValueChanged<String> onSuccess,
   }) async {
-    final result = await SearchHttp.searchByType(
+    final result = await SearchHttp.searchByType<R>(
       searchType: _toSearchType(searchType),
       keyword: keyword,
       page: page,
@@ -68,10 +67,7 @@ class BiliSearchRepository implements SearchRepository {
       gaiaVtoken: gaiaVtoken,
       onSuccess: onSuccess,
     );
-    // Generic type R is erased at runtime; both SearchNumData and
-    // CoreSearchNumData share the same shape (numResults, list),
-    // making the cast safe.
-    return result as LoadingState<R>;
+    return result;
   }
 
   @override

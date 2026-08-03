@@ -169,7 +169,8 @@ class BiliBridge {
     Get.lazyPut<VideoRepository>(BiliVideoRepository.new);
     Get.lazyPut<UserRepository>(BiliUserRepository.new);
     Get.lazyPut<AuthRepository>(BiliAuthRepository.new);
-    Get.lazyPut<SearchRepository>(BiliSearchRepository.new);
+    Get.lazyPut<BiliSearchRepository>(BiliSearchRepository.new);
+    Get.lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>());
     Get.lazyPut<ReplyRepository>(BiliReplyRepository.new);
     Get.lazyPut<FavRepository>(BiliFavRepository.new);
     Get.lazyPut<DynamicsRepository>(BiliDynamicsRepository.new);
