@@ -155,4 +155,4 @@ test_results/
 *.mocks.dart
 
 # OpenCode run continuation cache
-.omo/run-continuation/
+.omo/run-continuation/.omo/
