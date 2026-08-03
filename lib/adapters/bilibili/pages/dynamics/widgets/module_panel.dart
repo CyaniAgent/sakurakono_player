@@ -120,7 +120,8 @@ Widget module(
           borderRadius: floor == 1 ? null : Style.mdRadius,
           onTap: () {
             try {
-              String url = common.jumpUrl!;
+              final url = common.jumpUrl;
+              if (url == null || url.isEmpty) return;
               if (url.contains('bangumi/play') &&
                   PageUtils.viewPgcFromUri(url)) {
                 return;

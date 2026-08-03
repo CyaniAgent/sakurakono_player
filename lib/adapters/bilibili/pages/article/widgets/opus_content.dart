@@ -589,7 +589,7 @@ class OpusContent extends StatelessWidget {
                 child: InkWell(
                   onTap: type == 'LINK_CARD_TYPE_GOODS'
                       ? null
-                      : () {
+                      : () async {
                           try {
                             final card = element.linkCard!.card!;
                             if (type == 'LINK_CARD_TYPE_VOTE') {
@@ -639,7 +639,10 @@ class OpusContent extends StatelessWidget {
                               _ => null,
                             };
                             if (url != null && url.isNotEmpty) {
-                              PiliScheme.routePushFromUrl(url);
+                              final ok = await PiliScheme.routePushFromUrl(url);
+                              if (!ok) {
+                                PageUtils.handleWebview(url, inApp: true);
+                              }
                             }
                           } catch (_) {}
                         },

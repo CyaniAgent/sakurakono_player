@@ -27,7 +27,7 @@ class BiliFollowRepository implements FollowRepository {
                   'face': e.face,
                   'attribute': e.attribute,
                   'sign': e.sign,
-                  'official_verify': e.officialVerify,
+                  'official_verify': e.officialVerify?.toJson(),
                 })
             .toList(),
         'total': response.total,
