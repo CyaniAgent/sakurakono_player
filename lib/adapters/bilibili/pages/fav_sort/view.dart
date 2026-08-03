@@ -35,7 +35,8 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
         if (_favDetailController.loadingState.value case Success(
           :final response,
         )) {
-          sortList.addAll(response!.skip(sortList.length));
+          if (response == null || sortList.length >= response.length) return;
+          sortList.addAll(response.skip(sortList.length));
           if (mounted) {
             setState(() {});
           }
