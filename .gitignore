@@ -154,8 +154,8 @@ test_results/
 # Generated mock files (regenerate via `dart run build_runner build`)
 *.mocks.dart
 
-# OpenCode run continuation cache
-.omo/run-continuation/.omo/
+# OpenCode run continuation cache / Boulder state & work plans (not for code)
+.omo/
 
 # Version injection (CI writes skf_release.json - never commit)
 skf_release.json
