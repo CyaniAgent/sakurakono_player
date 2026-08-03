@@ -2,7 +2,7 @@ import 'package:skf/common/assets.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/utils/extension/num_ext.dart';
-import 'package:skf/utils/image_utils.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +71,7 @@ class NetworkImgLayer extends StatelessWidget {
       memCacheHeight = height.cacheSize(context);
     }
     return CachedNetworkImage(
-      imageUrl: ImageUtils.thumbnailUrl(src, quality),
+      imageUrl: AdapterRegistry.active.processImageUrl(src, quality: quality),
       width: width,
       height: height,
       memCacheWidth: memCacheWidth,
@@ -84,7 +84,7 @@ class NetworkImgLayer extends StatelessWidget {
       placeholder: (_, _) =>
           getPlaceHolder?.call() ??
           _placeholder(context, isEmote: isEmote, isAvatar: isAvatar),
-      errorWidget: (_, _, _) =>
+      errorBuilder: (_, _, _) =>
           _placeholder(context, isEmote: isEmote, isAvatar: isAvatar),
       colorBlendMode: reduce ? BlendMode.modulate : null,
       color: reduce ? reduceLuxColor : null,

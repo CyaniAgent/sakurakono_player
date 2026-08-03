@@ -7,8 +7,11 @@ import 'package:skf/common/widgets/custom_toast.dart';
 import 'package:skf/common/widgets/route_aware_mixin.dart';
 import 'package:skf/common/widgets/scale_app.dart';
 import 'package:skf/common/widgets/scroll_behavior.dart';
+import 'package:skf/adapters/bilibili/bili_adapter.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/adapters/ottohub/bridge.dart' show OttoAdapter;
+import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
 import 'package:skf/router/app_pages.dart';
@@ -104,7 +107,13 @@ void main() async {
     _initTmpPath(),
     CacheManager.ensureInitialized(),
   ]);
-  BiliBridge.register();
+  // Register all available adapters
+  AdapterRegistry.register(BiliAdapter());
+  AdapterRegistry.register(OttoAdapter());
+
+  const adapterName =
+      String.fromEnvironment('ADAPTER', defaultValue: 'bilibili');
+  await AdapterRegistry.activate(adapterName);
   HttpOverrides.global = _CustomHttpOverrides();
 
   if (PlatformUtils.isMobile) {
