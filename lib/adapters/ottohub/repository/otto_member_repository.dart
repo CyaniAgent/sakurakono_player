@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space_opus/cover.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space_opus/item.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space_opus/stat.dart';
 import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicsDataModel, CoreDynamicItemModel, CoreBasic, CoreItemModulesModel, CoreModuleAuthorModel, CoreModuleDynamicModel, CoreDynamicDescModel;
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
@@ -54,7 +57,7 @@ class OttoMemberRepository implements MemberRepository {
     int? pn,
     int? next,
     int? seasonId,
-    int? seriesId,
+    String? seriesId,
     bool? includeCursor,
   }) async {
     try {
@@ -78,7 +81,7 @@ class OttoMemberRepository implements MemberRepository {
       ));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.spaceArchive ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -121,7 +124,7 @@ class OttoMemberRepository implements MemberRepository {
       }));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.space ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -141,7 +144,7 @@ class OttoMemberRepository implements MemberRepository {
       ));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberInfo ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -157,7 +160,7 @@ class OttoMemberRepository implements MemberRepository {
       });
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberStat ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -174,7 +177,7 @@ class OttoMemberRepository implements MemberRepository {
       ));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberCardInfo ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -212,7 +215,7 @@ class OttoMemberRepository implements MemberRepository {
       }));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.searchArchive ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -260,7 +263,7 @@ class OttoMemberRepository implements MemberRepository {
       ));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberDynamic ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -287,11 +290,18 @@ class OttoMemberRepository implements MemberRepository {
     bool isAdd = true,
   }) async {
     try {
-      await _client.following.toggleFollow(fid!);
+      // The SDK only exposes a toggle, so read the follow state first and
+      // only toggle when it differs from the requested direction.
+      // followStatus: 0=unfollowed, 1=following, 2=mutual - any non-zero
+      // counts as following (avoids unfollowing a mutual follow when isAdd).
+      final status = await _client.following.getStatus(fid!);
+      if ((status.followStatus != 0) != isAdd) {
+        await _client.following.toggleFollow(fid);
+      }
       return const Success(null);
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.specialAction ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -351,7 +361,7 @@ class OttoMemberRepository implements MemberRepository {
       });
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberView ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -378,7 +388,7 @@ class OttoMemberRepository implements MemberRepository {
       ));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.getfollowSearch ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: int.tryParse(e.errorCode));
+      return Error(e.errorCode, code: e.httpStatus);
     }
   }
 
@@ -389,8 +399,29 @@ class OttoMemberRepository implements MemberRepository {
     String offset = '',
     String type = 'all',
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    try {
+      final blogs = await _client.oldBlog.getUserBlogList(
+        uid: hostMid,
+        offset: (page - 1) * 30,
+        num: 30,
+      );
+      return Success(CoreOpusSpaceFlowResp(
+        itemList: blogs.map((b) => SpaceOpusItemModel(
+          content: b.content ?? b.title,
+          opusId: b.bid.toString(),
+          stat: Stat(like: b.likeCount.toString()),
+          cover: b.thumbnails?.isNotEmpty == true
+              ? Cover.fromJson(<String, dynamic>{'url': b.thumbnails!.first})
+              : null,
+        )).toList(),
+        nextPage: blogs.length >= 30 ? page * 30 : null,
+        hostUpOpusCollection: null,
+        hostUpNoteNavBar: null,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoMemberRepository.spaceOpus ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
