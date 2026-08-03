@@ -38,7 +38,6 @@ class LocalFilePlugin implements Plugin {
     final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: <String>['mp4', 'mkv', 'avi', 'mov', 'flv', 'wmv', 'webm'],
-      allowMultiple: false,
     );
 
     if (result == null || result.files.isEmpty) return null;

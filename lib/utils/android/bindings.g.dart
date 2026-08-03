@@ -163,9 +163,9 @@ abstract base mixin class $Runnable {
 
 final class _$Runnable with $Runnable {
   _$Runnable({
-    required void Function() run,
+    required this._run,
     this.run$async = false,
-  }) : _run = run;
+  });
 
   final void Function() _run;
   final core$_.bool run$async;

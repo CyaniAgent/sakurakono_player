@@ -2056,7 +2056,6 @@ class _RenderSlider extends RenderBox with RelayoutWhenSystemFontsChangeMixin {
     }
     config
       ..isSlider = true
-      ..isFocusable = isInteractive
       ..isFocused = hasFocus;
 
     if (onDidGainAccessibilityFocus != null) {

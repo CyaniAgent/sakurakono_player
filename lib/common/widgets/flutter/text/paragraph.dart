@@ -2966,8 +2966,8 @@ class _SelectableFragment
     final TextPosition? existingSelectionEnd = _textSelectionEnd;
 
     _setSelectionPosition(null, isEnd: isEnd);
-    final Matrix4 transform = paragraph.getTransformTo(null);
-    transform.invert();
+    final Matrix4 transform = paragraph.getTransformTo(null)
+      ..invert();
     final Offset localPosition = MatrixUtils.transformPoint(
       transform,
       globalPosition,

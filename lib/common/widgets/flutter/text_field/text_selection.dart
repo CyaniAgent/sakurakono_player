@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// ignore_for_file: prefer_initializing_formals
+// ignore_for_file: prefer_initializing_formals, deprecated_member_use
 
 /// @docImport 'package:flutter/cupertino.dart';
 /// @docImport 'package:flutter/material.dart';
@@ -806,8 +806,9 @@ class TextSelectionGestureDetectorBuilder {
           renderEditable.selectWord(cause: SelectionChangedCause.tap);
         }
         if (shouldShowSelectionToolbar) {
-          editableText.hideToolbar();
-          editableText.showToolbar();
+          editableText
+            ..hideToolbar()
+            ..showToolbar();
         }
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:

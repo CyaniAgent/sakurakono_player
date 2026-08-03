@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// ignore_for_file: prefer_initializing_formals, uri_does_not_exist_in_doc_import
+// ignore_for_file: prefer_initializing_formals, uri_does_not_exist_in_doc_import, deprecated_member_use
 
 /// @docImport 'package:flutter/cupertino.dart';
 /// @docImport 'package:flutter/material.dart';
@@ -2361,7 +2361,7 @@ class EditableTextState extends State<EditableText>
 
   Color get _cursorColor {
     final double effectiveOpacity = math.min(
-      widget.cursorColor.alpha / 255.0,
+      widget.cursorColor.a,
       _cursorBlinkOpacityController.value,
     );
     return widget.cursorColor.withValues(alpha: effectiveOpacity);
@@ -3156,7 +3156,7 @@ class EditableTextState extends State<EditableText>
     }
 
     // Restart or stop the blinking cursor when TickerMode changes.
-    final bool newTickerEnabled = TickerMode.of(context);
+    final bool newTickerEnabled = TickerMode.valuesOf(context).enabled;
     if (_tickersEnabled != newTickerEnabled) {
       _tickersEnabled = newTickerEnabled;
       if (_showBlinkingCursor) {
@@ -4748,7 +4748,7 @@ class EditableTextState extends State<EditableText>
 
   void _onCursorColorTick() {
     final double effectiveOpacity = math.min(
-      widget.cursorColor.alpha / 255.0,
+      widget.cursorColor.a,
       _cursorBlinkOpacityController.value,
     );
     renderEditable.cursorColor = widget.cursorColor.withValues(
@@ -6743,7 +6743,7 @@ class _UpdateTextSelectionAction<T extends DirectionalCaretMovementIntent>
   final TextBoundary Function() getTextBoundary;
   final _ApplyTextBoundary applyTextBoundary;
 
-  static const int NEWLINE_CODE_UNIT = 10;
+  static const int newlineCodeUnit = 10;
 
   // Returns true iff the given position is at a wordwrap boundary in the
   // upstream position.
@@ -6755,7 +6755,7 @@ class _UpdateTextSelectionAction<T extends DirectionalCaretMovementIntent>
     return end == position &&
         end.offset != state.textEditingValue.text.length &&
         state.textEditingValue.text.codeUnitAt(position.offset) !=
-            NEWLINE_CODE_UNIT;
+            newlineCodeUnit;
   }
 
   // Returns true if the given position at a wordwrap boundary in the
@@ -6767,7 +6767,7 @@ class _UpdateTextSelectionAction<T extends DirectionalCaretMovementIntent>
     return start == position &&
         start.offset != 0 &&
         state.textEditingValue.text.codeUnitAt(position.offset - 1) !=
-            NEWLINE_CODE_UNIT;
+            newlineCodeUnit;
   }
 
   @override

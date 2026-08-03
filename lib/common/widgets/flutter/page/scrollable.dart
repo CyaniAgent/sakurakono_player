@@ -843,10 +843,9 @@ class ScrollableState<T extends HorizontalDragGestureRecognizer>
     }
     _shouldIgnorePointer = value;
     if (_ignorePointerKey.currentContext != null) {
-      final renderBox =
-          _ignorePointerKey.currentContext!.findRenderObject()!
-              as RenderIgnorePointer;
-      renderBox.ignoring = _shouldIgnorePointer;
+      (_ignorePointerKey.currentContext!.findRenderObject()!
+              as RenderIgnorePointer)
+        .ignoring = _shouldIgnorePointer;
     }
   }
 
