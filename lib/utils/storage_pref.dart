@@ -42,8 +42,7 @@ abstract final class Pref {
     final mids = Set<int>.from(
       (_localCache.get(LocalCacheKey.blackMids, defaultValue: <int>{}) as Set)
           .cast<int>(),
-    );
-    mids.add(mid);
+    )..add(mid);
     _localCache.put(LocalCacheKey.blackMids, mids);
   }
 
@@ -51,8 +50,7 @@ abstract final class Pref {
     final mids = Set<int>.from(
       (_localCache.get(LocalCacheKey.blackMids, defaultValue: <int>{}) as Set)
           .cast<int>(),
-    );
-    mids.remove(mid);
+    )..remove(mid);
     _localCache.put(LocalCacheKey.blackMids, mids);
   }
 

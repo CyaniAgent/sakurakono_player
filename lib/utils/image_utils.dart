@@ -182,7 +182,7 @@ abstract final class ImageUtils {
         },
       );
       if (!hasMatch) {
-        src += '@${maxQuality}q.webp';
+        return src.http2https;
       }
     }
     return src.http2https;

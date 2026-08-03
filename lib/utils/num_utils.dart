@@ -18,10 +18,13 @@ abstract final class NumUtils {
   }
 
   static int parseNum(String numberStr) {
-    if (numberStr == '-') return 0;
+    if (numberStr == '-' || numberStr.isEmpty) return 0;
     try {
-      final match = _numRegExp.firstMatch(numberStr)!;
-      var number = double.parse(match.group(1)!);
+      final match = _numRegExp.firstMatch(numberStr);
+      if (match == null) return 0;
+      final group1 = match.group(1);
+      if (group1 == null) return 0;
+      var number = double.parse(group1);
       number *= _getUnit(match.group(2));
       return number.toInt();
     } catch (e) {
