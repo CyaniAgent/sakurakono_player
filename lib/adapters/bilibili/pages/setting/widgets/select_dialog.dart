@@ -145,6 +145,9 @@ class _CdnSelectDialogState extends State<CdnSelectDialog> {
       await _testAllCdnServices(videoItem);
     } catch (e) {
       if (kDebugMode) debugPrint('CDN speed test failed: $e');
+      for (final notifier in _cdnResList) {
+        notifier.value = '测速失败';
+      }
     }
   }
 
