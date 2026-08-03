@@ -156,6 +156,7 @@ class PostPanel extends CommonSlidePage {
                     }
                   } catch (e) {
                     if (kDebugMode) debugPrint(e.toString());
+                    SmartDialog.showToast('时间格式错误');
                   }
                 }
               },

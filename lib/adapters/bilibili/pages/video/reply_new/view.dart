@@ -331,6 +331,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                   );
                 } catch (e) {
                   debugPrint(e.toString());
+                  SmartDialog.showToast('获取视频进度失败');
                 }
               },
               icon: Icon(Icons.my_location, size: 28, color: color),
@@ -362,9 +363,11 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                       res.dispose();
                     } else {
                       debugPrint('null screenshot');
+                      SmartDialog.showToast('截图失败');
                     }
                   } catch (e) {
                     debugPrint(e.toString());
+                    SmartDialog.showToast('截图失败');
                   }
                 },
                 icon: Icon(
