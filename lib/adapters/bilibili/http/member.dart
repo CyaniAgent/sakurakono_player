@@ -125,7 +125,7 @@ abstract final class MemberHttp {
     int? pn,
     int? next,
     int? seasonId,
-    int? seriesId,
+    String? seriesId,
     bool? includeCursor,
   }) async {
     final params = {

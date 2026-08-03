@@ -39,7 +39,7 @@ abstract class MemberRepository {
     int? pn,
     int? next,
     int? seasonId,
-    int? seriesId,
+    String? seriesId,
     bool? includeCursor,
   });
 

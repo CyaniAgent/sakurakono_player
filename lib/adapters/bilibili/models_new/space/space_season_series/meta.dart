@@ -3,8 +3,8 @@ class SpaceSsMeta {
   String? name;
   int? ptime;
   int? total;
-  dynamic seasonId;
-  dynamic seriesId;
+  int? seasonId;
+  String? seriesId;
 
   SpaceSsMeta({
     this.cover,
@@ -20,7 +20,7 @@ class SpaceSsMeta {
     name: json["name"],
     ptime: json["ptime"],
     total: json["total"],
-    seasonId: json["season_id"],
-    seriesId: json["series_id"],
+    seasonId: json["season_id"] as int?,
+    seriesId: json["series_id"] as String?,
   );
 }

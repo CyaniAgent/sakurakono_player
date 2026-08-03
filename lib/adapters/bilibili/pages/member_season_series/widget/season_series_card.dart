@@ -2,7 +2,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_season_series/season.dart';
+import 'package:skf/core/models/member_types.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class SeasonSeriesCard extends StatelessWidget {
     required this.item,
     required this.onTap,
   });
-  final SpaceSsModel item;
+  final CoreSpaceSsModel item;
   final VoidCallback onTap;
 
   @override

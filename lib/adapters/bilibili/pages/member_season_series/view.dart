@@ -2,8 +2,6 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_season_series/season.dart'
-    show SpaceSsModel;
 import 'package:skf/adapters/bilibili/pages/member_season_series/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_season_series/widget/season_series_card.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/view.dart';
@@ -51,14 +49,14 @@ class _SeasonSeriesPageState extends State<SeasonSeriesPage>
             bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
           ),
           sliver: Obx(
-            () => _buildBody(_controller.loadingState.value as dynamic),
+            () => _buildBody(_controller.loadingState.value),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildBody(LoadingState<List<SpaceSsModel>?> loadingState) {
+  Widget _buildBody(LoadingState<List<CoreSpaceSsModel>?> loadingState) {
     return switch (loadingState) {
       Loading() => gridSkeleton,
       Success(:final response) =>
@@ -69,14 +67,11 @@ class _SeasonSeriesPageState extends State<SeasonSeriesPage>
                   if (index == response.length - 1) {
                     _controller.onLoadMore();
                   }
-                  SpaceSsModel item = response[index];
+                  CoreSpaceSsModel item = response[index];
                   return SeasonSeriesCard(
                     item: item,
                     onTap: () {
                       bool isSeason = item.meta!.seasonId != null;
-                      dynamic id = isSeason
-                          ? item.meta!.seasonId
-                          : item.meta!.seriesId;
                       Get.to(
                         Scaffold(
                           resizeToAvoidBottomInset: false,
@@ -84,12 +79,12 @@ class _SeasonSeriesPageState extends State<SeasonSeriesPage>
                           body: ViewSafeArea(
                             child: MemberVideo(
                               type: isSeason
-? CoreContributeType.season
-                  : CoreContributeType.series,
+                                  ? CoreContributeType.season
+                                  : CoreContributeType.series,
                               heroTag: widget.heroTag,
                               mid: widget.mid,
-                              seasonId: isSeason ? id : null,
-                              seriesId: isSeason ? null : id,
+                              seasonId: isSeason ? item.meta!.seasonId : null,
+                              seriesId: isSeason ? null : item.meta!.seriesId,
                               title: item.meta!.name,
                             ),
                           ),

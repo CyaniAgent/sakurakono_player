@@ -27,7 +27,7 @@ class MemberVideoCtr
   final CoreContributeType type;
   final bool isVideo;
   int? seasonId;
-  int? seriesId;
+  String? seriesId;
   final int mid;
   late CoreArchiveOrderTypeApp order = CoreArchiveOrderTypeApp.pubdate;
   late CoreArchiveSortTypeApp sort = CoreArchiveSortTypeApp.desc;

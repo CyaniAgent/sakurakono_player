@@ -616,7 +616,7 @@ class BiliMemberRepository implements MemberRepository {
     int? pn,
     int? next,
     int? seasonId,
-    int? seriesId,
+    String? seriesId,
     bool? includeCursor,
   }) async {
     final result = await MemberHttp.spaceArchive(

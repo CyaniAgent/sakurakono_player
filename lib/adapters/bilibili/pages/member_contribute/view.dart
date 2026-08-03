@@ -143,7 +143,7 @@ class _MemberContributeState extends State<MemberContribute>
         type: CoreContributeType.series,
         heroTag: widget.heroTag,
         mid: widget.mid,
-        seriesId: item.seriesId,
+        seriesId: item.seriesId?.toString(),
         title: item.title,
       ),
       'ugcSeason' => SeasonSeriesPage(

@@ -32,7 +32,7 @@ class MemberVideo extends StatefulWidget {
   final String? heroTag;
   final int mid;
   final int? seasonId;
-  final int? seriesId;
+  final String? seriesId;
   final String? title;
   final bool isSingle;
 
@@ -109,7 +109,7 @@ class _MemberVideoState extends State<MemberVideo>
           SliverPadding(
             padding: EdgeInsets.only(bottom: padding.bottom + 100),
             sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value as dynamic),
+              () => _buildBody(theme, _controller.loadingState.value),
             ),
           ),
         ],

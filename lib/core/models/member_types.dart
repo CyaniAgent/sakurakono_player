@@ -147,8 +147,8 @@ class CoreSpaceSsMeta {
   String? name;
   int? ptime;
   int? total;
-  dynamic seasonId;
-  dynamic seriesId;
+  int? seasonId;
+  String? seriesId;
 
   CoreSpaceSsMeta({
     this.cover,
@@ -164,8 +164,8 @@ class CoreSpaceSsMeta {
         name: json['name'] as String?,
         ptime: json['ptime'] as int?,
         total: json['total'] as int?,
-        seasonId: json['season_id'],
-        seriesId: json['series_id'],
+        seasonId: json['season_id'] as int?,
+        seriesId: json['series_id'] as String?,
       );
 }
 
