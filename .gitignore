@@ -156,3 +156,6 @@ test_results/
 
 # OpenCode run continuation cache
 .omo/run-continuation/.omo/
+
+# Version injection (CI writes skf_release.json - never commit)
+skf_release.json
