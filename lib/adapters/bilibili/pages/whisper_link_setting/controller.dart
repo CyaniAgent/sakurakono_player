@@ -119,9 +119,10 @@ class WhisperLinkSettingController extends GetxController {
       dndUid: talkerUid,
     );
     if (res.isSuccess) {
-      msgDnd
-        ..value.data!.first.setting = setting
-        ..refresh();
+      if (msgDnd.value case Success(:final response) when response != null && response.isNotEmpty) {
+        response.first.setting = setting;
+        msgDnd.refresh();
+      }
     } else {
       res.toast();
     }
