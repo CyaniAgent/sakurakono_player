@@ -42,8 +42,8 @@ class SpaceTab2Item {
     filter: (json["filter"] as List?)
         ?.map((e) => SpaceTabFilter.fromJson(e))
         .toList(),
-    seasonId: json['season_id'],
-    seriesId: json['series_id'],
+    seasonId: json['season_id'] as int?,
+    seriesId: json['series_id'] as int?,
   );
 }
 
