@@ -1,25 +1,30 @@
 {
-    // 使用 IntelliSense 了解相关属性。
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "PiliPlus",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "PiliPlus (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "PiliPlus (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SKF (Bilibili)",
+      "request": "launch",
+      "type": "dart",
+      "args": ["--dart-define=ADAPTER=bilibili"]
+    },
+    {
+      "name": "SKF (OttoHub)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define=ADAPTER=ottohub",
+        "--dart-define=FEATURE_SEARCH=false",
+        "--dart-define=FEATURE_LIVE=false",
+        "--dart-define=FEATURE_MUSIC=false",
+        "--dart-define=FEATURE_DM_FILTER=false",
+        "--dart-define=FEATURE_AUDIO=false",
+        "--dart-define=FEATURE_MATCH=false",
+        "--dart-define=FEATURE_SPACE=false",
+        "--dart-define=FEATURE_DOWNLOAD=false",
+        "--dart-define=FEATURE_PGC=false",
+        "--dart-define=FEATURE_SPONSOR=false",
+        "--dart-define=FEATURE_VALIDATE=false"
+      ]
+    }
+  ]
 }
