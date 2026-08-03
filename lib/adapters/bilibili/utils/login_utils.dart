@@ -4,7 +4,7 @@ import 'dart:io' show Platform;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/main.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
@@ -51,13 +51,13 @@ abstract final class LoginUtils {
       setWebCookie(account);
       RequestUtils.syncHistoryStatus();
       if (response.isLogin == true) {
-        final accountService = Get.find<AccountService>()
-          ..face.value = response.face!;
+        final accountService = Get.find<AccountProvider>()
+          ..rxFace.value = response.face!;
 
-        if (accountService.isLogin.value) {
-          accountService.isLogin.refresh();
+        if (accountService.isLogin) {
+          accountService.rxIsLogin.refresh();
         } else {
-          accountService.isLogin.value = true;
+          accountService.rxIsLogin.value = true;
         }
 
         SmartDialog.showToast('main登录成功');
@@ -81,9 +81,9 @@ abstract final class LoginUtils {
   }
 
   static Future<void> onLogoutMain() {
-    Get.find<AccountService>()
-      ..face.value = ''
-      ..isLogin.value = false;
+    Get.find<AccountProvider>()
+      ..rxFace.value = ''
+      ..rxIsLogin.value = false;
 
     return Future.wait([
       if (!Platform.isLinux)

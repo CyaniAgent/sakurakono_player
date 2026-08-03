@@ -1,3 +1,5 @@
+import 'package:skf/core/models/pgc_types.dart';
+
 class PgcIndexItem {
   String? badge;
   String? cover;
@@ -14,6 +16,15 @@ class PgcIndexItem {
     this.seasonId,
     this.title,
   });
+
+  factory PgcIndexItem.fromCore(CorePgcIndexItem core) => PgcIndexItem(
+    badge: core.badge,
+    cover: core.cover,
+    indexShow: core.indexShow,
+    order: core.order,
+    seasonId: core.seasonId,
+    title: core.title,
+  );
 
   factory PgcIndexItem.fromJson(Map<String, dynamic> json) => PgcIndexItem(
     badge: json['badge'] as String?,

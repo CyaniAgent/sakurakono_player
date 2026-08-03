@@ -42,7 +42,7 @@ class _MemberHomeState extends State<MemberHome>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _buildBody(_ctr.loadingState.value as dynamic);
+    return _buildBody(_ctr.loadingState.value);
   }
 
   late final gridDelegateV = SliverGridDelegateWithExtentAndRatio(
@@ -114,7 +114,9 @@ class _MemberHomeState extends State<MemberHome>
                       child: SizedBox(
                         height: 110,
                         child: MemberFavItem(
-                          item: res.coreFavourite2!.item!.first as dynamic,
+                          item: ModelConverters.favouriteItem(
+                            res.coreFavourite2!.item!.first,
+                          ),
                         ),
                       ),
                     ),
@@ -163,7 +165,7 @@ class _MemberHomeState extends State<MemberHome>
                         gridDelegate: gridDelegateV,
                         itemBuilder: (context, index) {
                           return VideoCardVMemberHome(
-                            videoItem: ModelConverters.coinLikeItem(
+                            videoItem: ModelConverters.likeArchiveItem(
                               res.coreLikeArchive!.item![index],
                             ),
                           );
@@ -187,7 +189,9 @@ class _MemberHomeState extends State<MemberHome>
                       child: SizedBox(
                         height: 110,
                         child: MemberArticleItem(
-                          item: res.coreArticle!.item!.first as dynamic,
+                          item: ModelConverters.articleItem(
+                            res.coreArticle!.item!.first,
+                          ),
                         ),
                       ),
                     ),
@@ -204,7 +208,9 @@ class _MemberHomeState extends State<MemberHome>
                       gridDelegate: gridDelegateAudio,
                       itemBuilder: (context, index) {
                         return MemberAudioItem(
-                          item: res.coreAudios!.item![index] as dynamic,
+                          item: ModelConverters.audioItem(
+                            res.coreAudios!.item![index],
+                          ),
                         );
                       },
                       itemCount: isVertical ? 1 : min(3, res.coreAudios!.count!),
@@ -221,7 +227,11 @@ class _MemberHomeState extends State<MemberHome>
                     SliverGrid.builder(
                       gridDelegate: gridDelegate,
                       itemBuilder: (context, index) {
-                        return MemberComicItem(item: res.coreComic!.item![index] as dynamic);
+                        return MemberComicItem(
+                          item: ModelConverters.comicItem(
+                            res.coreComic!.item![index],
+                          ),
+                        );
                       },
                       itemCount: isVertical ? 1 : min(3, res.coreComic!.count!),
                     ),
@@ -242,7 +252,9 @@ class _MemberHomeState extends State<MemberHome>
                         gridDelegate: gridDelegatePgc,
                         itemBuilder: (context, index) {
                           return PgcCardVMemberPgc(
-                            item: res.season!.item![index] as dynamic,
+                            item: ModelConverters.seasonItem(
+                              res.season!.item![index],
+                            ),
                           );
                         },
                         itemCount: min(

@@ -1,5 +1,5 @@
 import 'package:skf/common/widgets/custom_icon.dart';
-import 'package:skf/adapters/bilibili/http/pgc.dart';
+import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -219,7 +219,7 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
 
   Future<void> _onPost() async {
     if (_isMod) {
-      final res = await PgcHttp.pgcReviewMod(
+      final res = await Get.find<PgcRepository>().pgcReviewMod(
         mediaId: widget.mediaId,
         score: _score.value * 2,
         content: _controller.text,
@@ -237,7 +237,7 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final res = await PgcHttp.pgcReviewPost(
+    final res = await Get.find<PgcRepository>().pgcReviewPost(
       mediaId: widget.mediaId,
       score: _score.value * 2,
       content: _controller.text,

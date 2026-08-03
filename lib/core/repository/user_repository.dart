@@ -80,7 +80,7 @@ abstract class UserRepository {
     required Object type,
     required Object bizId,
     required int ps,
-    dynamic oid,
+    Object? oid,
     int? otype,
     bool withCurrent = false,
     bool desc = true,

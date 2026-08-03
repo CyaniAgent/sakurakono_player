@@ -29,7 +29,7 @@ class BiliSponsorBlockRepository implements SponsorBlockRepository {
     required String uuid,
     int? type,
     CoreSegmentType? category,
-  }) async {
+  }) {
     return SponsorBlock.voteOnSponsorTime(
       uuid: uuid,
       type: type,
@@ -38,12 +38,12 @@ class BiliSponsorBlockRepository implements SponsorBlockRepository {
   }
 
   @override
-  Future<LoadingState<void>> viewedVideoSponsorTime(String uuid) async {
+  Future<LoadingState<void>> viewedVideoSponsorTime(String uuid) {
     return SponsorBlock.viewedVideoSponsorTime(uuid);
   }
 
   @override
-  Future<LoadingState<void>> uptimeStatus() async {
+  Future<LoadingState<void>> uptimeStatus() {
     return SponsorBlock.uptimeStatus();
   }
 
@@ -84,7 +84,7 @@ class BiliSponsorBlockRepository implements SponsorBlockRepository {
   Future<LoadingState<String>> getPortVideo({
     required String bvid,
     required int cid,
-  }) async {
+  }) {
     return SponsorBlock.getPortVideo(bvid: bvid, cid: cid);
   }
 
@@ -94,7 +94,7 @@ class BiliSponsorBlockRepository implements SponsorBlockRepository {
     required int cid,
     required String ytbId,
     required int videoDuration,
-  }) async {
+  }) {
     return SponsorBlock.postPortVideo(
       bvid: bvid,
       cid: cid,

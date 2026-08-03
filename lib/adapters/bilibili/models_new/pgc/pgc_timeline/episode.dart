@@ -1,3 +1,5 @@
+import 'package:skf/core/models/pgc_types.dart';
+
 class Episode {
   String? cover;
   int? episodeId;
@@ -16,6 +18,16 @@ class Episode {
     this.seasonId,
     this.title,
   });
+
+  factory Episode.fromCore(CoreEpisode core) => Episode(
+    cover: core.cover,
+    episodeId: core.episodeId,
+    follow: core.follow,
+    pubIndex: core.pubIndex,
+    pubTime: core.pubTime,
+    seasonId: core.seasonId,
+    title: core.title,
+  );
 
   factory Episode.fromJson(Map<String, dynamic> json) => Episode(
     cover: json['cover'] as String?,

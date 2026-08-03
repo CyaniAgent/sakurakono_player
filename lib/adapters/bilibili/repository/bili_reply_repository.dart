@@ -1,9 +1,11 @@
 import 'package:fixnum/fixnum.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
-    show Mode, SearchItemType;
+    show Mode, ReplyInfo, SearchItemType;
 import 'package:skf/adapters/bilibili/grpc/reply.dart';
 import 'package:skf/adapters/bilibili/http/reply.dart';
+import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/core/models/reply_types.dart';
+import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -149,7 +151,7 @@ class BiliReplyRepository implements ReplyRepository {
     required int type,
     required Object rpid,
     required bool isUpTop,
-  }) async {
+  }) {
     return ReplyHttp.replyTop(
       oid: oid,
       type: type,
@@ -163,13 +165,128 @@ class BiliReplyRepository implements ReplyRepository {
     required int oid,
     required int type,
     required int action,
-  }) async {
+  }) {
     return ReplyHttp.replySubjectModify(
       oid: oid,
       type: type,
       action: action,
     );
   }
+
+  @override
+  Future<LoadingState<CoreReplyInfo?>> replyAdd({
+    required int type,
+    required int oid,
+    required String message,
+    int? root,
+    int? parent,
+    List? pictures,
+    bool syncToDynamic = false,
+    Map<String, int>? atNameToMid,
+  }) async {
+    final result = await VideoHttp.replyAdd(
+      type: type,
+      oid: oid,
+      message: message,
+      root: root,
+      parent: parent,
+      pictures: pictures,
+      syncToDynamic: syncToDynamic,
+      atNameToMid: atNameToMid,
+    );
+    return _mapState<CoreReplyInfo?, ReplyInfo?>(
+      result,
+      (r) => r != null ? _toCoreReplyInfo(r) : null,
+    );
+  }
+
+  @override
+  Future<LoadingState<void>> replyDel({
+    required int type,
+    required int oid,
+    required int rpid,
+  }) {
+    return VideoHttp.replyDel(type: type, oid: oid, rpid: rpid);
+  }
+
+  @override
+  Future<LoadingState<void>> likeReply({
+    required int type,
+    required int oid,
+    required int rpid,
+    required int action,
+  }) {
+    return ReplyHttp.likeReply(
+      type: type,
+      oid: oid,
+      rpid: rpid,
+      action: action,
+    );
+  }
+
+  @override
+  Future<LoadingState<void>> hateReply({
+    required int type,
+    required int oid,
+    required int rpid,
+    required int action,
+  }) {
+    return ReplyHttp.hateReply(
+      type: type,
+      oid: oid,
+      rpid: rpid,
+      action: action,
+    );
+  }
+
+  @override
+  Future<LoadingState<void>> report({
+    required Object rpid,
+    required Object oid,
+    required int reasonType,
+    bool banUid = true,
+    String? reasonDesc,
+  }) {
+    return ReplyHttp.report(
+      rpid: rpid,
+      oid: oid,
+      reasonType: reasonType,
+      banUid: banUid,
+      reasonDesc: reasonDesc,
+    );
+  }
+
+  @override
+  Future<LoadingState<dynamic>> getEmoteList({String? business}) {
+    return ReplyHttp.getEmoteList(business: business);
+  }
+
+  static LoadingState<T> _mapState<T, A>(
+    LoadingState<A> source,
+    T Function(A data) mapper,
+  ) =>
+      switch (source) {
+        Loading() => LoadingState.loading(),
+        Success(data: final data) => Success(mapper(data)),
+        Error(errMsg: final msg, code: final code) => Error(msg, code: code),
+      };
+
+  static CoreReplyInfo _toCoreReplyInfo(ReplyInfo r) => CoreReplyInfo(
+        id: r.id.toInt(),
+        oid: r.oid.toInt(),
+        type: r.type.toInt(),
+        mid: r.mid.toInt(),
+        root: r.root.toInt(),
+        parent: r.parent.toInt(),
+        dialog: r.dialog.toInt(),
+        like: r.like.toInt(),
+        ctime: r.ctime.toInt(),
+        count: r.count.toInt(),
+        content: r.content.toProto3Json() as Map<String, dynamic>?,
+        member: r.member.toProto3Json() as Map<String, dynamic>?,
+        replyControl: r.replyControl.toProto3Json() as Map<String, dynamic>?,
+        trackInfo: r.trackInfo,
+      );
 
   static Mode _modeToProto(CoreMode m) =>
       Mode.valueOf(m.value) ?? Mode.DEFAULT_Mode;

@@ -196,7 +196,7 @@ Widget userAvatar({
     label: "我的",
     child: Obx(
       () {
-        if (mainController.accountService.isLogin.value) {
+        if (mainController.accountService.isLogin) {
           return Stack(
             clipBehavior: .none,
             children: [
@@ -204,7 +204,7 @@ Widget userAvatar({
                 type: .avatar,
                 width: 34,
                 height: 34,
-                src: mainController.accountService.face.value,
+                src: mainController.accountService.face,
               ),
               Positioned.fill(
                 child: Material(
@@ -268,7 +268,7 @@ Widget userAvatar({
 Widget msgBadge(MainController mainController) {
   return Obx(
     () {
-      if (mainController.accountService.isLogin.value) {
+      if (mainController.accountService.isLogin) {
         final count = mainController.msgUnReadCount.value;
         final isNumBadge = mainController.msgBadgeMode == .number;
         return IconButton(

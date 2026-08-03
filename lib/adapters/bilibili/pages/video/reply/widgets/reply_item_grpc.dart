@@ -15,10 +15,8 @@ import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo, ReplyControl, Content, Url, ReplyControl_VoteOption;
-import 'package:skf/adapters/bilibili/grpc/reply.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/reply.dart';
-import 'package:skf/adapters/bilibili/http/video.dart';
+import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
@@ -434,13 +432,14 @@ class ReplyItemGrpc extends StatelessWidget {
               return;
             }
             isProcessing = true;
-            final res = await ReplyGrpc.translateReply(
-              type: replyItem.type,
-              oid: replyItem.oid,
-              rpid: replyItem.id,
+            final res = await Get.find<ReplyRepository>().translateReply(
+              type: replyItem.type.toInt(),
+              oid: replyItem.oid.toInt(),
+              rpid: replyItem.id.toInt(),
             );
             if (res case Success(:final response)) {
-              final item = response.translatedReplies[replyItem.id];
+              final rawItem = response.translatedReplies?[replyItem.id.toInt()];
+              final item = rawItem is ReplyInfo ? rawItem : null;
               if (item != null && item.hasTranslatedContent()) {
                 replyControl.showTranslation = true;
                 replyItem.translatedContent = item.translatedContent;
@@ -1115,7 +1114,7 @@ class ReplyItemGrpc extends StatelessWidget {
                   return;
                 }
                 SmartDialog.showLoading(msg: '删除中...');
-                final res = await VideoHttp.replyDel(
+                final res = await Get.find<ReplyRepository>().replyDel(
                   type: item.type.toInt(),
                   oid: item.oid.toInt(),
                   rpid: item.id.toInt(),
@@ -1140,7 +1139,7 @@ class ReplyItemGrpc extends StatelessWidget {
                   context,
                   ReportOptions.commentReport,
                   (reasonType, reasonDesc, banUid) async {
-                    final res = await ReplyHttp.report(
+                    final res = await Get.find<ReplyRepository>().report(
                       rpid: item.id,
                       oid: item.oid,
                       reasonType: reasonType,

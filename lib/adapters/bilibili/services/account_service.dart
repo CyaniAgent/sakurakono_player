@@ -1,27 +1,28 @@
 import 'dart:async';
 
-import 'package:skf/adapters/bilibili/models/user/info.dart';
-import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:get/get.dart';
 
+/// Deprecated - use [Get.find]<[AccountProvider]>() instead.
+///
+/// Thin backward-compatible wrapper around [AccountProvider].
+/// Direct callers may continue using this class; new code should
+/// prefer [AccountProvider] directly.
 class AccountService extends GetxService {
-  final RxString face = ''.obs;
   final RxBool isLogin = false.obs;
+  final RxString face = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    UserInfoData? userInfo = Pref.userInfoCache;
-    if (userInfo != null) {
-      face.value = userInfo.face ?? '';
-      isLogin.value = true;
-    } else {
-      face.value = '';
-      isLogin.value = false;
-    }
+    final provider = Get.find<AccountProvider>();
+    isLogin.value = provider.isLogin;
+    face.value = provider.face ?? '';
   }
 }
 
+/// Deprecated - use [AccountMixin] from
+/// `package:skf/core/account/account_mixin.dart` instead.
 mixin AccountMixin on GetLifeCycleBase {
   StreamSubscription<bool>? _listener;
 

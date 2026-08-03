@@ -4,7 +4,7 @@ import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
 import 'package:get/get.dart';

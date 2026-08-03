@@ -8,6 +8,7 @@ import 'dart:async' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:skf/core/models/follow_data.dart' as _i5;
+import 'package:skf/core/models/follow_status.dart' as _i7;
 import 'package:skf/core/repository/follow_repository.dart' as _i2;
 import 'package:skf/core/result/loading_state.dart' as _i4;
 
@@ -61,6 +62,38 @@ class MockFollowRepository extends _i1.Mock implements _i2.FollowRepository {
             ),
           )
           as _i3.Future<_i4.LoadingState<_i5.CoreFollowData>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> toggleFollow({
+    required int? fid,
+    int? type,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#toggleFollow, [], {#fid: fid, #type: type}),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#toggleFollow, [], {#fid: fid, #type: type}),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<_i7.CoreFollowStatus>> followStatus({
+    required int? fid,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#followStatus, [], {#fid: fid}),
+            returnValue:
+                _i3.Future<_i4.LoadingState<_i7.CoreFollowStatus>>.value(
+                  _i6.dummyValue<_i4.LoadingState<_i7.CoreFollowStatus>>(
+                    this,
+                    Invocation.method(#followStatus, [], {#fid: fid}),
+                  ),
+                ),
+          )
+          as _i3.Future<_i4.LoadingState<_i7.CoreFollowStatus>>);
 
   @override
   _i3.Future<_i4.LoadingState<void>> sortFollowTag({required String? tagids}) =>

@@ -11,7 +11,7 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/common/widgets/sliver/sliver_to_box_adapter.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/music_types.dart';
-import 'package:skf/adapters/bilibili/http/music.dart';
+import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
@@ -326,7 +326,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                             return;
                           }
                           final hasLike = item.wishListen ?? false;
-                          final res = await MusicHttp.wishUpdate(
+                          final res = await Get.find<MusicRepository>().wishUpdate(
                             controller.musicId,
                             hasLike,
                           );

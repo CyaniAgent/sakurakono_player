@@ -64,8 +64,8 @@ class ReplyData {
         ? null
         : ReplyControl.fromJson(json['control'] as Map<String, dynamic>),
     note: json['note'] as int?,
-    esportsGradeCard: json['esports_grade_card'] as dynamic,
-    callbacks: json['callbacks'] as dynamic,
+    esportsGradeCard: json['esports_grade_card'] as Map<String, dynamic>?,
+    callbacks: json['callbacks'] as Map<String, dynamic>?,
     contextFeature: json['context_feature'] as String?,
   );
 }

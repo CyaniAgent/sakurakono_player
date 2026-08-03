@@ -1,7 +1,7 @@
 import 'package:skf/common/widgets/flutter/draggable_scrollable_sheet.dart';
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/http/dynamics.dart';
+import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/core/models/dynamics_types.dart';
@@ -420,7 +420,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     if (hasRichText && repostContent != null) {
       richContent.addAll(repostContent);
     }
-    final res = await DynamicsHttp.createDynamic(
+    final res = await Get.find<DynamicsRepository>().createDynamic(
       mid: Accounts.main.mid,
       dynIdStr: widget.item?.idStr ?? widget.dynIdStr,
       rid: widget.rid,

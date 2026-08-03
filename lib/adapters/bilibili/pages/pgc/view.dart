@@ -12,8 +12,9 @@ import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/fav_type.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
-
-
+import 'package:skf/adapters/bilibili/models_new/fav/fav_pgc/list.dart';
+import 'package:skf/adapters/bilibili/models_new/pgc/pgc_index_result/list.dart';
+import 'package:skf/adapters/bilibili/models_new/pgc/pgc_timeline/episode.dart';
 
 import 'package:skf/adapters/bilibili/pages/pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc/widgets/pgc_card_v.dart';
@@ -178,7 +179,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                                         : 0,
                                   ),
                                   child: PgcCardVTimeline(
-                                    item: item.episodes![index] as dynamic,
+                                    item: Episode.fromCore(item.episodes![index]),
                                   ),
                                 );
                               },
@@ -321,7 +322,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                   if (index == response.length - 1) {
                     controller.onLoadMore();
                   }
-                  return PgcCardVPgcIndex(item: response[index] as dynamic);
+                  return PgcCardVPgcIndex(item: PgcIndexItem.fromCore(response[index]));
                 },
                 itemCount: response.length,
               )
@@ -335,7 +336,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
 
   Widget _buildFollow(ThemeData theme) => SliverToBoxAdapter(
     child: Obx(
-      () => controller.accountService.isLogin.value
+          () => controller.accountService.isLogin
           ? Column(
               children: [
                 _buildFollowTitle(theme),
@@ -376,7 +377,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
           ),
         ),
         Obx(
-          () => controller.accountService.isLogin.value
+      () => controller.accountService.isLogin
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: moreTextButton(
@@ -417,7 +418,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                       left: Style.safeSpace,
                       right: index == response.length - 1 ? Style.safeSpace : 0,
                     ),
-                    child: PgcCardV(item: response[index] as dynamic),
+                    child: PgcCardV(item: FavPgcItemModel.fromCore(response[index])),
                   );
                 },
               )

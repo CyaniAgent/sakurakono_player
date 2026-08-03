@@ -10,7 +10,7 @@ import 'package:skf/common/widgets/image_grid/image_grid_view.dart'
     show ImageGridView, ImageModel;
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/adapters/bilibili/grpc/reply.dart';
-import 'package:skf/adapters/bilibili/http/fav.dart';
+import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/audio_normalization.dart';
 import 'package:skf/adapters/bilibili/models/common/dynamic/dynamics_type.dart';
@@ -996,7 +996,7 @@ Future<void> _showSuperResolutionDialog(
 
 Future<void> _showFavDialog(BuildContext context) async {
   if (Accounts.main.isLogin) {
-    final res = await FavHttp.allFavFolders(Accounts.main.mid);
+    final res = await Get.find<FavRepository>().allFavFolders(Accounts.main.mid);
     if (res case Success(:final response)) {
       final list = response.list;
       if (list == null || list.isEmpty) {

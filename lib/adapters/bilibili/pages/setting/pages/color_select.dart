@@ -217,7 +217,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
 }
 
 class _ColorSelectController extends GetxController {
-  final RxBool dynamicColor = (Pref.dynamicColor as bool).obs;
-  final RxInt currentColor = (Pref.customColor as int).obs;
+  final RxBool dynamicColor = (Pref.dynamicColor).obs;
+  final RxInt currentColor = (Pref.customColor).obs;
   final Rx<ThemeType> themeType = ThemeType.values[Pref.themeType as int].obs;
 }

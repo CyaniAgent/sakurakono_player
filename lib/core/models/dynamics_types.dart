@@ -501,11 +501,12 @@ class CoreDynamicNoneModel {
 class CoreCommon {
   String? cover;
   String? title;
+  String? titlePrefix;
   String? desc;
   String? jumpUrl;
   CoreBadge? badge;
 
-  CoreCommon({this.cover, this.title, this.desc, this.jumpUrl, this.badge});
+  CoreCommon({this.cover, this.title, this.titlePrefix, this.desc, this.jumpUrl, this.badge});
 }
 
 class CoreMusic {

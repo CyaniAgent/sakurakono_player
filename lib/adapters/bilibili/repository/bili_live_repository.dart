@@ -301,7 +301,7 @@ class BiliLiveRepository implements LiveRepository {
     Object? emoticonOptions,
     int replyMid = 0,
     String replayDmid = '',
-  }) async {
+  }) {
     return LiveHttp.sendLiveMsg(
       roomId: roomId,
       msg: msg,
@@ -445,7 +445,7 @@ class BiliLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<void>> setLiveFavTag({
     required String ids,
-  }) async {
+  }) {
     return LiveHttp.setLiveFavTag(
       ids: ids,
     );
@@ -496,7 +496,7 @@ class BiliLiveRepository implements LiveRepository {
   Future<LoadingState<void>> liveSetSilent({
     required String type,
     required int level,
-  }) async {
+  }) {
     return LiveHttp.liveSetSilent(
       type: type,
       level: level,
@@ -506,7 +506,7 @@ class BiliLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<void>> addShieldKeyword({
     required String keyword,
-  }) async {
+  }) {
     return LiveHttp.addShieldKeyword(
       keyword: keyword,
     );
@@ -515,7 +515,7 @@ class BiliLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<void>> delShieldKeyword({
     required String keyword,
-  }) async {
+  }) {
     return LiveHttp.delShieldKeyword(
       keyword: keyword,
     );
@@ -544,7 +544,7 @@ class BiliLiveRepository implements LiveRepository {
     required Object roomId,
     required Object uid,
     Object? anchorId,
-  }) async {
+  }) {
     return LiveHttp.liveLikeReport(
       clickTime: clickTime,
       roomId: roomId,
@@ -575,7 +575,7 @@ class BiliLiveRepository implements LiveRepository {
     required Object idStr,
     required Object ts,
     required Object sign,
-  }) async {
+  }) {
     return LiveHttp.liveDmReport(
       roomId: roomId,
       mid: mid,
@@ -617,7 +617,7 @@ class BiliLiveRepository implements LiveRepository {
     required String reason,
     required int ts,
     required String token,
-  }) async {
+  }) {
     return LiveHttp.superChatReport(
       id: id,
       roomId: roomId,

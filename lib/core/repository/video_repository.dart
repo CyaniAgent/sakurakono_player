@@ -39,8 +39,8 @@ abstract class VideoRepository {
     String? bvid,
     required int cid,
     int? qn,
-    dynamic epid,
-    dynamic seasonId,
+    Object? epid,
+    Object? seasonId,
     required bool tryLook,
     required CoreVideoType videoType,
     String? language,
@@ -186,7 +186,7 @@ abstract class VideoRepository {
     String? aid,
     String? bvid,
     required int cid,
-    dynamic seasonId,
+    Object? seasonId,
     dynamic epId,
   });
 
@@ -219,8 +219,8 @@ abstract class VideoRepository {
 
   /// Get video note list.
   Future<LoadingState<CoreVideoNoteData>> getVideoNoteList({
-    dynamic oid,
-    dynamic uperMid,
+    Object? oid,
+    int? uperMid,
     required int page,
   });
 

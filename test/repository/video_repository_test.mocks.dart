@@ -110,8 +110,8 @@ class MockVideoRepository extends _i1.Mock implements _i2.VideoRepository {
     String? bvid,
     required int? cid,
     int? qn,
-    dynamic epid,
-    dynamic seasonId,
+    Object? epid,
+    Object? seasonId,
     required bool? tryLook,
     required _i5.CoreVideoType? videoType,
     String? language,
@@ -564,7 +564,7 @@ class MockVideoRepository extends _i1.Mock implements _i2.VideoRepository {
     String? aid,
     String? bvid,
     required int? cid,
-    dynamic seasonId,
+    Object? seasonId,
     dynamic epId,
   }) =>
       (super.noSuchMethod(
@@ -689,8 +689,8 @@ class MockVideoRepository extends _i1.Mock implements _i2.VideoRepository {
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreVideoNoteData>> getVideoNoteList({
-    dynamic oid,
-    dynamic uperMid,
+    Object? oid,
+    int? uperMid,
     required int? page,
   }) =>
       (super.noSuchMethod(

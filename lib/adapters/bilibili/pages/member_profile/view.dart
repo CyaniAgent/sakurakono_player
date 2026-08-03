@@ -10,7 +10,7 @@ import 'package:skf/adapters/bilibili/models/common/member/profile_type.dart';
 import 'package:skf/adapters/bilibili/models/user/info.dart';
 import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
 import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_sign.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -43,7 +43,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       LoadingState<AccountMyInfoData>.loading();
   late final TextEditingController _textController;
   late final _imagePicker = ImagePicker();
-  AccountService accountService = Get.find<AccountService>();
+  AccountProvider accountService = Get.find<AccountProvider>();
 
   @override
   void initState() {
@@ -91,7 +91,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   res.data['data'],
                 );
                 _loadingState = Success(data);
-                accountService.face.value = data.face!;
+                accountService.rxFace.value = data.face!;
                 try {
                   UserInfoData userInfo = Pref.userInfoCache!
                     ..uname = data.name

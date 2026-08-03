@@ -11,14 +11,15 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/im/interfaces/v1.pb.dart'
     show EmotionInfo;
 import 'package:skf/adapters/bilibili/grpc/bilibili/im/type.pb.dart' show Msg, MsgType;
-import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
+import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
+import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
@@ -329,7 +330,7 @@ class ChatItem extends StatelessWidget {
                   if (bvid != null) {
                     try {
                       SmartDialog.showLoading();
-                      final res = await SearchHttp.ab2cWithDimension(
+                      final res = await Get.find<SearchRepository>().ab2cWithDimension(
                         bvid: bvid,
                       );
                       final cid = res?.cid;
@@ -339,7 +340,7 @@ class ChatItem extends StatelessWidget {
                           bvid: bvid,
                           cid: cid,
                           cover: i['cover_url'],
-                          dimension: res!.dimension,
+                          dimension: res!.dimension == null ? null : Dimension(width: res.dimension!.width, height: res.dimension!.height),
                         );
                       }
                     } catch (err) {
@@ -425,7 +426,7 @@ class ChatItem extends StatelessWidget {
                 try {
                   SmartDialog.showLoading();
                   final bvid = content["bvid"];
-                  final res = await SearchHttp.ab2cWithDimension(
+                  final res = await Get.find<SearchRepository>().ab2cWithDimension(
                     bvid: bvid,
                   );
                   final cid = res?.cid;
@@ -435,7 +436,7 @@ class ChatItem extends StatelessWidget {
                       bvid: bvid,
                       cid: cid,
                       cover: content['cover'],
-                      dimension: res!.dimension,
+                      dimension: res!.dimension == null ? null : Dimension(width: res.dimension!.width, height: res.dimension!.height),
                     );
                   }
                 } catch (err) {
@@ -527,7 +528,7 @@ class ChatItem extends StatelessWidget {
           }
           bvid ??= IdUtils.av2bv(aid);
           SmartDialog.showLoading();
-          final res = await SearchHttp.ab2cWithDimension(
+          final res = await Get.find<SearchRepository>().ab2cWithDimension(
             bvid: bvid,
           );
           final cid = res?.cid;
@@ -538,7 +539,7 @@ class ChatItem extends StatelessWidget {
               bvid: bvid,
               cid: cid,
               cover: content['thumb'],
-              dimension: res!.dimension,
+              dimension: res!.dimension == null ? null : Dimension(width: res.dimension!.width, height: res.dimension!.height),
             );
           }
         };
@@ -832,3 +833,4 @@ class ChatItem extends StatelessWidget {
     );
   }
 }
+

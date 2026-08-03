@@ -53,13 +53,13 @@ class ReplyControl {
     answerGuideIosUrl: json['answer_guide_ios_url'] as String?,
     answerGuideAndroidUrl: json['answer_guide_android_url'] as String?,
     bgText: json['bg_text'] as String?,
-    emptyPage: json['empty_page'] as dynamic,
+    emptyPage: json['empty_page'] as Map<String, dynamic>?,
     showType: json['show_type'] as int?,
     showText: json['show_text'] as String?,
     webSelection: json['web_selection'] as bool?,
     disableJumpEmote: json['disable_jump_emote'] as bool?,
     enableCharged: json['enable_charged'] as bool?,
     enableCmBizHelper: json['enable_cm_biz_helper'] as bool?,
-    preloadResources: json['preload_resources'] as dynamic,
+    preloadResources: json['preload_resources'] as List<dynamic>?,
   );
 }

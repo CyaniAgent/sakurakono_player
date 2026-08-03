@@ -83,15 +83,15 @@ class BiliUserRepository implements UserRepository {
   Future<LoadingState<void>> toViewLater({
     String? bvid,
     Object? aid,
-  }) async =>
+  }) =>
       UserHttp.toViewLater(bvid: bvid, aid: aid);
 
   @override
-  Future<LoadingState<void>> toViewDel({required String aids}) async =>
+  Future<LoadingState<void>> toViewDel({required String aids}) =>
       UserHttp.toViewDel(aids: aids);
 
   @override
-  Future<LoadingState<void>> toViewClear([int? cleanType]) async =>
+  Future<LoadingState<void>> toViewClear([int? cleanType]) =>
       UserHttp.toViewClear(cleanType);
 
   // ── History ──────────────────────────────────────────────────────
@@ -115,21 +115,21 @@ class BiliUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> pauseHistory(bool switchStatus,
-          {Object? account}) async =>
+          {Object? account}) =>
       UserHttp.pauseHistory(switchStatus,
           account: account as Account?);
 
   @override
-  Future<LoadingState<bool>> historyStatus({Object? account}) async =>
+  Future<LoadingState<bool>> historyStatus({Object? account}) =>
       UserHttp.historyStatus(account: account as Account?);
 
   @override
-  Future<LoadingState<void>> clearHistory({Object? account}) async =>
+  Future<LoadingState<void>> clearHistory({Object? account}) =>
       UserHttp.clearHistory(account: account as Account?);
 
   @override
   Future<LoadingState<void>> delHistory(String kid,
-          {Object? account}) async =>
+          {Object? account}) =>
       UserHttp.delHistory(kid, account: account as Account?);
 
   @override
@@ -211,7 +211,7 @@ class BiliUserRepository implements UserRepository {
   // ── Coins ────────────────────────────────────────────────────────
 
   @override
-  Future<LoadingState<num?>> getCoin() async =>
+  Future<LoadingState<num?>> getCoin() =>
       UserHttp.getCoin();
 
   @override
@@ -226,7 +226,7 @@ class BiliUserRepository implements UserRepository {
     required Object dynId,
     required int reasonType,
     String? reasonDesc,
-  }) async =>
+  }) =>
       UserHttp.dynamicReport(
         mid: mid,
         dynId: dynId,
@@ -243,20 +243,20 @@ class BiliUserRepository implements UserRepository {
   @override
   Future<LoadingState<void>> spaceSettingMod(
     Map<String, dynamic> data,
-  ) async =>
+  ) =>
       UserHttp.spaceSettingMod(data);
 
   @override
   Future<LoadingState<void>> spaceReserve({
     required Object sid,
     required bool isFollow,
-  }) async =>
+  }) =>
       UserHttp.spaceReserve(sid: sid, isFollow: isFollow);
 
   // ── VIP ──────────────────────────────────────────────────────────
 
   @override
-  Future<LoadingState<void>> vipExpAdd() async =>
+  Future<LoadingState<void>> vipExpAdd() =>
       UserHttp.vipExpAdd();
 
   // ── Logs ─────────────────────────────────────────────────────────

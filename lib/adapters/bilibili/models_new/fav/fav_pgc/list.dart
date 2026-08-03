@@ -1,5 +1,6 @@
 import 'package:skf/adapters/bilibili/models_new/fav/fav_pgc/new_ep.dart';
 import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/core/models/fav_types.dart';
 
 class FavPgcItemModel with MultiSelectData {
   int? seasonId;
@@ -21,6 +22,17 @@ class FavPgcItemModel with MultiSelectData {
     this.renewalTime,
     this.progress,
   });
+
+  factory FavPgcItemModel.fromCore(CoreFavPgcItemModel core) => FavPgcItemModel(
+    seasonId: core.seasonId,
+    title: core.title,
+    cover: core.cover,
+    isFinish: core.isFinish,
+    badge: core.badge,
+    newEp: core.newEp != null ? NewEp(indexShow: core.newEp!.indexShow) : null,
+    renewalTime: core.renewalTime,
+    progress: core.progress,
+  );
 
   factory FavPgcItemModel.fromJson(
     Map<String, dynamic> json,

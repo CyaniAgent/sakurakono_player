@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/adapters/bilibili/models/common/theme/theme_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
@@ -22,9 +22,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class MineController extends CommonDataController<CoreFavFolderData, CoreFavFolderData>
     with AccountMixin {
-  @override
-  AccountService accountService = Get.find<AccountService>();
-
   int? favFolderCount;
 
   // 用户信息 头像、昵称、lv
@@ -87,7 +84,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   }
 
   bool get isLogin {
-    if (!accountService.isLogin.value) {
+    if (!accountService.isLogin) {
       // SmartDialog.showToast('账号未登录');
       return false;
     }
@@ -102,9 +99,9 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
         if (response != Pref.userInfoCache) {
           GStorage.userInfo.put('userInfoCache', response);
         }
-        accountService
-          ..face.value = response.face!
-          ..isLogin.value = true;
+      accountService
+        ..rxFace.value = response.face!
+        ..rxIsLogin.value = true;
       } else {
         _onLogoutMain();
         return;
@@ -280,7 +277,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   }
 
   void onLogin([bool longPress = false]) {
-    if (!accountService.isLogin.value || longPress) {
+    if (!accountService.isLogin || longPress) {
       Get.toNamed('/loginPage');
     } else {
       Get.toNamed('/member?mid=${userInfo.value.mid}');
@@ -289,7 +286,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
 
   @override
   Future<void> onRefresh({bool isManual = true}) {
-    if (!accountService.isLogin.value) {
+    if (!accountService.isLogin) {
       return Future.syncValue(null);
     }
     queryUserInfo();

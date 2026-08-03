@@ -167,7 +167,7 @@ class MockMsgRepository extends _i1.Mock implements _i2.MsgRepository {
 
   @override
   _i3.Future<_i4.LoadingState<Map<dynamic, dynamic>>> uploadImage({
-    required dynamic path,
+    required String? path,
     required String? bucket,
     required String? dir,
   }) =>
@@ -272,7 +272,7 @@ class MockMsgRepository extends _i1.Mock implements _i2.MsgRepository {
           as _i3.Future<_i4.LoadingState<void>>);
 
   @override
-  _i3.Future<_i4.LoadingState<void>> delMsgfeed(int? tp, dynamic id) =>
+  _i3.Future<_i4.LoadingState<void>> delMsgfeed(int? tp, Object? id) =>
       (super.noSuchMethod(
             Invocation.method(#delMsgfeed, [tp, id]),
             returnValue: _i3.Future<_i4.LoadingState<void>>.value(

@@ -6,7 +6,7 @@ import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
@@ -24,9 +24,6 @@ class PgcController
       tabType == HomeTabType.bangumi && Pref.showPgcTimeline;
 
   @override
-  final accountService = Get.find<AccountService>();
-
-  @override
   void onInit() {
     super.onInit();
 
@@ -39,7 +36,7 @@ class PgcController
 
   @override
   Future<void> onRefresh() {
-    if (accountService.isLogin.value) {
+    if (accountService.isLogin) {
       _refreshPgcFollow();
     }
     if (showPgcTimeline) {
@@ -87,7 +84,7 @@ Get.find<PgcRepository>().pgcTimeline(types: 1, before: 6, after: 6),
 
   // 我的订阅
   Future<void> queryPgcFollow([bool isRefresh = true]) async {
-    if (!accountService.isLogin.value ||
+    if (!accountService.isLogin ||
         followLoading ||
         (!isRefresh && followEnd)) {
       return;

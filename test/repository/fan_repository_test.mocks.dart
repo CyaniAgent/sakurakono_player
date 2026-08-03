@@ -7,6 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:skf/core/models/fan_model.dart' as _i7;
 import 'package:skf/core/models/follow_data.dart' as _i5;
 import 'package:skf/core/repository/fan_repository.dart' as _i2;
 import 'package:skf/core/result/loading_state.dart' as _i4;
@@ -61,4 +62,18 @@ class MockFanRepository extends _i1.Mock implements _i2.FanRepository {
             ),
           )
           as _i3.Future<_i4.LoadingState<_i5.CoreFollowData>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<_i7.CoreActiveFollower?>> activeFollower() =>
+      (super.noSuchMethod(
+            Invocation.method(#activeFollower, []),
+            returnValue:
+                _i3.Future<_i4.LoadingState<_i7.CoreActiveFollower?>>.value(
+                  _i6.dummyValue<_i4.LoadingState<_i7.CoreActiveFollower?>>(
+                    this,
+                    Invocation.method(#activeFollower, []),
+                  ),
+                ),
+          )
+          as _i3.Future<_i4.LoadingState<_i7.CoreActiveFollower?>>);
 }

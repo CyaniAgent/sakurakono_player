@@ -64,7 +64,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
   late final _hasCopyright = widget.hasCopyright;
   late bool _isPaying = false;
   PageController? _controller;
-  late final RxBool _coinWithLike = (Pref.coinWithLike as bool).obs;
+  late final RxBool _coinWithLike = (Pref.coinWithLike).obs;
   late final RxInt _pageIndex = 0.obs;
 
   late final AnimationController _slide22Controller;

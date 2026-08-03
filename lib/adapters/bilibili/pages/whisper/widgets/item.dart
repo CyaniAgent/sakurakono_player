@@ -10,8 +10,8 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pb.dart'
     show Session, SessionId, SessionPageType;
 import 'package:skf/adapters/bilibili/grpc/im.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/msg.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_secondary/view.dart';
+import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -41,7 +41,7 @@ class WhisperSessionItem extends StatelessWidget {
     final talkerUid = item.id.privateId.talkerUid;
     final res = await ImGrpc.sessionDetail(talkerId: talkerUid, sessionType: 1);
     if (res case Success(:final response)) {
-      final res = await MsgHttp.ackSessionMsg(
+      final res = await Get.find<MsgRepository>().ackSessionMsg(
         talkerId: talkerUid.toInt(),
         ackSeqno: response.ackSeqno.toInt(),
       );

@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/mine/view.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/feed_back.dart';
@@ -27,9 +27,6 @@ import 'package:get/get.dart';
 
 class MainController extends GetxController
     with GetSingleTickerProviderStateMixin, AccountMixin {
-  @override
-  final AccountService accountService = Get.find<AccountService>();
-
   List<NavigationBarType> navigationBars = <NavigationBarType>[];
 
   RxDouble? barOffset;
@@ -166,7 +163,7 @@ class MainController extends GetxController
   }
 
   Future<void> queryUnreadMsg([bool isChangeType = false]) async {
-    if (!accountService.isLogin.value ||
+    if (!accountService.isLogin ||
         !hasHome ||
         msgUnReadTypes.isEmpty ||
         msgBadgeMode == DynamicBadgeMode.hidden) {
@@ -193,7 +190,7 @@ class MainController extends GetxController
   }
 
   void getUnreadDynamic() {
-    if (!accountService.isLogin.value || !hasDyn) {
+    if (!accountService.isLogin || !hasDyn) {
       return;
     }
     unawaited(DynGrpc.dynRed().then((res) {
@@ -210,7 +207,7 @@ class MainController extends GetxController
 
   void checkUnreadDynamic() {
     if (!hasDyn ||
-        !accountService.isLogin.value ||
+        !accountService.isLogin ||
         dynamicBadgeMode == DynamicBadgeMode.hidden ||
         !checkDynamic) {
       return;
@@ -254,7 +251,7 @@ class MainController extends GetxController
   }
 
   void checkUnread([bool shouldCheck = false]) {
-    if (accountService.isLogin.value &&
+    if (accountService.isLogin &&
         hasHome &&
         msgBadgeMode != DynamicBadgeMode.hidden) {
       if (shouldCheck &&

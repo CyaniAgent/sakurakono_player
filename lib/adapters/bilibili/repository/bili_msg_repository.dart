@@ -89,7 +89,7 @@ class BiliMsgRepository implements MsgRepository {
   }
 
   @override
-  Future<LoadingState<void>> msgSysUpdateCursor(int cursor) async {
+  Future<LoadingState<void>> msgSysUpdateCursor(int cursor) {
     return MsgHttp.msgSysUpdateCursor(cursor);
   }
 
@@ -98,7 +98,7 @@ class BiliMsgRepository implements MsgRepository {
     required dynamic path,
     required String bucket,
     required String dir,
-  }) async {
+  }) {
     return MsgHttp.uploadImage(
       path: path,
       bucket: bucket,
@@ -126,7 +126,7 @@ class BiliMsgRepository implements MsgRepository {
   }
 
   @override
-  Future<LoadingState<void>> createTextDynamic(Object content) async {
+  Future<LoadingState<void>> createTextDynamic(Object content) {
     return MsgHttp.createTextDynamic(content);
   }
 
@@ -135,7 +135,7 @@ class BiliMsgRepository implements MsgRepository {
     required Object dynIdStr,
     Object? dynType,
     Object? ridStr,
-  }) async {
+  }) {
     return MsgHttp.removeDynamic(
       dynIdStr: dynIdStr,
       dynType: dynType,
@@ -144,17 +144,17 @@ class BiliMsgRepository implements MsgRepository {
   }
 
   @override
-  Future<LoadingState<void>> removeMsg(Object talkerId) async {
+  Future<LoadingState<void>> removeMsg(Object talkerId) {
     return MsgHttp.removeMsg(talkerId);
   }
 
   @override
-  Future<LoadingState<void>> delMsgfeed(int tp, dynamic id) async {
+  Future<LoadingState<void>> delMsgfeed(int tp, dynamic id) {
     return MsgHttp.delMsgfeed(tp, id);
   }
 
   @override
-  Future<LoadingState<void>> delSysMsg(Object id) async {
+  Future<LoadingState<void>> delSysMsg(Object id) {
     return MsgHttp.delSysMsg(id);
   }
 
@@ -162,7 +162,7 @@ class BiliMsgRepository implements MsgRepository {
   Future<LoadingState<void>> setTop({
     required Object talkerId,
     required int opType,
-  }) async {
+  }) {
     return MsgHttp.setTop(
       talkerId: talkerId,
       opType: opType,
@@ -173,7 +173,7 @@ class BiliMsgRepository implements MsgRepository {
   Future<LoadingState<void>> ackSessionMsg({
     required int talkerId,
     required int ackSeqno,
-  }) async {
+  }) {
     return MsgHttp.ackSessionMsg(
       talkerId: talkerId,
       ackSeqno: ackSeqno,
@@ -184,7 +184,7 @@ class BiliMsgRepository implements MsgRepository {
   Future<LoadingState<void>> msgSetNotice({
     required Object id,
     required int noticeState,
-  }) async {
+  }) {
     return MsgHttp.msgSetNotice(
       id: id,
       noticeState: noticeState,
@@ -196,7 +196,7 @@ class BiliMsgRepository implements MsgRepository {
     required Object uid,
     required int setting,
     required dndUid,
-  }) async {
+  }) {
     return MsgHttp.setMsgDnd(
       uid: uid,
       setting: setting,
@@ -208,7 +208,7 @@ class BiliMsgRepository implements MsgRepository {
   Future<LoadingState<void>> setPushSs({
     required int setting,
     required talkerUid,
-  }) async {
+  }) {
     return MsgHttp.setPushSs(
       setting: setting,
       talkerUid: talkerUid,
@@ -283,7 +283,7 @@ class BiliMsgRepository implements MsgRepository {
     required String reasonDesc,
     required Map comment,
     required Map extra,
-  }) async {
+  }) {
     return MsgHttp.imMsgReport(
       accusedUid: accusedUid,
       reasonType: reasonType,

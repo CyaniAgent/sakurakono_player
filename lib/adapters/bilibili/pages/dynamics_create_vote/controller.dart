@@ -57,7 +57,7 @@ class CreateVoteController extends GetxController {
   }
 
   Future<void> queryData() async {
-    final res = await Get.find<DynamicsRepository>().voteInfo(voteId);
+    final res = await Get.find<DynamicsRepository>().voteInfo(voteId!);
     if (res case Success(:final response)) {
       key = Utils.generateRandomString(6);
       title.value = response.title!;

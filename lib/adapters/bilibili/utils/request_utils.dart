@@ -540,10 +540,10 @@ abstract final class RequestUtils {
 
     Future<void> gaiaVgateValidate() async {
       final res = await Get.find<ValidateRepository>().gaiaVgateValidate(
-        challenge: captchaData.geetest?.challenge,
-        seccode: captchaData.seccode,
-        token: captchaData.token,
-        validate: captchaData.validate,
+        challenge: captchaData.geetest!.challenge,
+        seccode: captchaData.seccode!,
+        token: captchaData.token!,
+        validate: captchaData.validate!,
       );
       if (res case Success(:final response?)) {
         if (response['is_valid'] == 1) {

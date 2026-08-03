@@ -1,7 +1,6 @@
-import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
 import 'package:skf/adapters/bilibili/utils/recommend_filter.dart';
+import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +66,8 @@ List<SettingsModel> get recommendSettings => [
     title: 'App推荐/热门/排行榜: 视频分区关键词过滤',
     key: SettingBoxKey.banWordForZone,
     onChanged: (value) {
-      VideoHttp.zoneRegExp = value;
-      VideoHttp.enableFilter = value.pattern.isNotEmpty;
+      RecommendFilter.zoneRegExp = value;
+      RecommendFilter.zoneEnableFilter = value.pattern.isNotEmpty;
     },
   ),
   getVideoFilterSelectModel(

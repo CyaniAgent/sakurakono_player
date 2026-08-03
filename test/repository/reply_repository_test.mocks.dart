@@ -8,6 +8,7 @@ import 'dart:async' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:skf/core/models/reply_types.dart' as _i5;
+import 'package:skf/core/models/video_types.dart' as _i7;
 import 'package:skf/core/repository/reply_repository.dart' as _i2;
 import 'package:skf/core/result/loading_state.dart' as _i4;
 
@@ -243,4 +244,169 @@ class MockReplyRepository extends _i1.Mock implements _i2.ReplyRepository {
             ),
           )
           as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<_i7.CoreReplyInfo?>> replyAdd({
+    required int? type,
+    required int? oid,
+    required String? message,
+    int? root,
+    int? parent,
+    List<dynamic>? pictures,
+    bool? syncToDynamic = false,
+    Map<String, int>? atNameToMid,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#replyAdd, [], {
+              #type: type,
+              #oid: oid,
+              #message: message,
+              #root: root,
+              #parent: parent,
+              #pictures: pictures,
+              #syncToDynamic: syncToDynamic,
+              #atNameToMid: atNameToMid,
+            }),
+            returnValue: _i3.Future<_i4.LoadingState<_i7.CoreReplyInfo?>>.value(
+              _i6.dummyValue<_i4.LoadingState<_i7.CoreReplyInfo?>>(
+                this,
+                Invocation.method(#replyAdd, [], {
+                  #type: type,
+                  #oid: oid,
+                  #message: message,
+                  #root: root,
+                  #parent: parent,
+                  #pictures: pictures,
+                  #syncToDynamic: syncToDynamic,
+                  #atNameToMid: atNameToMid,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<_i7.CoreReplyInfo?>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> replyDel({
+    required int? type,
+    required int? oid,
+    required int? rpid,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#replyDel, [], {
+              #type: type,
+              #oid: oid,
+              #rpid: rpid,
+            }),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#replyDel, [], {
+                  #type: type,
+                  #oid: oid,
+                  #rpid: rpid,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> likeReply({
+    required int? type,
+    required int? oid,
+    required int? rpid,
+    required int? action,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#likeReply, [], {
+              #type: type,
+              #oid: oid,
+              #rpid: rpid,
+              #action: action,
+            }),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#likeReply, [], {
+                  #type: type,
+                  #oid: oid,
+                  #rpid: rpid,
+                  #action: action,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> hateReply({
+    required int? type,
+    required int? oid,
+    required int? rpid,
+    required int? action,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#hateReply, [], {
+              #type: type,
+              #oid: oid,
+              #rpid: rpid,
+              #action: action,
+            }),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#hateReply, [], {
+                  #type: type,
+                  #oid: oid,
+                  #rpid: rpid,
+                  #action: action,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> report({
+    required Object? rpid,
+    required Object? oid,
+    required int? reasonType,
+    bool? banUid = true,
+    String? reasonDesc,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#report, [], {
+              #rpid: rpid,
+              #oid: oid,
+              #reasonType: reasonType,
+              #banUid: banUid,
+              #reasonDesc: reasonDesc,
+            }),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#report, [], {
+                  #rpid: rpid,
+                  #oid: oid,
+                  #reasonType: reasonType,
+                  #banUid: banUid,
+                  #reasonDesc: reasonDesc,
+                }),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<dynamic>> getEmoteList({String? business}) =>
+      (super.noSuchMethod(
+            Invocation.method(#getEmoteList, [], {#business: business}),
+            returnValue: _i3.Future<_i4.LoadingState<dynamic>>.value(
+              _i6.dummyValue<_i4.LoadingState<dynamic>>(
+                this,
+                Invocation.method(#getEmoteList, [], {#business: business}),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<dynamic>>);
 }

@@ -61,7 +61,7 @@ class _MemberCoinArcPageState extends State<MemberCoinArcPage> {
                 right: Style.safeSpace + padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: Obx(() => _buildBody(_ctr.loadingState.value as dynamic)),
+              sliver: Obx(() => _buildBody(_ctr.loadingState.value as LoadingState<List<CoinLikeArcItem>?>)),
             ),
           ],
         ),

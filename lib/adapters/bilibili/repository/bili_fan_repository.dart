@@ -1,4 +1,5 @@
 import 'package:skf/adapters/bilibili/http/fan.dart';
+import 'package:skf/core/models/fan_model.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/repository/fan_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -34,5 +35,11 @@ class BiliFanRepository implements FanRepository {
       }));
     }
     return result as LoadingState<CoreFollowData>;
+  }
+
+  @override
+  Future<LoadingState<CoreActiveFollower?>> activeFollower() async {
+    // Bilibili API does not have a dedicated active follower endpoint.
+    return const Error('not_implemented');
   }
 }

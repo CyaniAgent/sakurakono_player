@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/reorder_mixin.dart';
-import 'package:skf/adapters/bilibili/http/fav.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/fav/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav/video/widgets/item.dart';
@@ -34,7 +34,7 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
         actions: [
           TextButton(
             onPressed: () async {
-              final res = await FavHttp.sortFavFolder(
+              final res = await Get.find<FavRepository>().sortFavFolder(
                 sort: sortList.map((item) => item.id).join(','),
               );
               if (res.isSuccess) {

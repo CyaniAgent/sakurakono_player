@@ -27,28 +27,28 @@ abstract class SearchRepository {
 
   /// Resolve aid/bvid to cid.
   Future<int?> ab2c({
-    dynamic aid,
-    dynamic bvid,
+    int? aid,
+    String? bvid,
     int? part,
   });
 
   /// Resolve aid/bvid to cid with dimension data.
   Future<({int? cid, CoreDimension? dimension})?> ab2cWithDimension({
-    dynamic aid,
-    dynamic bvid,
+    int? aid,
+    String? bvid,
     int? part,
   });
 
   /// Get PGC (番剧/影视) info.
   Future<LoadingState<CorePgcInfoModel>> pgcInfo({
-    dynamic seasonId,
-    dynamic epId,
+    Object? seasonId,
+    Object? epId,
   });
 
   /// Get PUGV (课程) info.
   Future<LoadingState<CorePgcInfoModel>> pugvInfo({
-    dynamic seasonId,
-    dynamic epId,
+    Object? seasonId,
+    Object? epId,
   });
 
   /// Get trending search terms.

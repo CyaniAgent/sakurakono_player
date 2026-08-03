@@ -7,10 +7,11 @@ import 'package:get/get.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
+import 'package:skf/adapters/bilibili/models/common/dynamic/up_panel_position.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +31,7 @@ class DynamicsController
   late bool showLiveUp = Pref.expandDynLivePanel;
   late final _showAllUp = Pref.dynamicsShowAllFollowedUp;
 
-  final upPanelPosition = Pref.upPanelPosition;
-
-  @override
-  final AccountService accountService = Get.find<AccountService>();
+  final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition as int];
 
   DynamicsTabController? get controller {
     try {

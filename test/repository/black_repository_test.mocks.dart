@@ -7,6 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:skf/core/models/black_status.dart' as _i7;
 import 'package:skf/core/models/blacklist_data.dart' as _i5;
 import 'package:skf/core/repository/black_repository.dart' as _i2;
 import 'package:skf/core/result/loading_state.dart' as _i4;
@@ -50,4 +51,46 @@ class MockBlackRepository extends _i1.Mock implements _i2.BlackRepository {
                 ),
           )
           as _i3.Future<_i4.LoadingState<_i5.CoreBlackListData>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> addBlack({required int? uid}) =>
+      (super.noSuchMethod(
+            Invocation.method(#addBlack, [], {#uid: uid}),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#addBlack, [], {#uid: uid}),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<void>> removeBlack({required int? uid}) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeBlack, [], {#uid: uid}),
+            returnValue: _i3.Future<_i4.LoadingState<void>>.value(
+              _i6.dummyValue<_i4.LoadingState<void>>(
+                this,
+                Invocation.method(#removeBlack, [], {#uid: uid}),
+              ),
+            ),
+          )
+          as _i3.Future<_i4.LoadingState<void>>);
+
+  @override
+  _i3.Future<_i4.LoadingState<_i7.CoreBlackStatus>> checkBlack({
+    required int? uid,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#checkBlack, [], {#uid: uid}),
+            returnValue:
+                _i3.Future<_i4.LoadingState<_i7.CoreBlackStatus>>.value(
+                  _i6.dummyValue<_i4.LoadingState<_i7.CoreBlackStatus>>(
+                    this,
+                    Invocation.method(#checkBlack, [], {#uid: uid}),
+                  ),
+                ),
+          )
+          as _i3.Future<_i4.LoadingState<_i7.CoreBlackStatus>>);
 }

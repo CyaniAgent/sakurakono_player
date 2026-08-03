@@ -19,7 +19,7 @@ class BiliMusicRepository implements MusicRepository {
   Future<LoadingState<void>> wishUpdate(
     String musicId,
     bool hasLike,
-  ) async {
+  ) {
     return MusicHttp.wishUpdate(musicId, hasLike);
   }
 

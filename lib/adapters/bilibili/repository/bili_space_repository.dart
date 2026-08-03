@@ -60,9 +60,9 @@ LoadingState<T> _toCore<T, A>(LoadingState<A> state, T Function(A) convert) {
 CoreOpusSpaceFlowResp _convertOpusSpaceFlowResp(OpusSpaceFlowResp resp) {
   return CoreOpusSpaceFlowResp(
     itemList: resp.itemList as List<dynamic>?,
-    nextPage: resp.nextPage as dynamic,
-    hostUpOpusCollection: resp.hostUpOpusCollection as dynamic,
-    hostUpNoteNavBar: resp.hostUpNoteNavBar as dynamic,
+    nextPage: resp.nextPage,
+    hostUpOpusCollection: resp.hostUpOpusCollection,
+    hostUpNoteNavBar: resp.hostUpNoteNavBar,
   );
 }
 

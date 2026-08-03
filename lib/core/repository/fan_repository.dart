@@ -1,3 +1,4 @@
+import 'package:skf/core/models/fan_model.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -13,4 +14,10 @@ abstract class FanRepository {
     int ps = 20,
     String? orderType,
   });
+
+  /// Get the most recent active follower for the current user.
+  ///
+  /// Returns [CoreActiveFollower] with the follower who has been active
+  /// most recently, or null if there are no active followers.
+  Future<LoadingState<CoreActiveFollower?>> activeFollower();
 }

@@ -26,7 +26,7 @@ class BiliDanmakuFilterRepository implements DanmakuFilterRepository {
   }
 
   @override
-  Future<LoadingState<void>> danmakuFilterDel({required int ids}) async {
+  Future<LoadingState<void>> danmakuFilterDel({required int ids}) {
     return DanmakuFilterHttp.danmakuFilterDel(ids: ids);
   }
 

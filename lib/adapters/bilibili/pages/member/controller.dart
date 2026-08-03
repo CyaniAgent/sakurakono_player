@@ -55,7 +55,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
 
   List<CoreReservationCardItem>? reserves;
 
-  final fromViewAid = Get.parameters['from_view_aid'];
+  final fromViewAid = int.tryParse(Get.parameters['from_view_aid'] ?? '');
 
   final scrollKey = GlobalKey<ExtendedNestedScrollViewState>();
 
@@ -68,7 +68,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   @override
   bool customHandleResponse(bool isRefresh, Success<CoreSpaceData> response) {
     final data = response.response;
-    final card = data.CoreCard;
+    final card = data.coreCard;
     username = card?.name ?? '';
     userAvatar = card?.face;
 

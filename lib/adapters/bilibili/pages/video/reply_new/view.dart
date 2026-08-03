@@ -11,8 +11,8 @@ import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
+import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart' show FilePicModel;
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_mention/controller.dart';
@@ -392,7 +392,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
       }
     }
     String message = editController.rawText;
-    final res = await VideoHttp.replyAdd(
+    final res = await Get.find<ReplyRepository>().replyAdd(
       type: widget.replyType,
       oid: widget.oid,
       root: widget.root,

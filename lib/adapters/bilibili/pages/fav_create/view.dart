@@ -3,9 +3,9 @@ import 'dart:io' show File;
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
-import 'package:skf/adapters/bilibili/http/fav.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/msg.dart';
+import 'package:skf/core/repository/fav_repository.dart';
+import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:skf/utils/extension/file_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -48,7 +48,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
 
   void _getFolderInfo() {
     _errMsg = null;
-    FavHttp.favFolderInfo(mediaId: _mediaId).then((res) {
+    Get.find<FavRepository>().favFolderInfo(mediaId: _mediaId).then((res) {
       if (res case Success(:final response)) {
         _titleController.text = response.title;
         _introController.text = response.intro ?? '';
@@ -82,7 +82,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 SmartDialog.showToast('名称不能为空');
                 return;
               }
-              FavHttp.addOrEditFolder(
+              Get.find<FavRepository>().addOrEditFolder(
                 isAdd: _mediaId == null,
                 mediaId: _mediaId,
                 title: _titleController.text,
@@ -152,7 +152,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
             imgPath = croppedFile.path;
           }
         }
-        MsgHttp.uploadImage(
+        Get.find<MsgRepository>().uploadImage(
           path: imgPath,
           bucket: 'medialist',
           dir: 'cover',

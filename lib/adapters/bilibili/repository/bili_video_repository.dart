@@ -5,6 +5,7 @@ import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
+import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/pgc_lcf.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
@@ -122,7 +123,7 @@ class BiliVideoRepository implements VideoRepository {
         owner: {
                 'mid': m.owner.mid,
                 'name': m.owner.name,
-                'face': (m.owner as dynamic).face,
+                'face': (m.owner as Owner).face,
               },
         stat: {
                 'view': m.stat.view,
@@ -546,7 +547,7 @@ class BiliVideoRepository implements VideoRepository {
     required String bvid,
     required int multiply,
     int selectLike = 0,
-  }) async {
+  }) {
     return 
       VideoHttp.coinVideo(
         bvid: bvid,
@@ -580,7 +581,7 @@ class BiliVideoRepository implements VideoRepository {
   Future<LoadingState<String>> likeVideo({
     required String bvid,
     required bool type,
-  }) async {
+  }) {
     return VideoHttp.likeVideo(bvid: bvid, type: type);
   }
 
@@ -588,7 +589,7 @@ class BiliVideoRepository implements VideoRepository {
   Future<LoadingState<void>> dislikeVideo({
     required String bvid,
     required bool type,
-  }) async {
+  }) {
     return VideoHttp.dislikeVideo(bvid: bvid, type: type);
   }
 
@@ -597,7 +598,7 @@ class BiliVideoRepository implements VideoRepository {
     required int mid,
     required int act,
     required int reSrc,
-  }) async {
+  }) {
     return VideoHttp.relationMod(
       mid: mid,
       act: act,
@@ -611,7 +612,7 @@ class BiliVideoRepository implements VideoRepository {
     required int id,
     int? reasonId,
     int? feedbackId,
-  }) async {
+  }) {
     return VideoHttp.feedDislike(
       goto: goto,
       id: id,
@@ -626,7 +627,7 @@ class BiliVideoRepository implements VideoRepository {
     required int id,
     int? reasonId,
     int? feedbackId,
-  }) async {
+  }) {
     return VideoHttp.feedDislikeCancel(
       goto: goto,
       id: id,
@@ -667,17 +668,17 @@ class BiliVideoRepository implements VideoRepository {
     required int type,
     required int oid,
     required int rpid,
-  }) async {
+  }) {
     return VideoHttp.replyDel(type: type, oid: oid, rpid: rpid);
   }
 
   @override
-  Future<LoadingState<String>> pgcAdd({int? seasonId}) async {
+  Future<LoadingState<String>> pgcAdd({int? seasonId}) {
     return VideoHttp.pgcAdd(seasonId: seasonId);
   }
 
   @override
-  Future<LoadingState<String>> pgcDel({int? seasonId}) async {
+  Future<LoadingState<String>> pgcDel({int? seasonId}) {
     return VideoHttp.pgcDel(seasonId: seasonId);
   }
 
@@ -685,7 +686,7 @@ class BiliVideoRepository implements VideoRepository {
   Future<LoadingState<String>> pgcUpdate({
     required String seasonId,
     required int status,
-  }) async {
+  }) {
     return VideoHttp.pgcUpdate(seasonId: seasonId, status: status);
   }
 
@@ -694,7 +695,7 @@ class BiliVideoRepository implements VideoRepository {
     int? aid,
     String? bvid,
     required int cid,
-  }) async {
+  }) {
     return VideoHttp.onlineTotal(aid: aid, bvid: bvid, cid: cid);
   }
 

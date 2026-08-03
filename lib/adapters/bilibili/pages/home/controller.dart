@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_controller.dart';
 import 'package:skf/adapters/bilibili/pages/common/home_tab_helper.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -34,7 +34,7 @@ class HomeController extends GetxController
   @override
   ScrollController get scrollController => controller.scrollController;
 
-  AccountService accountService = Get.find<AccountService>();
+  AccountProvider accountService = Get.find<AccountProvider>();
 
   @override
   void onInit() {

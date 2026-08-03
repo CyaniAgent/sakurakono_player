@@ -12,10 +12,10 @@ import 'package:skf/common/widgets/marquee.dart';
 import 'package:skf/core/repository/danmaku_filter_repository.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
 import 'package:skf/core/repository/live_repository.dart';
+import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/adapters/bilibili/http/init.dart';
-import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
 import 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
@@ -55,6 +55,7 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/storage_utils.dart';
 import 'package:skf/adapters/bilibili/utils/subtitle_utils.dart';
+import 'package:skf/core/utils/subtitle_utils.dart' as core_subtitle;
 import 'package:skf/utils/utils.dart';
 import 'package:skf/adapters/bilibili/utils/video_utils.dart';
 import 'package:battery_plus/battery_plus.dart';
@@ -1220,9 +1221,11 @@ class HeaderControlState extends State<HeaderControl>
                           ? videoDetailCtr.vttSubtitles[i]?.id
                           : null;
                       if (subtitle == null) {
-                        final res = await VideoHttp.vttSubtitles(
+                        final res = await Get.find<VideoRepository>().vttSubtitles(
                           item.subtitleUrl!,
-                          format: format,
+                          format: core_subtitle.SubtitleFormat.values.firstWhere(
+                            (e) => e.name == format.name,
+                          ),
                         );
                         if (res == null) return;
                         subtitle = res;

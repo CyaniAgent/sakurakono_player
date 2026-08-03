@@ -10,8 +10,8 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/im/type.pb.dart' show Msg;
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/adapters/bilibili/http/msg.dart';
 import 'package:skf/core/models/ui/image_type.dart';
+import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/emote/view.dart';
@@ -359,7 +359,7 @@ class _WhisperDetailPageState
                       if (pickedFile != null) {
                         final path = pickedFile.path;
                         SmartDialog.showLoading(msg: '正在上传图片');
-                        final result = await MsgHttp.uploadBfs(
+                        final result = await Get.find<MsgRepository>().uploadBfs(
                           path: path,
                           biz: 'im',
                         );

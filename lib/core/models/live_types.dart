@@ -588,8 +588,7 @@ class CoreLiveFollowData {
       totalPage: json['totalPage'] as int?,
       count: json['count'] as int?,
       liveCount: json['live_count'] as int?,
-    );
-    data.list = (json['list'] as List<dynamic>?)
+    )..list = (json['list'] as List<dynamic>?)
         ?.cast<Map<String, dynamic>>()
         .map(CoreLiveFollowItem.fromJson)
         .toList();

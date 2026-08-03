@@ -2,7 +2,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
-import 'package:skf/adapters/bilibili/http/dynamics.dart';
+import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
@@ -177,7 +177,7 @@ Widget? addWidget(
                               : btn.disable == 1
                               ? null
                               : () async {
-                                  final res = await DynamicsHttp.dynReserve(
+                                  final res = await Get.find<DynamicsRepository>().dynReserve(
                                     reserveId: reserve.rid,
                                     curBtnStatus: btn.status,
                                     dynamicIdStr: idStr,

@@ -222,35 +222,35 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
     };
   }
 
-  Widget _buildUserInfo(ThemeData theme, CoreMemberInfoModel CoreMemberInfoModel) {
+  Widget _buildUserInfo(ThemeData theme, CoreMemberInfoModel coreMemberInfoModel) {
     return Padding(
       padding: const .only(left: 16, top: 10, right: 16, bottom: 3),
       child: Row(
         spacing: 10,
         children: [
-          _buildAvatar(CoreMemberInfoModel.face!),
-          Expanded(child: _buildInfo(theme, CoreMemberInfoModel)),
+          _buildAvatar(coreMemberInfoModel.face!),
+          Expanded(child: _buildInfo(theme, coreMemberInfoModel)),
         ],
       ),
     );
   }
 
-  Column _buildInfo(ThemeData theme, CoreMemberInfoModel CoreMemberInfoModel) => Column(
+  Column _buildInfo(ThemeData theme, CoreMemberInfoModel coreMemberInfoModel) => Column(
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Row(
         children: [
           GestureDetector(
-            onTap: () => Utils.copyText(CoreMemberInfoModel.name ?? ''),
+            onTap: () => Utils.copyText(coreMemberInfoModel.name ?? ''),
             child: Text(
-              CoreMemberInfoModel.name ?? '',
+              coreMemberInfoModel.name ?? '',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color:
-                    (CoreMemberInfoModel.coreVip?.status ?? -1) > 0 &&
-                        CoreMemberInfoModel.coreVip?.type == 2
+                    (coreMemberInfoModel.coreVip?.status ?? -1) > 0 &&
+                        coreMemberInfoModel.coreVip?.type == 2
                     ? theme.colorScheme.vipColor
                     : null,
               ),
@@ -258,8 +258,8 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
           ),
           const SizedBox(width: 8),
           BiliUtils.levelPicture(
-            CoreMemberInfoModel.level!,
-            isSeniorMember: CoreMemberInfoModel.isSeniorMember == 1,
+            coreMemberInfoModel.level!,
+            isSeniorMember: coreMemberInfoModel.isSeniorMember == 1,
             height: 11,
           ),
         ],
@@ -273,7 +273,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                   theme: theme,
                   type: e,
                   userStat: _controller.userStat,
-                  CoreMemberInfoModel: CoreMemberInfoModel,
+                  coreMemberInfoModel: coreMemberInfoModel,
                 ),
               )
               .expand((child) sync* {
@@ -298,10 +298,10 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
           Expanded(
             child: FilledButton.tonal(
               style: FilledButton.styleFrom(
-                backgroundColor: CoreMemberInfoModel.isFollowed == true
+                backgroundColor: coreMemberInfoModel.isFollowed == true
                     ? theme.colorScheme.onInverseSurface
                     : null,
-                foregroundColor: CoreMemberInfoModel.isFollowed == true
+                foregroundColor: coreMemberInfoModel.isFollowed == true
                     ? theme.colorScheme.outline
                     : null,
                 padding: EdgeInsets.zero,
@@ -319,7 +319,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                   RequestUtils.actionRelationMod(
                     context: context,
                     mid: widget.mid,
-                    isFollow: CoreMemberInfoModel.isFollowed ?? false,
+                    isFollow: coreMemberInfoModel.isFollowed ?? false,
                     afterMod: (attribute) {
                       _controller
                         ..userState.value.data.isFollowed = attribute != 0
@@ -331,7 +331,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
               child: Text(
                 widget.mid == account.mid
                     ? '编辑资料'
-                    : CoreMemberInfoModel.isFollowed == true
+                    : coreMemberInfoModel.isFollowed == true
                     ? '已关注'
                     : '关注',
                 maxLines: 1,
@@ -363,7 +363,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
     required ThemeData theme,
     required UserInfoType type,
     required Map userStat,
-    required CoreMemberInfoModel CoreMemberInfoModel,
+    required CoreMemberInfoModel coreMemberInfoModel,
   }) {
     dynamic num;
     VoidCallback? onTap;
@@ -374,13 +374,13 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
             : '';
         onTap = () => FansPage.toFansPage(
           mid: widget.mid,
-          name: CoreMemberInfoModel.name,
+          name: coreMemberInfoModel.name,
         );
       case UserInfoType.follow:
         num = userStat['following'] ?? '';
         onTap = () => FollowPage.toFollowPage(
           mid: widget.mid,
-          name: CoreMemberInfoModel.name,
+          name: coreMemberInfoModel.name,
         );
       case UserInfoType.like:
         num = userStat['likes'] != null

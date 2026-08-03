@@ -101,7 +101,7 @@ class ReplyRoot {
     content: json['content'] == null
         ? null
         : ReplyContent.fromJson(json['content'] as Map<String, dynamic>),
-    replies: json['replies'] as dynamic,
+    replies: json['replies'] as List<dynamic>?,
     assist: json['assist'] as int?,
     upAction: json['up_action'] == null
         ? null

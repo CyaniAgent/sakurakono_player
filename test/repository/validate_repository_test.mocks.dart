@@ -52,10 +52,10 @@ class MockValidateRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<Map<dynamic, dynamic>?>> gaiaVgateValidate({
-    required dynamic challenge,
-    required dynamic seccode,
-    required dynamic token,
-    required dynamic validate,
+    required String? challenge,
+    required String? seccode,
+    required String? token,
+    required String? validate,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#gaiaVgateValidate, [], {

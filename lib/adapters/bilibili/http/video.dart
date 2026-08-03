@@ -45,8 +45,6 @@ import 'package:protobuf/protobuf.dart';
 
 /// view层根据 status 判断渲染逻辑
 abstract final class VideoHttp {
-  static RegExp zoneRegExp = RegExp(Pref.banWordForZone, caseSensitive: false);
-  static bool enableFilter = zoneRegExp.pattern.isNotEmpty;
 
   // 首页推荐视频
   static Future<LoadingState<List<RcmdVideoItemModel>>> rcmdVideoList({
@@ -147,9 +145,9 @@ abstract final class VideoHttp {
             i['ad_info'] == null &&
             (i['args'] != null &&
                 !GlobalData().blackMids.contains(i['args']['up_id']))) {
-          if (enableFilter &&
+          if (RecommendFilter.zoneEnableFilter &&
               i['args']?['tname'] != null &&
-              zoneRegExp.hasMatch(i['args']['tname'])) {
+              RecommendFilter.zoneRegExp.hasMatch(i['args']['tname'])) {
             continue;
           }
           RcmdVideoItemAppModel videoItem = RcmdVideoItemAppModel.fromJson(i);
@@ -182,9 +180,9 @@ abstract final class VideoHttp {
               i['stat']['like'],
               i['stat']['view'],
             )) {
-          if (enableFilter &&
+          if (RecommendFilter.zoneEnableFilter &&
               i['tname'] != null &&
-              zoneRegExp.hasMatch(i['tname'])) {
+              RecommendFilter.zoneRegExp.hasMatch(i['tname'])) {
             continue;
           }
           list.add(HotVideoItemModel.fromJson(i));
@@ -859,9 +857,9 @@ abstract final class VideoHttp {
           i['stat']['like'],
           i['stat']['view'],
         )) {
-      if (enableFilter &&
+      if (RecommendFilter.zoneEnableFilter &&
           i['tname'] != null &&
-          zoneRegExp.hasMatch(i['tname'])) {
+          RecommendFilter.zoneRegExp.hasMatch(i['tname'])) {
         return false;
       }
       return true;

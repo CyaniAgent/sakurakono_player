@@ -95,7 +95,7 @@ class SearchPanelController<R extends SearchNumData<T>, T>
 
   @override
   Future<LoadingState<R>> customGetData() async {
-    final result = await (Get.find<BiliSearchRepository>() as dynamic).searchByType<R>(
+    final result = await Get.find<BiliSearchRepository>().searchByType<R>(
       searchType: searchType,
       keyword: keyword,
       page: page,

@@ -9,14 +9,14 @@ import 'package:skf/common/widgets/flutter/text_field/controller.dart';
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/common/widgets/time_picker.dart';
-import 'package:skf/adapters/bilibili/http/dynamics.dart';
+import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/models/common/reply/reply_option_type.dart';
+import 'package:skf/core/models/dynamics_types.dart' show CoreReplyOptionType;
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart' show PicModel;
 import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
 import 'package:skf/adapters/bilibili/models_new/dynamic/dyn_reserve_info/data.dart';
-import 'package:skf/adapters/bilibili/models_new/dynamic/dyn_topic_top/topic_item.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_reserve/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_vote/view.dart';
@@ -743,12 +743,12 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
     if (_isEdit) {
       final editConfig = widget.editConfig!;
-      final res = await DynamicsHttp.editDyn(
+      final res = await Get.find<DynamicsRepository>().editDyn(
         dynId: editConfig.dynId,
         repostDynId: editConfig.repostDynId,
         rawText: hasRichText ? null : editController.text,
         pics: pictures,
-        replyOption: _replyOption.value,
+        replyOption: CoreReplyOptionType.values.byName(_replyOption.value.name),
         privatePub: _isPrivate.value ? 1 : null,
         title: _titleEditCtr.text,
         topic: _topic.value,
@@ -767,14 +767,14 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
     }
 
     final reserveCard = _reserveCard.value;
-    final res = await DynamicsHttp.createDynamic(
+    final res = await Get.find<DynamicsRepository>().createDynamic(
       mid: Accounts.main.mid,
       rawText: hasRichText ? null : editController.text,
       pics: pictures,
       publishTime: _publishTime.value != null
           ? _publishTime.value!.millisecondsSinceEpoch ~/ 1000
           : null,
-      replyOption: _replyOption.value,
+      replyOption: CoreReplyOptionType.values.byName(_replyOption.value.name),
       privatePub: _isPrivate.value ? 1 : null,
       title: _titleEditCtr.text,
       topic: _topic.value,
@@ -810,11 +810,11 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
   double _topicOffset = 0;
   Future<void> _onSelectTopic() async {
-    TopicItem? res = (await SelectTopicPanel.onSelectTopic(
+    final res = await SelectTopicPanel.onSelectTopic(
       context,
       offset: _topicOffset,
       onCachePos: (offset) => _topicOffset = offset,
-    )) as dynamic;
+    );
     if (res != null) {
       _topic.value = Pair(first: res.id, second: res.name);
     }

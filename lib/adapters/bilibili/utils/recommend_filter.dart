@@ -12,6 +12,8 @@ abstract final class RecommendFilter {
     caseSensitive: false,
   );
   static bool enableFilter = rcmdRegExp.pattern.isNotEmpty;
+  static RegExp zoneRegExp = RegExp(Pref.banWordForZone, caseSensitive: false);
+  static bool zoneEnableFilter = zoneRegExp.pattern.isNotEmpty;
 
   static bool filter(BaseVideoItemModel videoItem) {
     //由于相关视频中没有已关注标签，只能视为非关注视频

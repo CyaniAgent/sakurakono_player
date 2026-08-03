@@ -86,15 +86,15 @@ abstract class FavRepository {
   Future<LoadingState<CoreFavFolderData>> userfavFolder({
     required int pn,
     required int ps,
-    required dynamic mid,
+    required int? mid,
   });
 
   Future<LoadingState<CoreFavFolderData>> allFavFolders(Object mid);
 
   Future<LoadingState<CoreFavFolderData>> videoInFolder({
-    dynamic mid,
-    dynamic rid,
-    dynamic type,
+    int? mid,
+    Object? rid,
+    Object? type,
   });
 
   Future<LoadingState<void>> favVideo({
@@ -110,7 +110,7 @@ abstract class FavRepository {
 
   Future<LoadingState<void>> seasonFav({
     required bool isFav,
-    required dynamic seasonId,
+    required Object? seasonId,
   });
 
   Future<LoadingState<List<CoreSpaceFavData>?>> spaceFav({
@@ -119,7 +119,7 @@ abstract class FavRepository {
 
   Future<LoadingState<CoreFavFolderInfo>> addOrEditFolder({
     required bool isAdd,
-    dynamic mediaId,
+    Object? mediaId,
     required String title,
     required int privacy,
     required String cover,
@@ -150,9 +150,9 @@ abstract class FavRepository {
   Future<LoadingState<void>> copyOrMoveFav({
     required bool isCopy,
     required bool isFav,
-    required dynamic srcMediaId,
-    required dynamic tarMediaId,
-    dynamic mid,
+    required Object? srcMediaId,
+    required Object? tarMediaId,
+    int? mid,
     required String resources,
   });
 

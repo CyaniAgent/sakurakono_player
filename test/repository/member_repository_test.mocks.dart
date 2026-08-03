@@ -7,9 +7,10 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:skf/core/models/follow_data.dart' as _i7;
+import 'package:skf/core/models/dynamics_types.dart' as _i7;
+import 'package:skf/core/models/follow_data.dart' as _i8;
 import 'package:skf/core/models/member_types.dart' as _i5;
-import 'package:skf/core/models/space_types.dart' as _i8;
+import 'package:skf/core/models/space_types.dart' as _i9;
 import 'package:skf/core/repository/member_repository.dart' as _i2;
 import 'package:skf/core/result/loading_state.dart' as _i4;
 
@@ -37,7 +38,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
   }
 
   @override
-  _i3.Future<void> reportMember(dynamic mid, {String? reason, int? reasonV2}) =>
+  _i3.Future<void> reportMember(int? mid, {String? reason, int? reasonV2}) =>
       (super.noSuchMethod(
             Invocation.method(
               #reportMember,
@@ -99,7 +100,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
     int? pn,
     int? next,
     int? seasonId,
-    int? seriesId,
+    String? seriesId,
     bool? includeCursor,
   }) =>
       (super.noSuchMethod(
@@ -179,7 +180,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreSpaceData>> space({
     int? mid,
-    dynamic fromViewAid,
+    int? fromViewAid,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#space, [], {
@@ -322,15 +323,15 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
           as _i3.Future<_i4.LoadingState<_i5.CoreSeasonWebData>>);
 
   @override
-  _i3.Future<_i4.LoadingState<_i5.CoreDynamicsDataModel>> memberDynamic({
+  _i3.Future<_i4.LoadingState<_i7.CoreDynamicsDataModel>> memberDynamic({
     String? offset,
     required int? mid,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#memberDynamic, [], {#offset: offset, #mid: mid}),
             returnValue:
-                _i3.Future<_i4.LoadingState<_i5.CoreDynamicsDataModel>>.value(
-                  _i6.dummyValue<_i4.LoadingState<_i5.CoreDynamicsDataModel>>(
+                _i3.Future<_i4.LoadingState<_i7.CoreDynamicsDataModel>>.value(
+                  _i6.dummyValue<_i4.LoadingState<_i7.CoreDynamicsDataModel>>(
                     this,
                     Invocation.method(#memberDynamic, [], {
                       #offset: offset,
@@ -339,13 +340,13 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
                   ),
                 ),
           )
-          as _i3.Future<_i4.LoadingState<_i5.CoreDynamicsDataModel>>);
+          as _i3.Future<_i4.LoadingState<_i7.CoreDynamicsDataModel>>);
 
   @override
-  _i3.Future<_i4.LoadingState<_i5.CoreDynamicsDataModel>> dynSearch({
+  _i3.Future<_i4.LoadingState<_i7.CoreDynamicsDataModel>> dynSearch({
     required int? pn,
     required dynamic mid,
-    required dynamic offset,
+    required String? offset,
     required String? keyword,
   }) =>
       (super.noSuchMethod(
@@ -356,8 +357,8 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
               #keyword: keyword,
             }),
             returnValue:
-                _i3.Future<_i4.LoadingState<_i5.CoreDynamicsDataModel>>.value(
-                  _i6.dummyValue<_i4.LoadingState<_i5.CoreDynamicsDataModel>>(
+                _i3.Future<_i4.LoadingState<_i7.CoreDynamicsDataModel>>.value(
+                  _i6.dummyValue<_i4.LoadingState<_i7.CoreDynamicsDataModel>>(
                     this,
                     Invocation.method(#dynSearch, [], {
                       #pn: pn,
@@ -368,7 +369,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
                   ),
                 ),
           )
-          as _i3.Future<_i4.LoadingState<_i5.CoreDynamicsDataModel>>);
+          as _i3.Future<_i4.LoadingState<_i7.CoreDynamicsDataModel>>);
 
   @override
   _i3.Future<_i4.LoadingState<List<_i5.CoreMemberTagItemModel>>>
@@ -419,7 +420,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
           as _i3.Future<_i4.LoadingState<void>>);
 
   @override
-  _i3.Future<_i4.LoadingState<_i7.CoreFollowData>> followUpGroup({
+  _i3.Future<_i4.LoadingState<_i8.CoreFollowData>> followUpGroup({
     int? mid,
     int? tagid,
     int? pn,
@@ -432,8 +433,8 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
               #pn: pn,
               #ps: ps,
             }),
-            returnValue: _i3.Future<_i4.LoadingState<_i7.CoreFollowData>>.value(
-              _i6.dummyValue<_i4.LoadingState<_i7.CoreFollowData>>(
+            returnValue: _i3.Future<_i4.LoadingState<_i8.CoreFollowData>>.value(
+              _i6.dummyValue<_i4.LoadingState<_i8.CoreFollowData>>(
                 this,
                 Invocation.method(#followUpGroup, [], {
                   #mid: mid,
@@ -444,7 +445,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
               ),
             ),
           )
-          as _i3.Future<_i4.LoadingState<_i7.CoreFollowData>>);
+          as _i3.Future<_i4.LoadingState<_i8.CoreFollowData>>);
 
   @override
   _i3.Future<_i4.LoadingState<int>> createFollowTag(String? tagName) =>
@@ -521,7 +522,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
           as _i3.Future<_i4.LoadingState<Map<dynamic, dynamic>>>);
 
   @override
-  _i3.Future<_i4.LoadingState<_i7.CoreFollowData>> getfollowSearch({
+  _i3.Future<_i4.LoadingState<_i8.CoreFollowData>> getfollowSearch({
     required int? mid,
     required int? ps,
     required int? pn,
@@ -534,8 +535,8 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
               #pn: pn,
               #name: name,
             }),
-            returnValue: _i3.Future<_i4.LoadingState<_i7.CoreFollowData>>.value(
-              _i6.dummyValue<_i4.LoadingState<_i7.CoreFollowData>>(
+            returnValue: _i3.Future<_i4.LoadingState<_i8.CoreFollowData>>.value(
+              _i6.dummyValue<_i4.LoadingState<_i8.CoreFollowData>>(
                 this,
                 Invocation.method(#getfollowSearch, [], {
                   #mid: mid,
@@ -546,10 +547,10 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
               ),
             ),
           )
-          as _i3.Future<_i4.LoadingState<_i7.CoreFollowData>>);
+          as _i3.Future<_i4.LoadingState<_i8.CoreFollowData>>);
 
   @override
-  _i3.Future<_i4.LoadingState<_i8.CoreOpusSpaceFlowResp>> spaceOpus({
+  _i3.Future<_i4.LoadingState<_i9.CoreOpusSpaceFlowResp>> spaceOpus({
     required int? hostMid,
     required int? page,
     String? offset = '',
@@ -563,8 +564,8 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
               #type: type,
             }),
             returnValue:
-                _i3.Future<_i4.LoadingState<_i8.CoreOpusSpaceFlowResp>>.value(
-                  _i6.dummyValue<_i4.LoadingState<_i8.CoreOpusSpaceFlowResp>>(
+                _i3.Future<_i4.LoadingState<_i9.CoreOpusSpaceFlowResp>>.value(
+                  _i6.dummyValue<_i4.LoadingState<_i9.CoreOpusSpaceFlowResp>>(
                     this,
                     Invocation.method(#spaceOpus, [], {
                       #hostMid: hostMid,
@@ -575,7 +576,7 @@ class MockMemberRepository extends _i1.Mock implements _i2.MemberRepository {
                   ),
                 ),
           )
-          as _i3.Future<_i4.LoadingState<_i8.CoreOpusSpaceFlowResp>>);
+          as _i3.Future<_i4.LoadingState<_i9.CoreOpusSpaceFlowResp>>);
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreUpowerRankData>> upowerRank({

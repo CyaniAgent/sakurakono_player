@@ -148,11 +148,11 @@ class MockDynamicsRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<Map<dynamic, dynamic>?>> createDynamic({
-    dynamic mid,
-    dynamic dynIdStr,
-    dynamic rid,
-    dynamic dynType,
-    dynamic rawText,
+    int? mid,
+    String? dynIdStr,
+    Object? rid,
+    Object? dynType,
+    String? rawText,
     List<dynamic>? pics,
     int? publishTime,
     _i5.CoreReplyOptionType? replyOption,
@@ -204,9 +204,9 @@ class MockDynamicsRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreDynamicItemModel>> dynamicDetail({
-    dynamic id,
+    Object? id,
     dynamic rid,
-    dynamic type,
+    Object? type,
     bool? clearCookie = false,
   }) =>
       (super.noSuchMethod(
@@ -275,7 +275,7 @@ class MockDynamicsRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreArticleViewData>> articleView({
-    required dynamic cvId,
+    required Object? cvId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#articleView, [], {#cvId: cvId}),
@@ -291,7 +291,7 @@ class MockDynamicsRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreDynamicItemModel>> opusDetail({
-    required dynamic opusId,
+    required Object? opusId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#opusDetail, [], {#opusId: opusId}),
@@ -306,7 +306,7 @@ class MockDynamicsRepository extends _i1.Mock
           as _i3.Future<_i4.LoadingState<_i5.CoreDynamicItemModel>>);
 
   @override
-  _i3.Future<_i4.LoadingState<_i5.CoreVoteInfo>> voteInfo(dynamic voteId) =>
+  _i3.Future<_i4.LoadingState<_i5.CoreVoteInfo>> voteInfo(int? voteId) =>
       (super.noSuchMethod(
             Invocation.method(#voteInfo, [voteId]),
             returnValue: _i3.Future<_i4.LoadingState<_i5.CoreVoteInfo>>.value(
@@ -474,7 +474,7 @@ class MockDynamicsRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<List<_i5.CoreOpusPicModel>?>> dynPic(
-    dynamic id,
+    Object? id,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#dynPic, [id]),
@@ -585,7 +585,7 @@ class MockDynamicsRepository extends _i1.Mock
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreReserveInfoData>> reserveInfo({
-    required dynamic sid,
+    required int? sid,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#reserveInfo, [], {#sid: sid}),
@@ -644,7 +644,7 @@ class MockDynamicsRepository extends _i1.Mock
   _i3.Future<_i4.LoadingState<void>> editDyn({
     required Object? dynId,
     Object? repostDynId,
-    dynamic rawText,
+    String? rawText,
     List<dynamic>? pics,
     _i5.CoreReplyOptionType? replyOption,
     int? privatePub,

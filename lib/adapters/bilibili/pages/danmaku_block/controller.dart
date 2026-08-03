@@ -1,17 +1,13 @@
 import 'dart:convert';
 
-import 'package:skf/adapters/bilibili/http/danmaku_block.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/dm_block_type.dart';
-import 'package:skf/adapters/bilibili/models/user/danmaku_block.dart' show SimpleRule;
 import 'package:skf/core/models/danmaku_block.dart';
+import 'package:skf/core/repository/danmaku_filter_repository.dart';
 import 'package:archive/archive.dart' show getCrc32;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-
-CoreSimpleRule _toCore(SimpleRule r) =>
-    CoreSimpleRule(id: r.id, type: r.type, filter: r.filter);
 
 class DanmakuBlockController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -37,12 +33,12 @@ class DanmakuBlockController extends GetxController
 
   Future<void> queryDanmakuFilter() async {
     SmartDialog.showLoading(msg: '正在同步弹幕屏蔽规则……');
-    final result = await DanmakuFilterHttp.danmakuFilter();
+    final result = await Get.find<DanmakuFilterRepository>().danmakuFilter();
     SmartDialog.dismiss();
     if (result case Success(:final response)) {
-      rules[0].addAll(response.rule.map(_toCore));
-      rules[1].addAll(response.rule1.map(_toCore));
-      rules[2].addAll(response.rule2.map(_toCore));
+      rules[0].addAll(response.rule);
+      rules[1].addAll(response.rule1);
+      rules[2].addAll(response.rule2);
       if (response.toast case final toast?) {
         SmartDialog.showToast(toast);
       }
@@ -53,7 +49,7 @@ class DanmakuBlockController extends GetxController
 
   Future<void> danmakuFilterDel(int tabIndex, int itemIndex, int id) async {
     SmartDialog.showLoading(msg: '正在删除弹幕屏蔽规则……');
-    final res = await DanmakuFilterHttp.danmakuFilterDel(ids: id);
+    final res = await Get.find<DanmakuFilterRepository>().danmakuFilterDel(ids: id);
     SmartDialog.dismiss();
     if (res.isSuccess) {
       rules[tabIndex].removeAt(itemIndex);
@@ -71,13 +67,13 @@ class DanmakuBlockController extends GetxController
       filter = getCrc32(ascii.encode(filter), 0).toRadixString(16);
     }
     SmartDialog.showLoading(msg: '正在添加弹幕屏蔽规则……');
-    final res = await DanmakuFilterHttp.danmakuFilterAdd(
+    final res = await Get.find<DanmakuFilterRepository>().danmakuFilterAdd(
       filter: filter,
       type: type,
     );
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
-      rules[type].add(_toCore(response));
+      rules[type].add(response);
       SmartDialog.showToast('添加成功');
     } else {
       res.toast();

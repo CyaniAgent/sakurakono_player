@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/account/bili_account_provider.dart';
+import 'package:skf/adapters/bilibili/services/bili_account_provider.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule_adapter.dart';
@@ -17,6 +17,7 @@ import 'package:skf/core/plugin/local_file_plugin.dart';
 import 'package:skf/core/plugin/plugin_registry.dart';
 import 'package:skf/core/player/player_factory.dart';
 import 'package:skf/core/player/playback_reporter.dart';
+import 'package:skf/core/config/features.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
@@ -160,37 +161,38 @@ class BiliBridge {
     _initialized = true;
 
     initHive();
-    Get.lazyPut<PlaybackReporter>(BiliReporter.new);
-    Get.lazyPut<AccountProvider>(BiliAccountProvider.new);
-    Get.lazyPut<PlayerFactory>(BiliPlayerFactory.new);
-    Get.lazyPut(AccountService.new);
-    Get.lazyPut(DownloadService.new);
-    // Repositories
-    Get.lazyPut<VideoRepository>(BiliVideoRepository.new);
-    Get.lazyPut<UserRepository>(BiliUserRepository.new);
-    Get.lazyPut<AuthRepository>(BiliAuthRepository.new);
-    Get.lazyPut<BiliSearchRepository>(BiliSearchRepository.new);
-    Get.lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>());
-    Get.lazyPut<ReplyRepository>(BiliReplyRepository.new);
-    Get.lazyPut<FavRepository>(BiliFavRepository.new);
-    Get.lazyPut<DynamicsRepository>(BiliDynamicsRepository.new);
-    Get.lazyPut<MemberRepository>(BiliMemberRepository.new);
-    Get.lazyPut<LiveRepository>(BiliLiveRepository.new);
-    Get.lazyPut<MsgRepository>(BiliMsgRepository.new);
-    Get.lazyPut<ImRepository>(BiliImRepository.new);
-    Get.lazyPut<DanmakuRepository>(BiliDanmakuRepository.new);
-    Get.lazyPut<MusicRepository>(BiliMusicRepository.new);
-    Get.lazyPut<DanmakuFilterRepository>(BiliDanmakuFilterRepository.new);
-    Get.lazyPut<FollowRepository>(BiliFollowRepository.new);
-    Get.lazyPut<AudioRepository>(BiliAudioRepository.new);
-    Get.lazyPut<FanRepository>(BiliFanRepository.new);
-    Get.lazyPut<BlackRepository>(BiliBlackRepository.new);
-    Get.lazyPut<MatchRepository>(BiliMatchRepository.new);
-    Get.lazyPut<SpaceRepository>(BiliSpaceRepository.new);
-    Get.lazyPut<DownloadRepository>(BiliDownloadRepository.new);
-    Get.lazyPut<PgcRepository>(BiliPgcRepository.new);
-    Get.lazyPut<SponsorBlockRepository>(BiliSponsorBlockRepository.new);
-    Get.lazyPut<ValidateRepository>(BiliValidateRepository.new);
+    Get
+      ..lazyPut<PlaybackReporter>(BiliReporter.new)
+      ..lazyPut<AccountProvider>(BiliAccountProvider.new)
+      ..lazyPut<PlayerFactory>(BiliPlayerFactory.new)
+      ..lazyPut(AccountService.new)
+      ..lazyPut(DownloadService.new)
+      // Repositories
+      ..lazyPut<VideoRepository>(BiliVideoRepository.new)
+      ..lazyPut<UserRepository>(BiliUserRepository.new)
+      ..lazyPut<AuthRepository>(BiliAuthRepository.new)
+      ..lazyPut<BiliSearchRepository>(BiliSearchRepository.new)
+      ..lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>())
+      ..lazyPut<ReplyRepository>(BiliReplyRepository.new)
+      ..lazyPut<FavRepository>(BiliFavRepository.new)
+      ..lazyPut<DynamicsRepository>(BiliDynamicsRepository.new)
+      ..lazyPut<MemberRepository>(BiliMemberRepository.new)
+      ..lazyPut<LiveRepository>(BiliLiveRepository.new)
+      ..lazyPut<MsgRepository>(BiliMsgRepository.new)
+      ..lazyPut<ImRepository>(BiliImRepository.new)
+      ..lazyPut<DanmakuRepository>(BiliDanmakuRepository.new)
+      ..lazyPut<MusicRepository>(BiliMusicRepository.new)
+      ..lazyPut<DanmakuFilterRepository>(BiliDanmakuFilterRepository.new)
+      ..lazyPut<FollowRepository>(BiliFollowRepository.new)
+      ..lazyPut<AudioRepository>(BiliAudioRepository.new)
+      ..lazyPut<FanRepository>(BiliFanRepository.new)
+      ..lazyPut<BlackRepository>(BiliBlackRepository.new)
+      ..lazyPut<MatchRepository>(BiliMatchRepository.new)
+      ..lazyPut<SpaceRepository>(BiliSpaceRepository.new)
+      ..lazyPut<DownloadRepository>(BiliDownloadRepository.new)
+      ..lazyPut<PgcRepository>(BiliPgcRepository.new)
+      ..lazyPut<SponsorBlockRepository>(BiliSponsorBlockRepository.new)
+      ..lazyPut<ValidateRepository>(BiliValidateRepository.new);
     // Plugin registry
     final pluginRegistry = PluginRegistry();
     Get.put(pluginRegistry);
@@ -205,7 +207,8 @@ class BiliBridge {
     RequestUtils.syncHistoryStatus();
   }
 
-  static List<GetPage> registerRoutes() => [
+  static List<GetPage> registerRoutes() {
+    final routes = <GetPage>[
     // 首页(推荐)
     GetPage(name: '/home', page: () => const HomePage()),
     // 热门
@@ -225,9 +228,9 @@ class BiliBridge {
     // 历史记录
     GetPage(name: '/history', page: () => const HistoryPage()),
     // 搜索页面
-    GetPage(name: '/search', page: () => const SearchPage()),
+    if (AppFeatures.hasSearch) GetPage(name: '/search', page: () => const SearchPage()),
     // 搜索结果
-    GetPage(name: '/searchResult', page: () => const SearchResultPage()),
+    if (AppFeatures.hasSearch) GetPage(name: '/searchResult', page: () => const SearchResultPage()),
     // 动态
     GetPage(name: '/dynamics', page: () => const DynamicsPage()),
     // 动态详情
@@ -237,7 +240,7 @@ class BiliBridge {
     // 粉丝
     GetPage(name: '/fan', page: () => const FansPage()),
     // 直播详情
-    GetPage(name: '/liveRoom', page: () => const LiveRoomPage()),
+    if (AppFeatures.hasLive) GetPage(name: '/liveRoom', page: () => const LiveRoomPage()),
     // 用户中心
     GetPage(name: '/member', page: () => const MemberPage()),
     GetPage(name: '/memberSearch', page: () => const MemberSearchPage()),
@@ -280,35 +283,37 @@ class BiliBridge {
     // 订阅详情
     GetPage(name: '/subDetail', page: () => const SubDetailPage()),
     // 弹幕屏蔽管理
-    GetPage(name: '/danmakuBlock', page: () => const DanmakuBlockPage()),
-    GetPage(name: '/sponsorBlock', page: () => const SponsorBlockPage()),
+    if (AppFeatures.hasDanmakuFilter) GetPage(name: '/danmakuBlock', page: () => const DanmakuBlockPage()),
+    if (AppFeatures.hasSponsorBlock) GetPage(name: '/sponsorBlock', page: () => const SponsorBlockPage()),
     GetPage(name: '/createFav', page: () => const CreateFavPage()),
     GetPage(name: '/editProfile', page: () => const EditProfilePage()),
-    GetPage(name: '/settingsSearch', page: () => const SettingsSearchPage()),
-    GetPage(name: '/searchTrending', page: () => const SearchTrendingPage()),
+    if (AppFeatures.hasSearch) GetPage(name: '/settingsSearch', page: () => const SettingsSearchPage()),
+    if (AppFeatures.hasSearch) GetPage(name: '/searchTrending', page: () => const SearchTrendingPage()),
     GetPage(name: '/dynTopic', page: () => const DynTopicPage()),
     GetPage(name: '/articleList', page: () => const ArticleListPage()),
     GetPage(name: '/barSetting', page: () => const BarSetPage()),
     GetPage(name: '/upowerRank', page: () => const UpowerRankPage()),
     GetPage(name: '/spaceSetting', page: () => const SpaceSettingPage()),
     GetPage(name: '/dynTopicRcmd', page: () => const DynTopicRcmdPage()),
-    GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
+    if (AppFeatures.hasMatch) GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
     GetPage(name: '/msgLikeDetail', page: () => const LikeDetailPage()),
-    GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage()),
+    if (AppFeatures.hasDanmakuFilter) GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage()),
     GetPage(name: '/createVote', page: () => const CreateVotePage()),
-    GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
+    if (AppFeatures.hasMusic) GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
     GetPage(name: '/popularSeries', page: () => const PopularSeriesPage()),
     GetPage(name: '/popularPrecious', page: () => const PopularPreciousPage()),
-    GetPage(name: '/audio', page: () => const AudioPage()),
+    if (AppFeatures.hasAudio) GetPage(name: '/audio', page: () => const AudioPage()),
     GetPage(name: '/mainReply', page: () => const MainReplyPage()),
     GetPage(name: '/followed', page: () => const FollowedPage()),
     GetPage(name: '/sameFollowing', page: () => const FollowSamePage()),
-    GetPage(name: '/download', page: () => const DownloadPage()),
-    GetPage(name: '/dlna', page: () => const DLNAPage()),
+    if (AppFeatures.hasDownload) GetPage(name: '/download', page: () => const DownloadPage()),
+    if (AppFeatures.hasAudio) GetPage(name: '/dlna', page: () => const DLNAPage()),
     GetPage(name: '/myReply', page: () => const MyReply()),
     GetPage(name: '/videoWeb', page: () => const MemberVideoWeb()),
     GetPage(name: '/ssWeb', page: () => const MemberSSWeb()),
     GetPage(name: '/memberGuard', page: () => const MemberGuard()),
     GetPage(name: '/bubble', page: () => const BubblePage()),
-  ];
+    ];
+    return routes;
+  }
 }

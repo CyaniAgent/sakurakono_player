@@ -101,8 +101,8 @@ class PlPlayerController with BlockConfigMixin {
   int _playerCount = 0;
 
   late double lastPlaybackSpeed = 1.0;
-  final RxDouble _playbackSpeed = (Pref.playSpeedDefault as double).obs;
-  late final RxDouble _longPressSpeed = (Pref.longPressSpeedDefault as double).obs;
+  final RxDouble _playbackSpeed = (Pref.playSpeedDefault).obs;
+  late final RxDouble _longPressSpeed = (Pref.longPressSpeedDefault).obs;
 
   final RxDouble volume = RxDouble(
     PlatformUtils.isDesktop ? Pref.desktopVolume : 1.0,
@@ -127,7 +127,7 @@ class PlPlayerController with BlockConfigMixin {
   final Rx<VideoFitType> videoFit = Rx(.contain);
 
   late final RxBool continuePlayInBackground =
-      (Pref.continuePlayInBackground as bool).obs;
+      (Pref.continuePlayInBackground).obs;
 
   bool _autoPlay = false;
 
@@ -189,8 +189,8 @@ class PlPlayerController with BlockConfigMixin {
   }
 
   /// 弹幕开关
-  late final RxBool enableShowDanmaku = (Pref.enableShowDanmaku as bool).obs;
-  late final RxBool enableShowLiveDanmaku = (Pref.enableShowLiveDanmaku as bool).obs;
+  late final RxBool enableShowDanmaku = (Pref.enableShowDanmaku).obs;
+  late final RxBool enableShowLiveDanmaku = (Pref.enableShowLiveDanmaku).obs;
   RxBool get enableShowDanmakuAdaptive =>
       isLive ? enableShowLiveDanmaku : enableShowDanmaku;
 
@@ -308,7 +308,7 @@ class PlPlayerController with BlockConfigMixin {
     ascii.encode(Accounts.main.mid.toString()),
     0,
   ).toRadixString(16);
-  late final RxDouble danmakuOpacity = (Pref.danmakuOpacity as double).obs;
+  late final RxDouble danmakuOpacity = (Pref.danmakuOpacity).obs;
 
   late List<double> speedList = Pref.speedList;
   late bool enableAutoLongPressSpeed = Pref.enableAutoLongPressSpeed;

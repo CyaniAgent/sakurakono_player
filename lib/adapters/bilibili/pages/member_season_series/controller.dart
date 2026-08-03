@@ -18,7 +18,7 @@ class SeasonSeriesController
 
   @override
   List<CoreSpaceSsModel>? getDataList(CoreSpaceSsData response) {
-    count = response.CorePage?.total;
+    count = response.corePage?.total;
     return (response.seasonsList ?? <CoreSpaceSsModel>[]) +
         (response.seriesList ?? <CoreSpaceSsModel>[]);
   }

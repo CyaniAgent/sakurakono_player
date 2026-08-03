@@ -10,9 +10,9 @@ abstract class ValidateRepository {
 
   /// Validate a gaia vgate challenge with the given CAPTCHA tokens.
   Future<LoadingState<Map?>> gaiaVgateValidate({
-    required dynamic challenge,
-    required dynamic seccode,
-    required dynamic token,
-    required dynamic validate,
+    required String challenge,
+    required String seccode,
+    required String token,
+    required String validate,
   });
 }

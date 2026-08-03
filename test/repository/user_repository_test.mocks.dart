@@ -311,7 +311,7 @@ class MockUserRepository extends _i1.Mock implements _i2.UserRepository {
     required Object? type,
     required Object? bizId,
     required int? ps,
-    dynamic oid,
+    Object? oid,
     int? otype,
     bool? withCurrent = false,
     bool? desc = true,

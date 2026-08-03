@@ -45,7 +45,7 @@ class SearchAllController
     // searchAll returns CoreSearchAllData, but the controller still uses
     // the adapter type SearchAllData. Both share the same shape (numResults, list),
     // making the cast safe.
-    final result = await (Get.find<SearchRepository>() as dynamic).searchAll(
+    final result = await Get.find<SearchRepository>().searchAll(
       keyword: keyword,
       page: page,
       order: order,

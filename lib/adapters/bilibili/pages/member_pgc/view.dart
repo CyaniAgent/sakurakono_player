@@ -58,7 +58,7 @@ class _MemberBangumiState extends State<MemberBangumi>
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
             sliver: Obx(
-              () => _buildBody(_controller.loadingState.value as dynamic),
+              () => _buildBody(_controller.loadingState.value as LoadingState<List<SpaceArchiveItem>?>),
             ),
           ),
         ],

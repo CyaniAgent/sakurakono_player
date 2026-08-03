@@ -4,8 +4,8 @@ import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
-import 'package:skf/adapters/bilibili/http/fav.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart'
     show NoRightMarginFabLocation;
@@ -282,7 +282,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                       context: context,
                       title: const Text('确定删除该收藏夹?'),
                       onConfirm: () =>
-                          FavHttp.deleteFolder(mediaIds: mediaId).then((res) {
+                          Get.find<FavRepository>().deleteFolder(mediaIds: mediaId).then((res) {
                             if (res.isSuccess) {
                               SmartDialog.showToast('删除成功');
                               Get.back(result: true);

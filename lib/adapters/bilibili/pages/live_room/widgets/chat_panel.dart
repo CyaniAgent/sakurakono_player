@@ -1,8 +1,8 @@
 import 'package:skf/common/widgets/flutter/popup_menu.dart';
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/http/live.dart';
 import 'package:skf/core/models/live_types.dart';
+import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
@@ -377,7 +377,7 @@ class LiveRoomChatPanel extends StatelessWidget {
           height: 38,
           onTap: () async {
             if (!liveRoomController.isLogin) return;
-            final res = await LiveHttp.liveShieldUser(
+            final res = await Get.find<LiveRepository>().liveShieldUser(
               uid: item.extra.mid,
               roomid: roomId,
               type: 1,

@@ -10,9 +10,9 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
-import 'package:skf/adapters/bilibili/http/fav.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/video.dart';
+import 'package:skf/core/repository/fav_repository.dart';
+import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/adapters/bilibili/models/common/episode_panel_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
@@ -179,7 +179,7 @@ class _EpisodePanelState extends State<EpisodePanel>
         _favState = Success(favState).obs;
       } else {
         _favState = LoadingState<bool>.loading().obs;
-        VideoHttp.videoRelation(bvid: widget.bvid).then(
+        Get.find<VideoRepository>().videoRelation(bvid: widget.bvid).then(
           (result) {
             if (!mounted) return;
             if (result case Success(:final response)) {
@@ -585,7 +585,7 @@ class _EpisodePanelState extends State<EpisodePanel>
             ? const Icon(Icons.notifications_off_outlined)
             : const Icon(Icons.notifications_active_outlined),
         onPressed: () async {
-          final res = await FavHttp.seasonFav(
+          final res = await Get.find<FavRepository>().seasonFav(
             isFav: response,
             seasonId: widget.seasonId,
           );

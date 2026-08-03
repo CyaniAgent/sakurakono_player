@@ -8,6 +8,7 @@ import 'package:skf/core/models/pgc_types.dart';
 
 
 
+import 'package:skf/adapters/bilibili/models_new/pgc/pgc_index_result/list.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_index/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_index/widgets/pgc_card_v_pgc_index.dart';
 import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
@@ -243,7 +244,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                   if (index == response.length - 1) {
                     _ctr.onLoadMore();
                   }
-                  return PgcCardVPgcIndex(item: response[index] as dynamic);
+                  return PgcCardVPgcIndex(item: PgcIndexItem.fromCore(response[index]));
                 },
                 itemCount: response.length,
               )

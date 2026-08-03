@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/reorder_mixin.dart';
-import 'package:skf/adapters/bilibili/http/fav.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/widget/fav_video_card.dart';
@@ -58,7 +58,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
                 Get.back();
                 return;
               }
-              FavHttp.sortFav(
+              Get.find<FavRepository>().sortFav(
                 mediaId: _favDetailController.mediaId,
                 sort: sort.join(','),
               ).then((res) {

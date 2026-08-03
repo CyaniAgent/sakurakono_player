@@ -51,7 +51,7 @@ class _MemberArticleState extends State<MemberArticle>
               top: 7,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(_controller.loadingState.value as dynamic)),
+            sliver: Obx(() => _buildBody(_controller.loadingState.value as LoadingState<List<SpaceArticleItem>?>)),
           ),
         ],
       ),

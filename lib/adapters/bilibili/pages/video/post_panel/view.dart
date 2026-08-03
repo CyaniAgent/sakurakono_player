@@ -4,8 +4,9 @@ import 'dart:math';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
+import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/sponsor_block.dart';
+import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
 
 
 
@@ -304,18 +305,28 @@ class _PostPanelState extends State<PostPanel>
 
   Future<void> _onPost() async {
     Get.back();
-    final res = await SponsorBlock.postSkipSegments(
+    final res = await Get.find<SponsorBlockRepository>().postSkipSegments(
       bvid: videoDetailController.bvid,
       cid: videoDetailController.cid.value,
       videoDuration: videoDuration,
-      segments: list as dynamic,
+      segments: list,
     );
 
     if (res case Success(:final response)) {
       Get.back();
       SmartDialog.showToast('提交成功');
       list.clear();
-      videoDetailController.handleSBData(response);
+      videoDetailController.handleSBData(
+        response.map((e) => SegmentItemModel(
+          cid: e.cid,
+          category: e.category,
+          actionType: e.actionType,
+          segment: e.segment,
+          uuid: e.uuid,
+          videoDuration: e.videoDuration,
+          votes: e.votes,
+        )).toList(),
+      );
       if (videoDetailController.blockListener == null) {
         videoDetailController.initSkip();
       }

@@ -1,6 +1,7 @@
 import 'package:skf/adapters/bilibili/http/black.dart';
 
 import 'package:skf/adapters/bilibili/models_new/blacklist/data.dart';
+import 'package:skf/core/models/black_status.dart';
 import 'package:skf/core/models/blacklist_data.dart';
 import 'package:skf/core/models/blacklist_item.dart';
 import 'package:skf/core/repository/black_repository.dart';
@@ -27,6 +28,23 @@ class BiliBlackRepository implements BlackRepository {
       await BlackHttp.blackList(pn: pn, ps: ps),
       _toCoreBlackListData,
     );
+  }
+
+  @override
+  Future<LoadingState<void>> addBlack({required int uid}) async {
+    // Bilibili uses VideoRepository.relationMod + act=6 for blacklist add
+    return const Error('not_implemented');
+  }
+
+  @override
+  Future<LoadingState<void>> removeBlack({required int uid}) async {
+    // Bilibili uses VideoRepository.relationMod + act=6 for blacklist remove
+    return const Error('not_implemented');
+  }
+
+  @override
+  Future<LoadingState<CoreBlackStatus>> checkBlack({required int uid}) async {
+    return const Error('not_implemented');
   }
 
   static CoreBlackListData _toCoreBlackListData(BlackListData data) =>

@@ -73,9 +73,9 @@ class ReplyMember {
     vip: json['vip'] == null
         ? null
         : Vip.fromJson(json['vip'] as Map<String, dynamic>),
-    fansDetail: json['fans_detail'] as dynamic,
+    fansDetail: json['fans_detail'] as Map<String, dynamic>?,
     isContractor: json['is_contractor'] as bool?,
     contractDesc: json['contract_desc'] as String?,
-    nftInteraction: json['nft_interaction'] as dynamic,
+    nftInteraction: json['nft_interaction'] as Map<String, dynamic>?,
   );
 }

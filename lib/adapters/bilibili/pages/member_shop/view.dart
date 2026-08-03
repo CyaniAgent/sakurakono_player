@@ -55,7 +55,7 @@ class _MemberShopState extends State<MemberShop>
               right: Style.safeSpace,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(_controller.loadingState.value as dynamic)),
+            sliver: Obx(() => _buildBody(_controller.loadingState.value as LoadingState<List<SpaceShopItem>?>)),
           ),
         ],
       ),

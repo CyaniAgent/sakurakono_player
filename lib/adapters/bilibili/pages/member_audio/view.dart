@@ -52,7 +52,7 @@ class _MemberAudioState extends State<MemberAudio>
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
             sliver: Obx(
-              () => _buildBody(colorScheme, _controller.loadingState.value as dynamic),
+              () => _buildBody(colorScheme, _controller.loadingState.value as LoadingState<List<SpaceAudioItem>?>),
             ),
           ),
         ],

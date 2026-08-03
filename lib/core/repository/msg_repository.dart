@@ -43,7 +43,7 @@ abstract class MsgRepository {
 
   /// Upload an image to Bilibili storage.
   Future<LoadingState<Map>> uploadImage({
-    required dynamic path,
+    required String path,
     required String bucket,
     required String dir,
   });
@@ -70,7 +70,7 @@ abstract class MsgRepository {
   Future<LoadingState<void>> removeMsg(Object talkerId);
 
   /// Delete a feed item.
-  Future<LoadingState<void>> delMsgfeed(int tp, dynamic id);
+  Future<LoadingState<void>> delMsgfeed(int tp, Object? id);
 
   /// Delete a system message.
   Future<LoadingState<void>> delSysMsg(Object id);

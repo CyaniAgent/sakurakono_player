@@ -54,7 +54,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     required bool isLike,
     required int cid,
     required int id,
-  }) async {
+  }) {
     return DanmakuHttp.danmakuLike(
       isLike: isLike,
       cid: cid,
@@ -69,7 +69,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     required int id,
     bool block = false,
     String? content,
-  }) async {
+  }) {
     return DanmakuHttp.danmakuReport(
       reason: reason,
       cid: cid,
@@ -83,7 +83,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
   Future<LoadingState<String?>> danmakuRecall({
     required int cid,
     required int id,
-  }) async {
+  }) {
     return DanmakuHttp.danmakuRecall(
       cid: cid,
       id: id,
@@ -95,7 +95,7 @@ class BiliDanmakuRepository implements DanmakuRepository {
     required int oid,
     required Iterable<int> ids,
     required int state,
-  }) async {
+  }) {
     return DanmakuHttp.danmakuEditState(
       oid: oid,
       ids: ids,

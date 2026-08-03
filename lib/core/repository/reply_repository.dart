@@ -1,4 +1,5 @@
 import 'package:skf/core/models/reply_types.dart';
+import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 /// Repository interface for reply (comment) operations.
@@ -64,4 +65,58 @@ abstract class ReplyRepository {
     required int type,
     required int action,
   });
+
+  /// Add a reply (comment).
+  Future<LoadingState<CoreReplyInfo?>> replyAdd({
+    required int type,
+    required int oid,
+    required String message,
+    int? root,
+    int? parent,
+    List? pictures,
+    bool syncToDynamic = false,
+    Map<String, int>? atNameToMid,
+  });
+
+  /// Delete a reply (comment).
+  Future<LoadingState<void>> replyDel({
+    required int type,
+    required int oid,
+    required int rpid,
+  });
+
+  /// Like or unlike a reply.
+  Future<LoadingState<void>> likeReply({
+    required int type,
+    required int oid,
+    required int rpid,
+    required int action,
+  });
+
+  /// Hate or unhate a reply.
+  Future<LoadingState<void>> hateReply({
+    required int type,
+    required int oid,
+    required int rpid,
+    required int action,
+  });
+
+  /// Report a reply.
+  Future<LoadingState<void>> report({
+    required Object rpid,
+    required Object oid,
+    required int reasonType,
+    bool banUid = true,
+    String? reasonDesc,
+  });
+
+  // ---------------------------------------------------------------------------
+  // Emote / sticker
+  // ---------------------------------------------------------------------------
+
+  /// Get emote/sticker package list.
+  ///
+  /// Returns adapter-specific data as [dynamic] since no core emote model exists
+  /// yet. Callers should cast the response to the adapter's concrete type.
+  Future<LoadingState<dynamic>> getEmoteList({String? business});
 }

@@ -11,7 +11,6 @@ import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart';
@@ -324,32 +323,32 @@ abstract final class PageUtils {
         break;
 
       case 'DYNAMIC_TYPE_LIVE':
-        DynamicLive2Model liveRcmd = item.modules?.moduleDynamic!.major!.live! as dynamic;
+        CoreDynamicLive2Model liveRcmd = (item.modules?.moduleDynamic!.major!.live!)!;
         toLiveRoom(liveRcmd.id);
         break;
 
       case 'DYNAMIC_TYPE_LIVE_RCMD':
-        DynamicLiveModel liveRcmd =
-            item.modules?.moduleDynamic!.major!.liveRcmd! as dynamic;
+        CoreDynamicLiveModel liveRcmd =
+            (item.modules?.moduleDynamic!.major!.liveRcmd!)!;
         toLiveRoom(liveRcmd.roomId);
         break;
 
       case 'DYNAMIC_TYPE_SUBSCRIPTION_NEW':
-        LivePlayInfo live = (item
+        CoreLivePlayInfo live = (item
                     .modules
                     ?.moduleDynamic!
                     .major!
                     .subscriptionNew!
                     .liveRcmd!
                     .content!
-                    .livePlayInfo)! as dynamic;
+                    .livePlayInfo)!;
         toLiveRoom(live.roomId);
         break;
 
       /// 合集查看
       case 'DYNAMIC_TYPE_UGC_SEASON':
-        DynamicArchiveModel ugcSeason =
-            item.modules?.moduleDynamic!.major!.ugcSeason! as dynamic;
+        CoreDynamicArchiveModel ugcSeason =
+            (item.modules?.moduleDynamic!.major!.ugcSeason!)!;
         int aid = ugcSeason.aid!;
         String bvid = IdUtils.av2bv(aid);
         String cover = ugcSeason.cover!;
@@ -369,7 +368,7 @@ abstract final class PageUtils {
       /// 番剧查看
       case 'DYNAMIC_TYPE_PGC_UNION':
         // if (kDebugMode) debugPrint('DYNAMIC_TYPE_PGC_UNION 番剧');
-        DynamicArchiveModel pgc = item.modules?.moduleDynamic!.major!.pgc! as dynamic;
+        CoreDynamicArchiveModel pgc = (item.modules?.moduleDynamic!.major!.pgc!)!;
         if (pgc.epid != null) {
           viewPgc(epId: pgc.epid);
         }
@@ -572,8 +571,15 @@ abstract final class PageUtils {
     bool isVertical = false,
     Dimension? dimension,
   }) {
+    // Resolve aid: supports Bilibili BV format and OttoHub numeric ID format.
+    // If bvid is a numeric string (OttoHub style), parse it directly as aid
+    // instead of calling bv2av() which would crash on non-BV input.
+    final resolvedAid = aid ??
+        (bvid != null
+            ? (int.tryParse(bvid) ?? IdUtils.bv2av(bvid))
+            : null);
     final arguments = {
-      'aid': aid ?? IdUtils.bv2av(bvid!),
+      'aid': resolvedAid,
       'bvid': bvid ?? IdUtils.av2bv(aid!),
       'cid': cid,
       'seasonId': ?seasonId,

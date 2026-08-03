@@ -54,7 +54,7 @@ class _BlackListPageState extends State<BlackListPage> {
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
               sliver: Obx(
-                () => _buildBody(_blackListController.loadingState.value as dynamic),
+                () => _buildBody(_blackListController.loadingState.value),
               ),
             ),
           ],

@@ -38,11 +38,11 @@ abstract class DynamicsRepository {
 
   /// 创建动态
   Future<LoadingState<Map?>> createDynamic({
-    dynamic mid,
-    dynamic dynIdStr,
-    dynamic rid,
-    dynamic dynType,
-    dynamic rawText,
+    int? mid,
+    String dynIdStr,
+    Object? rid,
+    Object? dynType,
+    String? rawText,
     List? pics,
     int? publishTime,
     CoreReplyOptionType? replyOption,
@@ -55,9 +55,9 @@ abstract class DynamicsRepository {
 
   /// 动态详情
   Future<LoadingState<CoreDynamicItemModel>> dynamicDetail({
-    dynamic id,
+    Object? id,
     dynamic rid,
-    dynamic type,
+    Object? type,
     bool clearCookie = false,
   });
 
@@ -78,16 +78,16 @@ abstract class DynamicsRepository {
 
   /// 专栏浏览
   Future<LoadingState<CoreArticleViewData>> articleView({
-    required dynamic cvId,
+    required Object? cvId,
   });
 
   /// 图文动态详情（HTTP）
   Future<LoadingState<CoreDynamicItemModel>> opusDetail({
-    required dynamic opusId,
+    required Object? opusId,
   });
 
   /// 投票信息
-  Future<LoadingState<CoreVoteInfo>> voteInfo(dynamic voteId);
+  Future<LoadingState<CoreVoteInfo>> voteInfo(int voteId);
 
   /// 投票
   Future<LoadingState<CoreVoteInfo>> doVote({
@@ -134,7 +134,7 @@ abstract class DynamicsRepository {
   });
 
   /// 动态图片
-  Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(dynamic id);
+  Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(Object? id);
 
   /// @提及用户
   Future<LoadingState<List<CoreMentionGroup>?>> dynMention({
@@ -164,7 +164,7 @@ abstract class DynamicsRepository {
 
   /// 预约信息
   Future<LoadingState<CoreReserveInfoData>> reserveInfo({
-    required dynamic sid,
+    required int? sid,
   });
 
   /// 投票好友
@@ -183,7 +183,7 @@ abstract class DynamicsRepository {
   Future<LoadingState<void>> editDyn({
     required Object dynId,
     Object? repostDynId,
-    dynamic rawText,
+    String? rawText,
     List? pics,
     CoreReplyOptionType? replyOption,
     int? privatePub,

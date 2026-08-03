@@ -110,7 +110,7 @@ class _UpPanelState extends State<UpPanel> {
               theme,
               CoreUpItem(
                 uname: '我',
-                face: controller.accountService.face.value,
+                face: controller.accountService.face,
                 mid: Accounts.main.mid,
               ),
             ),

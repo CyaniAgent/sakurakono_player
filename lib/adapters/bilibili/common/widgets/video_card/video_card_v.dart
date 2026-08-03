@@ -4,11 +4,10 @@ import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_popup_menu.dart';
-import 'package:skf/adapters/bilibili/http/search.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
+import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
-import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
@@ -18,6 +17,7 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 // 视频卡片 - 垂直布局
@@ -40,17 +40,31 @@ class VideoCardV extends StatelessWidget {
         var bvid = videoItem.bvid ?? IdUtils.av2bv(videoItem.aid!);
         var cid = videoItem.cid;
         bool isVertical = false;
-        Dimension? dimension;
         if (videoItem is RcmdVideoItemAppModel) {
           if (videoItem.uri case final uri?) {
             isVertical = uri.isVerticalFromUri;
           }
         }
         if (cid == null) {
-          if (await SearchHttp.ab2cWithDimension(aid: videoItem.aid, bvid: bvid)
-              case final res?) {
-            cid = res.cid;
-            dimension = res.dimension;
+          try {
+            final result =
+                await Get.find<SearchRepository>().ab2cWithDimension(
+              aid: videoItem.aid,
+              bvid: bvid,
+            );
+            if (result case final res?) {
+              cid = res.cid;
+              if (res.dimension?.isVertical == true) isVertical = true;
+            }
+          } catch (e) {
+            debugPrint('VideoCardV: ab2cWithDimension failed: $e');
+          }
+          if (cid == null) {
+            if (videoItem.cid != null) {
+              cid = videoItem.cid;
+            } else if (videoItem.aid != null) {
+              cid = videoItem.aid;
+            }
           }
         }
         if (cid != null) {
@@ -61,7 +75,6 @@ class VideoCardV extends StatelessWidget {
             cover: videoItem.cover,
             title: videoItem.title,
             isVertical: isVertical,
-            dimension: dimension,
           );
         }
         break;

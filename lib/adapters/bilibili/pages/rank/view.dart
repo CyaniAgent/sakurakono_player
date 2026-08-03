@@ -69,7 +69,6 @@ class _RankPageState extends State<RankPage>
               switch (_mainCtr.barHideType) {
                 BarHideType.instant => _mainCtr.showBottomBar?.value ?? true,
                 BarHideType.sync => (_mainCtr.barOffset?.value ?? 0) == 0,
-              _ => true,
               }
           ? 80.0
           : 0.0,

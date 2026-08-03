@@ -5,7 +5,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:flutter/material.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:skf/core/models/search_types.dart' as _i5;
@@ -50,62 +49,6 @@ class MockSearchRepository extends _i1.Mock implements _i2.SearchRepository {
                 ),
           )
           as _i3.Future<_i4.LoadingState<_i5.CoreSearchSuggestModel>>);
-
-  @override
-  _i3.Future<_i4.LoadingState<R>>
-  searchByType<R extends _i5.CoreSearchNumData<dynamic>>({
-    required _i5.CoreSearchType? searchType,
-    required String? keyword,
-    required int? page,
-    String? order,
-    int? duration,
-    int? tids,
-    int? orderSort,
-    int? userType,
-    int? categoryId,
-    int? pubBegin,
-    int? pubEnd,
-    String? gaiaVtoken,
-    required _i7.ValueChanged<String>? onSuccess,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#searchByType, [], {
-              #searchType: searchType,
-              #keyword: keyword,
-              #page: page,
-              #order: order,
-              #duration: duration,
-              #tids: tids,
-              #orderSort: orderSort,
-              #userType: userType,
-              #categoryId: categoryId,
-              #pubBegin: pubBegin,
-              #pubEnd: pubEnd,
-              #gaiaVtoken: gaiaVtoken,
-              #onSuccess: onSuccess,
-            }),
-            returnValue: _i3.Future<_i4.LoadingState<R>>.value(
-              _i6.dummyValue<_i4.LoadingState<R>>(
-                this,
-                Invocation.method(#searchByType, [], {
-                  #searchType: searchType,
-                  #keyword: keyword,
-                  #page: page,
-                  #order: order,
-                  #duration: duration,
-                  #tids: tids,
-                  #orderSort: orderSort,
-                  #userType: userType,
-                  #categoryId: categoryId,
-                  #pubBegin: pubBegin,
-                  #pubEnd: pubEnd,
-                  #gaiaVtoken: gaiaVtoken,
-                  #onSuccess: onSuccess,
-                }),
-              ),
-            ),
-          )
-          as _i3.Future<_i4.LoadingState<R>>);
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CoreSearchAllData>> searchAll({
@@ -155,7 +98,7 @@ class MockSearchRepository extends _i1.Mock implements _i2.SearchRepository {
           as _i3.Future<_i4.LoadingState<_i5.CoreSearchAllData>>);
 
   @override
-  _i3.Future<int?> ab2c({dynamic aid, dynamic bvid, int? part}) =>
+  _i3.Future<int?> ab2c({int? aid, String? bvid, int? part}) =>
       (super.noSuchMethod(
             Invocation.method(#ab2c, [], {#aid: aid, #bvid: bvid, #part: part}),
             returnValue: _i3.Future<int?>.value(),
@@ -164,8 +107,8 @@ class MockSearchRepository extends _i1.Mock implements _i2.SearchRepository {
 
   @override
   _i3.Future<({int? cid, _i5.CoreDimension? dimension})?> ab2cWithDimension({
-    dynamic aid,
-    dynamic bvid,
+    int? aid,
+    String? bvid,
     int? part,
   }) =>
       (super.noSuchMethod(
@@ -181,8 +124,8 @@ class MockSearchRepository extends _i1.Mock implements _i2.SearchRepository {
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CorePgcInfoModel>> pgcInfo({
-    dynamic seasonId,
-    dynamic epId,
+    Object? seasonId,
+    Object? epId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#pgcInfo, [], {#seasonId: seasonId, #epId: epId}),
@@ -201,8 +144,8 @@ class MockSearchRepository extends _i1.Mock implements _i2.SearchRepository {
 
   @override
   _i3.Future<_i4.LoadingState<_i5.CorePgcInfoModel>> pugvInfo({
-    dynamic seasonId,
-    dynamic epId,
+    Object? seasonId,
+    Object? epId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#pugvInfo, [], {

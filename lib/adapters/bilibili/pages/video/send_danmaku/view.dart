@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
-import 'package:skf/adapters/bilibili/http/danmaku.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/repository/danmaku_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
@@ -447,7 +447,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   Future<void> onCustomPublish({List? pictures}) async {
     SmartDialog.showLoading(msg: '发送中...');
     bool isColorful = _color.value == Colors.transparent;
-    final res = await DanmakuHttp.shootDanmaku(
+    final res = await Get.find<DanmakuRepository>().shootDanmaku(
       oid: widget.cid,
       bvid: widget.bvid,
       progress: widget.progress,

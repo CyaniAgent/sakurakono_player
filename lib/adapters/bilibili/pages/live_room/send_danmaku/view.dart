@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
-import 'package:skf/adapters/bilibili/http/live.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
+import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/live_emote/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_emote/view.dart';
@@ -170,7 +170,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
       }
       message = buffer.toString();
     }
-    final res = await LiveHttp.sendLiveMsg(
+    final res = await Get.find<LiveRepository>().sendLiveMsg(
       roomId: liveRoomController.roomId,
       msg: message,
       dmType: dmType,

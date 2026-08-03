@@ -1,31 +1,47 @@
-import 'package:skf/adapters/bilibili/services/account_service.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:get/get.dart';
 
-class BiliAccountProvider implements AccountProvider {
+class BiliAccountProvider extends GetxService implements AccountProvider {
+  late final RxString _rxFace;
+  late final RxBool _rxIsLogin;
+
   @override
-  bool get isLoggedIn => Accounts.main.isLogin;
+  RxString get rxFace => _rxFace;
+
+  @override
+  RxBool get rxIsLogin => _rxIsLogin;
+
+  BiliAccountProvider() {
+    final cached = GStorage.userInfo.get('userInfoCache');
+    _rxFace = RxString(cached?.face ?? '');
+    _rxIsLogin = RxBool(Accounts.main.isLogin);
+  }
+
+  @override
+  String? get face => GStorage.userInfo.get('userInfoCache')?.face;
+
+  @override
+  bool get isLogin => Accounts.main.isLogin;
 
   @override
   String? get userId => Accounts.main.mid.toString();
 
   @override
-  String? get displayName =>
-      GStorage.userInfo.get('userInfoCache')?.uname;
+  String? get displayName => GStorage.userInfo.get('userInfoCache')?.uname;
 
   @override
-  String? get avatarUrl =>
-      GStorage.userInfo.get('userInfoCache')?.face;
-
-  @override
-  Future<void> login() {
-    throw UnimplementedError('Use Get.toNamed(\'/loginPage\') from UI layer');
+  void restoreFromCache() {
+    final cached = GStorage.userInfo.get('userInfoCache');
+    if (cached != null) {
+      _rxFace.value = cached.face ?? '';
+      _rxIsLogin.value = true;
+    } else {
+      _rxFace.value = '';
+      _rxIsLogin.value = false;
+    }
   }
-
-  @override
-  Future<void> logout() => Accounts.clear();
 
   @override
   Map<String, String> get authHeaders => Accounts.main.headers;
@@ -36,6 +52,6 @@ class BiliAccountProvider implements AccountProvider {
   @override
   Stream<bool> onAuthStateChanged() async* {
     yield Accounts.main.isLogin;
-    yield* Get.find<AccountService>().isLogin.stream;
+    yield* rxIsLogin.stream;
   }
 }

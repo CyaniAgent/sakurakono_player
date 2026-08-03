@@ -315,12 +315,12 @@ class BiliFavRepository implements FavRepository {
   // ---- interface implementation ----
 
   @override
-  Future<LoadingState<void>> favFavFolder(Object mediaId) async {
+  Future<LoadingState<void>> favFavFolder(Object mediaId) {
     return FavHttp.favFavFolder(mediaId);
   }
 
   @override
-  Future<LoadingState<void>> unfavFavFolder(Object mediaId) async {
+  Future<LoadingState<void>> unfavFavFolder(Object mediaId) {
     return FavHttp.unfavFavFolder(mediaId);
   }
 
@@ -351,7 +351,7 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> cancelSub({
     required int id,
     required int type,
-  }) async {
+  }) {
     return FavHttp.cancelSub(id: id, type: type);
   }
 
@@ -383,12 +383,12 @@ class BiliFavRepository implements FavRepository {
   }
 
   @override
-  Future<LoadingState<void>> addFavPugv(Object seasonId) async {
+  Future<LoadingState<void>> addFavPugv(Object seasonId) {
     return FavHttp.addFavPugv(seasonId);
   }
 
   @override
-  Future<LoadingState<void>> delFavPugv(Object seasonId) async {
+  Future<LoadingState<void>> delFavPugv(Object seasonId) {
     return FavHttp.delFavPugv(seasonId);
   }
 
@@ -404,12 +404,12 @@ class BiliFavRepository implements FavRepository {
   }
 
   @override
-  Future<LoadingState<void>> addFavTopic(Object topicId) async {
+  Future<LoadingState<void>> addFavTopic(Object topicId) {
     return FavHttp.addFavTopic(topicId);
   }
 
   @override
-  Future<LoadingState<void>> delFavTopic(Object topicId) async {
+  Future<LoadingState<void>> delFavTopic(Object topicId) {
     return FavHttp.delFavTopic(topicId);
   }
 
@@ -417,7 +417,7 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> likeTopic(
     Object topicId,
     bool isLike,
-  ) async {
+  ) {
     return FavHttp.likeTopic(topicId, isLike);
   }
 
@@ -437,14 +437,14 @@ class BiliFavRepository implements FavRepository {
   @override
   Future<LoadingState<void>> addFavArticle({
     required Object id,
-  }) async {
+  }) {
     return FavHttp.addFavArticle(id: id);
   }
 
   @override
   Future<LoadingState<void>> delFavArticle({
     required Object id,
-  }) async {
+  }) {
     return FavHttp.delFavArticle(id: id);
   }
 
@@ -482,7 +482,7 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> delNote({
     required bool isPublish,
     required String noteIds,
-  }) async {
+  }) {
     return FavHttp.delNote(isPublish: isPublish, noteIds: noteIds);
   }
 
@@ -555,7 +555,7 @@ class BiliFavRepository implements FavRepository {
     required String resources,
     String? addIds,
     String? delIds,
-  }) async {
+  }) {
     return FavHttp.favVideo(
       resources: resources,
       addIds: addIds,
@@ -567,7 +567,7 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> unfavAll(
     Object rid,
     Object type,
-  ) async {
+  ) {
     return FavHttp.unfavAll(rid: rid, type: type);
   }
 
@@ -575,7 +575,7 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> seasonFav({
     required bool isFav,
     required dynamic seasonId,
-  }) async {
+  }) {
     return FavHttp.seasonFav(isFav: isFav, seasonId: seasonId);
   }
 
@@ -635,7 +635,7 @@ class BiliFavRepository implements FavRepository {
   @override
   Future<LoadingState<void>> deleteFolder({
     required String mediaIds,
-  }) async {
+  }) {
     return FavHttp.deleteFolder(mediaIds: mediaIds);
   }
 
@@ -643,21 +643,21 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> sortFav({
     required Object mediaId,
     required String sort,
-  }) async {
+  }) {
     return FavHttp.sortFav(mediaId: mediaId, sort: sort);
   }
 
   @override
   Future<LoadingState<void>> sortFavFolder({
     required String sort,
-  }) async {
+  }) {
     return FavHttp.sortFavFolder(sort: sort);
   }
 
   @override
   Future<LoadingState<void>> cleanFav({
     required Object mediaId,
-  }) async {
+  }) {
     return FavHttp.cleanFav(mediaId: mediaId);
   }
 
@@ -669,7 +669,7 @@ class BiliFavRepository implements FavRepository {
     required dynamic tarMediaId,
     dynamic mid,
     required String resources,
-  }) async {
+  }) {
     return FavHttp.copyOrMoveFav(
       isCopy: isCopy,
       isFav: isFav,
@@ -684,7 +684,7 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> communityAction({
     required Object opusId,
     required Object action,
-  }) async {
+  }) {
     return FavHttp.communityAction(opusId: opusId, action: action);
   }
 }

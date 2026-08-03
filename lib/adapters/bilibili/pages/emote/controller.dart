@@ -1,6 +1,6 @@
+import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/adapters/bilibili/http/reply.dart';
 import 'package:skf/adapters/bilibili/models_new/emote/package.dart'; // ignore: adapter import (no core equivalent for Package)
 import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
 import 'package:flutter/material.dart';
@@ -29,10 +29,11 @@ class EmotePanelController extends CommonListController<List<Package>?, Package>
 
   @override
   Future<LoadingState<List<Package>?>> customGetData() async {
-    final result = await ReplyHttp.getEmoteList(business: 'reply');
+    final result = await Get.find<ReplyRepository>()
+        .getEmoteList(business: 'reply');
     return switch (result) {
       Loading _ => LoadingState.loading(),
-      Success(:final response) => Success(response),
+      Success(:final response) => Success(response as List<Package>?),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
   }

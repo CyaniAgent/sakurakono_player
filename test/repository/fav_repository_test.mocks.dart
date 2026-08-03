@@ -361,7 +361,7 @@ class MockFavRepository extends _i1.Mock implements _i2.FavRepository {
   _i3.Future<_i4.LoadingState<_i6.CoreFavFolderData>> userfavFolder({
     required int? pn,
     required int? ps,
-    required dynamic mid,
+    required int? mid,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#userfavFolder, [], {
@@ -401,9 +401,9 @@ class MockFavRepository extends _i1.Mock implements _i2.FavRepository {
 
   @override
   _i3.Future<_i4.LoadingState<_i6.CoreFavFolderData>> videoInFolder({
-    dynamic mid,
-    dynamic rid,
-    dynamic type,
+    int? mid,
+    Object? rid,
+    Object? type,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#videoInFolder, [], {
@@ -466,7 +466,7 @@ class MockFavRepository extends _i1.Mock implements _i2.FavRepository {
   @override
   _i3.Future<_i4.LoadingState<void>> seasonFav({
     required bool? isFav,
-    required dynamic seasonId,
+    required Object? seasonId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#seasonFav, [], {
@@ -504,7 +504,7 @@ class MockFavRepository extends _i1.Mock implements _i2.FavRepository {
   @override
   _i3.Future<_i4.LoadingState<_i6.CoreFavFolderInfo>> addOrEditFolder({
     required bool? isAdd,
-    dynamic mediaId,
+    Object? mediaId,
     required String? title,
     required int? privacy,
     required String? cover,
@@ -616,9 +616,9 @@ class MockFavRepository extends _i1.Mock implements _i2.FavRepository {
   _i3.Future<_i4.LoadingState<void>> copyOrMoveFav({
     required bool? isCopy,
     required bool? isFav,
-    required dynamic srcMediaId,
-    required dynamic tarMediaId,
-    dynamic mid,
+    required Object? srcMediaId,
+    required Object? tarMediaId,
+    int? mid,
     required String? resources,
   }) =>
       (super.noSuchMethod(
