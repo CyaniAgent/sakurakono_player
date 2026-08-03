@@ -12,6 +12,8 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - lib/grpc/bilibili/**
+    - lib/adapters/bilibili/grpc/**
+    - lib/ottohub_sdk_fix/**
     # - lib/common/widgets/flutter/**
 
 formatter:

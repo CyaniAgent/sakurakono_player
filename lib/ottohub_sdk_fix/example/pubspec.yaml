@@ -1,0 +1,21 @@
+name: ottohub_sdk_dart_example
+description: "OTTOhub SDK Flutter 使用示例"
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ottohub_sdk_dart:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+

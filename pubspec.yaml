@@ -171,6 +171,7 @@ dependencies:
       url: https://github.com/bggRGjQaUbCoE/window_manager.git
       path: packages/window_manager
       ref: main
+  ottohub_sdk_dart: ^0.0.2
 
 dependency_overrides:
   flutter_inappwebview_android:
@@ -223,6 +224,8 @@ dependency_overrides:
       url: https://github.com/My-Responsitories/flutter_cached_network_image_ce.git
       path: cached_network_image
       ref: develop
+  ottohub_sdk_dart:
+    path: lib/ottohub_sdk_fix
 
 dev_dependencies:
   flutter_test:
