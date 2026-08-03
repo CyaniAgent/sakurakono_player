@@ -106,7 +106,8 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                         :final response,
                       )) {
                         try {
-                          final item = response!.first;
+                          if (response == null || response.isEmpty) return;
+                          final item = response.first;
                           Get.toNamed(
                             '/favSearch',
                             arguments: {
