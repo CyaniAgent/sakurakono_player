@@ -422,10 +422,10 @@ class LiveRoomController extends GetxController {
       return;
     }
       Get.find<LiveRepository>().liveRoomGetDanmakuToken(roomId: roomId).then((res) {
-      if (res case Success(:final response)) {
-        initDm(dmInfo = response);
-      }
-    });
+        if (res case Success(:final response)) {
+          initDm(dmInfo = response);
+        }
+      }).catchError((Object _) {});
   }
 
   void listener() {

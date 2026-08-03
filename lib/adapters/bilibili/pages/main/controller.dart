@@ -196,11 +196,11 @@ class MainController extends GetxController
     if (!accountService.isLogin.value || !hasDyn) {
       return;
     }
-    DynGrpc.dynRed().then((res) {
+    unawaited(DynGrpc.dynRed().then((res) {
       if (res != null) {
         setDynCount(res);
       }
-    });
+    }).catchError((Object _) {}));
   }
 
   void setDynCount([int count = 0]) {
