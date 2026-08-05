@@ -36,9 +36,12 @@ class OttoVideoPlayerController implements VideoPlayerController {
   }
 
   Future<void> _initPlayer() async {
-    _player = await Player.create();
+    _player = await Player.create(
+      configuration: const PlayerConfiguration(
+        title: 'OttoHub Player',
+      ),
+    );
   }
-
   @override
   Future<void> open(MediaSource source, {CoreMediaId? id, Duration? seekTo}) async {
     final player = await _ensurePlayer();

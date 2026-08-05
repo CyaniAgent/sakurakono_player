@@ -19,6 +19,17 @@ import 'package:skf/adapters/ottohub/repository/otto_msg_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_reply_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_user_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_video_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_audio_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_danmaku_filter_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_download_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_live_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_match_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_music_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_pgc_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_sponsor_block_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_validate_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
@@ -40,7 +51,14 @@ import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
-import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/repository/audio_repository.dart';
+import 'package:skf/core/repository/danmaku_filter_repository.dart';
+import 'package:skf/core/repository/download_repository.dart';
+import 'package:skf/core/repository/match_repository.dart';
+import 'package:skf/core/repository/music_repository.dart';
+import 'package:skf/core/repository/sponsor_block_repository.dart';
+import 'package:skf/core/repository/validate_repository.dart';
+import 'package:skf/core/repository/space_repository.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 
 /// OttoHub adapter implementation of [AppAdapter].
@@ -74,12 +92,20 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<MsgRepository>(() => OttoMsgRepository(client))
       ..lazyPut<ImRepository>(() => OttoImRepository(client))
       ..lazyPut<FanRepository>(() => OttoFanRepository(client))
-      // Stub registrations for feature-flagged services.
+      // Stub registrations for features the OttoHub SDK does not support.
       // These prevent crashes when Bilibili UI code does Get.find<>()
       // for features not implemented by the OttoHub adapter.
-      ..lazyPut<LiveRepository>(_StubLiveRepository.new)
-      ..lazyPut<SearchRepository>(_StubSearchRepository.new)
-      ..lazyPut<PgcRepository>(_StubPgcRepository.new)
+      ..lazyPut<AudioRepository>(OttoAudioRepository.new)
+      ..lazyPut<DanmakuFilterRepository>(OttoDanmakuFilterRepository.new)
+      ..lazyPut<DownloadRepository>(OttoDownloadRepository.new)
+      ..lazyPut<LiveRepository>(OttoLiveRepository.new)
+      ..lazyPut<MatchRepository>(OttoMatchRepository.new)
+      ..lazyPut<MusicRepository>(OttoMusicRepository.new)
+      ..lazyPut<PgcRepository>(OttoPgcRepository.new)
+      ..lazyPut<SponsorBlockRepository>(OttoSponsorBlockRepository.new)
+      ..lazyPut<ValidateRepository>(OttoValidateRepository.new)
+      ..lazyPut<SearchRepository>(() => OttoSearchRepository(client))
+      ..lazyPut<SpaceRepository>(() => OttoSpaceRepository(client))
       ..lazyPut<DownloadService>(_StubDownloadService.new)
       ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
       ..lazyPut<PlaybackReporter>(OttoReporter.new)
@@ -121,52 +147,6 @@ class OttoAdapter implements AppAdapter {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Stub classes — prevent crashes when Bilibili UI code references
-// feature-flagged services that OttoHub does not implement.
-// ---------------------------------------------------------------------------
-
-/// Stub [SearchRepository] — uses `noSuchMethod` to handle all methods.
-///
-/// Search is feature-flagged ([AppFeature.search]) but some UI code
-/// (e.g. [BaseSearchController]) may still call `Get.find<SearchRepository>()`
-/// regardless of the feature flag. This stub prevents the crash.
-class _StubSearchRepository implements SearchRepository {
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    // For methods returning Future<LoadingState<T>>, return an error.
-    if (invocation.isMethod) {
-      return Future.value(const Error('OttoHub: not implemented'));
-    }
-    return super.noSuchMethod(invocation);
-  }
-}
-
-/// Stub [PgcRepository] — uses `noSuchMethod` to handle all methods.
-class _StubPgcRepository implements PgcRepository {
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    if (invocation.isMethod) {
-      return Future.value(const Error('OttoHub: not implemented'));
-    }
-    return super.noSuchMethod(invocation);
-  }
-}
-
-/// Stub [LiveRepository] — uses `noSuchMethod` to handle all methods.
-///
-/// Live is feature-flagged ([AppFeature.live]) but some UI code may still
-/// call `Get.find<LiveRepository>()` regardless of the feature flag.
-class _StubLiveRepository implements LiveRepository {
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    if (invocation.isMethod) {
-      return Future.value(const Error('OttoHub: not implemented'));
-    }
-    return super.noSuchMethod(invocation);
-  }
-}
-
 /// Stub [DownloadService] — prevents crashes when Bilibili download pages
 /// call `Get.find<DownloadService>()` but download is not implemented.
 ///
@@ -186,3 +166,7 @@ class _StubDownloadService extends DownloadService {
     super.onInit();
   }
 }
+// ---------------------------------------------------------------------------
+// Stub classes — prevent crashes when Bilibili UI code references
+// feature-flagged services that OttoHub does not implement.
+// ---------------------------------------------------------------------------

@@ -96,10 +96,6 @@ class OttoVideoRepository implements VideoRepository {
       if (d.videoM3u8Url != null)
         <String, dynamic>{'url': d.videoM3u8Url},
     ],
-    dash: <String, dynamic>{
-      if (d.videoUrl != null) 'video': <dynamic>[<String, dynamic>{'baseUrl': d.videoUrl}],
-      if (d.videoM3u8Url != null) 'm3u8': d.videoM3u8Url,
-    },
     quality: d.videoWidth ?? 0,
     timeLength: d.duration,
   );
