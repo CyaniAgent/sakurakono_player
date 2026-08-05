@@ -9,7 +9,7 @@
 
 ## Current Phase
 
-Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (13/24), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart`, added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter.
+Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (13 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter.
 
 ## SDK & env
 
@@ -26,6 +26,7 @@ Structural work complete: Bilibili adapter fully separated (24/24 repositories),
 - `avoid_print`, `cascade_invocations`, `sized_box_for_whitespace`.
 - `formatter: trailing_commas: preserve` — do not add/remove trailing commas.
 - Excluded from analysis: `lib/grpc/bilibili/**`, `lib/adapters/bilibili/grpc/**`, `lib/ottohub_sdk_fix/**`. Don't edit generated `.pb.dart` files anyway.
+- Plus 31 additional custom rules in `analysis_options.yaml` (e.g. `always_declare_return_types`, `use_colored_box`, `use_decorated_box`, `no_literal_bool_comparisons`, `use_truncating_division`, `tighten_type_of_initializing_formals`, `prefer_spread_collections`, `use_null_aware_elements`, `use_named_constants`, `cancel_subscriptions`, `avoid_type_to_string`, `prefer_void_to_null`, `avoid_void_async`). `flutter analyze` (Bilibili) must stay **0 errors, 0 warnings**.
 
 ## Architecture
 
@@ -45,7 +46,7 @@ lib/
 │   │   ├── bili_adapter.dart  # BiliAdapter implements AppAdapter
 │   │   ├── bridge.dart        # Bilibili-specific registrations (unchanged)
 │   │   ├── repository/        # Bili*Repository for all 24 core interfaces
-│   │   ├── pages/             # All B站 UI (161 view.dart files, ~440 Dart files)
+│   │   ├── pages/             # All B站 UI (441 files, 114 page dirs, ~165 view.dart)
 │   │   ├── http/              # Dio + HTTP/2 adapter
 │   │   ├── grpc/              # Bilibili gRPC endpoints (hand-written + generated .pb.dart)
 │   │   ├── player/            # bili_player_factory (media_kit wrapper)
@@ -53,12 +54,11 @@ lib/
 │   │   └── models/ + models_new/
 │   └── ottohub/               # OttoHub adapter
 │       ├── bridge.dart        # OttoAdapter implements AppAdapter
-│       ├── repository/        # 13 Otto*Repository implementations
+│       ├── repository/        # 24 Otto*Repository files (13 real + 2 partial + 9 stubs)
 │       ├── player/            # OttoPlayerFactory + otto_reporter.dart
-│       ├── services/          # OttoAccountProvider
-│       └── utils/
+│       └── services/          # OttoAccountProvider
 ├── ottohub_sdk_fix/           # Vendored ottohub_sdk_dart (pubspec path override)
-├── common/                    # Shared widgets — 0 adapter imports (fully decoupled)
+├── common/                    # Shared widgets — 0 adapter imports (common⇄utils coupled)
 ├── utils/                     # Storage (hive_ce), path, platform, theme
 ├── router/app_pages.dart      # GetX routes: uses AdapterRegistry.active.routes
 ├── scripts/                   # patch.ps1, build.ps1, 18 .patch files for Flutter SDK
@@ -80,7 +80,7 @@ lib/
 | Adapter | Status | Repository Coverage | Notes |
 |---------|--------|-------------------|-------|
 | Bilibili | Complete | 24/24 | All features |
-| OttoHub | In Progress | 13/24 | Core playback + account |
+| OttoHub | In Progress | 24/24 registered (13 real, 2 partial, 9 stubs) | Core playback + account |
 
 ## Adapter development
 
@@ -135,7 +135,7 @@ All 11 flags default **true**; disable with `--dart-define=FEATURE_X=false`:
 }
 ```
 
-The CI `ottohub_analyze` job (`.github/workflows/build.yml`) is the source of truth — it disables **all 11 flags**; OttoHub analyze only passes with the full set disabled.
+**CI note:** the `ottohub_analyze` job (`.github/workflows/build.yml`) runs bare `flutter analyze` with **no dart-defines** — all 11 flags default to `true` in CI. The 11-flag `=false` set exists ONLY in the VS Code launch config; analyze output is flag-independent (const `bool.fromEnvironment` does not change dead-branch analysis).
 
 ## Key dev commands
 
@@ -143,11 +143,11 @@ The CI `ottohub_analyze` job (`.github/workflows/build.yml`) is the source of tr
 |--------|---------|
 | Analyze (Bilibili) | `flutter analyze --dart-define=ADAPTER=bilibili` — must stay **0 errors, 0 warnings** |
 | Analyze (OttoHub) | `flutter analyze --dart-define=ADAPTER=ottohub` + all 11 flags `=false` (see launch config) |
-| Test | `flutter test` — **72 tests** across 24 repository test files |
+| Test | `flutter test` — **87 tests** (72 repo + 7 num_utils + 5 ottohub_bridge + 3 model_converters) |
 | Codegen | `dart run build_runner build --delete-conflicting-outputs` |
 | Mock codegen | Same command — generates `*.mocks.dart` in `test/repository/` |
 | Fix warnings | `dart fix --apply` (auto-fixes prefer_const_*, trailing comma, etc.) |
-| JNI bindings | `dart run tool/jnigen.dart` → `lib/utils/android/bindings.g.dart` |
+| JNI bindings | `dart run tool/jnigen.dart` → `lib/utils/android/bindings.g.dart` (jnigen pinned to `dart-lang/native` commit `5552083`) |
 | Icons | `dart run flutter_launcher_icons` |
 | Splash | `dart run flutter_native_splash:create` |
 | Pub get | `flutter pub get` (not `dart pub get`) |
@@ -160,13 +160,13 @@ The CI `ottohub_analyze` job (`.github/workflows/build.yml`) is the source of tr
 
 | Platform | Command |
 |----------|---------|
-| Android | `flutter build apk --release --split-per-abi --dart-define-from-file=skf_release.json` |
+| Android | `flutter build apk --release --split-per-abi --dart-define-from-file=skf_release.json --pub` |
 | iOS | `flutter build ios --release --no-codesign --dart-define-from-file=skf_release.json` |
 | macOS | `flutter build macos --release --dart-define-from-file=skf_release.json` |
 | Windows | `fastforge package --platform windows --targets exe --flutter-build-args="dart-define-from-file=skf_release.json"` |
-| Linux | `flutter build linux --release --dart-define-from-file=skf_release.json` |
+| Linux | `flutter build linux --release -v --pub --dart-define-from-file=skf_release.json` |
 
-- CI: `.github/workflows/build.yml` orchestrates 5 platform builds; Flutter version comes from `pubspec.yaml` (`flutter-version-file`). PR builds skip release signing and use dev APK flag (`--android-project-arg dev=1`).
+- CI: `.github/workflows/build.yml` orchestrates android + ottohub_analyze, delegating to 4 reusable workflows (`ios.yml`/`mac.yml`/`win_x64.yml`/`linux_x64.yml`). **PR runs only android + win_x64 (+ottohub_analyze); ios/mac/linux are workflow_dispatch-only.** PR android uses `--android-project-arg dev=1` → `.dev` suffix + debug-signed (no keystore). Release android is signed only if `SIGN_KEYSTORE_BASE64` secret set; GitHub Release created only when `tag` input non-empty. **No `flutter test` job exists in CI — tests run locally only.**
 - Windows: fastforge + Inno Setup; Chinese language file at `windows/packaging/exe/ChineseSimplified.isl`.
 - Linux: CI produces .tar.gz, .deb, .rpm, and .AppImage artifacts.
 
@@ -180,10 +180,11 @@ See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview
 
 ## Testing
 
-- **24 repository test files** in `test/repository/` — 72 tests total (3 per repo: happy + error + edge). `test/num_utils_test.dart` also exists at the root.
-- Uses `mockito: ^5.7.0` + `build_runner`. Each test file has a corresponding `*.mocks.dart`.
-- `*.mocks.dart` files are **gitignored** — regenerate with `dart run build_runner build`.
-- Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types.
+- **87 tests total**: 24 repo test files in `test/repository/` (72 tests, 3 per repo: happy + error + edge) + `test/num_utils_test.dart` (7) + `test/ottohub_bridge_test.dart` (5) + `test/adapters/bilibili/model_converters_test.dart` (3). All 24 core repositories covered 1:1 — no gaps.
+- Uses `mockito: ^5.7.0` + `build_runner` (resolved: mockito 5.7.0 / build_runner 2.15.1). **No `build.yaml` exists** — mockito's builder config ships in-package, `@GenerateMocks` annotation is sufficient.
+- `*.mocks.dart` files are **gitignored** — regenerate with `dart run build_runner build`. ⚠️ Local mocks currently claim generation by mockito **5.4.6** (stale vs resolved 5.7.0) — regenerate before `flutter test`.
+- Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types. Every generic `LoadingState<T>` return needs `provideDummy<LoadingState<...>>(...)` or build_runner fails. Tests are envelope/shape tests of the LoadingState contract — they do NOT exercise Bili*/Otto* implementations.
+- **No widget or integration tests exist.**
 
 ## Gotchas
 
@@ -201,3 +202,16 @@ See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview
 - **Windows**: WebViewEnvironment for flutter_inappwebview.
 - **Desktop**: window_manager with saved window size/position.
 - **Mobile**: Edge-to-edge system UI, transparent bars.
+
+## AGENTS.md hierarchy
+
+This knowledge base is hierarchical — subdirectory files cover their subtree only, never repeating parent content:
+
+```
+AGENTS.md                    (root — this file)
+├── lib/core/AGENTS.md        # contract layer (AppAdapter, LoadingState, 24 repo interfaces)
+├── lib/adapters/bilibili/AGENTS.md   # B站 adapter internals (bridge, HTTP, pages, converters)
+├── lib/adapters/ottohub/AGENTS.md    # OttoHub adapter (DI overlay, stub contract)
+├── lib/common/AGENTS.md      # shared widgets + vendored flutter/ dir
+└── lib/utils/AGENTS.md       # storage init order, Pref, theme, version plumbing
+```
