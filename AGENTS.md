@@ -26,7 +26,7 @@ Structural work complete: Bilibili adapter fully separated (24/24 repositories),
 - `avoid_print`, `cascade_invocations`, `sized_box_for_whitespace`.
 - `formatter: trailing_commas: preserve` — do not add/remove trailing commas.
 - Excluded from analysis: `lib/grpc/bilibili/**`, `lib/adapters/bilibili/grpc/**`, `lib/ottohub_sdk_fix/**`. Don't edit generated `.pb.dart` files anyway.
-- Plus 31 additional custom rules in `analysis_options.yaml` (e.g. `always_declare_return_types`, `use_colored_box`, `use_decorated_box`, `no_literal_bool_comparisons`, `use_truncating_division`, `tighten_type_of_initializing_formals`, `prefer_spread_collections`, `use_null_aware_elements`, `use_named_constants`, `cancel_subscriptions`, `avoid_type_to_string`, `prefer_void_to_null`, `avoid_void_async`). `flutter analyze` (Bilibili) must stay **0 errors, 0 warnings**.
+- `linter.rules` has **42 explicit rules** — 25 beyond what flutter_lints 6.0.0 already enables (e.g. `always_declare_return_types`, `always_use_package_imports`, `avoid_field_initializers_in_const_classes`, `avoid_void_async`, `cancel_subscriptions`, `cascade_invocations`, `no_literal_bool_comparisons`, `prefer_const_constructors`, `prefer_void_to_null`, `tighten_type_of_initializing_formals`, `use_colored_box`, `use_decorated_box`, `use_named_constants`, `use_null_aware_elements`, `use_truncating_division`). `flutter analyze` (Bilibili) must stay **0 errors, 0 warnings**.
 
 ## Architecture
 
@@ -40,18 +40,20 @@ lib/
 │   ├── repository/            # 24 repository interfaces (Video, User, Auth, Danmaku, …)
 │   ├── player/                # PlayerFactory, MediaSource, PlaybackReporter
 │   ├── plugin/                # Plugin interface, PluginRegistry, LocalFilePlugin, DataSource
-│   └── result/                # LoadingState<T> — sealed class (single unified version)
+│   ├── utils/                # pair, subtitle_utils, image_action_registry
+│   └── result/               # LoadingState<T> — sealed class (single unified version)
 ├── adapters/
 │   ├── bilibili/              # B站 adapter
 │   │   ├── bili_adapter.dart  # BiliAdapter implements AppAdapter
 │   │   ├── bridge.dart        # Bilibili-specific registrations (unchanged)
 │   │   ├── repository/        # Bili*Repository for all 24 core interfaces
-│   │   ├── pages/             # All B站 UI (441 files, 114 page dirs, ~165 view.dart)
+│   │   ├── pages/             # All B站 UI (441 files, 114 page dirs, 161 view.dart)
 │   │   ├── http/              # Dio + HTTP/2 adapter
 │   │   ├── grpc/              # Bilibili gRPC endpoints (hand-written + generated .pb.dart)
 │   │   ├── player/            # bili_player_factory (media_kit wrapper)
 │   │   ├── utils/model_converters.dart  # Core→adapter type converters (runtime crash fixes)
-│   │   └── models/ + models_new/
+│   │   ├── models/ + models_new/
+│   │   └── services/ + plugin/ + common/ + tcp/ + account/ + router/  # DI, pl_player, shared widgets, tcp live, legacy+dead
 │   └── ottohub/               # OttoHub adapter
 │       ├── bridge.dart        # OttoAdapter implements AppAdapter
 │       ├── repository/        # 24 Otto*Repository files (13 real + 2 partial + 9 stubs)
@@ -63,7 +65,8 @@ lib/
 ├── router/app_pages.dart      # GetX routes: uses AdapterRegistry.active.routes
 ├── scripts/                   # patch.ps1, build.ps1, 18 .patch files for Flutter SDK
 ├── grpc/bilibili/             # Standalone gRPC generated protobuf code (excluded from analysis)
-└── main.dart                  # Entry: initHive → AdapterRegistry → run App
+├── build_config.dart         # version injection reader (skf.* via fromEnvironment)
+└── main.dart                 # Entry: initHive → AdapterRegistry → run App
 ```
 
 ### Key patterns
@@ -72,6 +75,7 @@ lib/
 - **FeatureFlags**: Optional features are compile-time gated via `AppFeatures.*` (`bool.fromEnvironment`). Disable with `--dart-define=FEATURE_SEARCH=false`.
 - **Pages → Repository**: Bilibili pages use `Get.find<Repository>()` (not direct HTTP). OttoHub pages share the same UI but use Otto*Repository implementations.
 - **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; for pass-through where types are field-compatible, `as dynamic` cast works but is a runtime crash risk — prefer converters.
+- **Dead AppAdapter surfaces**: `homePage`, `onInit()`, and `AdapterRegistry.hasFeature()` are NEVER consumed — `activate()` only calls `registerDependencies()`; the `/` route hardcodes bilibili `MainApp` (not `active.homePage`); real feature gating is compile-time `AppFeatures.*` in `BiliBridge.registerRoutes()`. `AdapterRegistry.active` has exactly 2 consumers: `lib/router/app_pages.dart` (routes) + `lib/common/widgets/image/network_img_layer.dart` (processImageUrl).
 - **GetX** throughout: `GetMaterialApp`, `GetPage`, `Get.lazyPut`, `Get.put`, `Get.find`, `Get.toNamed()`.
 - **LoadingState<T>** everywhere: sealed class with `Success`, `Error`, `Loading` variants.
 
@@ -154,9 +158,9 @@ All 11 flags default **true**; disable with `--dart-define=FEATURE_X=false`:
 
 ## Build & release
 
-**Version injection** (CI only): `lib/scripts/build.ps1 <platform>` writes `skf_release.json` with `{skf.name, skf.code, skf.hash, skf.time}`, read by `BuildConfig` via `String.fromEnvironment`.
+**Version injection** (CI only): `lib/scripts/build.ps1 <platform>` writes `skf_release.json` with `{skf.name, skf.code, skf.hash, skf.time}`, read by `BuildConfig` via `String.fromEnvironment`. Side effects: rewrites `pubspec.yaml` `version:` (`<name>+<code>`; android name gets `-<9-char hash>` suffix) and exports `version` to `GITHUB_ENV` (used by artifact rename/package steps). Requires `fetch-depth: 0` (versionCode = `git rev-list --count HEAD`).
 
-**Flutter SDK patching**: `lib/scripts/patch.ps1 <platform>` MUST run before build. Applies 18 local `.patch` files indexed to Flutter 3.44.6 — changing Flutter version breaks patches.
+**Flutter SDK patching**: `lib/scripts/patch.ps1 <platform>` MUST run before build. Applies 18 local `.patch` files indexed to Flutter 3.44.6 — changing Flutter version breaks patches. 16 apply inside the Flutter SDK (`FLUTTER_ROOT`); 2 (`geetest_ios.patch`, `bottom_sheet_ios_app.patch`) apply to the APP repo on iOS only. Platform matrix varies: android also reverts `NewOverScrollIndicator` + cherry-picks `TextSelectionMenuFix`; linux/mac/windows get only the shared 12.
 
 | Platform | Command |
 |----------|---------|
@@ -167,13 +171,15 @@ All 11 flags default **true**; disable with `--dart-define=FEATURE_X=false`:
 | Linux | `flutter build linux --release -v --pub --dart-define-from-file=skf_release.json` |
 
 - CI: `.github/workflows/build.yml` orchestrates android + ottohub_analyze, delegating to 4 reusable workflows (`ios.yml`/`mac.yml`/`win_x64.yml`/`linux_x64.yml`). **PR runs only android + win_x64 (+ottohub_analyze); ios/mac/linux are workflow_dispatch-only.** PR android uses `--android-project-arg dev=1` → `.dev` suffix + debug-signed (no keystore). Release android is signed only if `SIGN_KEYSTORE_BASE64` secret set; GitHub Release created only when `tag` input non-empty. **No `flutter test` job exists in CI — tests run locally only.**
+- CI Flutter version is NOT pinned for build jobs: `flutter-version-file: pubspec.yaml` reads a `>=3.12.0` range; only `ottohub_analyze` pins `flutter-version: 3.44.6`. CI artifacts: Windows emits BOTH a portable zip and the Inno setup exe; Android emits 3 split-per-abi APKs (arm64-v8a/armeabi-v7a/x86_64) as separate artifacts.
 - Windows: fastforge + Inno Setup; Chinese language file at `windows/packaging/exe/ChineseSimplified.isl`.
 - Linux: CI produces .tar.gz, .deb, .rpm, and .AppImage artifacts.
 
 ## Dependencies
 
 Many packages are git-forked under `bggRGjQaUbCoE` or `My-Responsitories`:
-- `get` (GetX fork `version_4.7.2`), `media_kit` & sub-libs (`version_1.2.5`), `cached_network_image_ce`, `catcher_2`, `window_manager`, `file_picker`, `flutter_smart_dialog`, `flutter_sortable_wrap`, `canvas_danmaku`, `font_awesome_flutter`, `super_sliver_list`, `extended_nested_scroll_view`, `desktop_webview_window`
+- `get` (GetX fork `version_4.7.2`), `media_kit` & sub-libs (`version_1.2.5`), `cached_network_image_ce`, `catcher_2`, `window_manager`, `file_picker`, `flutter_smart_dialog`, `flutter_sortable_wrap`, `canvas_danmaku`, `font_awesome_flutter`, `super_sliver_list`, `extended_nested_scroll_view`, `desktop_webview_window`, `audio_service`, `chat_bottom_container`, `material_design_icons_flutter`, `native_device_orientation`
+- Fork-org exceptions: `desktop_webview_window` is from `Predidit/linux_webview_window`; `webdav_client` is from `wgh136/webdav_client` (not the two orgs above).
 - `ottohub_sdk_dart` is **overridden to a local path**: `dependency_overrides: ottohub_sdk_dart: path: lib/ottohub_sdk_fix` — a vendored copy of the SDK (excluded from analysis). SDK fixes go there, not pub.dev.
 
 See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview, and cached_network_image_ce have both regular deps and overrides.
@@ -183,13 +189,13 @@ See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview
 - **87 tests total**: 24 repo test files in `test/repository/` (72 tests, 3 per repo: happy + error + edge) + `test/num_utils_test.dart` (7) + `test/ottohub_bridge_test.dart` (5) + `test/adapters/bilibili/model_converters_test.dart` (3). All 24 core repositories covered 1:1 — no gaps.
 - Uses `mockito: ^5.7.0` + `build_runner` (resolved: mockito 5.7.0 / build_runner 2.15.1). **No `build.yaml` exists** — mockito's builder config ships in-package, `@GenerateMocks` annotation is sufficient.
 - `*.mocks.dart` files are **gitignored** — regenerate with `dart run build_runner build`. ⚠️ Local mocks currently claim generation by mockito **5.4.6** (stale vs resolved 5.7.0) — regenerate before `flutter test`.
-- Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types. Every generic `LoadingState<T>` return needs `provideDummy<LoadingState<...>>(...)` or build_runner fails. Tests are envelope/shape tests of the LoadingState contract — they do NOT exercise Bili*/Otto* implementations.
+- Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types. Every generic `LoadingState<T>` return needs `provideDummy<LoadingState<...>>(...)` or build_runner fails. The 24 repo tests are envelope/shape tests of the LoadingState contract — they do NOT exercise Bili*/Otto* implementations (exception: `ottohub_bridge_test.dart` + `model_converters_test.dart` DO exercise real adapter code). Adapter-scoped tests live in `test/adapters/<adapter>/`.
 - **No widget or integration tests exist.**
 
 ## Gotchas
 
 - **Storage init order**: `GStorage.init()` after `BiliBridge.initHive()`. Exits on failure. The Hive adapter registration must happen before any adapter activation. Hive boxes may already be open (`Accounts.init()` must handle that).
-- **`.gitignore`**: Uses `test_results/` (not `test*`) to avoid ignoring `test/` dir. `*.mocks.dart` is gitignored. `pili_release.json` is gitignored but **`skf_release.json` is not** — a local build creates it; don't commit it.
+- **`.gitignore`**: Uses `test_results/` (not `test*`) to avoid ignoring `test/` dir. `*.mocks.dart`, `pili_release.json`, and `skf_release.json` are ALL gitignored (a local build creates the latter; it stays untracked).
 - **`distribute_options.yaml`**: Output `dist/` for fastforge.
 - **`.omo/`**: Boulder state, work plans, session continuations. Not for code.
 - **gRPC exclusion**: `analysis_options.yaml` excludes `lib/grpc/bilibili/**`, `lib/adapters/bilibili/grpc/**`, and `lib/ottohub_sdk_fix/**`. Don't edit generated `.pb.dart` files.

@@ -30,11 +30,13 @@ Adapter-free abstract interfaces for the SKF player framework. Zero imports from
 - One repository interface per domain, named <Domain>Repository (e.g. AuthRepository); 24 total. Methods return Future<LoadingState<T>>.
 - Core models are plain data classes (no Hive annotations) — Hive-persisted types live in the adapter (bilibili/models).
 - package:skf imports only (never relative).
+- Dot-shorthand enum/static syntax (Dart ≥3.10) used: `CoreDynamicsTabType type = .all` in repository/dynamics_repository.dart:16. Keep consistent.
+- Model enum files carry `// ignore_for_file: constant_identifier_names` (live_enums, search_types, sponsor_block_types, ui/badge_type) — enum constants deliberately not SCREAMING_CASE.
 
 ## ANTI-PATTERNS
 - Runtime type-identity casts on Core↔adapter: Core and adapter types are DISTINCT classes sharing fields — do not add Core fields that duplicate adapter-only types; conversion belongs in lib/adapters/bilibili/utils/model_converters.dart.
 - Untyped IDs: ~91 `required Object`/`required dynamic` params across 9 repository interfaces (e.g. MemberRepository.memberDetail, VideoRepository) — deliberate (B站 media IDs are adapter-specific) but forces `as` casts in adapters; when adding a method, prefer a typed CoreMediaId.
-- Do NOT import anything from lib/adapters/, lib/common/, lib/utils/ into core — core is the bottom layer.
+- Core imports from common are FORBIDDEN — but currently VIOLATED: `repository/dynamics_repository.dart:1` imports `package:skf/common/widgets/pair.dart` (uses `Pair<int, String>`). `lib/core/utils/pair.dart` is a byte-identical duplicate of the common `Pair`/`Triple` — the import should point to `package:skf/core/utils/pair.dart` (or the common copy dropped). Fix the import, not the rule.
 
 ## WHERE TO LOOK
 
