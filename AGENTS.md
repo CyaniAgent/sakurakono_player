@@ -9,7 +9,7 @@
 
 ## Current Phase
 
-Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (13 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter.
+Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (13 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. Repository params fully typed (91 Object→String/int, 2026-08-09); 34 Pref getters typed (B站 enum getters moved to BiliPref); 2 as-dynamic casts remain in non-adapter UI (dead features, decision pending). 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter.
 
 ## SDK & env
 
@@ -74,7 +74,7 @@ lib/
 - **Adapter selection at compile time**: `flutter run --dart-define=ADAPTER=bilibili` (default) or `ADAPTER=ottohub`. Each adapter implements `AppAdapter` and registers its own DI bindings via `AdapterRegistry.activate()`.
 - **FeatureFlags**: Optional features are compile-time gated via `AppFeatures.*` (`bool.fromEnvironment`). Disable with `--dart-define=FEATURE_SEARCH=false`.
 - **Pages → Repository**: Bilibili pages use `Get.find<Repository>()` (not direct HTTP). OttoHub pages share the same UI but use Otto*Repository implementations.
-- **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; for pass-through where types are field-compatible, `as dynamic` cast works but is a runtime crash risk — prefer converters.
+- **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; repository params are typed String/int (no `as dynamic` — SPES-014).
 - **Dead AppAdapter surfaces**: `homePage`, `onInit()`, and `AdapterRegistry.hasFeature()` are NEVER consumed — `activate()` only calls `registerDependencies()`; the `/` route hardcodes bilibili `MainApp` (not `active.homePage`); real feature gating is compile-time `AppFeatures.*` in `BiliBridge.registerRoutes()`. `AdapterRegistry.active` has exactly 2 consumers: `lib/router/app_pages.dart` (routes) + `lib/common/widgets/image/network_img_layer.dart` (processImageUrl).
 - **GetX** throughout: `GetMaterialApp`, `GetPage`, `Get.lazyPut`, `Get.put`, `Get.find`, `Get.toNamed()`.
 - **LoadingState<T>** everywhere: sealed class with `Success`, `Error`, `Loading` variants.

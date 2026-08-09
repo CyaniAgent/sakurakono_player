@@ -35,7 +35,7 @@ Adapter-free abstract interfaces for the SKF player framework. Zero imports from
 
 ## ANTI-PATTERNS
 - Runtime type-identity casts on Core↔adapter: Core and adapter types are DISTINCT classes sharing fields — do not add Core fields that duplicate adapter-only types; conversion belongs in lib/adapters/bilibili/utils/model_converters.dart.
-- Untyped IDs: ~91 `required Object`/`required dynamic` params across 9 repository interfaces (e.g. MemberRepository.memberDetail, VideoRepository) — deliberate (B站 media IDs are adapter-specific) but forces `as` casts in adapters; when adding a method, prefer a typed CoreMediaId.
+- Typed IDs (2026-08-09): all 91 former `required Object`/`dynamic` params across 9 repository interfaces are now `String`/`int` by semantic family (media/content IDs → String, user IDs → int) — do NOT regress to Object/dynamic. Prefer CoreMediaId only for NEW media-ID methods.
 - Core imports from common are FORBIDDEN — but currently VIOLATED: `repository/dynamics_repository.dart:1` imports `package:skf/common/widgets/pair.dart` (uses `Pair<int, String>`). `lib/core/utils/pair.dart` is a byte-identical duplicate of the common `Pair`/`Triple` — the import should point to `package:skf/core/utils/pair.dart` (or the common copy dropped). Fix the import, not the rule.
 
 ## WHERE TO LOOK
