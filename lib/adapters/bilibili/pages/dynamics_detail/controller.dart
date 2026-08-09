@@ -46,7 +46,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
     queryData();
   }
 
-  Future<LoadingState> onSetPubSetting(bool isPrivate, Object dynId) async {
+  Future<LoadingState> onSetPubSetting(bool isPrivate, String dynId) async {
     final result = await Get.find<DynamicsRepository>().dynPrivatePubSetting(
       dynId: dynId,
       action: isPrivate ? 'public_pub' : 'private_pub',

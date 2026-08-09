@@ -7,14 +7,8 @@ import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/scale_app.dart';
 import 'package:skf/common/widgets/stateful_builder.dart';
-import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/dynamic_badge_mode.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/up_panel_position.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
-import 'package:skf/adapters/bilibili/models/common/msg/msg_unread_type.dart';
-import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
 import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
-import 'package:skf/adapters/bilibili/models/common/theme/theme_type.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
@@ -34,6 +28,7 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart' hide StatefulBuilder;
 import 'package:flutter/services.dart';
@@ -159,7 +154,7 @@ List<SettingsModel> get styleSettings => [
   NormalModel(
     title: '动态页UP主显示位置',
     leading: const Icon(Icons.person_outlined),
-    getSubtitle: () => '当前：${Pref.upPanelPosition.label}',
+    getSubtitle: () => '当前：${UpPanelPosition.values[Pref.upPanelPosition].label}',
     onTap: _showUpPosDialog,
   ),
   const SwitchModel(
@@ -179,13 +174,13 @@ List<SettingsModel> get styleSettings => [
   NormalModel(
     title: '动态未读标记',
     leading: const Icon(Icons.motion_photos_on_outlined),
-    getSubtitle: () => '当前标记样式：${Pref.dynamicBadgeType.desc}',
+    getSubtitle: () => '当前标记样式：${DynamicBadgeMode.values[Pref.dynamicBadgeType].desc}',
     onTap: _showDynBadgeDialog,
   ),
   NormalModel(
     title: '消息未读标记',
     leading: const Icon(MdiIcons.bellBadgeOutline),
-    getSubtitle: () => '当前标记样式：${Pref.msgBadgeMode.desc}',
+    getSubtitle: () => '当前标记样式：${DynamicBadgeMode.values[Pref.msgBadgeMode].desc}',
     onTap: _showMsgBadgeDialog,
   ),
   NormalModel(
@@ -193,13 +188,13 @@ List<SettingsModel> get styleSettings => [
     title: '消息未读类型',
     leading: const Icon(MdiIcons.bellCogOutline),
     getSubtitle: () =>
-        '当前消息类型：${Pref.msgUnReadTypeV2.map((item) => item.title).join('、')}',
+        '当前消息类型：${BiliPref.msgUnReadTypeV2.map((item) => item.title).join('、')}',
   ),
   NormalModel(
     onTap: _showBarHideTypeDialog,
     title: '顶/底栏收起类型',
     leading: const Icon(MdiIcons.arrowExpandVertical),
-    getSubtitle: () => '当前：${Pref.barHideType.label}',
+    getSubtitle: () => '当前：${BiliPref.barHideType.label}',
   ),
   SwitchModel(
     title: '首页顶栏收起',
@@ -282,7 +277,7 @@ List<SettingsModel> get styleSettings => [
     onTap: _showThemeTypeDialog,
     leading: const Icon(Icons.flashlight_on_outlined),
     title: '主题模式',
-    getSubtitle: () => '当前模式：${Pref.themeType.desc}',
+    getSubtitle: () => '当前模式：${ThemeType.values[Pref.themeType].desc}',
   ),
   SwitchModel(
     leading: const Icon(Icons.invert_colors),
@@ -315,7 +310,7 @@ List<SettingsModel> get styleSettings => [
   NormalModel(
     leading: const Icon(Icons.home_outlined),
     title: '默认启动页',
-    getSubtitle: () => '当前启动页：${Pref.defaultHomePage.label}',
+    getSubtitle: () => '当前启动页：${NavigationBarType.values[Pref.defaultHomePage].label}',
     onTap: _showDefHomeDialog,
   ),
   const NormalModel(
@@ -703,7 +698,7 @@ Future<void> _showUpPosDialog(
     context: context,
     builder: (context) => SelectDialog<UpPanelPosition>(
       title: '动态页UP主显示位置',
-      value: Pref.upPanelPosition,
+      value: UpPanelPosition.values[Pref.upPanelPosition],
       values: UpPanelPosition.values.map((e) => (e, e.label)).toList(),
     ),
   );
@@ -722,7 +717,7 @@ Future<void> _showDynBadgeDialog(
     context: context,
     builder: (context) => SelectDialog<DynamicBadgeMode>(
       title: '动态未读标记',
-      value: Pref.dynamicBadgeType,
+      value: DynamicBadgeMode.values[Pref.dynamicBadgeType],
       values: DynamicBadgeMode.values.map((e) => (e, e.desc)).toList(),
     ),
   );
@@ -749,7 +744,7 @@ Future<void> _showMsgBadgeDialog(
     context: context,
     builder: (context) => SelectDialog<DynamicBadgeMode>(
       title: '消息未读标记',
-      value: Pref.msgBadgeMode,
+      value: DynamicBadgeMode.values[Pref.msgBadgeMode],
       values: DynamicBadgeMode.values.map((e) => (e, e.desc)).toList(),
     ),
   );
@@ -775,7 +770,7 @@ Future<void> _showMsgUnReadDialog(
     context: context,
     builder: (context) => MultiSelectDialog<MsgUnReadType>(
       title: '消息未读类型',
-      initValues: Pref.msgUnReadTypeV2,
+      initValues: BiliPref.msgUnReadTypeV2,
       values: {for (final i in MsgUnReadType.values) i: i.title},
     ),
   );
@@ -874,7 +869,7 @@ Future<void> _showThemeTypeDialog(
     context: context,
     builder: (context) => SelectDialog<ThemeType>(
       title: '主题模式',
-      value: Pref.themeType,
+      value: ThemeType.values[Pref.themeType],
       values: ThemeType.values.map((e) => (e, e.desc)).toList(),
     ),
   );
@@ -896,7 +891,7 @@ Future<void> _showDefHomeDialog(
     context: context,
     builder: (context) => SelectDialog<NavigationBarType>(
       title: '首页启动页',
-      value: Pref.defaultHomePage,
+      value: NavigationBarType.values[Pref.defaultHomePage],
       values: NavigationBarType.values.map((e) => (e, e.label)).toList(),
     ),
   );
@@ -915,7 +910,7 @@ Future<void> _showBarHideTypeDialog(
     context: context,
     builder: (context) => SelectDialog<BarHideType>(
       title: '顶/底栏收起类型',
-      value: Pref.barHideType,
+      value: BiliPref.barHideType,
       values: BarHideType.values.map((e) => (e, e.label)).toList(),
     ),
   );

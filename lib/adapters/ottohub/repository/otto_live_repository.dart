@@ -13,8 +13,8 @@ class OttoLiveRepository implements LiveRepository {
 
   @override
   Future<LoadingState<void>> sendLiveMsg({
-    required Object roomId,
-    required Object msg,
+    required int roomId,
+    required String msg,
     Object? dmType,
     Object? emoticonOptions,
     int replyMid = 0,
@@ -24,7 +24,7 @@ class OttoLiveRepository implements LiveRepository {
 
   @override
   Future<LoadingState<CoreRoomPlayInfoData>> liveRoomInfo({
-    required Object roomId,
+    required int roomId,
     Object? qn,
     bool onlyAudio = false,
   }) async =>
@@ -32,19 +32,19 @@ class OttoLiveRepository implements LiveRepository {
 
   @override
   Future<LoadingState<CoreRoomInfoH5Data>> liveRoomInfoH5({
-    required Object roomId,
+    required int roomId,
   }) async =>
       _err(const ApiException('not_implemented'));
 
   @override
   Future<LoadingState<List<CoreDanmakuMsg>?>> liveRoomDmPrefetch({
-    required Object roomId,
+    required int roomId,
   }) async =>
       _err(const ApiException('not_implemented'));
 
   @override
   Future<LoadingState<CoreLiveDmInfoData>> liveRoomGetDanmakuToken({
-    required Object roomId,
+    required int roomId,
   }) async =>
       _err(const ApiException('not_implemented'));
 
@@ -68,8 +68,8 @@ class OttoLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<CoreLiveSecondData>> liveSecondList({
     required int pn,
-    required Object? areaId,
-    required Object? parentAreaId,
+    required int? areaId,
+    required int? parentAreaId,
     String? sortType,
   }) async =>
       _err(const ApiException('not_implemented'));
@@ -90,7 +90,7 @@ class OttoLiveRepository implements LiveRepository {
 
   @override
   Future<LoadingState<List<CoreAreaItem>?>> liveRoomAreaList({
-    required Object parentid,
+    required int parentid,
   }) async =>
       _err(const ApiException('not_implemented'));
 
@@ -129,8 +129,8 @@ class OttoLiveRepository implements LiveRepository {
 
   @override
   Future<LoadingState<CoreShieldUserList>> liveShieldUser({
-    required Object uid,
-    required Object roomid,
+    required int uid,
+    required int roomid,
     required int type,
   }) async =>
       _err(const ApiException('not_implemented'));
@@ -138,8 +138,8 @@ class OttoLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<void>> liveLikeReport({
     required int clickTime,
-    required Object roomId,
-    required Object uid,
+    required int roomId,
+    required int uid,
     Object? anchorId,
   }) async =>
       _err(const ApiException('not_implemented'));
@@ -153,21 +153,21 @@ class OttoLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<void>> liveDmReport({
     required int roomId,
-    required Object mid,
+    required int mid,
     required String msg,
     required String reason,
     required int reasonId,
     required int dmType,
-    required Object idStr,
-    required Object ts,
-    required Object sign,
+    required String idStr,
+    required int ts,
+    required String sign,
   }) async =>
       _err(const ApiException('not_implemented'));
 
   @override
   Future<LoadingState<CoreLiveContributionRankData>> liveContributionRank({
-    required Object ruid,
-    required Object roomId,
+    required int ruid,
+    required int roomId,
     required int page,
     required CoreLiveContributionRankType type,
   }) async =>
@@ -176,8 +176,8 @@ class OttoLiveRepository implements LiveRepository {
   @override
   Future<LoadingState<void>> superChatReport({
     required int id,
-    required Object roomId,
-    required Object uid,
+    required int roomId,
+    required int uid,
     required String msg,
     required String reason,
     required int ts,
@@ -187,7 +187,7 @@ class OttoLiveRepository implements LiveRepository {
 
   @override
   Future<LoadingState<CoreMedalWallData>> liveMedalWall({
-    required Object mid,
+    required int mid,
   }) async =>
       _err(const ApiException('not_implemented'));
 }

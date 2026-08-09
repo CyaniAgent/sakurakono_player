@@ -264,7 +264,7 @@ abstract final class DynamicsHttp {
   //
   @pragma('vm:notify-debugger-on-exception')
   static Future<LoadingState<DynamicItemModel>> dynamicDetail({
-    dynamic id,
+    String? id,
     dynamic rid,
     dynamic type,
     bool clearCookie = false,
@@ -297,7 +297,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<void>> setTop({
-    required Object dynamicId,
+    required String dynamicId,
   }) async {
     final res = await Request().post(
       Api.setTopDyn,
@@ -316,7 +316,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<void>> rmTop({
-    required Object dynamicId,
+    required String dynamicId,
   }) async {
     final res = await Request().post(
       Api.rmTopDyn,
@@ -335,7 +335,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<ArticleInfoData>> articleInfo({
-    required Object cvId,
+    required String cvId,
   }) async {
     final res = await Request().get(
       Api.articleInfo,
@@ -354,12 +354,12 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<ArticleViewData>> articleView({
-    required dynamic cvId,
+    required String? cvId,
   }) async {
     final res = await Request().get(
       Api.articleView,
       queryParameters: await WbiSign.makSign({
-        'id': cvId,
+        'id': ?cvId,
         'gaia_source': 'main_web',
         'web_location': '333.976',
       }),
@@ -372,14 +372,14 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<DynamicItemModel>> opusDetail({
-    required dynamic opusId,
+    required String? opusId,
   }) async {
     final res = await Request().get(
       Api.opusDetail,
       queryParameters: await WbiSign.makSign({
         'timezone_offset': '-480',
         'features': 'htmlNewStyle',
-        'id': opusId,
+        'id': ?opusId,
       }),
     );
     if (res.data['code'] == 0) {
@@ -389,7 +389,7 @@ abstract final class DynamicsHttp {
     }
   }
 
-  static Future<LoadingState<VoteInfo>> voteInfo(dynamic voteId) async {
+  static Future<LoadingState<VoteInfo>> voteInfo(int voteId) async {
     final res = await Request().get(
       Api.voteInfo,
       queryParameters: {'vote_id': voteId},
@@ -435,7 +435,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<TopDetails?>> topicTop({
-    required Object topicId,
+    required String topicId,
   }) async {
     final res = await Request().get(
       Api.topicTop,
@@ -455,7 +455,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<TopicCardList?>> topicFeed({
-    required Object topicId,
+    required String topicId,
     String? offset,
     required int sortBy,
   }) async {
@@ -483,7 +483,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<TopicCardList?>> topicFold({
-    required Object topicId,
+    required String topicId,
     required int sortBy,
   }) async {
     final res = await Request().get(
@@ -506,7 +506,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<ArticleListData>> articleList({
-    required Object id,
+    required String id,
   }) async {
     final res = await Request().get(
       Api.articleList,
@@ -523,10 +523,10 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<DynReserveData>> dynReserve({
-    required Object? reserveId,
-    required Object? curBtnStatus,
-    required Object dynamicIdStr,
-    required Object? reserveTotal,
+    required String? reserveId,
+    required int? curBtnStatus,
+    required String dynamicIdStr,
+    required int? reserveTotal,
   }) async {
     final res = await Request().post(
       Api.dynReserve,
@@ -569,7 +569,7 @@ abstract final class DynamicsHttp {
     }
   }
 
-  static Future<LoadingState<List<OpusPicModel>?>> dynPic(dynamic id) async {
+  static Future<LoadingState<List<OpusPicModel>?>> dynPic(String? id) async {
     final res = await Request().get(
       Api.dynPic,
       queryParameters: {
@@ -684,7 +684,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<ReserveInfoData>> reserveInfo({
-    required dynamic sid,
+    required int? sid,
   }) async {
     final res = await Request().get(
       Api.reserveInfo,
@@ -702,7 +702,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<List<FolloweeVote>?>> followeeVotes({
-    required dynamic voteId,
+    required String voteId,
   }) async {
     final res = await Request().get(
       Api.followeeVotes,
@@ -722,7 +722,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<void>> dynPrivatePubSetting({
-    required Object dynId,
+    required String dynId,
     int? dynType,
     required String action,
   }) async {
@@ -734,7 +734,7 @@ abstract final class DynamicsHttp {
       },
       data: {
         "object_id": jsonEncode({
-          "dyn_id": dynId.toString(),
+          "dyn_id": dynId,
           "dyn_type": ?dynType,
         }),
         "action": action,
@@ -749,8 +749,8 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<void>> editDyn({
-    required Object dynId,
-    Object? repostDynId,
+    required String dynId,
+    String? repostDynId,
     dynamic rawText,
     List? pics,
     ReplyOptionType? replyOption,
@@ -814,9 +814,9 @@ abstract final class DynamicsHttp {
               "from_topic_id": 0,
             },
         },
-        "dyn_id_str": dynId.toString(),
+        "dyn_id_str": dynId,
         if (repostDynId != null)
-          "web_repost_src": {"dyn_id_str": repostDynId.toString()},
+          "web_repost_src": {"dyn_id_str": repostDynId},
       },
       options: Options(contentType: Headers.jsonContentType),
     );
@@ -828,7 +828,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<BubbleData>> bubble({
-    required Object tribeId,
+    required String tribeId,
     Object? categoryId,
     int? sortType,
     required int page,
@@ -854,7 +854,7 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<DynReactionData>> dynReaction({
-    required Object id,
+    required String id,
     String? offset,
   }) async {
     final res = await Request().get(

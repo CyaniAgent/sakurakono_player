@@ -35,9 +35,9 @@ class AuthorPanel extends StatelessWidget {
   final bool isSave;
   final bool isDetail;
   final ValueChanged<Object>? onRemove;
-  final void Function(bool isTop, Object dynId)? onSetTop;
+  final void Function(bool isTop, String dynId)? onSetTop;
   final VoidCallback? onBlock;
-  final Future<LoadingState> Function(bool isPrivate, Object dynId)?
+  final Future<LoadingState> Function(bool isPrivate, String dynId)?
   onSetPubSetting;
   final VoidCallback? onEdit;
   final ValueChanged<int>? onSetReplySubject;

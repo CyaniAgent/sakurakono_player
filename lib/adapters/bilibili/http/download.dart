@@ -1,8 +1,6 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
@@ -11,6 +9,7 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/video_utils.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:collection/collection.dart';
 
 abstract final class DownloadHttp {
@@ -29,7 +28,7 @@ abstract final class DownloadHttp {
       bvid: entry.bvid,
       cid: entry.cid,
       seasonId: entry.seasonId,
-      epid: ep?.episodeId,
+      epid: ep?.episodeId.toString(),
       qn: entry.preferedVideoQuality,
       tryLook: !isLogin && Pref.p1080,
       videoType: switch (ep?.from) {
@@ -64,7 +63,7 @@ abstract final class DownloadHttp {
 
         final currentDecodeFormats = VideoUtils.selectCodec(
           targetSupportFormats.codecs!,
-          Pref.preferCodecs,
+          BiliPref.preferCodecs,
         );
 
         entry

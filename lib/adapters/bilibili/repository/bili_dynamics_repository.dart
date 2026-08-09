@@ -690,7 +690,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreDynamicItemModel>> dynamicDetail({
-    dynamic id,
+    String? id,
     dynamic rid,
     dynamic type,
     bool clearCookie = false,
@@ -706,19 +706,19 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<void>> setTop({
-    required Object dynamicId,
+    required String dynamicId,
   }) =>
       DynamicsHttp.setTop(dynamicId: dynamicId);
 
   @override
   Future<LoadingState<void>> rmTop({
-    required Object dynamicId,
+    required String dynamicId,
   }) =>
       DynamicsHttp.rmTop(dynamicId: dynamicId);
 
   @override
   Future<LoadingState<CoreArticleInfoData>> articleInfo({
-    required Object cvId,
+    required String cvId,
   }) async {
     final result = await DynamicsHttp.articleInfo(cvId: cvId);
     return _mapState(result, _toCoreArticleInfoData);
@@ -726,7 +726,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreArticleViewData>> articleView({
-    required dynamic cvId,
+    required String? cvId,
   }) async {
     final result = await DynamicsHttp.articleView(cvId: cvId);
     return _mapState(result, _toCoreArticleViewData);
@@ -734,14 +734,14 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreDynamicItemModel>> opusDetail({
-    required dynamic opusId,
+    required String? opusId,
   }) async {
     final result = await DynamicsHttp.opusDetail(opusId: opusId);
     return _mapState(result, ModelConverters.dynamicItemToCore);
   }
 
   @override
-  Future<LoadingState<CoreVoteInfo>> voteInfo(dynamic voteId) async {
+  Future<LoadingState<CoreVoteInfo>> voteInfo(int voteId) async {
     final result = await DynamicsHttp.voteInfo(voteId);
     return _mapState(result, _toCoreVoteInfo);
   }
@@ -764,7 +764,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreTopDetails?>> topicTop({
-    required Object topicId,
+    required String topicId,
   }) async {
     final result = await DynamicsHttp.topicTop(topicId: topicId);
     return _mapState(result, (data) => data != null ? _toCoreTopDetails(data) : null);
@@ -772,7 +772,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreTopicCardList?>> topicFeed({
-    required Object topicId,
+    required String topicId,
     String? offset,
     required int sortBy,
   }) async {
@@ -786,7 +786,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreTopicCardList?>> topicFold({
-    required Object topicId,
+    required String topicId,
     required int sortBy,
   }) async {
     final result = await DynamicsHttp.topicFold(topicId: topicId, sortBy: sortBy);
@@ -795,7 +795,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreArticleListData>> articleList({
-    required Object id,
+    required String id,
   }) async {
     final result = await DynamicsHttp.articleList(id: id);
     return _mapState(result, _toCoreArticleListData);
@@ -803,10 +803,10 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreDynReserveData>> dynReserve({
-    required Object? reserveId,
-    required Object? curBtnStatus,
-    required Object dynamicIdStr,
-    required Object? reserveTotal,
+    required String? reserveId,
+    required int? curBtnStatus,
+    required String dynamicIdStr,
+    required int? reserveTotal,
   }) async {
     final result = await DynamicsHttp.dynReserve(
       reserveId: reserveId,
@@ -826,7 +826,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
   }
 
   @override
-  Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(dynamic id) async {
+  Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(String? id) async {
     final result = await DynamicsHttp.dynPic(id);
     return _mapState(result, (data) => data?.map(ModelConverters.opusPicToCore).toList());
   }
@@ -875,7 +875,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreReserveInfoData>> reserveInfo({
-    required dynamic sid,
+    required int? sid,
   }) async {
     final result = await DynamicsHttp.reserveInfo(sid: sid);
     return _mapState(result, _toCoreReserveInfoData);
@@ -883,7 +883,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<List<CoreFolloweeVote>?>> followeeVotes({
-    required dynamic voteId,
+    required String voteId,
   }) async {
     final result = await DynamicsHttp.followeeVotes(voteId: voteId);
     return _mapState(result, (data) => data?.map(_toCoreFolloweeVote).toList());
@@ -891,7 +891,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<void>> dynPrivatePubSetting({
-    required Object dynId,
+    required String dynId,
     int? dynType,
     required String action,
   }) =>
@@ -903,8 +903,8 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<void>> editDyn({
-    required Object dynId,
-    Object? repostDynId,
+    required String dynId,
+    String? repostDynId,
     dynamic rawText,
     List? pics,
     CoreReplyOptionType? replyOption,
@@ -931,7 +931,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreBubbleData>> bubble({
-    required Object tribeId,
+    required String tribeId,
     Object? categoryId,
     int? sortType,
     required int page,
@@ -947,7 +947,7 @@ class BiliDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreDynReactionData>> dynReaction({
-    required Object id,
+    required String id,
     String? offset,
   }) async {
     final result = await DynamicsHttp.dynReaction(id: id, offset: offset);

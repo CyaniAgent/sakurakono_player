@@ -13,11 +13,6 @@ import 'package:skf/adapters/bilibili/grpc/reply.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/audio_normalization.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/dynamics_type.dart';
-import 'package:skf/adapters/bilibili/models/common/member/tab_type.dart';
-import 'package:skf/adapters/bilibili/models/common/reply/reply_sort_type.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
-import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart'
     show DynamicsDataModel, ItemModulesModel;
 import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
@@ -30,6 +25,7 @@ import 'package:skf/adapters/bilibili/pages/video/reply/widgets/reply_item_grpc.
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
@@ -88,7 +84,7 @@ List<SettingsModel> get extraSettings => [
   PopupModel<SkipType>(
     title: '番剧片头/片尾跳过类型',
     leading: const Icon(MdiIcons.debugStepOver),
-    value: () => Pref.pgcSkipType,
+    value: () => SkipType.values[Pref.pgcSkipType],
     items: SkipType.values,
     onSelected: (value, setState) => GStorage.setting
         .put(SettingBoxKey.pgcSkipType, value.index)
@@ -299,7 +295,7 @@ List<SettingsModel> get extraSettings => [
     title: '超分辨率',
     leading: const Icon(Icons.stay_current_landscape_outlined),
     getSubtitle: () =>
-        '当前:「${Pref.superResolutionType.label}」\n默认设置对番剧生效, 其他视频默认关闭\n超分辨率需要启用硬件解码, 若启用硬件解码后仍然不生效, 尝试切换硬件解码器为 auto-copy',
+        '当前:「${BiliPref.superResolutionType.label}」\n默认设置对番剧生效, 其他视频默认关闭\n超分辨率需要启用硬件解码, 若启用硬件解码后仍然不生效, 尝试切换硬件解码器为 auto-copy',
     onTap: _showSuperResolutionDialog,
   ),
   const SwitchModel(
@@ -555,13 +551,13 @@ List<SettingsModel> get extraSettings => [
   NormalModel(
     title: '评论展示',
     leading: const Icon(Icons.whatshot_outlined),
-    getSubtitle: () => '当前优先展示「${Pref.replySortType.title}」',
+    getSubtitle: () => '当前优先展示「${BiliPref.replySortType.title}」',
     onTap: _showReplySortDialog,
   ),
   NormalModel(
     title: '动态展示',
     leading: const Icon(Icons.dynamic_feed_rounded),
-    getSubtitle: () => '当前优先展示「${Pref.defaultDynamicType.label}」',
+    getSubtitle: () => '当前优先展示「${DynamicsTabType.values[Pref.defaultDynamicType].label}」',
     onTap: _showDefDynDialog,
   ),
   SwitchModel(
@@ -575,7 +571,7 @@ List<SettingsModel> get extraSettings => [
   NormalModel(
     title: '用户页默认展示TAB',
     leading: const Icon(Icons.tab),
-    getSubtitle: () => '当前优先展示「${Pref.memberTab.title}」',
+    getSubtitle: () => '当前优先展示「${MemberTabType.values[Pref.memberTab].title}」',
     onTap: _showMemberTabDialog,
   ),
   SwitchModel(
@@ -981,7 +977,7 @@ Future<void> _showSuperResolutionDialog(
     context: context,
     builder: (context) => SelectDialog<SuperResolutionType>(
       title: '超分辨率',
-      value: Pref.superResolutionType,
+      value: BiliPref.superResolutionType,
       values: SuperResolutionType.values.map((e) => (e, e.label)).toList(),
     ),
   );
@@ -1093,7 +1089,7 @@ Future<void> _showReplySortDialog(
     context: context,
     builder: (context) => SelectDialog<ReplySortType>(
       title: '评论展示',
-      value: Pref.replySortType,
+      value: BiliPref.replySortType,
       values: ReplySortType.values.take(2).map((e) => (e, e.title)).toList(),
     ),
   );
@@ -1111,7 +1107,7 @@ Future<void> _showDefDynDialog(
     context: context,
     builder: (context) => SelectDialog<DynamicsTabType>(
       title: '动态展示',
-      value: Pref.defaultDynamicType,
+      value: DynamicsTabType.values[Pref.defaultDynamicType],
       values: DynamicsTabType.values.take(4).map((e) => (e, e.label)).toList(),
     ),
   );
@@ -1132,7 +1128,7 @@ Future<void> _showMemberTabDialog(
     context: context,
     builder: (context) => SelectDialog<MemberTabType>(
       title: '用户页默认展示TAB',
-      value: Pref.memberTab,
+      value: MemberTabType.values[Pref.memberTab],
       values: MemberTabType.values.map((e) => (e, e.title)).toList(),
     ),
   );

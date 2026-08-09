@@ -201,8 +201,8 @@ abstract final class VideoHttp {
     String? bvid,
     required int cid,
     int? qn,
-    dynamic epid,
-    dynamic seasonId,
+    String? epid,
+    String? seasonId,
     required bool tryLook,
     required VideoType videoType,
     String? language,
@@ -653,7 +653,7 @@ abstract final class VideoHttp {
     }
   }
 
-  static Future<void> roomEntryAction({required Object roomId}) {
+  static Future<void> roomEntryAction({required int roomId}) {
     return Request().post(
       Api.roomEntryAction,
       queryParameters: {'csrf': Accounts.heartbeat.csrf},
@@ -662,8 +662,8 @@ abstract final class VideoHttp {
   }
 
   static Future<void> historyReport({
-    required Object aid,
-    required Object type,
+    required String aid,
+    required int type,
   }) {
     return Request().post(
       Api.historyReport,
@@ -674,13 +674,13 @@ abstract final class VideoHttp {
 
   // 视频播放进度
   static Future<void> heartBeat({
-    Object? aid,
-    Object? bvid,
-    required Object cid,
-    required Object progress,
-    Object? epid,
-    Object? seasonId,
-    Object? subType,
+    String? aid,
+    String? bvid,
+    required String cid,
+    required int progress,
+    String? epid,
+    String? seasonId,
+    String? subType,
     required VideoType videoType,
   }) {
     final isPugv = videoType == VideoType.pugv;
@@ -702,8 +702,8 @@ abstract final class VideoHttp {
 
   static Future<void> medialistHistory({
     required int desc,
-    required Object oid,
-    required Object upperMid,
+    required String oid,
+    required int upperMid,
   }) {
     return Request().post(
       Api.mediaListHistory,
@@ -811,8 +811,8 @@ abstract final class VideoHttp {
     String? aid,
     String? bvid,
     required int cid,
-    dynamic seasonId,
-    dynamic epId,
+    String? seasonId,
+    String? epId,
   }) async {
     assert(aid != null || bvid != null);
     final res = await Request().get(
@@ -943,8 +943,8 @@ abstract final class VideoHttp {
   }
 
   static Future<LoadingState<VideoNoteData>> getVideoNoteList({
-    dynamic oid,
-    dynamic uperMid,
+    String? oid,
+    int? uperMid,
     required int page,
   }) async {
     final res = await Request().get(

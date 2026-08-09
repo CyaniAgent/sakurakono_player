@@ -9,8 +9,8 @@ import 'package:skf/core/result/loading_state.dart';
 abstract class LiveRepository {
   /// Send a live chat message.
   Future<LoadingState<void>> sendLiveMsg({
-    required Object roomId,
-    required Object msg,
+    required int roomId,
+    required String msg,
     Object? dmType,
     Object? emoticonOptions,
     int replyMid = 0,
@@ -19,24 +19,24 @@ abstract class LiveRepository {
 
   /// Get live room playback info (stream URLs, qualities, etc.).
   Future<LoadingState<CoreRoomPlayInfoData>> liveRoomInfo({
-    required Object roomId,
+    required int roomId,
     Object? qn,
     bool onlyAudio = false,
   });
 
   /// Get live room info (H5 endpoint).
   Future<LoadingState<CoreRoomInfoH5Data>> liveRoomInfoH5({
-    required Object roomId,
+    required int roomId,
   });
 
   /// Prefetch live room danmaku messages.
   Future<LoadingState<List<CoreDanmakuMsg>?>> liveRoomDmPrefetch({
-    required Object roomId,
+    required int roomId,
   });
 
   /// Get danmaku WebSocket token for a live room.
   Future<LoadingState<CoreLiveDmInfoData>> liveRoomGetDanmakuToken({
-    required Object roomId,
+    required int roomId,
   });
 
   /// Get available live emoticons for a room.
@@ -56,8 +56,8 @@ abstract class LiveRepository {
   /// Get the live second-level list (sorted by area).
   Future<LoadingState<CoreLiveSecondData>> liveSecondList({
     required int pn,
-    required Object? areaId,
-    required Object? parentAreaId,
+    required int? areaId,
+    required int? parentAreaId,
     String? sortType,
   });
 
@@ -74,7 +74,7 @@ abstract class LiveRepository {
 
   /// Get the sub-area list under a parent live area.
   Future<LoadingState<List<CoreAreaItem>?>> liveRoomAreaList({
-    required Object parentid,
+    required int parentid,
   });
 
   /// Search live rooms by keyword.
@@ -107,16 +107,16 @@ abstract class LiveRepository {
 
   /// Shield/unshield a user in a live room.
   Future<LoadingState<CoreShieldUserList>> liveShieldUser({
-    required Object uid,
-    required Object roomid,
+    required int uid,
+    required int roomid,
     required int type,
   });
 
   /// Report a like action in a live room.
   Future<LoadingState<void>> liveLikeReport({
     required int clickTime,
-    required Object roomId,
-    required Object uid,
+    required int roomId,
+    required int uid,
     Object? anchorId,
   });
 
@@ -128,20 +128,20 @@ abstract class LiveRepository {
   /// Report a danmaku message in a live room.
   Future<LoadingState<void>> liveDmReport({
     required int roomId,
-    required Object mid,
+    required int mid,
     required String msg,
     required String reason,
     required int reasonId,
     required int dmType,
-    required Object idStr,
-    required Object ts,
-    required Object sign,
+    required String idStr,
+    required int ts,
+    required String sign,
   });
 
   /// Get the contribution rank for a live room.
   Future<LoadingState<CoreLiveContributionRankData>> liveContributionRank({
-    required Object ruid,
-    required Object roomId,
+    required int ruid,
+    required int roomId,
     required int page,
     required CoreLiveContributionRankType type,
   });
@@ -149,8 +149,8 @@ abstract class LiveRepository {
   /// Report a super chat message.
   Future<LoadingState<void>> superChatReport({
     required int id,
-    required Object roomId,
-    required Object uid,
+    required int roomId,
+    required int uid,
     required String msg,
     required String reason,
     required int ts,
@@ -159,6 +159,6 @@ abstract class LiveRepository {
 
   /// Get the medal wall for a user.
   Future<LoadingState<CoreMedalWallData>> liveMedalWall({
-    required Object mid,
+    required int mid,
   });
 }

@@ -55,7 +55,7 @@ abstract class DynamicsRepository {
 
   /// 动态详情
   Future<LoadingState<CoreDynamicItemModel>> dynamicDetail({
-    Object? id,
+    String? id,
     dynamic rid,
     Object? type,
     bool clearCookie = false,
@@ -63,27 +63,27 @@ abstract class DynamicsRepository {
 
   /// 置顶动态
   Future<LoadingState<void>> setTop({
-    required Object dynamicId,
+    required String dynamicId,
   });
 
   /// 取消置顶
   Future<LoadingState<void>> rmTop({
-    required Object dynamicId,
+    required String dynamicId,
   });
 
   /// 专栏信息
   Future<LoadingState<CoreArticleInfoData>> articleInfo({
-    required Object cvId,
+    required String cvId,
   });
 
   /// 专栏浏览
   Future<LoadingState<CoreArticleViewData>> articleView({
-    required Object? cvId,
+    required String? cvId,
   });
 
   /// 图文动态详情（HTTP）
   Future<LoadingState<CoreDynamicItemModel>> opusDetail({
-    required Object? opusId,
+    required String? opusId,
   });
 
   /// 投票信息
@@ -99,33 +99,33 @@ abstract class DynamicsRepository {
 
   /// 话题置顶
   Future<LoadingState<CoreTopDetails?>> topicTop({
-    required Object topicId,
+    required String topicId,
   });
 
   /// 话题动态列表
   Future<LoadingState<CoreTopicCardList?>> topicFeed({
-    required Object topicId,
+    required String topicId,
     String? offset,
     required int sortBy,
   });
 
   /// 话题折叠
   Future<LoadingState<CoreTopicCardList?>> topicFold({
-    required Object topicId,
+    required String topicId,
     required int sortBy,
   });
 
   /// 专栏列表
   Future<LoadingState<CoreArticleListData>> articleList({
-    required Object id,
+    required String id,
   });
 
   /// 预约
   Future<LoadingState<CoreDynReserveData>> dynReserve({
-    required Object? reserveId,
-    required Object? curBtnStatus,
-    required Object dynamicIdStr,
-    required Object? reserveTotal,
+    required String? reserveId,
+    required int? curBtnStatus,
+    required String dynamicIdStr,
+    required int? reserveTotal,
   });
 
   /// 推荐话题
@@ -134,7 +134,7 @@ abstract class DynamicsRepository {
   });
 
   /// 动态图片
-  Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(Object? id);
+  Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(String? id);
 
   /// @提及用户
   Future<LoadingState<List<CoreMentionGroup>?>> dynMention({
@@ -169,20 +169,20 @@ abstract class DynamicsRepository {
 
   /// 投票好友
   Future<LoadingState<List<CoreFolloweeVote>?>> followeeVotes({
-    required dynamic voteId,
+    required String voteId,
   });
 
   /// 动态私密发布设置
   Future<LoadingState<void>> dynPrivatePubSetting({
-    required Object dynId,
+    required String dynId,
     int? dynType,
     required String action,
   });
 
   /// 编辑动态
   Future<LoadingState<void>> editDyn({
-    required Object dynId,
-    Object? repostDynId,
+    required String dynId,
+    String? repostDynId,
     String? rawText,
     List? pics,
     CoreReplyOptionType? replyOption,
@@ -195,7 +195,7 @@ abstract class DynamicsRepository {
 
   /// 泡泡（部落）动态列表
   Future<LoadingState<CoreBubbleData>> bubble({
-    required Object tribeId,
+    required String tribeId,
     Object? categoryId,
     int? sortType,
     required int page,
@@ -203,7 +203,7 @@ abstract class DynamicsRepository {
 
   /// 动态反应（表情互动）
   Future<LoadingState<CoreDynReactionData>> dynReaction({
-    required Object id,
+    required String id,
     String? offset,
   });
 

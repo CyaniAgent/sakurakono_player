@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/member/profile_type.dart';
-import 'package:skf/adapters/bilibili/models/user/info.dart';
 import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
 import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
@@ -19,7 +18,7 @@ import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
-import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -93,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 _loadingState = Success(data);
                 accountService.rxFace.value = data.face!;
                 try {
-                  UserInfoData userInfo = Pref.userInfoCache!
+                  UserInfoData userInfo = BiliPref.userInfoCache!
                     ..uname = data.name
                     ..face = data.face;
                   GStorage.userInfo.put('userInfoCache', userInfo);
@@ -384,7 +383,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ..name = _textController.text
                 ..coins = data.coins! - 6;
               try {
-                UserInfoData userInfo = Pref.userInfoCache!
+                UserInfoData userInfo = BiliPref.userInfoCache!
                   ..uname = _textController.text;
                 GStorage.userInfo.put('userInfoCache', userInfo);
               } catch (_) {}

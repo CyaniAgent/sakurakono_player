@@ -78,7 +78,7 @@ class PgcIntroController extends CommonIntroController {
 
   // \u83b7\u53d6\u70b9\u8d5e/\u6295\u5e01/\u6536\u85cf\u72b6\u6001
   Future<void> queryPgcLikeCoinFav() async {
-    final result = await Get.find<VideoRepository>().pgcLikeCoinFav(epId: epId!);
+    final result = await Get.find<VideoRepository>().pgcLikeCoinFav(epId: '${epId!}');
     if (result case Success(:final response)) {
       final hasLike = response.like == 1;
       final hasFav = response.favorite == 1;
@@ -381,7 +381,7 @@ class PgcIntroController extends CommonIntroController {
       SmartDialog.showToast('\u5df2\u4e09\u8fde');
       return;
     }
-    final result = await Get.find<VideoRepository>().pgcTriple(epId: epId!, seasonId: seasonId);
+    final result = await Get.find<VideoRepository>().pgcTriple(epId: '${epId!}', seasonId: seasonId?.toString());
     if (result case Success(:final response)) {
       late final stat = pgcItem.stat;
       if (response.like == 1 && !hasLike.value) {

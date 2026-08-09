@@ -31,7 +31,7 @@ class DynamicsController
   late bool showLiveUp = Pref.expandDynLivePanel;
   late final _showAllUp = Pref.dynamicsShowAllFollowedUp;
 
-  final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition as int];
+  final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
 
   DynamicsTabController? get controller {
     try {

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class DynReactController
     extends CommonListController<CoreDynReactionData, CoreDynReactionItem> {
   DynReactController(this.id, {int count = -1}) : count = RxInt(count);
-  final Object id;
+  final String id;
 
   String? _offset;
   final RxInt count;

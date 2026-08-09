@@ -2,13 +2,9 @@ import 'dart:async';
 
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/grpc/dyn.dart';
-import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/dynamic_badge_mode.dart';
-import 'package:skf/adapters/bilibili/models/common/msg/msg_unread_type.dart';
-import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/mine/view.dart';
@@ -19,6 +15,7 @@ import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/update.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -32,7 +29,7 @@ class MainController extends GetxController
   RxDouble? barOffset;
   RxBool? showBottomBar;
   late final bool hideBottomBar;
-  late final barHideType = BarHideType.values[Pref.barHideType as int];
+  late final barHideType = BiliPref.barHideType;
   bool useBottomNav = false;
   late dynamic controller;
   final RxInt selectedIndex = 0.obs;
@@ -48,8 +45,8 @@ class MainController extends GetxController
   late bool hasHome = false;
   late final homeController = Get.putOrFind(HomeController.new);
 
-  late DynamicBadgeMode msgBadgeMode = DynamicBadgeMode.values[Pref.msgBadgeMode as int];
-  late Set<MsgUnReadType> msgUnReadTypes = Pref.msgUnReadTypeV2;
+  late DynamicBadgeMode msgBadgeMode = DynamicBadgeMode.values[Pref.msgBadgeMode];
+  late Set<MsgUnReadType> msgUnReadTypes = BiliPref.msgUnReadTypeV2;
   late final RxString msgUnReadCount = ''.obs;
   late int lastCheckUnreadAt = 0;
 
@@ -96,7 +93,7 @@ class MainController extends GetxController
       }
     }
 
-    dynamicBadgeMode = DynamicBadgeMode.values[Pref.dynamicBadgeMode as int];
+    dynamicBadgeMode = DynamicBadgeMode.values[Pref.dynamicBadgeMode];
 
     hasDyn = navigationBars.contains(NavigationBarType.dynamics);
     if (dynamicBadgeMode != DynamicBadgeMode.hidden) {

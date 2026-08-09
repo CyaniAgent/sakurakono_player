@@ -4,8 +4,6 @@ import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/sponsor_block_repository.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
 import 'package:skf/adapters/bilibili/pages/setting/slide_color_picker.dart';
 import 'package:skf/utils/filtering_text.dart';
@@ -14,6 +12,7 @@ import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +33,8 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
   final _url = 'https://github.com/hanydd/BilibiliSponsorBlock';
   final _textController = TextEditingController();
   double _blockLimit = Pref.blockLimit;
-  final _blockSettings = Pref.blockSettings;
-  final List<Color> _blockColor = Pref.blockColor;
+  final _blockSettings = BiliPref.blockSettings;
+  final List<Color> _blockColor = BiliPref.blockColor;
   String _userId = Pref.blockUserID;
   bool _blockToast = Pref.blockToast;
   String _blockServer = Pref.blockServer;

@@ -35,8 +35,8 @@ abstract final class LiveHttp {
   static Account get recommend => Accounts.get(AccountType.recommend);
 
   static Future<LoadingState<void>> sendLiveMsg({
-    required Object roomId,
-    required Object msg,
+    required int roomId,
+    required String msg,
     Object? dmType,
     Object? emoticonOptions,
     int replyMid = 0,
@@ -81,7 +81,7 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<RoomPlayInfoData>> liveRoomInfo({
-    required Object roomId,
+    required int roomId,
     Object? qn,
     bool onlyAudio = false,
   }) async {
@@ -113,7 +113,7 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<RoomInfoH5Data>> liveRoomInfoH5({
-    required Object roomId,
+    required int roomId,
   }) async {
     final res = await Request().get(
       Api.liveRoomInfoH5,
@@ -129,7 +129,7 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<List<DanmakuMsg>?>> liveRoomDmPrefetch({
-    required Object roomId,
+    required int roomId,
   }) async {
     final res = await Request().get(
       Api.liveRoomDmPrefetch,
@@ -157,7 +157,7 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<LiveDmInfoData>> liveRoomGetDanmakuToken({
-    required Object roomId,
+    required int roomId,
   }) async {
     final res = await Request().get(
       Api.liveRoomDmToken,
@@ -269,8 +269,8 @@ abstract final class LiveHttp {
 
   static Future<LoadingState<LiveSecondData>> liveSecondList({
     required int pn,
-    required Object? areaId,
-    required Object? parentAreaId,
+    required int? areaId,
+    required int? parentAreaId,
     String? sortType,
   }) async {
     final params = {
@@ -427,7 +427,7 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<List<AreaItem>?>> liveRoomAreaList({
-    required Object parentid,
+    required int parentid,
   }) async {
     final params = {
       'access_key': ?recommend.accessKey,
@@ -577,8 +577,8 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<ShieldUserList>> liveShieldUser({
-    required Object uid,
-    required Object roomid,
+    required int uid,
+    required int roomid,
     required int type,
   }) async {
     final csrf = Accounts.main.csrf;
@@ -602,8 +602,8 @@ abstract final class LiveHttp {
 
   static Future<LoadingState<void>> liveLikeReport({
     required int clickTime,
-    required Object roomId,
-    required Object uid,
+    required int roomId,
+    required int uid,
     Object? anchorId,
   }) async {
     final res = await Request().post(
@@ -648,14 +648,14 @@ abstract final class LiveHttp {
 
   static Future<LoadingState<void>> liveDmReport({
     required int roomId,
-    required Object mid,
+    required int mid,
     required String msg,
     required String reason,
     required int reasonId,
     required int dmType,
-    required Object idStr,
-    required Object ts,
-    required Object sign,
+    required String idStr,
+    required int ts,
+    required String sign,
   }) async {
     final csrf = Accounts.main.csrf;
     final data = {
@@ -687,8 +687,8 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<LiveContributionRankData>> liveContributionRank({
-    required Object ruid,
-    required Object roomId,
+    required int ruid,
+    required int roomId,
     required int page,
     required LiveContributionRankType type,
   }) async {
@@ -718,8 +718,8 @@ abstract final class LiveHttp {
 
   static Future<LoadingState<void>> superChatReport({
     required int id,
-    required Object roomId,
-    required Object uid,
+    required int roomId,
+    required int uid,
     required String msg,
     required String reason,
     required int ts,
@@ -753,7 +753,7 @@ abstract final class LiveHttp {
   }
 
   static Future<LoadingState<MedalWallData>> liveMedalWall({
-    required Object mid,
+    required int mid,
   }) async {
     final res = await Request().get(
       Api.liveMedalWall,

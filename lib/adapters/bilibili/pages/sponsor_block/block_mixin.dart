@@ -7,12 +7,11 @@ import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_model.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.dart';
-import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -22,13 +21,13 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:media_kit/media_kit.dart';
 
 mixin BlockConfigMixin {
-  late final pgcSkipType = Pref.pgcSkipType;
+  late final pgcSkipType = SkipType.values[Pref.pgcSkipType];
   late final enablePgcSkip = pgcSkipType != SkipType.disable;
   late final enableSponsorBlock = Pref.enableSponsorBlock;
   late final enableBlock = enableSponsorBlock || enablePgcSkip;
-  late final blockColor = Pref.blockColor;
+  late final blockColor = BiliPref.blockColor;
   late final blockLimit = Pref.blockLimit;
-  late final blockSettings = Pref.blockSettings;
+  late final blockSettings = BiliPref.blockSettings;
   late final enableList = blockSettings
       .where((item) => item.second != SkipType.disable)
       .map((item) => item.first.name)

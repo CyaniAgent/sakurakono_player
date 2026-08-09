@@ -24,8 +24,8 @@ class ContributionRankPanel extends StatefulWidget {
     required this.roomId,
   });
 
-  final Object ruid;
-  final Object roomId;
+  final int ruid;
+  final int roomId;
 
   @override
   State<ContributionRankPanel> createState() => _ContributionRankPanelState();
@@ -100,8 +100,8 @@ class _ContributionRankType extends StatefulWidget {
     required this.type,
   });
 
-  final Object ruid;
-  final Object roomId;
+  final int ruid;
+  final int roomId;
   final CoreLiveContributionRankType type;
 
   @override

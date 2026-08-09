@@ -112,7 +112,7 @@ class LiveDmBlockController extends GetxController
     } else {
     final res = await Get.find<LiveRepository>().liveShieldUser(
       uid: int.tryParse(value) ?? 0,
-      roomid: roomId,
+      roomid: int.parse(roomId),
       type: 1,
     );
     if (res case Success(:final response)) {
@@ -128,7 +128,7 @@ class LiveDmBlockController extends GetxController
     if (item is CoreShieldUserList) {
       final res = await Get.find<LiveRepository>().liveShieldUser(
         uid: item.uid!,
-        roomid: roomId,
+        roomid: int.parse(roomId),
         type: 0,
       );
       if (res.isSuccess) {

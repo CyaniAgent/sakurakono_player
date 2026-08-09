@@ -56,7 +56,7 @@ class CreateDynPanel extends CommonRichTextPubPage {
   final Pair<int, String>? topic;
   final bool isPrivate;
   final ReplyOptionType replyOption;
-  final ({Object dynId, Object? repostDynId})? editConfig;
+  final ({String dynId, String? repostDynId})? editConfig;
   final VoidCallback? onSuccess;
 
   @override
@@ -70,7 +70,7 @@ class CreateDynPanel extends CommonRichTextPubPage {
     List<RichTextItem>? items,
     List<PicModel>? pics,
     Pair<int, String>? topic,
-    ({Object dynId, Object? repostDynId})? editConfig,
+    ({String dynId, String? repostDynId})? editConfig,
     VoidCallback? onSuccess,
   }) => showModalBottomSheet(
     context: context,

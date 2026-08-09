@@ -55,7 +55,7 @@ class _VotePanelState extends State<VotePanel> {
     super.initState();
     _voteInfo = widget.voteInfo;
     if (isLogin) {
-      Get.find<DynamicsRepository>().followeeVotes(voteId: _voteInfo.voteId).then((res) {
+      Get.find<DynamicsRepository>().followeeVotes(voteId: '${_voteInfo.voteId}').then((res) {
         if (!mounted) return;
         if (res case Success(:final response)) {
           followeeVote.value = response?.map(ModelConverters.followeeVote).toList();

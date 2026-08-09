@@ -1,19 +1,13 @@
 import 'dart:io';
 
-import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
-import 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_decode_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/ordered_multi_select_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/audio_output_type.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/hwdec_type.dart';
 import 'package:skf/utils/filtering_text.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/video_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -87,14 +81,14 @@ List<SettingsModel> get videoSettings => [
     title: '默认画质',
     leading: const Icon(Icons.video_settings_outlined),
     getSubtitle: () =>
-        '当前画质：${VideoQuality.fromCode(Pref.defaultVideoQa).desc}',
+        '当前画质：${VideoQuality.fromCode(Pref.defaultVideoQa ?? VideoQuality.super8k.code).desc}',
     onTap: _showVideoQaDialog,
   ),
   NormalModel(
     title: '蜂窝网络画质',
     leading: const Icon(Icons.video_settings_outlined),
     getSubtitle: () =>
-        '当前画质：${VideoQuality.fromCode(Pref.defaultVideoQaCellular).desc}',
+        '当前画质：${VideoQuality.fromCode(Pref.defaultVideoQaCellular ?? VideoQuality.high1080.code).desc}',
     onTap: _showVideoCellularQaDialog,
   ),
   NormalModel(
@@ -128,7 +122,7 @@ List<SettingsModel> get videoSettings => [
     title: '首选解码格式',
     leading: const Icon(Icons.movie_creation_outlined),
     getSubtitle: () =>
-        '首选解码格式：${(Pref.preferCodecs.map((i) => i.name).join(","))}，请根据设备支持情况与需求调整',
+        '首选解码格式：${(BiliPref.preferCodecs.map((i) => i.name).join(","))}，请根据设备支持情况与需求调整',
     onTap: _showCodecsDialog,
   ),
   if (kDebugMode || Platform.isAndroid)
@@ -350,7 +344,7 @@ Future<void> _showCodecsDialog(
     context: context,
     builder: (context) => OrderedMultiSelectDialog<VideoDecodeFormatType>(
       title: '首选解码格式',
-      initValues: Pref.preferCodecs,
+      initValues: BiliPref.preferCodecs,
       values: {for (final e in VideoDecodeFormatType.values) e: e.name},
     ),
   );

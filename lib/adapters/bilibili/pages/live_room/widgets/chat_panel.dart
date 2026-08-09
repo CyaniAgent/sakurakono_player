@@ -378,7 +378,7 @@ class LiveRoomChatPanel extends StatelessWidget {
           onTap: () async {
             if (!liveRoomController.isLogin) return;
             final res = await Get.find<LiveRepository>().liveShieldUser(
-              uid: item.extra.mid,
+              uid: item.extra.mid as int,
               roomid: roomId,
               type: 1,
             );

@@ -199,8 +199,8 @@ class OttoVideoRepository implements VideoRepository {
     String? bvid,
     required int cid,
     int? qn,
-    Object? epid,
-    Object? seasonId,
+    String? epid,
+    String? seasonId,
     required bool tryLook,
     required CoreVideoType videoType,
     String? language,
@@ -262,7 +262,7 @@ class OttoVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<CorePgcLCF>> pgcLikeCoinFav({
-    required Object epId,
+    required String epId,
   }) async {
     // TODO(otto): not yet implemented — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
@@ -280,8 +280,8 @@ class OttoVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<CorePgcTriple>> pgcTriple({
-    required Object epId,
-    Object? seasonId,
+    required String epId,
+    String? seasonId,
   }) async {
     // TODO(otto): not yet implemented — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
@@ -443,8 +443,8 @@ class OttoVideoRepository implements VideoRepository {
     String? aid,
     String? bvid,
     required int cid,
-    Object? seasonId,
-    dynamic epId,
+    String? seasonId,
+    String? epId,
   }) async {
     // TODO(otto): not yet implemented
     return _err(const ApiException('not_implemented'));
@@ -496,7 +496,7 @@ class OttoVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<CoreVideoNoteData>> getVideoNoteList({
-    Object? oid,
+    String? oid,
     int? uperMid,
     required int page,
   }) async {
@@ -537,21 +537,21 @@ class OttoVideoRepository implements VideoRepository {
 
   @override
   Future<void> historyReport({
-    required Object aid,
-    required Object type,
+    required String aid,
+    required int type,
   }) async {
     // TODO(otto): not yet implemented
   }
 
   @override
   Future<void> heartBeat({
-    Object? aid,
-    Object? bvid,
-    required Object cid,
-    required Object progress,
-    Object? epid,
-    Object? seasonId,
-    Object? subType,
+    String? aid,
+    String? bvid,
+    required String cid,
+    required int progress,
+    String? epid,
+    String? seasonId,
+    String? subType,
     required CoreVideoType videoType,
   }) async {
     try {
@@ -566,15 +566,15 @@ class OttoVideoRepository implements VideoRepository {
   }
 
   @override
-  Future<void> roomEntryAction({required Object roomId}) async {
+  Future<void> roomEntryAction({required int roomId}) async {
     // TODO(otto): not yet implemented — no live concept in OttoHub
   }
 
   @override
   Future<void> medialistHistory({
     required int desc,
-    required Object oid,
-    required Object upperMid,
+    required String oid,
+    required int upperMid,
   }) async {
     // TODO(otto): not yet implemented
   }

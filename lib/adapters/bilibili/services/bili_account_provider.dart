@@ -1,6 +1,5 @@
 import 'package:skf/core/account/account_provider.dart';
-import 'package:skf/adapters/bilibili/models/user/info.dart';
-import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:get/get.dart';
 
 class BiliAccountProvider extends AccountProvider {
@@ -27,7 +26,7 @@ class BiliAccountProvider extends AccountProvider {
 
   @override
   void restoreFromCache() {
-    UserInfoData? userInfo = Pref.userInfoCache;
+    UserInfoData? userInfo = BiliPref.userInfoCache;
     if (userInfo != null) {
       rxFace.value = userInfo.face ?? '';
       rxIsLogin.value = true;

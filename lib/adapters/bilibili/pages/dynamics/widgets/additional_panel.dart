@@ -15,7 +15,7 @@ Widget? addWidget(
   BuildContext context, {
   required int floor,
   required ThemeData theme,
-  required Object idStr,
+  required String idStr,
   required CoreDynamicAddModel additional,
 }) {
   final type = additional.type;
@@ -178,7 +178,7 @@ Widget? addWidget(
                               ? null
                               : () async {
                                   final res = await Get.find<DynamicsRepository>().dynReserve(
-                                    reserveId: reserve.rid,
+                                    reserveId: '${reserve.rid}',
                                     curBtnStatus: btn.status,
                                     dynamicIdStr: idStr,
                                     reserveTotal: reserve.reserveTotal,
@@ -403,11 +403,7 @@ Widget? addWidget(
           onTap: () => showVoteDialog(
             context,
             vote.voteId!,
-            idStr is int
-                ? idStr
-                : idStr is String
-                ? int.parse(idStr)
-                : null,
+            int.parse(idStr),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -460,11 +456,7 @@ Widget? addWidget(
                   onPressed: () => showVoteDialog(
                     context,
                     vote.voteId!,
-                    idStr is int
-                        ? idStr
-                        : idStr is String
-                        ? int.parse(idStr)
-                        : null,
+                    int.parse(idStr),
                   ),
                   style: FilledButton.styleFrom(
                     shape: const RoundedRectangleBorder(

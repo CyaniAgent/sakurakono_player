@@ -41,10 +41,10 @@ class BiliReporter implements PlaybackReporter {
   @override
   Future<void> onPlay(CoreMediaId id, Duration position) async {}
 
-  Object? _extractCoreAid(CoreMediaId id) => id is CoreAid ? id.id : null;
-  Object? _extractCoreBvid(CoreMediaId id) => id is CoreBvid ? id.id : null;
-  Object? _extractCoreCid(CoreMediaId id) => id is CoreCid ? id.id : null;
-  Object? _extractCoreEpid(CoreMediaId id) => id is CoreEpid ? id.id : null;
+  String? _extractCoreAid(CoreMediaId id) => id is CoreAid ? id.id : null;
+  String? _extractCoreBvid(CoreMediaId id) => id is CoreBvid ? id.id : null;
+  String? _extractCoreCid(CoreMediaId id) => id is CoreCid ? id.id : null;
+  String? _extractCoreEpid(CoreMediaId id) => id is CoreEpid ? id.id : null;
 
   dynamic _resolveVideoType(CoreMediaId id) {
     if (id is CoreEpid) return 1;

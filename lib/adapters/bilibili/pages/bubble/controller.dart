@@ -11,7 +11,7 @@ class BubbleController extends CommonListController<CoreBubbleData, CoreDynList>
   BubbleController(this.categoryId);
   final Object? categoryId;
 
-  late final Object tribeId;
+  late final String tribeId;
   int? sortType;
 
   final Rxn<CoreSortInfo> sortInfo = Rxn<CoreSortInfo>();

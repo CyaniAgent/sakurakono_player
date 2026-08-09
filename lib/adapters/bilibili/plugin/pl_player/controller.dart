@@ -11,9 +11,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/adapters/bilibili/models/common/audio_normalization.dart';
-import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
-import 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_shot/data.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
@@ -24,9 +22,7 @@ import 'package:skf/adapters/bilibili/plugin/pl_player/models/data_source.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/data_status.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/double_tap_type.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/duration.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/fullscreen_mode.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/heart_beat_type.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/video_fit_type.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
@@ -47,6 +43,7 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:archive/archive.dart' show getCrc32;
 import 'package:canvas_danmaku/canvas_danmaku.dart';
@@ -298,7 +295,7 @@ class PlPlayerController with BlockConfigMixin {
 
   // 弹幕相关配置
   late final enableTapDm = PlatformUtils.isMobile && Pref.enableTapDm;
-  late RuleFilter filters = Pref.danmakuFilterRule;
+  late RuleFilter filters = BiliPref.danmakuFilterRule;
   // 关联弹幕控制器
   DanmakuController<DanmakuExtra>? danmakuController;
   bool showDanmaku = true;
@@ -363,7 +360,7 @@ class PlPlayerController with BlockConfigMixin {
   bool enableHeart = true;
   late final String? hwdec = Pref.enableHA ? Pref.hardwareDecoding : null;
 
-  late final progressType = Pref.btmProgressBehavior;
+  late final progressType = BiliPref.btmProgressBehavior;
   late final enableQuickDouble = Pref.enableQuickDouble;
   late final fullScreenGestureReverse = Pref.fullScreenGestureReverse;
 
@@ -375,7 +372,7 @@ class PlPlayerController with BlockConfigMixin {
   num get sliderScale => isRelative ? durationInMilliseconds * offset : offset;
 
   // 播放顺序相关
-  late PlayRepeat playRepeat = Pref.playRepeat;
+  late PlayRepeat playRepeat = BiliPref.playRepeat;
 
   TextStyle get subTitleStyle => TextStyle(
     height: 1.5,
@@ -687,7 +684,7 @@ class PlPlayerController with BlockConfigMixin {
 
   late final isAnim = _pgcType == 1 || _pgcType == 4;
   late final Rx<SuperResolutionType> superResolutionType =
-      (isAnim ? Pref.superResolutionType : SuperResolutionType.disable).obs;
+      (isAnim ? BiliPref.superResolutionType : SuperResolutionType.disable).obs;
   Future<void> setShader([SuperResolutionType? type, NativePlayer? pp]) async {
     if (type == null) {
       type = superResolutionType.value;
@@ -1355,7 +1352,7 @@ class PlPlayerController with BlockConfigMixin {
 
   double screenRatio = 0.0;
   bool isManualFS = true;
-  late final FullScreenMode mode = Pref.fullScreenMode;
+  late final FullScreenMode mode = BiliPref.fullScreenMode;
   late final horizontalScreen = Pref.horizontalScreen;
   late final removeSafeArea = Pref.removeSafeArea;
 

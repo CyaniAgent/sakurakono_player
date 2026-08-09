@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:skf/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart'
     show deviceTouchSlop;
+import 'package:skf/core/models/user_types.dart';
 import 'package:skf/utils/device_utils.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
@@ -20,7 +21,7 @@ abstract final class Pref {
   static final Box _video = GStorage.video;
   static final Box _localCache = GStorage.localCache;
 
-  static dynamic get userInfoCache => GStorage.userInfo.get('userInfoCache');
+  static CoreUserInfoData? get userInfoCache => GStorage.userInfo.get('userInfoCache');
 
   static List<double> get dynamicDetailRatio => List<double>.from(
     _setting.get(
@@ -35,7 +36,7 @@ abstract final class Pref {
   static set blackMids(Set<int> blackMidsSet) =>
       _localCache.put(LocalCacheKey.blackMids, blackMidsSet);
 
-  static dynamic get danmakuFilterRule =>
+  static Object? get danmakuFilterRule =>
       _localCache.get(LocalCacheKey.danmakuFilterRules);
 
   static void setBlackMid(int mid) {
@@ -54,13 +55,13 @@ abstract final class Pref {
     _localCache.put(LocalCacheKey.blackMids, mids);
   }
 
-  static dynamic get memberTab =>
+  static int get memberTab =>
       _setting.get(SettingBoxKey.memberTab, defaultValue: 0);
 
   static int get _themeTypeInt =>
       _setting.get(SettingBoxKey.themeMode, defaultValue: 2);
 
-  static dynamic get themeType => _themeTypeInt;
+  static int get themeType => _themeTypeInt;
 
   static ThemeMode get themeMode => switch (_themeTypeInt) {
     0 => ThemeMode.light,
@@ -82,10 +83,10 @@ abstract final class Pref {
     ),
   );
 
-  static dynamic get blockSettings =>
+  static List? get blockSettings =>
       _setting.get(SettingBoxKey.blockSettings);
 
-  static dynamic get blockColor => _setting.get(SettingBoxKey.blockColor);
+  static List? get blockColor => _setting.get(SettingBoxKey.blockColor);
 
   static bool get feedBackEnable =>
       _setting.get(SettingBoxKey.feedBackEnable, defaultValue: false);
@@ -93,19 +94,19 @@ abstract final class Pref {
   static int get picQuality =>
       _setting.get(SettingBoxKey.defaultPicQa, defaultValue: 10);
 
-  static dynamic get dynamicBadgeType =>
+  static int get dynamicBadgeType =>
       _setting.get(SettingBoxKey.dynamicBadgeMode, defaultValue: 0);
 
-  static dynamic get msgBadgeMode =>
+  static int get msgBadgeMode =>
       _setting.get(SettingBoxKey.msgBadgeMode, defaultValue: 0);
 
-  static dynamic get msgUnReadTypeV2 =>
-      _setting.get(SettingBoxKey.msgUnReadTypeV2);
+  static List<int>? get msgUnReadTypeV2 =>
+      (_setting.get(SettingBoxKey.msgUnReadTypeV2) as List?)?.fromCast<int>();
 
-  static dynamic get defaultHomePage =>
+  static int get defaultHomePage =>
       _setting.get(SettingBoxKey.defaultHomePage, defaultValue: 0);
 
-  static dynamic get defaultHomePageIndex =>
+  static int get defaultHomePageIndex =>
       _setting.get(SettingBoxKey.defaultHomePage, defaultValue: 0);
 
   static int get previewQ =>
@@ -117,16 +118,16 @@ abstract final class Pref {
   static double get recommendCardWidth =>
       _setting.get(SettingBoxKey.recommendCardWidth, defaultValue: 240.0);
 
-  static dynamic get upPanelPosition =>
+  static int get upPanelPosition =>
       _setting.get(SettingBoxKey.upPanelPosition, defaultValue: 0);
 
-  static dynamic get fullScreenMode =>
+  static int? get fullScreenMode =>
       _setting.get(SettingBoxKey.fullScreenMode);
 
-  static dynamic get btmProgressBehavior =>
+  static int get btmProgressBehavior =>
       _setting.get(SettingBoxKey.btmProgressBehavior, defaultValue: 0);
 
-  static dynamic get subtitlePreferenceV2 =>
+  static int get subtitlePreferenceV2 =>
       _setting.get(SettingBoxKey.subtitlePreferenceV2, defaultValue: 0);
 
   static bool get useRelativeSlide =>
@@ -135,20 +136,20 @@ abstract final class Pref {
   static int get sliderDuration =>
       _setting.get(SettingBoxKey.sliderDuration, defaultValue: 90);
 
-  static dynamic get defaultVideoQa =>
+  static int? get defaultVideoQa =>
       _setting.get(SettingBoxKey.defaultVideoQa);
 
-  static dynamic get defaultVideoQaCellular =>
+  static int? get defaultVideoQaCellular =>
       _setting.get(SettingBoxKey.defaultVideoQaCellular);
 
-  static dynamic get defaultAudioQa =>
+  static int get defaultAudioQa =>
       _setting.get(SettingBoxKey.defaultAudioQa);
 
-  static dynamic get defaultAudioQaCellular =>
+  static int get defaultAudioQaCellular =>
       _setting.get(SettingBoxKey.defaultAudioQaCellular);
 
-  static dynamic get preferCodecs =>
-      _setting.get(SettingBoxKey.preferCodecs);
+  static List<String>? get preferCodecs =>
+      (_setting.get(SettingBoxKey.preferCodecs) as List?)?.fromCast<String>();
 
   static String get hardwareDecoding =>
       _setting.get(SettingBoxKey.hardwareDecoding) as String? ?? '';
@@ -161,7 +162,7 @@ abstract final class Pref {
     defaultValue: Platform.isAndroid ? '30' : '0',
   );
 
-  static dynamic get defaultCDNService =>
+  static String? get defaultCDNService =>
       _setting.get(SettingBoxKey.CDNService);
 
   static String get banWordForRecommend =>
@@ -182,10 +183,10 @@ abstract final class Pref {
   static String get systemProxyPort =>
       _setting.get(SettingBoxKey.systemProxyPort, defaultValue: '');
 
-  static dynamic get defaultDynamicType =>
+  static int get defaultDynamicType =>
       _setting.get(SettingBoxKey.defaultDynamicType, defaultValue: 0);
 
-  static dynamic get defaultDynamicTypeIndex =>
+  static int get defaultDynamicTypeIndex =>
       _setting.get(SettingBoxKey.defaultDynamicType, defaultValue: 0);
 
   static bool get showDynInteraction =>
@@ -353,9 +354,6 @@ abstract final class Pref {
   static String get fallbackNormalization =>
       _setting.get(SettingBoxKey.fallbackNormalization, defaultValue: '0');
 
-  static dynamic get superResolutionType =>
-      _setting.get(SettingBoxKey.superResolutionType);
-
   static bool get preInitPlayer =>
       _setting.get(SettingBoxKey.preInitPlayer, defaultValue: false);
 
@@ -436,10 +434,10 @@ abstract final class Pref {
   static int get retryDelay =>
       _setting.get(SettingBoxKey.retryDelay, defaultValue: 500);
 
-  static dynamic get liveQuality =>
+  static int? get liveQuality =>
       _setting.get(SettingBoxKey.liveQuality);
 
-  static dynamic get liveQualityCellular =>
+  static int? get liveQualityCellular =>
       _setting.get(SettingBoxKey.liveQualityCellular);
 
   static int get appFontWeight =>
@@ -553,9 +551,6 @@ abstract final class Pref {
     defaultValue: PlatformUtils.isMobile,
   );
 
-  static dynamic get barHideType =>
-      _setting.get(SettingBoxKey.barHideType, defaultValue: 0);
-
   static bool get enableSearchWord =>
       _setting.get(SettingBoxKey.enableSearchWord, defaultValue: false);
 
@@ -592,10 +587,7 @@ abstract final class Pref {
   static bool get enableHttp2 =>
       _setting.get(SettingBoxKey.enableHttp2, defaultValue: false);
 
-  static dynamic get replySortType =>
-      _setting.get(SettingBoxKey.replySortType, defaultValue: 0);
-
-  static dynamic get dynamicBadgeMode =>
+  static int get dynamicBadgeMode =>
       _setting.get(SettingBoxKey.dynamicBadgeMode, defaultValue: 0);
 
   static bool get enableMYBar =>
@@ -721,7 +713,7 @@ abstract final class Pref {
   static double get defaultToastOp =>
       _setting.get(SettingBoxKey.defaultToastOp, defaultValue: 1.0);
 
-  static dynamic get playRepeat =>
+  static int get playRepeat =>
       _video.get(VideoBoxKey.playRepeat, defaultValue: 0);
 
   static int get cacheVideoFit =>
@@ -764,7 +756,7 @@ abstract final class Pref {
   static bool get showMemberShop =>
       _setting.get(SettingBoxKey.showMemberShop, defaultValue: false);
 
-  static dynamic get superChatType =>
+  static int get superChatType =>
       _setting.get(SettingBoxKey.superChatType, defaultValue: 0);
 
   static double get fullScreenSCWidth =>
@@ -797,10 +789,10 @@ abstract final class Pref {
   static double get desktopVolume =>
       _setting.get(SettingBoxKey.desktopVolume, defaultValue: 1.0);
 
-  static dynamic get pgcSkipType =>
+  static int get pgcSkipType =>
       _setting.get(SettingBoxKey.pgcSkipType, defaultValue: 0);
 
-  static dynamic get audioPlayMode =>
+  static int get audioPlayMode =>
       _setting.get(SettingBoxKey.audioPlayMode, defaultValue: 0);
 
   static bool get enablePlayAll =>
@@ -824,7 +816,7 @@ abstract final class Pref {
     defaultValue: PlatformUtils.isMobile,
   );
 
-  static dynamic get followOrderType =>
+  static int get followOrderType =>
       _setting.get(SettingBoxKey.followOrderType, defaultValue: 0);
 
   static bool get enableImgMenu =>

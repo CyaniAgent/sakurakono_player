@@ -128,7 +128,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<bool> queryRead(int cvid) async {
-    final res = await Get.find<DynamicsRepository>().articleView(cvId: cvid);
+    final res = await Get.find<DynamicsRepository>().articleView(cvId: cvid.toString());
     if (res case Success(:final response)) {
       articleData = response;
       summary
@@ -151,7 +151,7 @@ class ArticleController extends CommonDynController {
 
   // stats
   Future<bool> getArticleInfo([bool isGetCover = false]) async {
-    final res = await Get.find<DynamicsRepository>().articleInfo(cvId: commentId);
+    final res = await Get.find<DynamicsRepository>().articleInfo(cvId: commentId.toString());
     if (res case Success(:final response)) {
       summary
         ..cover ??= response.originImageUrls?.firstOrNull
@@ -189,7 +189,7 @@ class ArticleController extends CommonDynController {
     if (isLoaded.value) {
       queryData();
       if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
-        Get.find<VideoRepository>().historyReport(aid: commentId, type: 5);
+        Get.find<VideoRepository>().historyReport(aid: commentId.toString(), type: 5);
       }
     }
   }

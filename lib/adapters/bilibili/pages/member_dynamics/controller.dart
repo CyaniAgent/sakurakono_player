@@ -68,7 +68,7 @@ class MemberDynamicsController
     }
   }
 
-  Future<void> onSetTop(bool isTop, Object dynamicId) async {
+  Future<void> onSetTop(bool isTop, String dynamicId) async {
     final res = await (isTop
         ? Get.find<DynamicsRepository>().rmTop(dynamicId: dynamicId)
         : Get.find<DynamicsRepository>().setTop(dynamicId: dynamicId));

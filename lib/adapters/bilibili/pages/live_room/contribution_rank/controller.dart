@@ -12,8 +12,8 @@ class ContributionRankController
           CoreLiveContributionRankData,
           CoreLiveContributionRankItem
         > {
-  final Object ruid;
-  final Object roomId;
+  final int ruid;
+  final int roomId;
   final CoreLiveContributionRankType type;
 
   ContributionRankController({

@@ -316,14 +316,14 @@ Get.find<DanmakuFilterRepository>().danmakuFilterAdd(
           // }
           final r = await Get.find<LiveRepository>().liveDmReport(
             roomId: roomId,
-            mid: extra.mid,
+            mid: extra.mid as int,
             msg: msg,
             reason: ReportOptions.liveDanmakuReport['']![reasonType]!,
             reasonId: reasonType,
             dmType: extra.dmType,
-            idStr: extra.id,
-            ts: extra.ts,
-            sign: extra.ct,
+            idStr: extra.id as String,
+            ts: extra.ts as int,
+            sign: extra.ct as String,
           );
           return switch (r) {
             Loading() => LoadingState.loading(),

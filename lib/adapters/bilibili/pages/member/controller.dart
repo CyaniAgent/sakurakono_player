@@ -114,7 +114,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
       }
       if (tab2!.isNotEmpty) {
         int initialIndex = -1;
-        MemberTabType memberTab = Pref.memberTab;
+        MemberTabType memberTab = MemberTabType.values[Pref.memberTab];
         if (memberTab != MemberTabType.def) {
           initialIndex = tab2!.indexWhere((item) {
             return item.param == memberTab.name;

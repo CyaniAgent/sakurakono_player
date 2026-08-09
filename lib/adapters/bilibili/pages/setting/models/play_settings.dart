@@ -1,22 +1,17 @@
 import 'dart:io' show Platform;
 
 import 'package:skf/common/widgets/custom_icon.dart';
-import 'package:skf/adapters/bilibili/models/common/super_chat_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/subtitle_pref_type.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/fullscreen_sc_size.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/slider_dialog.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/bottom_progress_behavior.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/fullscreen_mode.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -142,7 +137,7 @@ List<SettingsModel> get playSettings => [
   NormalModel(
     title: '自动启用字幕',
     leading: const Icon(Icons.closed_caption_outlined),
-    getSubtitle: () => '当前选择偏好：${Pref.subtitlePreferenceV2.desc}',
+    getSubtitle: () => '当前选择偏好：${SubtitlePrefType.values[Pref.subtitlePreferenceV2].desc}',
     onTap: _showSubtitleDialog,
   ),
   if (PlatformUtils.isDesktop)
@@ -166,7 +161,7 @@ List<SettingsModel> get playSettings => [
   NormalModel(
     title: 'SuperChat (醒目留言) 显示类型',
     leading: const Icon(Icons.live_tv),
-    getSubtitle: () => '当前:「${Pref.superChatType.title}」',
+    getSubtitle: () => '当前:「${SuperChatType.values[Pref.superChatType].title}」',
     onTap: _showSuperChatDialog,
   ),
   NormalModel(
@@ -255,13 +250,13 @@ List<SettingsModel> get playSettings => [
   NormalModel(
     title: '默认全屏方向',
     leading: const Icon(Icons.open_with_outlined),
-    getSubtitle: () => '当前全屏方向：${Pref.fullScreenMode.desc}',
+    getSubtitle: () => '当前全屏方向：${BiliPref.fullScreenMode.desc}',
     onTap: _showFullScreenModeDialog,
   ),
   NormalModel(
     title: '底部进度条展示',
     leading: const Icon(Icons.border_bottom_outlined),
-    getSubtitle: () => '当前展示方式：${Pref.btmProgressBehavior.desc}',
+    getSubtitle: () => '当前展示方式：${BtmProgressBehavior.values[Pref.btmProgressBehavior].desc}',
     onTap: _showProgressBehaviorDialog,
   ),
   if (PlatformUtils.isMobile)
@@ -277,7 +272,7 @@ List<SettingsModel> get playSettings => [
   PopupModel(
     title: '播放顺序',
     leading: const Icon(Icons.repeat),
-    value: () => Pref.playRepeat as PlayRepeat,
+    value: () => BiliPref.playRepeat,
     items: PlayRepeat.values,
     onSelected: (value, setState) => GStorage.video
         .put(VideoBoxKey.playRepeat, value.index)
@@ -300,7 +295,7 @@ Future<void> _showSubtitleDialog(
     context: context,
     builder: (context) => SelectDialog<SubtitlePrefType>(
       title: '字幕选择偏好',
-      value: Pref.subtitlePreferenceV2,
+      value: SubtitlePrefType.values[Pref.subtitlePreferenceV2],
       values: SubtitlePrefType.values.map((e) => (e, e.desc)).toList(),
     ),
   );
@@ -321,7 +316,7 @@ Future<void> _showSuperChatDialog(
     context: context,
     builder: (context) => SelectDialog<SuperChatType>(
       title: 'SuperChat (醒目留言) 显示类型',
-      value: Pref.superChatType,
+      value: SuperChatType.values[Pref.superChatType],
       values: SuperChatType.values.map((e) => (e, e.title)).toList(),
     ),
   );
@@ -339,7 +334,7 @@ Future<void> _showFullScreenModeDialog(
     context: context,
     builder: (context) => SelectDialog<FullScreenMode>(
       title: '默认全屏方向',
-      value: Pref.fullScreenMode,
+      value: BiliPref.fullScreenMode,
       values: FullScreenMode.values.map((e) => (e, e.desc)).toList(),
     ),
   );
@@ -357,7 +352,7 @@ Future<void> _showProgressBehaviorDialog(
     context: context,
     builder: (context) => SelectDialog<BtmProgressBehavior>(
       title: '底部进度条展示',
-      value: Pref.btmProgressBehavior,
+      value: BtmProgressBehavior.values[Pref.btmProgressBehavior],
       values: BtmProgressBehavior.values.map((e) => (e, e.desc)).toList(),
     ),
   );

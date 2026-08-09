@@ -25,7 +25,7 @@ class FollowChildController
   late final Rx<LoadingState<List<CoreFollowItemModel>?>> sameState =
       LoadingState<List<CoreFollowItemModel>?>.loading().obs;
 
-  late final Rx<FollowOrderType> orderType = FollowOrderType.values[Pref.followOrderType as int].obs;
+  late final Rx<FollowOrderType> orderType = FollowOrderType.values[Pref.followOrderType].obs;
 
   void setOrderType(FollowOrderType type) {
     orderType.value = type;

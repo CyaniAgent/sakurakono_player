@@ -1,12 +1,11 @@
-import 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_decode_type.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 
 abstract final class VideoUtils {
-  static CDNService cdnService = Pref.defaultCDNService;
+  static CDNService cdnService = BiliPref.defaultCDNService;
   static String? liveCdnUrl = Pref.liveCdnUrl;
   static bool disableAudioCDN = Pref.disableAudioCDN;
 

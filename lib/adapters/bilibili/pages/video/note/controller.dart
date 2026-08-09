@@ -34,7 +34,7 @@ class NoteListPageCtr
   @override
   Future<LoadingState<CoreVideoNoteData>> customGetData() async {
     final result = await Get.find<VideoRepository>().getVideoNoteList(
-      oid: oid,
+      oid: oid.toString(),
       page: page,
     );
     return switch (result) {

@@ -66,7 +66,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
   final ListController _listController = ListController();
 
   late final cidSet = widget.cidSet;
-  VideoQuality _quality = VideoQuality.fromCode(Pref.defaultVideoQa);
+  VideoQuality _quality = VideoQuality.fromCode(Pref.defaultVideoQa ?? VideoQuality.super8k.code);
 
   @override
   void initState() {

@@ -478,8 +478,8 @@ class BiliVideoRepository implements VideoRepository {
     String? bvid,
     required int cid,
     int? qn,
-    dynamic epid,
-    dynamic seasonId,
+    String? epid,
+    String? seasonId,
     required bool tryLook,
     required CoreVideoType videoType,
     String? language,
@@ -534,7 +534,7 @@ class BiliVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<CorePgcLCF>> pgcLikeCoinFav({
-    required Object epId,
+    required String epId,
   }) async {
     return _mapState(
       await VideoHttp.pgcLikeCoinFav(epId: epId),
@@ -558,8 +558,8 @@ class BiliVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<CorePgcTriple>> pgcTriple({
-    required Object epId,
-    Object? seasonId,
+    required String epId,
+    String? seasonId,
   }) async {
     return _mapState(
       await VideoHttp.pgcTriple(epId: epId, seasonId: seasonId),
@@ -716,8 +716,8 @@ class BiliVideoRepository implements VideoRepository {
     String? aid,
     String? bvid,
     required int cid,
-    dynamic seasonId,
-    dynamic epId,
+    String? seasonId,
+    String? epId,
   }) async {
     return _mapState(
       await VideoHttp.playInfo(
@@ -785,8 +785,8 @@ class BiliVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<CoreVideoNoteData>> getVideoNoteList({
-    dynamic oid,
-    dynamic uperMid,
+    String? oid,
+    int? uperMid,
     required int page,
   }) async {
     return _mapState(
@@ -825,21 +825,21 @@ class BiliVideoRepository implements VideoRepository {
 
   @override
   Future<void> historyReport({
-    required Object aid,
-    required Object type,
+    required String aid,
+    required int type,
   }) {
     return VideoHttp.historyReport(aid: aid, type: type);
   }
 
   @override
   Future<void> heartBeat({
-    Object? aid,
-    Object? bvid,
-    required Object cid,
-    required Object progress,
-    Object? epid,
-    Object? seasonId,
-    Object? subType,
+    String? aid,
+    String? bvid,
+    required String cid,
+    required int progress,
+    String? epid,
+    String? seasonId,
+    String? subType,
     required CoreVideoType videoType,
   }) {
     return VideoHttp.heartBeat(
@@ -854,15 +854,15 @@ class BiliVideoRepository implements VideoRepository {
   }
 
   @override
-  Future<void> roomEntryAction({required Object roomId}) {
+  Future<void> roomEntryAction({required int roomId}) {
     return VideoHttp.roomEntryAction(roomId: roomId);
   }
 
   @override
   Future<void> medialistHistory({
     required int desc,
-    required Object oid,
-    required Object upperMid,
+    required String oid,
+    required int upperMid,
   }) {
     return VideoHttp.medialistHistory(desc: desc, oid: oid, upperMid: upperMid);
   }

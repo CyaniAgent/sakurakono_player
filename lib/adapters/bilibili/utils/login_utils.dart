@@ -61,7 +61,8 @@ abstract final class LoginUtils {
         }
 
         SmartDialog.showToast('main登录成功');
-        if (response != Pref.userInfoCache) {
+        final Object? cached = Pref.userInfoCache;
+        if (response != cached) {
           await GStorage.userInfo.put('userInfoCache', response);
         }
       }

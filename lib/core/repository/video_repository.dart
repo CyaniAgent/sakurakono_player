@@ -39,8 +39,8 @@ abstract class VideoRepository {
     String? bvid,
     required int cid,
     int? qn,
-    Object? epid,
-    Object? seasonId,
+    String? epid,
+    String? seasonId,
     required bool tryLook,
     required CoreVideoType videoType,
     String? language,
@@ -68,7 +68,7 @@ abstract class VideoRepository {
 
   /// Get PGC like / coin / fav status.
   Future<LoadingState<CorePgcLCF>> pgcLikeCoinFav({
-    required Object epId,
+    required String epId,
   });
 
   /// Coin (tip) a video.
@@ -80,8 +80,8 @@ abstract class VideoRepository {
 
   /// PGC triple (like + coin + fav).
   Future<LoadingState<CorePgcTriple>> pgcTriple({
-    required Object epId,
-    Object? seasonId,
+    required String epId,
+    String? seasonId,
   });
 
   /// UGC triple (like + coin + fav).
@@ -186,8 +186,8 @@ abstract class VideoRepository {
     String? aid,
     String? bvid,
     required int cid,
-    Object? seasonId,
-    dynamic epId,
+    String? seasonId,
+    String? epId,
   });
 
   /// Get VTT subtitles.
@@ -219,7 +219,7 @@ abstract class VideoRepository {
 
   /// Get video note list.
   Future<LoadingState<CoreVideoNoteData>> getVideoNoteList({
-    Object? oid,
+    String? oid,
     int? uperMid,
     required int page,
   });
@@ -247,30 +247,30 @@ abstract class VideoRepository {
 
   /// Report video playback history.
   Future<void> historyReport({
-    required Object aid,
-    required Object type,
+    required String aid,
+    required int type,
   });
 
   /// Send playback heartbeat.
   Future<void> heartBeat({
-    Object? aid,
-    Object? bvid,
-    required Object cid,
-    required Object progress,
-    Object? epid,
-    Object? seasonId,
-    Object? subType,
+    String? aid,
+    String? bvid,
+    required String cid,
+    required int progress,
+    String? epid,
+    String? seasonId,
+    String? subType,
     required CoreVideoType videoType,
   });
 
   /// Report room entry action (live).
-  Future<void> roomEntryAction({required Object roomId});
+  Future<void> roomEntryAction({required int roomId});
 
   /// Report medialist (playlist) history.
   Future<void> medialistHistory({
     required int desc,
-    required Object oid,
-    required Object upperMid,
+    required String oid,
+    required int upperMid,
   });
 
   /// Get TV/DLNA playback URL.

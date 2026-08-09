@@ -16,11 +16,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_model.dart';
-import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
-import 'package:skf/adapters/bilibili/models/common/video/subtitle_pref_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_decode_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
@@ -60,6 +56,7 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:skf/adapters/bilibili/utils/video_utils.dart';
@@ -184,7 +181,7 @@ class VideoDetailController extends GetxController
   Box setting = GStorage.setting;
 
   // 预设的解码格式
-  late List<VideoDecodeFormatType> preferCodecs = Pref.preferCodecs;
+  late List<VideoDecodeFormatType> preferCodecs = BiliPref.preferCodecs;
 
   bool get showReply => isFileSource
       ? false
@@ -871,8 +868,8 @@ class VideoDetailController extends GetxController
     final result = await Get.find<VideoRepository>().videoUrl(
       cid: cid.value,
       bvid: bvid,
-      epid: epId,
-      seasonId: seasonId,
+      epid: epId?.toString(),
+      seasonId: seasonId?.toString(),
       tryLook: plPlayerController.tryLook,
       videoType: toCoreVideoType(_actualVideoType ?? videoType),
       language: currLang.value,
@@ -1138,8 +1135,8 @@ class VideoDetailController extends GetxController
     final res = await Get.find<VideoRepository>().playInfo(
       bvid: bvid,
       cid: cid.value,
-      seasonId: seasonId,
-      epId: epId,
+      seasonId: seasonId?.toString(),
+      epId: epId?.toString(),
     );
     if (res case Success(:final response)) {
       // interactive video
@@ -1236,7 +1233,7 @@ class VideoDetailController extends GetxController
 
   Future<void> _setSubtitle(List<Subtitle> sub) async {
     subtitles.value = sub;
-    final idx = switch (Pref.subtitlePreferenceV2) {
+    final idx = switch (SubtitlePrefType.values[Pref.subtitlePreferenceV2]) {
       SubtitlePrefType.off => 0,
       SubtitlePrefType.on => 1,
       SubtitlePrefType.withoutAi => sub.first.lan.startsWith('ai') ? 0 : 1,
@@ -1246,17 +1243,17 @@ class VideoDetailController extends GetxController
                     (await FlutterVolumeController.getVolume() ?? 0.0) <= 0.0)
             ? 1
             : 0,
-      _ => 0,
     };
     await setSubtitle(idx);
   }
 
   void updateMediaListHistory(int aid) {
     if (args['sortField'] != null) {
+      final mediaId = args['mediaId'];
       Get.find<VideoRepository>().medialistHistory(
         desc: _mediaDesc ? 1 : 0,
-        oid: aid,
-        upperMid: args['mediaId'],
+        oid: '$aid',
+        upperMid: mediaId is int ? mediaId : int.parse('$mediaId'),
       );
     }
   }
