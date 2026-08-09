@@ -183,7 +183,7 @@ class OttoMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<CoreSearchArchiveData>> searchArchive({
-    required Object mid,
+    required int mid,
     int tid = 0,
     int ps = 30,
     required int pn,
@@ -196,7 +196,7 @@ class OttoMemberRepository implements MemberRepository {
         searchTerm: keyword,
         offset: (pn - 1) * ps,
         num: ps,
-        uid: mid is int ? mid : null,
+        uid: mid,
       );
       return Success(CoreSearchArchiveData.fromJson(<String, dynamic>{
         'list': <String, dynamic>{
@@ -222,8 +222,8 @@ class OttoMemberRepository implements MemberRepository {
   @override
   Future<LoadingState<CoreSeasonWebData>> seasonSeriesWeb({
     required CoreWebSsType type,
-    required Object mid,
-    required Object id,
+    required int mid,
+    required String id,
     int ps = 30,
     required int pn,
     CoreArchiveSortTypeApp sort = CoreArchiveSortTypeApp.desc,
@@ -270,7 +270,7 @@ class OttoMemberRepository implements MemberRepository {
   @override
   Future<LoadingState<CoreDynamicsDataModel>> dynSearch({
     required int pn,
-    required dynamic mid,
+    required int mid,
     required String? offset,
     required String keyword,
   }) async {
@@ -426,7 +426,7 @@ class OttoMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<CoreUpowerRankData>> upowerRank({
-    required Object upMid,
+    required int upMid,
     required int page,
     int? privilegeType,
   }) async {
@@ -462,7 +462,7 @@ class OttoMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<CoreMemberGuardData>> memberGuard({
-    required Object ruid,
+    required int ruid,
     required int page,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable

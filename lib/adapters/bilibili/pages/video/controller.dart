@@ -432,8 +432,8 @@ class VideoDetailController extends GetxController
       return;
     }
     final res = await Get.find<UserRepository>().getMediaList(
-      type: args['mediaType'] ?? sourceType.mediaType,
-      bizId: args['mediaId'] ?? -1,
+      type: int.tryParse('${args['mediaType'] ?? sourceType.mediaType}') ?? -1,
+      bizId: (args['mediaId'] ?? -1).toString(),
       ps: 20,
       direction: isLoadPrevious ? true : false,
       oid: isReverse

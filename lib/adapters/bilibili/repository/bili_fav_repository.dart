@@ -436,14 +436,14 @@ class BiliFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> addFavArticle({
-    required Object id,
+    required String id,
   }) {
     return FavHttp.addFavArticle(id: id);
   }
 
   @override
   Future<LoadingState<void>> delFavArticle({
-    required Object id,
+    required String id,
   }) {
     return FavHttp.delFavArticle(id: id);
   }
@@ -574,7 +574,7 @@ class BiliFavRepository implements FavRepository {
   @override
   Future<LoadingState<void>> seasonFav({
     required bool isFav,
-    required dynamic seasonId,
+    required String? seasonId,
   }) {
     return FavHttp.seasonFav(isFav: isFav, seasonId: seasonId);
   }
@@ -621,7 +621,7 @@ class BiliFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<CoreFavFolderInfo>> favFolderInfo({
-    required Object mediaId,
+    required String mediaId,
   }) async {
     final result = await FavHttp.favFolderInfo(mediaId: mediaId);
     if (result case Success(:final response)) {
@@ -641,7 +641,7 @@ class BiliFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> sortFav({
-    required Object mediaId,
+    required String mediaId,
     required String sort,
   }) {
     return FavHttp.sortFav(mediaId: mediaId, sort: sort);
@@ -656,7 +656,7 @@ class BiliFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> cleanFav({
-    required Object mediaId,
+    required String mediaId,
   }) {
     return FavHttp.cleanFav(mediaId: mediaId);
   }
@@ -665,8 +665,8 @@ class BiliFavRepository implements FavRepository {
   Future<LoadingState<void>> copyOrMoveFav({
     required bool isCopy,
     required bool isFav,
-    required dynamic srcMediaId,
-    required dynamic tarMediaId,
+    required String? srcMediaId,
+    required String? tarMediaId,
     dynamic mid,
     required String resources,
   }) {
@@ -682,8 +682,8 @@ class BiliFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> communityAction({
-    required Object opusId,
-    required Object action,
+    required String opusId,
+    required int action,
   }) {
     return FavHttp.communityAction(opusId: opusId, action: action);
   }

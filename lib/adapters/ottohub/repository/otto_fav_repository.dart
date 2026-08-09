@@ -177,13 +177,13 @@ class OttoFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> sortFav({
-    required Object mediaId,
+    required String mediaId,
     required String sort,
   }) async {
     try {
       final order = int.tryParse(sort);
       if (order == null) return _err(const ApiException('invalid_sort_value'));
-      final id = int.tryParse(mediaId.toString());
+      final id = int.tryParse(mediaId);
       if (id == null) return _err(const ApiException('invalid_media_id'));
       await _client.oldCollection.setVideoCollectionSortOrder(
         vid: id,
@@ -284,14 +284,14 @@ class OttoFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> addFavArticle({
-    required Object id,
+    required String id,
   }) async {
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFavArticle({
-    required Object id,
+    required String id,
   }) async {
     return _err(const ApiException('not_implemented'));
   }
@@ -410,7 +410,7 @@ class OttoFavRepository implements FavRepository {
   @override
   Future<LoadingState<void>> seasonFav({
     required bool isFav,
-    required Object? seasonId,
+    required String? seasonId,
   }) async {
     return _err(const ApiException('not_implemented'));
   }
@@ -439,7 +439,7 @@ class OttoFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<CoreFavFolderInfo>> favFolderInfo({
-    required Object mediaId,
+    required String mediaId,
   }) async {
     // OttoHub SDK uses string collection names, not numeric folder IDs.
     return _err(const ApiException('not_implemented'));
@@ -463,7 +463,7 @@ class OttoFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> cleanFav({
-    required Object mediaId,
+    required String mediaId,
   }) async {
     // OttoHub SDK has no "clean" / clear-folder operation.
     return _err(const ApiException('not_implemented'));
@@ -473,8 +473,8 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> copyOrMoveFav({
     required bool isCopy,
     required bool isFav,
-    required Object? srcMediaId,
-    required Object? tarMediaId,
+    required String? srcMediaId,
+    required String? tarMediaId,
     int? mid,
     required String resources,
   }) async {
@@ -484,8 +484,8 @@ class OttoFavRepository implements FavRepository {
 
   @override
   Future<LoadingState<void>> communityAction({
-    required Object opusId,
-    required Object action,
+    required String opusId,
+    required int action,
   }) async {
     // OttoHub SDK has no community/opus action endpoint.
     return _err(const ApiException('not_implemented'));

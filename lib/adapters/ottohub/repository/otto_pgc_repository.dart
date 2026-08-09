@@ -21,7 +21,7 @@ class OttoPgcRepository implements PgcRepository {
   @override
   Future<LoadingState<CorePgcIndexConditionData>> pgcIndexCondition({
     Object? seasonType,
-    required Object type,
+    required int type,
     Object? indexType,
   }) async =>
       _err(const ApiException('not_implemented'));
@@ -52,21 +52,21 @@ class OttoPgcRepository implements PgcRepository {
 
   @override
   Future<LoadingState<void>> pgcReviewLike({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   }) async =>
       _err(const ApiException('not_implemented'));
 
   @override
   Future<LoadingState<void>> pgcReviewDislike({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   }) async =>
       _err(const ApiException('not_implemented'));
 
   @override
   Future<LoadingState<void>> pgcReviewPost({
-    required Object mediaId,
+    required String mediaId,
     required int score,
     required String content,
     bool shareFeed = false,
@@ -75,7 +75,7 @@ class OttoPgcRepository implements PgcRepository {
 
   @override
   Future<LoadingState<void>> pgcReviewMod({
-    required Object mediaId,
+    required String mediaId,
     required int score,
     required String content,
     required reviewId,
@@ -84,8 +84,8 @@ class OttoPgcRepository implements PgcRepository {
 
   @override
   Future<LoadingState<void>> pgcReviewDel({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   }) async =>
       _err(const ApiException('not_implemented'));
 

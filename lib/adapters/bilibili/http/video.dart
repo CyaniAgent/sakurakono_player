@@ -335,7 +335,7 @@ abstract final class VideoHttp {
 
   // 获取点赞/投币/收藏状态 pgc
   static Future<LoadingState<PgcLCF>> pgcLikeCoinFav({
-    required Object epId,
+    required String epId,
   }) async {
     final res = await Request().get(
       Api.pgcLikeCoinFav,
@@ -374,8 +374,8 @@ abstract final class VideoHttp {
 
   // 一键三连 pgc
   static Future<LoadingState<PgcTriple>> pgcTriple({
-    required Object epId,
-    Object? seasonId,
+    required String epId,
+    String? seasonId,
   }) async {
     final res = await Request().post(
       Api.pgcTriple,

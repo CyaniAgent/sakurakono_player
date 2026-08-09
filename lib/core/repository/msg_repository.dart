@@ -27,7 +27,7 @@ abstract class MsgRepository {
 
   /// Like detail for a specific card.
   Future<LoadingState<CoreMsgLikeDetailData>> msgLikeDetail({
-    required Object cardId,
+    required String cardId,
     required int pn,
     Object lastMid = 0,
   });
@@ -61,7 +61,7 @@ abstract class MsgRepository {
 
   /// Remove a dynamic post.
   Future<LoadingState<void>> removeDynamic({
-    required Object dynIdStr,
+    required String dynIdStr,
     Object? dynType,
     Object? ridStr,
   });
@@ -77,7 +77,7 @@ abstract class MsgRepository {
 
   /// Set or unset a conversation as top.
   Future<LoadingState<void>> setTop({
-    required Object talkerId,
+    required int talkerId,
     required int opType,
   });
 
@@ -89,13 +89,13 @@ abstract class MsgRepository {
 
   /// Set notification state for a message.
   Future<LoadingState<void>> msgSetNotice({
-    required Object id,
+    required String id,
     required int noticeState,
   });
 
   /// Set do-not-disturb for a specific user.
   Future<LoadingState<void>> setMsgDnd({
-    required Object uid,
+    required int uid,
     required int setting,
     required dndUid,
   });
@@ -113,12 +113,12 @@ abstract class MsgRepository {
 
   /// Get session-specific setting for a user.
   Future<LoadingState<CoreSessionSsData>> getSessionSs({
-    required Object talkerUid,
+    required int talkerUid,
   });
 
   /// Get do-not-disturb settings for given UIDs.
   Future<LoadingState<List<CoreUidSetting>?>> getMsgDnd({
-    required Object uidsStr,
+    required String uidsStr,
   });
 
   /// Get total unread message count.

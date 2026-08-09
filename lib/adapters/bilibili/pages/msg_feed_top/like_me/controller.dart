@@ -92,7 +92,7 @@ class LikeMeController
   Future<void> onSetNotice(CoreMsgLikeItem item, bool isNotice) async {
     int noticeState = isNotice ? 1 : 0;
     final res = await Get.find<MsgRepository>().msgSetNotice(
-      id: item.id!,
+      id: item.id!.toString(),
       noticeState: noticeState,
     );
     if (res.isSuccess) {

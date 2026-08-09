@@ -39,7 +39,7 @@ abstract final class PgcHttp {
 
   static Future<LoadingState<PgcIndexConditionData>> pgcIndexCondition({
     Object? seasonType,
-    required Object type,
+    required int type,
     Object? indexType,
   }) async {
     final res = await Request().get(
@@ -134,8 +134,8 @@ abstract final class PgcHttp {
   }
 
   static Future<LoadingState<void>> pgcReviewLike({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   }) async {
     final res = await Request().post(
       Api.pgcReviewLike,
@@ -155,8 +155,8 @@ abstract final class PgcHttp {
   }
 
   static Future<LoadingState<void>> pgcReviewDislike({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   }) async {
     final res = await Request().post(
       Api.pgcReviewDislike,
@@ -176,7 +176,7 @@ abstract final class PgcHttp {
   }
 
   static Future<LoadingState<void>> pgcReviewPost({
-    required Object mediaId,
+    required String mediaId,
     required int score,
     required String content,
     bool shareFeed = false,
@@ -200,7 +200,7 @@ abstract final class PgcHttp {
   }
 
   static Future<LoadingState<void>> pgcReviewMod({
-    required Object mediaId,
+    required String mediaId,
     required int score,
     required String content,
     required reviewId,
@@ -224,8 +224,8 @@ abstract final class PgcHttp {
   }
 
   static Future<LoadingState<void>> pgcReviewDel({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   }) async {
     final res = await Request().post(
       Api.pgcReviewDel,

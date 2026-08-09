@@ -75,7 +75,7 @@ abstract class MemberRepository {
 
   /// Search member archives.
   Future<LoadingState<CoreSearchArchiveData>> searchArchive({
-    required Object mid,
+    required int mid,
     int tid = 0,
     int ps = 30,
     required int pn,
@@ -87,8 +87,8 @@ abstract class MemberRepository {
   /// Get season/series data (web).
   Future<LoadingState<CoreSeasonWebData>> seasonSeriesWeb({
     required CoreWebSsType type,
-    required Object mid,
-    required Object id,
+    required int mid,
+    required String id,
     int ps = 30,
     required int pn,
     CoreArchiveSortTypeApp sort = CoreArchiveSortTypeApp.desc,
@@ -103,7 +103,7 @@ abstract class MemberRepository {
   /// Search within member dynamics.
   Future<LoadingState<CoreDynamicsDataModel>> dynSearch({
     required int pn,
-    required dynamic mid,
+    required int mid,
     required String? offset,
     required String keyword,
   });
@@ -164,7 +164,7 @@ abstract class MemberRepository {
 
   /// Get upower rank data.
   Future<LoadingState<CoreUpowerRankData>> upowerRank({
-    required Object upMid,
+    required int upMid,
     required int page,
     int? privilegeType,
   });
@@ -188,7 +188,7 @@ abstract class MemberRepository {
 
   /// Get member guard list.
   Future<LoadingState<CoreMemberGuardData>> memberGuard({
-    required Object ruid,
+    required int ruid,
     required int page,
   });
 }

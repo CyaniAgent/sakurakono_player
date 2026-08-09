@@ -347,7 +347,7 @@ abstract final class MemberHttp {
   }
 
   static Future<LoadingState<SearchArchiveData>> searchArchive({
-    required Object mid,
+    required int mid,
     int tid = 0, // e.g. pugv: 196
     int ps = 30,
     required int pn,
@@ -393,8 +393,8 @@ abstract final class MemberHttp {
 
   static Future<LoadingState<SeasonWebData>> seasonSeriesWeb({
     required WebSsType type,
-    required Object mid,
-    required Object id,
+    required int mid,
+    required String id,
     int ps = 30,
     required int pn,
     ArchiveSortTypeApp sort = .desc,
@@ -484,7 +484,7 @@ abstract final class MemberHttp {
 
   static Future<LoadingState<DynamicsDataModel>> dynSearch({
     required int pn,
-    required dynamic mid,
+    required int mid,
     required dynamic offset,
     required String keyword,
   }) async {
@@ -741,7 +741,7 @@ abstract final class MemberHttp {
   }
 
   static Future<LoadingState<UpowerRankData>> upowerRank({
-    required Object upMid,
+    required int upMid,
     required int page,
     int? privilegeType,
   }) async {
@@ -833,7 +833,7 @@ abstract final class MemberHttp {
   }
 
   static Future<LoadingState<MemberGuardData>> memberGuard({
-    required Object ruid,
+    required int ruid,
     required int page,
   }) async {
     final res = await Request().get(

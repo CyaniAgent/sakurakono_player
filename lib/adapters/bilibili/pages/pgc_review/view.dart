@@ -17,7 +17,7 @@ class PgcReviewPage extends StatefulWidget {
   });
 
   final String name;
-  final dynamic mediaId;
+  final String mediaId;
 
   @override
   State<PgcReviewPage> createState() => _PgcReviewPageState();

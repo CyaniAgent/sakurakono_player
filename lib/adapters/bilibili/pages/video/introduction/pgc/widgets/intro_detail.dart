@@ -103,7 +103,7 @@ class _IntroDetailState extends State<PgcIntroPanel>
         KeepAliveWrapper(child: _buildInfo(theme)),
         PgcReviewPage(
           name: widget.item.title!,
-          mediaId: widget.item.mediaId,
+          mediaId: '${widget.item.mediaId}',
         ),
       ],
     );

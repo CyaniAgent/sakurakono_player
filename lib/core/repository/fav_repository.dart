@@ -56,11 +56,11 @@ abstract class FavRepository {
   });
 
   Future<LoadingState<void>> addFavArticle({
-    required Object id,
+    required String id,
   });
 
   Future<LoadingState<void>> delFavArticle({
-    required Object id,
+    required String id,
   });
 
   Future<LoadingState<List<CoreFavNoteItemModel>?>> userNoteList({
@@ -110,7 +110,7 @@ abstract class FavRepository {
 
   Future<LoadingState<void>> seasonFav({
     required bool isFav,
-    required Object? seasonId,
+    required String? seasonId,
   });
 
   Future<LoadingState<List<CoreSpaceFavData>?>> spaceFav({
@@ -127,7 +127,7 @@ abstract class FavRepository {
   });
 
   Future<LoadingState<CoreFavFolderInfo>> favFolderInfo({
-    required Object mediaId,
+    required String mediaId,
   });
 
   Future<LoadingState<void>> deleteFolder({
@@ -135,7 +135,7 @@ abstract class FavRepository {
   });
 
   Future<LoadingState<void>> sortFav({
-    required Object mediaId,
+    required String mediaId,
     required String sort,
   });
 
@@ -144,20 +144,20 @@ abstract class FavRepository {
   });
 
   Future<LoadingState<void>> cleanFav({
-    required Object mediaId,
+    required String mediaId,
   });
 
   Future<LoadingState<void>> copyOrMoveFav({
     required bool isCopy,
     required bool isFav,
-    required Object? srcMediaId,
-    required Object? tarMediaId,
+    required String? srcMediaId,
+    required String? tarMediaId,
     int? mid,
     required String resources,
   });
 
   Future<LoadingState<void>> communityAction({
-    required Object opusId,
-    required Object action,
+    required String opusId,
+    required int action,
   });
 }

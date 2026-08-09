@@ -59,7 +59,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
                 return;
               }
               Get.find<FavRepository>().sortFav(
-                mediaId: _favDetailController.mediaId,
+                mediaId: _favDetailController.mediaId.toString(),
                 sort: sort.join(','),
               ).then((res) {
                 if (res.isSuccess) {

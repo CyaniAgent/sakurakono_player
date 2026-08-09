@@ -194,7 +194,7 @@ class FavDetailController
   }
 
   Future<void> cleanFav() async {
-    final res = await Get.find<FavRepository>().cleanFav(mediaId: mediaId);
+    final res = await Get.find<FavRepository>().cleanFav(mediaId: mediaId.toString());
     if (res.isSuccess) {
       SmartDialog.showToast('清除成功');
       Future.delayed(const Duration(milliseconds: 200), onReload);

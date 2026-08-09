@@ -57,7 +57,7 @@ class WhisperLinkSettingController extends GetxController {
   }
 
   Future<void> getMsgDnd() async {
-    final result = await Get.find<MsgRepository>().getMsgDnd(uidsStr: talkerUid);
+    final result = await Get.find<MsgRepository>().getMsgDnd(uidsStr: talkerUid.toString());
     msgDnd.value = switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),

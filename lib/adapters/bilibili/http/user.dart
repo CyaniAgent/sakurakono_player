@@ -349,8 +349,8 @@ abstract final class UserHttp {
 
   // 稍后再看列表
   static Future<LoadingState<MediaListData>> getMediaList({
-    required Object type,
-    required Object bizId,
+    required int type,
+    required String bizId,
     required int ps,
     dynamic oid,
     int? otype,
@@ -392,8 +392,8 @@ abstract final class UserHttp {
   }
 
   static Future<LoadingState<void>> dynamicReport({
-    required Object mid,
-    required Object dynId,
+    required int mid,
+    required String dynId,
     required int reasonType,
     String? reasonDesc,
   }) async {
@@ -529,7 +529,7 @@ abstract final class UserHttp {
   }
 
   static Future<LoadingState<FollowData>> followedUp({
-    required Object mid,
+    required int mid,
     required int pn,
   }) async {
     final res = await Request().get(
@@ -551,7 +551,7 @@ abstract final class UserHttp {
   }
 
   static Future<LoadingState<FollowData>> sameFollowing({
-    required Object mid,
+    required int mid,
     int? pn,
   }) async {
     final res = await Request().get(
@@ -573,7 +573,7 @@ abstract final class UserHttp {
   }
 
   static Future<LoadingState<void>> spaceReserve({
-    required Object sid,
+    required String sid,
     required bool isFollow,
   }) async {
     final res = await Request().post(

@@ -157,7 +157,7 @@ abstract final class ReplyHttp {
   static Future<LoadingState<void>> replyTop({
     required Object oid,
     required Object type,
-    required Object rpid,
+    required String rpid,
     required bool isUpTop,
   }) async {
     final res = await Request().post(
@@ -179,8 +179,8 @@ abstract final class ReplyHttp {
   }
 
   static Future<LoadingState<void>> report({
-    required Object rpid,
-    required Object oid,
+    required String rpid,
+    required String oid,
     required int reasonType,
     bool banUid = true,
     String? reasonDesc,

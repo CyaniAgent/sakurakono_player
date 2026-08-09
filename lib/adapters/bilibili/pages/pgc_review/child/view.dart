@@ -32,7 +32,7 @@ class PgcReviewChildPage extends StatefulWidget {
 
   final CorePgcReviewType type;
   final String name;
-  final dynamic mediaId;
+  final String mediaId;
 
   @override
   State<PgcReviewChildPage> createState() => _PgcReviewChildPageState();
@@ -318,7 +318,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
                             onPressed: () => _controller.onDislike(
                               item,
                               isDislike,
-                              item.reviewId,
+                              '${item.reviewId}',
                             ),
                             child: Icon(
                               isDislike
@@ -338,7 +338,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
                               : () => _controller.onLike(
                                   item,
                                   isLike,
-                                  item.reviewId,
+                                  '${item.reviewId}',
                                 ),
                           child: Row(
                             spacing: 4,

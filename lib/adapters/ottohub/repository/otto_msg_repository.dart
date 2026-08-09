@@ -42,7 +42,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<CoreMsgLikeDetailData>> msgLikeDetail({
-    required Object cardId,
+    required String cardId,
     required int pn,
     Object lastMid = 0,
   }) async {
@@ -118,7 +118,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> removeDynamic({
-    required Object dynIdStr,
+    required String dynIdStr,
     Object? dynType,
     Object? ridStr,
   }) async {
@@ -167,7 +167,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> setTop({
-    required Object talkerId,
+    required int talkerId,
     required int opType,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable
@@ -190,7 +190,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> msgSetNotice({
-    required Object id,
+    required String id,
     required int noticeState,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable
@@ -199,7 +199,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> setMsgDnd({
-    required Object uid,
+    required int uid,
     required int setting,
     required dndUid,
   }) async {
@@ -226,7 +226,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<CoreSessionSsData>> getSessionSs({
-    required Object talkerUid,
+    required int talkerUid,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable
     return const Error('OttoHub: 功能暂未支持');
@@ -234,7 +234,7 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<List<CoreUidSetting>?>> getMsgDnd({
-    required Object uidsStr,
+    required String uidsStr,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable
     return const Error('OttoHub: 功能暂未支持');

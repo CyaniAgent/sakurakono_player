@@ -56,7 +56,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<CoreMsgLikeDetailData>> msgLikeDetail({
-    required Object cardId,
+    required String cardId,
     required int pn,
     Object lastMid = 0,
   }) async {
@@ -132,7 +132,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> removeDynamic({
-    required Object dynIdStr,
+    required String dynIdStr,
     Object? dynType,
     Object? ridStr,
   }) {
@@ -160,7 +160,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> setTop({
-    required Object talkerId,
+    required int talkerId,
     required int opType,
   }) {
     return MsgHttp.setTop(
@@ -182,7 +182,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> msgSetNotice({
-    required Object id,
+    required String id,
     required int noticeState,
   }) {
     return MsgHttp.msgSetNotice(
@@ -193,7 +193,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> setMsgDnd({
-    required Object uid,
+    required int uid,
     required int setting,
     required dndUid,
   }) {
@@ -232,7 +232,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<CoreSessionSsData>> getSessionSs({
-    required Object talkerUid,
+    required int talkerUid,
   }) async {
     final result = await MsgHttp.getSessionSs(
       talkerUid: talkerUid,
@@ -245,7 +245,7 @@ class BiliMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<List<CoreUidSetting>?>> getMsgDnd({
-    required Object uidsStr,
+    required String uidsStr,
   }) async {
     final result = await MsgHttp.getMsgDnd(
       uidsStr: uidsStr,

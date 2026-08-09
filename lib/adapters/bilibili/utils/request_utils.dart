@@ -463,7 +463,7 @@ abstract final class RequestUtils {
                         isCopy: isCopy,
                         isFav: ctr is BaseFavController,
                         srcMediaId: mediaId,
-                        tarMediaId: checkedId,
+                        tarMediaId: checkedId?.toString(),
                         resources: removeList
                             .map(
                               (e) => switch (e) {

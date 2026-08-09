@@ -36,7 +36,7 @@ class UpowerRankController
   @override
   Future<LoadingState<CoreUpowerRankData>> customGetData() async {
     final result = await Get.find<MemberRepository>().upowerRank(
-      upMid: upMid,
+      upMid: int.tryParse(upMid) ?? 0,
       page: page,
       privilegeType: privilegeType,
     );

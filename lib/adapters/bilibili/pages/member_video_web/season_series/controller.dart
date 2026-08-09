@@ -44,7 +44,7 @@ class MemberSSWebCtr
     final result = await Get.find<MemberRepository>().seasonSeriesWeb(
       type: _type,
       mid: mid,
-      id: _id,
+      id: _id.toString(),
       ps: ps,
       pn: page,
       sort: order.value,

@@ -270,7 +270,7 @@ abstract final class FavHttp {
   }
 
   static Future<LoadingState<void>> addFavArticle({
-    required Object id,
+    required String id,
   }) async {
     final res = await Request().post(
       Api.addFavArticle,
@@ -290,7 +290,7 @@ abstract final class FavHttp {
   }
 
   static Future<LoadingState<void>> delFavArticle({
-    required Object id,
+    required String id,
   }) async {
     final res = await Request().post(
       Api.delFavArticle,
@@ -438,7 +438,7 @@ abstract final class FavHttp {
   }
 
   static Future<LoadingState<void>> sortFav({
-    required Object mediaId,
+    required String mediaId,
     required String sort,
   }) async {
     Map<String, dynamic> data = {
@@ -462,7 +462,7 @@ abstract final class FavHttp {
   }
 
   static Future<LoadingState<void>> cleanFav({
-    required Object mediaId,
+    required String mediaId,
   }) async {
     final res = await Request().post(
       Api.cleanFav,
@@ -533,7 +533,7 @@ abstract final class FavHttp {
   }
 
   static Future<LoadingState<FavFolderInfo>> favFolderInfo({
-    required Object mediaId,
+    required String mediaId,
   }) async {
     final res = await Request().get(
       Api.favFolderInfo,
@@ -550,7 +550,7 @@ abstract final class FavHttp {
 
   static Future<LoadingState<void>> seasonFav({
     required bool isFav,
-    required dynamic seasonId,
+    required String? seasonId,
   }) async {
     final res = await Request().post(
       isFav ? Api.unfavSeason : Api.favSeason,
@@ -606,8 +606,8 @@ abstract final class FavHttp {
   }
 
   static Future<LoadingState<void>> communityAction({
-    required Object opusId,
-    required Object action,
+    required String opusId,
+    required int action,
   }) async {
     final res = await Request().post(
       Api.communityAction,
@@ -676,8 +676,8 @@ abstract final class FavHttp {
   static Future<LoadingState<void>> copyOrMoveFav({
     required bool isCopy,
     required bool isFav,
-    required dynamic srcMediaId,
-    required dynamic tarMediaId,
+    required String? srcMediaId,
+    required String? tarMediaId,
     dynamic mid,
     required String resources,
   }) async {

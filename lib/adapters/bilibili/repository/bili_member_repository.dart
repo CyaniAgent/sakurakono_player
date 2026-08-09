@@ -683,7 +683,7 @@ class BiliMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<CoreSearchArchiveData>> searchArchive({
-    required Object mid,
+    required int mid,
     int tid = 0,
     int ps = 30,
     required int pn,
@@ -706,8 +706,8 @@ class BiliMemberRepository implements MemberRepository {
   @override
   Future<LoadingState<CoreSeasonWebData>> seasonSeriesWeb({
     required CoreWebSsType type,
-    required Object mid,
-    required Object id,
+    required int mid,
+    required String id,
     int ps = 30,
     required int pn,
     CoreArchiveSortTypeApp sort = CoreArchiveSortTypeApp.desc,
@@ -741,7 +741,7 @@ class BiliMemberRepository implements MemberRepository {
   @override
   Future<LoadingState<CoreDynamicsDataModel>> dynSearch({
     required int pn,
-    required dynamic mid,
+    required int mid,
     required dynamic offset,
     required String keyword,
   }) async {
@@ -869,7 +869,7 @@ class BiliMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<CoreUpowerRankData>> upowerRank({
-    required Object upMid,
+    required int upMid,
     required int page,
     int? privilegeType,
   }) async {
@@ -909,7 +909,7 @@ class BiliMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<CoreMemberGuardData>> memberGuard({
-    required Object ruid,
+    required int ruid,
     required int page,
   }) async {
     final result = await MemberHttp.memberGuard(ruid: ruid, page: page);

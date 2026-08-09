@@ -149,7 +149,7 @@ class BiliReplyRepository implements ReplyRepository {
   Future<LoadingState<void>> replyTop({
     required int oid,
     required int type,
-    required Object rpid,
+    required String rpid,
     required bool isUpTop,
   }) {
     return ReplyHttp.replyTop(
@@ -241,8 +241,8 @@ class BiliReplyRepository implements ReplyRepository {
 
   @override
   Future<LoadingState<void>> report({
-    required Object rpid,
-    required Object oid,
+    required String rpid,
+    required String oid,
     required int reasonType,
     bool banUid = true,
     String? reasonDesc,

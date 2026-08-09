@@ -219,7 +219,7 @@ class _MemberPageState extends State<MemberPage> {
                       onPressed: () async {
                         final isFollow = e.isFollow;
                         final res = await Get.find<UserRepository>().spaceReserve(
-                          sid: e.sid!,
+                          sid: e.sid!.toString(),
                           isFollow: isFollow,
                         );
                         if (res.isSuccess) {

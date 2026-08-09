@@ -587,7 +587,7 @@ class _EpisodePanelState extends State<EpisodePanel>
         onPressed: () async {
           final res = await Get.find<FavRepository>().seasonFav(
             isFav: response,
-            seasonId: widget.seasonId,
+            seasonId: widget.seasonId?.toString(),
           );
           if (res.isSuccess) {
             SmartDialog.showToast('${response ? '取消' : ''}订阅成功');

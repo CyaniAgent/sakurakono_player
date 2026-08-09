@@ -65,7 +65,7 @@ class MemberSearchChildController extends CommonListController {
         keyword: controller.editingController.text,
       ),
       MemberSearchType.dynamic => Get.find<MemberRepository>().dynSearch(
-        mid: controller.mid,
+        mid: int.parse(controller.mid),
         pn: page,
         offset: offset ?? '',
         keyword: controller.editingController.text,

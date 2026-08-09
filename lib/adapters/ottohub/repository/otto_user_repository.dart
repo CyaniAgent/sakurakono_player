@@ -206,8 +206,8 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<CoreMediaListData>> getMediaList({
-    required Object type,
-    required Object bizId,
+    required int type,
+    required String bizId,
     required int ps,
     Object? oid,
     int? otype,
@@ -238,8 +238,8 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> dynamicReport({
-    required Object mid,
-    required Object dynId,
+    required int mid,
+    required String dynId,
     required int reasonType,
     String? reasonDesc,
   }) async {
@@ -263,7 +263,7 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> spaceReserve({
-    required Object sid,
+    required String sid,
     required bool isFollow,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable
@@ -304,7 +304,7 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<CoreFollowData>> followedUp({
-    required Object mid,
+    required int mid,
     required int pn,
   }) async {
     try {
@@ -333,7 +333,7 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<CoreFollowData>> sameFollowing({
-    required Object mid,
+    required int mid,
     int? pn,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable

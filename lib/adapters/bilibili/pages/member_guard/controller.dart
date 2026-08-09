@@ -12,7 +12,7 @@ class MemberGuardController
     queryData();
   }
 
-  final Object ruid = Get.arguments['ruid'];
+  final int ruid = Get.arguments['ruid'] as int;
 
   late List<CoreGuardItem> tops;
 

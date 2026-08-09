@@ -16,7 +16,7 @@ class PgcReviewPostPanel extends StatefulWidget {
   });
 
   final String name;
-  final dynamic mediaId;
+  final String mediaId;
   // modify
   final dynamic reviewId;
   final int? score;

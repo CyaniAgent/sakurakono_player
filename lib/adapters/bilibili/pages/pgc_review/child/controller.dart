@@ -11,7 +11,7 @@ class PgcReviewController
   PgcReviewController({required this.type, required this.mediaId});
 
   final CorePgcReviewType type;
-  final dynamic mediaId;
+  final String mediaId;
 
   final count = RxnInt();
   String? next;
@@ -65,7 +65,7 @@ class PgcReviewController
     };
   }
 
-  Future<void> onLike(CorePgcReviewItemModel item, bool isLike, reviewId) async {
+  Future<void> onLike(CorePgcReviewItemModel item, bool isLike, String reviewId) async {
     final res = await Get.find<PgcRepository>().pgcReviewLike(
       mediaId: mediaId,
       reviewId: reviewId,
@@ -87,7 +87,7 @@ class PgcReviewController
   Future<void> onDislike(
     CorePgcReviewItemModel item,
     bool isDislike,
-    reviewId,
+    String reviewId,
   ) async {
     final res = await Get.find<PgcRepository>().pgcReviewDislike(
       mediaId: mediaId,
@@ -110,7 +110,7 @@ class PgcReviewController
   Future<void> onDel(int index, int reviewId) async {
     final res = await Get.find<PgcRepository>().pgcReviewDel(
       mediaId: mediaId,
-      reviewId: reviewId,
+      reviewId: '$reviewId',
     );
     if (res.isSuccess) {
       loadingState

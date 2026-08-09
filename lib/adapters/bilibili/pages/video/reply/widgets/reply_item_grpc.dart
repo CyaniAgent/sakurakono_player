@@ -1140,8 +1140,8 @@ class ReplyItemGrpc extends StatelessWidget {
                   ReportOptions.commentReport,
                   (reasonType, reasonDesc, banUid) async {
                     final res = await Get.find<ReplyRepository>().report(
-                      rpid: item.id,
-                      oid: item.oid,
+                      rpid: item.id.toString(),
+                      oid: item.oid.toString(),
                       reasonType: reasonType,
                       reasonDesc: reasonDesc,
                       banUid: banUid,

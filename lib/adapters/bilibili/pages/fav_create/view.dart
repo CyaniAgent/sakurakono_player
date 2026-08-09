@@ -26,7 +26,7 @@ class CreateFavPage extends StatefulWidget {
 }
 
 class _CreateFavPageState extends State<CreateFavPage> {
-  dynamic _mediaId;
+  String? _mediaId;
   late final TextEditingController _titleController;
   late final TextEditingController _introController;
   String? _cover;
@@ -48,7 +48,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
 
   void _getFolderInfo() {
     _errMsg = null;
-    Get.find<FavRepository>().favFolderInfo(mediaId: _mediaId).then((res) {
+    Get.find<FavRepository>().favFolderInfo(mediaId: _mediaId!).then((res) {
       if (res case Success(:final response)) {
         _titleController.text = response.title;
         _introController.text = response.intro ?? '';

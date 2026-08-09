@@ -56,7 +56,7 @@ class MemberDynamicsController
   }
 
   Future<void> onRemove(dynamic dynamicId) async {
-    final res = await Get.find<MsgRepository>().removeDynamic(dynIdStr: dynamicId);
+    final res = await Get.find<MsgRepository>().removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
       loadingState
         ..value.data!

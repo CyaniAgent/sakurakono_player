@@ -87,7 +87,7 @@ abstract final class MsgHttp {
   }
 
   static Future<LoadingState<MsgLikeDetailData>> msgLikeDetail({
-    required Object cardId,
+    required String cardId,
     required int pn,
     Object lastMid = 0,
   }) async {
@@ -220,7 +220,7 @@ abstract final class MsgHttp {
   }
 
   static Future<LoadingState<void>> removeDynamic({
-    required Object dynIdStr,
+    required String dynIdStr,
     Object? dynType,
     Object? ridStr,
   }) async {
@@ -317,7 +317,7 @@ abstract final class MsgHttp {
   }
 
   static Future<LoadingState<void>> setTop({
-    required Object talkerId,
+    required int talkerId,
     required int opType,
   }) async {
     String csrf = Accounts.main.csrf;
@@ -423,7 +423,7 @@ abstract final class MsgHttp {
   // }
 
   static Future<LoadingState<void>> msgSetNotice({
-    required Object id,
+    required String id,
     required int noticeState,
   }) async {
     final csrf = Accounts.main.csrf;
@@ -451,7 +451,7 @@ abstract final class MsgHttp {
   }
 
   static Future<LoadingState<void>> setMsgDnd({
-    required Object uid,
+    required int uid,
     required int setting,
     required dndUid,
   }) async {
@@ -526,7 +526,7 @@ abstract final class MsgHttp {
   }
 
   static Future<LoadingState<SessionSsData>> getSessionSs({
-    required Object talkerUid,
+    required int talkerUid,
   }) async {
     final csrf = Accounts.main.csrf;
     final res = await Request().get(
@@ -547,7 +547,7 @@ abstract final class MsgHttp {
   }
 
   static Future<LoadingState<List<UidSetting>?>> getMsgDnd({
-    required Object uidsStr,
+    required String uidsStr,
   }) async {
     final csrf = Accounts.main.csrf;
     final res = await Request().get(

@@ -18,7 +18,7 @@ abstract class PgcRepository {
   /// Get PGC index filter conditions.
   Future<LoadingState<CorePgcIndexConditionData>> pgcIndexCondition({
     Object? seasonType,
-    required Object type,
+    required int type,
     Object? indexType,
   });
 
@@ -45,19 +45,19 @@ abstract class PgcRepository {
 
   /// Like a PGC review.
   Future<LoadingState<void>> pgcReviewLike({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   });
 
   /// Dislike a PGC review.
   Future<LoadingState<void>> pgcReviewDislike({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   });
 
   /// Post a new PGC review.
   Future<LoadingState<void>> pgcReviewPost({
-    required Object mediaId,
+    required String mediaId,
     required int score,
     required String content,
     bool shareFeed = false,
@@ -65,7 +65,7 @@ abstract class PgcRepository {
 
   /// Modify an existing PGC review.
   Future<LoadingState<void>> pgcReviewMod({
-    required Object mediaId,
+    required String mediaId,
     required int score,
     required String content,
     required reviewId,
@@ -73,8 +73,8 @@ abstract class PgcRepository {
 
   /// Delete a PGC review.
   Future<LoadingState<void>> pgcReviewDel({
-    required Object mediaId,
-    required Object reviewId,
+    required String mediaId,
+    required String reviewId,
   });
 
   /// Get season status (subscription info).

@@ -166,7 +166,7 @@ class OttoReplyRepository implements ReplyRepository {
   Future<LoadingState<void>> replyTop({
     required int oid,
     required int type,
-    required Object rpid,
+    required String rpid,
     required bool isUpTop,
   }) async {
     // TODO(otto): not yet implemented - SDK API unavailable
@@ -239,8 +239,8 @@ class OttoReplyRepository implements ReplyRepository {
 
   @override
   Future<LoadingState<void>> report({
-    required Object rpid,
-    required Object oid,
+    required String rpid,
+    required String oid,
     required int reasonType,
     bool banUid = true,
     String? reasonDesc,

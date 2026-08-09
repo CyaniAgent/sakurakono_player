@@ -200,8 +200,8 @@ class ArticleController extends CommonDynController {
     final repos = Get.find<FavRepository>();
     final res = type == 'read'
         ? isFav
-              ? await repos.delFavArticle(id: commentId)
-              : await repos.addFavArticle(id: commentId)
+          ? await repos.delFavArticle(id: commentId.toString())
+          : await repos.addFavArticle(id: commentId.toString())
         : await repos.communityAction(opusId: id, action: isFav ? 4 : 3);
     if (res.isSuccess) {
       favorite?.status = !isFav;

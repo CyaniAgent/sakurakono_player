@@ -242,7 +242,7 @@ abstract class ReplyController<R>
     final res = await Get.find<ReplyRepository>().replyTop(
       oid: oid,
       type: type,
-      rpid: item.id,
+      rpid: item.id.toString(),
       isUpTop: isUpTop,
     );
     if (res.isSuccess) {
