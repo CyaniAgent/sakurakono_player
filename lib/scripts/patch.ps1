@@ -55,11 +55,13 @@ $ModalBarrierPatch = "lib/scripts/modal_barrier.patch"
 # https://github.com/flutter/flutter/issues/182466
 $MouseCursorPatch = "lib/scripts/mouse_cursor.patch"
 
-
 if ($platform.ToLower() -eq "ios") {
     git apply $BottomSheetIOSAppPatch
     if ($LASTEXITCODE -eq 0) {
         Write-Host "$BottomSheetIOSAppPatch applied"
+    } else {
+        Write-Error "FAILED: git apply $BottomSheetIOSAppPatch ($LASTEXITCODE)"
+        exit 1
     }
 }
 
@@ -104,6 +106,9 @@ foreach ($pick in $picks) {
     if ($LASTEXITCODE -eq 0) {
         git reset --soft HEAD~1
         Write-Host "$pick picked"
+    } else {
+        Write-Error "FAILED: git cherry-pick $pick ($LASTEXITCODE)"
+        exit 1
     }
     git stash pop
 }
@@ -114,6 +119,9 @@ foreach ($revert in $reverts) {
     if ($LASTEXITCODE -eq 0) {
         git reset --soft HEAD~1
         Write-Host "$revert reverted"
+    } else {
+        Write-Error "FAILED: git revert $revert ($LASTEXITCODE)"
+        exit 1
     }
     git stash pop
 }
@@ -122,5 +130,8 @@ foreach ($patch in $patches) {
     git apply "$env:GITHUB_WORKSPACE/$patch"
     if ($LASTEXITCODE -eq 0) {
         Write-Host "$patch applied"
+    } else {
+        Write-Error "FAILED: git apply $patch ($LASTEXITCODE)"
+        exit 1
     }
 }
