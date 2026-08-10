@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class SelectionText extends StatelessWidget {
   const SelectionText(
@@ -7,6 +8,7 @@ class SelectionText extends StatelessWidget {
     this.style,
     this.textAlign,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
+    this.onSelectionChanged,
   }) : textSpan = null;
 
   const SelectionText.rich(
@@ -15,6 +17,7 @@ class SelectionText extends StatelessWidget {
     this.style,
     this.textAlign,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
+    this.onSelectionChanged,
   }) : data = null;
 
   final String? data;
@@ -22,6 +25,7 @@ class SelectionText extends StatelessWidget {
   final TextStyle? style;
   final TextAlign? textAlign;
   final SelectableRegionContextMenuBuilder? contextMenuBuilder;
+  final ValueChanged<SelectedContent?>? onSelectionChanged;
 
   static Widget _defaultContextMenuBuilder(
     BuildContext context,
@@ -35,6 +39,7 @@ class SelectionText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SelectionArea(
+      onSelectionChanged: onSelectionChanged,
       contextMenuBuilder: contextMenuBuilder,
       child: Text.rich(
         style: style,

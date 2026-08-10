@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
@@ -67,6 +68,7 @@ void _showEmoteDialog(/* ModuleDynamicModel? */ dynamic moduleDynamic) {
     }
   }
   if (emotes == null || emotes.isEmpty) return;
+  SelectedContent? lastSelection;
   showDialog(
     context: Get.context!,
     builder: (context) => Dialog(
@@ -96,7 +98,9 @@ void _showEmoteDialog(/* ModuleDynamicModel? */ dynamic moduleDynamic) {
                 },
               ).toList(),
             ),
-            contextMenuBuilder: openUrlMenuBuilder,
+            contextMenuBuilder: (context, state) =>
+                openUrlMenuBuilder(state, lastSelection),
+            onSelectionChanged: (c) => lastSelection = c,
             style: const TextStyle(fontSize: 15, height: 1.7),
           ),
         ),
@@ -106,6 +110,7 @@ void _showEmoteDialog(/* ModuleDynamicModel? */ dynamic moduleDynamic) {
 }
 
 void _showTextDialog(String text) {
+  SelectedContent? lastSelection;
   showDialog(
     context: Get.context!,
     builder: (context) => Dialog(
@@ -114,7 +119,9 @@ void _showTextDialog(String text) {
         child: SingleChildScrollView(
           child: SelectionText(
             text,
-            contextMenuBuilder: openUrlMenuBuilder,
+            contextMenuBuilder: (context, state) =>
+                openUrlMenuBuilder(state, lastSelection),
+            onSelectionChanged: (c) => lastSelection = c,
             style: const TextStyle(fontSize: 15, height: 1.7),
           ),
         ),
@@ -123,9 +130,9 @@ void _showTextDialog(String text) {
   );
 }
 
-Widget openUrlMenuBuilder(_, SelectableRegionState state) {
+Widget openUrlMenuBuilder(SelectableRegionState state, SelectedContent? selectedContent) {
   final buttonItems = state.contextMenuButtonItems;
-  state.addLaunchMenuIfNeeded(buttonItems, index: 3);
+  state.addLaunchMenuIfNeeded(buttonItems, index: 3, selectedContent: selectedContent);
   return AdaptiveTextSelectionToolbar.buttonItems(
     buttonItems: buttonItems,
     anchors: state.contextMenuAnchors,
