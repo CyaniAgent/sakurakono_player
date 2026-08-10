@@ -92,6 +92,27 @@ flutter run       # 启动 B站 客户端模式
 
 ---
 
+## AI 辅助开发声明
+
+本项目使用 **OpenCode**（AI 编码工具）及其插件 **oh-my-openagent**（多模型编排、并行代理、内置 MCP 与技能）进行 AI 辅助开发。
+
+<details>
+<summary>检查与测试现状、使用的模型（点击展开）</summary>
+
+> ⚠️ **检查与测试现状**：本项目目前尚未经过充分的人工代码审查，已尽可能使用 AI 工具进行代码检查；程序经过人工日常使用测试。由于项目开发尚未完成，测试可能不够全面，仍可能存在未被发现的异常。
+
+### 使用的 AI 模型
+
+| 模型 | 用途 |
+|---|---|
+| DeepSeek-V4-Flash（opencode-go/deepseek-v4-flash） | 代码生成、重构、测试编写、规划与审查辅助 |
+| 历史版本开发可能使用其他 AI 模型 | 早期迭代所用模型未逐一记录 |
+
+> 执行证据见 `.omo/evidence/`。
+</details>
+
+---
+
 ## Star History
 
 <a href="https://www.star-history.com/#CyaniAgent/sakurakono_player&Date">
