@@ -45,7 +45,7 @@
 - NO imports from lib/adapters/. A widget becomes shared only when adapter-free. If it needs adapter data, it belongs in the adapter or takes data via constructor/ImageActionDelegate-style interface.
 - Do not casually edit widgets/flutter/ (vendored Flutter framework). Changes there override framework behavior app-wide.
 - common imports utils heavily (47 imports in 26 files). Do not invert: utils imports common only in 4 files (theme_utils→style, storage_pref→gesture, grid→skeleton/video_card_h, image_utils→constants).
-- `as dynamic` banned (SPES-014). TWO survivors remain (BLOCKED pending product decision — `SelectableRegionState.selectable` is PRIVATE in Flutter 3.44.6, the 2 features are crash-on-tap dead code): `widgets/context_menu/reply_menu_helper.dart:88` + `lib/utils/extension/selectable_region_ext.dart:17`. Don't add more.
+- `as dynamic` is BANNED (SPES-014) and now ZERO live casts remain (2026-08-10). Selected-text features (打开 URL, 加入过滤) read the selection via `SelectionArea.onSelectionChanged` closures — never via dynamic state access. Don't add dynamic.
 
 ## WHERE TO LOOK
 
