@@ -72,6 +72,10 @@ lib/
 
 - **Adapter selection at compile time**: `flutter run --dart-define=ADAPTER=bilibili` (default) or `ADAPTER=ottohub`. Each adapter implements `AppAdapter` and registers its own DI bindings via `AdapterRegistry.activate()`.
 - **Structural feature removal**: routes register unconditionally; removing a feature = delete the GetPage line + the pages/<feature>/ directory + any feature-only repository registration. No compile-time flags.
+  移除功能的标准路径（无编译开关）：
+  1. 删除 `lib/adapters/bilibili/bridge.dart` `registerRoutes()` 中对应 GetPage 行；
+  2. 删除对应 `pages/<feature>/` 目录；
+  3. 删除仅该功能使用的 repository 注册/依赖。
 - **Pages → Repository**: Bilibili pages use `Get.find<Repository>()` (not direct HTTP). OttoHub pages share the same UI but use Otto*Repository implementations.
 - **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; repository params are typed String/int (no `as dynamic` — SPES-014).
 - **Dead AppAdapter surfaces**: `homePage`, `onInit()`, and `AdapterRegistry.hasFeature()` are NEVER consumed — `activate()` only calls `registerDependencies()`; the `/` route hardcodes bilibili `MainApp` (not `active.homePage`); routes register unconditionally (no feature gating). `AdapterRegistry.active` has exactly 2 consumers: `lib/router/app_pages.dart` (routes) + `lib/common/widgets/image/network_img_layer.dart` (processImageUrl).
