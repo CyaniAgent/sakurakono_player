@@ -1,6 +1,6 @@
 # AGENTS.md — OttoHub Adapter
 
-Child of root AGENTS.md. Global rules, CI, feature-flag launch configs live there. This file covers `lib/adapters/ottohub/` only.
+Child of root AGENTS.md. Global rules, CI, launch configs live there. This file covers `lib/adapters/ottohub/` only.
 
 ## Overview
 
@@ -22,10 +22,10 @@ Thin DI overlay adapter (28 files): swaps in OttoHub repositories/player/account
 - `registerDependencies()`: creates ONE `OttohubClient()` (vendored SDK), then chains `Get.lazyPut<CoreRepo>(() => OttoXxxRepository(client))`; stubs use `OttoXxxRepository.new`. Registers AccountProvider→OttoAccountProvider, PlaybackReporter→OttoReporter, PlayerFactory→OttoPlayerFactory, plus private `_StubDownloadService` (extends bilibili DownloadService to prevent `Get.find<DownloadService>()` crashes).
 - Repository coverage:
   - 13 REAL (modern SDK API): Video, Auth, Danmaku, Follow, Black, User, Member, Dynamics, Reply, Fav, Msg, Im, Fan.
-  - 2 PARTIAL (client-backed but feature-flagged off): Search (searchAll/ab2c real, 5 methods stub), Space (searchArchive real, opusSpaceFlow stub).
+  - 2 PARTIAL (client-backed, partially implemented): Search (searchAll/ab2c real, 5 methods stub), Space (searchArchive real, opusSpaceFlow stub).
   - 9 STUBS (every method returns `Error('not_implemented')`): Audio, DanmakuFilter, Download, Live, Match, Music, Pgc, SponsorBlock, Validate.
   - All 24 registered so `Get.find<>()` never crashes.
-- `hasFeature()` => false for all 11 AppFeature values (switch exhaustive).
+- `hasFeature()` => true for all 11 AppFeature values (declares full support; no runtime gating).
 - Routes reuse: `routes => BiliBridge.registerRoutes()` — the ENTIRE bilibili page table; `homePage => const MainApp()` (bilibili `pages/main/view.dart`).
 
 ## Player
@@ -45,7 +45,7 @@ Thin DI overlay adapter (28 files): swaps in OttoHub repositories/player/account
 ## Anti-patterns / caution
 
 - Coupling to bilibili internals: otto_member_repository.dart imports `lib/adapters/bilibili/models_new/space/space_opus/*`; router/app_pages.dart hardcodes bilibili MainApp. Accepted for now (UI reuse) — keep NEW coupling minimal.
-- `hasFeature=false` + AppFeatures compile-time flags both gate features: UI pages are compiled OUT via `--dart-define=FEATURE_X=false` (root launch config) — never rely on runtime hasFeature for route gating.
+- hasFeature() returns true for all AppFeature values (adapter declares support; stub repos still return Error('not_implemented') — the crash-prevention contract).
 - Stubs look implemented to `Get.find<>()` — a stub returning `Error('not_implemented')` is NOT a bug; it's the crash-prevention contract.
 
 ## Where to look

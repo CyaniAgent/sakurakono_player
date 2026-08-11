@@ -6,7 +6,6 @@ Adapter-free abstract interfaces for the SKF player framework. Zero imports from
 ## STRUCTURE
 
 - adapter/ 2: AppAdapter + AdapterRegistry
-- config/ 1: features.dart — AppFeatures
 - account/ 2: AccountProvider + AccountMixin
 - models/ 40 (33 root + 7 ui/): Core* types (member_types, live_types, dynamics_types, video_types, user_types, media_id, download_types...)
 - repository/ 24: one interface per domain
@@ -19,7 +18,6 @@ Adapter-free abstract interfaces for the SKF player framework. Zero imports from
 ## KEY INTERFACES (verified)
 - AppAdapter (adapter/app_adapter.dart): name, displayName, registerDependencies(), routes, hasFeature(AppFeature), homePage, onInit(), processImageUrl(originalUrl, {quality}). AppFeature enum = 11 values (search, live, music, danmakuFilter, audio, match, space, download, pgc, sponsorBlock, validate).
 - AdapterRegistry: register(), activate(name), active, hasFeature(); both adapters registered upfront in main.dart, ADAPTER dart-define picks active.
-- AppFeatures (config/features.dart): abstract final class, 11 static const bool from bool.fromEnvironment('FEATURE_X', defaultValue: true). Gated ONLY at route-registration time in bilibili bridge.registerRoutes(), never in widgets.
 - LoadingState (result/loading_state.dart): sealed class, Loading / Success<T>(response) / Error(errMsg, {code}); every repo method returns Future<LoadingState<T>>; NOTE: imports flutter_smart_dialog (a UI package) for error toast — core is NOT purely UI-free.
 - AccountProvider (account/account_provider.dart): abstract, extends GetxService (per AGENTS.md rule all adapters must register one); RxString rxFace, RxBool rxIsLogin, restoreFromCache(), authHeaders, grpcMetadata, onAuthStateChanged. AccountMixin: on GetLifeCycleBase, subscribes onAuthStateChanged.
 - PlayerFactory: create() → VideoPlayerController. VideoPlayerController abstract: open(MediaSource, {CoreMediaId, seekTo}), play/pause/seek/setVolume/setSpeed + streams (position, duration, playing, buffering, error→PlayerError). MediaSource: uri + extras. PlaybackReporter: onProgress/onComplete/onSeek/onPause/onPlay.
@@ -41,6 +39,5 @@ Adapter-free abstract interfaces for the SKF player framework. Zero imports from
 ## WHERE TO LOOK
 
 - Define a new feature interface → repository/<domain>_repository.dart
-- New app-wide flag → config/features.dart (bool.fromEnvironment, default true)
 - App identity/version keys → app_meta.dart (prefix 'skf')
 - Rebrand/rename → app_meta.dart first

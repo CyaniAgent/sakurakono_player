@@ -34,7 +34,6 @@ Structural work complete: Bilibili adapter fully separated (24/24 repositories),
 lib/
 ├── core/                      # Abstract interfaces (zero adapter dependency)
 │   ├── adapter/               # AppAdapter interface + AdapterRegistry
-│   ├── config/                # AppFeatures — compile-time FeatureFlags
 │   ├── account/               # AccountProvider (GetxService) + AccountMixin
 │   ├── models/                # ~30 Core* type files (video, user, live, fav, msg, …)
 │   ├── repository/            # 24 repository interfaces (Video, User, Auth, Danmaku, …)
@@ -72,10 +71,10 @@ lib/
 ### Key patterns
 
 - **Adapter selection at compile time**: `flutter run --dart-define=ADAPTER=bilibili` (default) or `ADAPTER=ottohub`. Each adapter implements `AppAdapter` and registers its own DI bindings via `AdapterRegistry.activate()`.
-- **FeatureFlags**: Optional features are compile-time gated via `AppFeatures.*` (`bool.fromEnvironment`). Disable with `--dart-define=FEATURE_SEARCH=false`.
+- **Structural feature removal**: routes register unconditionally; removing a feature = delete the GetPage line + the pages/<feature>/ directory + any feature-only repository registration. No compile-time flags.
 - **Pages → Repository**: Bilibili pages use `Get.find<Repository>()` (not direct HTTP). OttoHub pages share the same UI but use Otto*Repository implementations.
 - **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; repository params are typed String/int (no `as dynamic` — SPES-014).
-- **Dead AppAdapter surfaces**: `homePage`, `onInit()`, and `AdapterRegistry.hasFeature()` are NEVER consumed — `activate()` only calls `registerDependencies()`; the `/` route hardcodes bilibili `MainApp` (not `active.homePage`); real feature gating is compile-time `AppFeatures.*` in `BiliBridge.registerRoutes()`. `AdapterRegistry.active` has exactly 2 consumers: `lib/router/app_pages.dart` (routes) + `lib/common/widgets/image/network_img_layer.dart` (processImageUrl).
+- **Dead AppAdapter surfaces**: `homePage`, `onInit()`, and `AdapterRegistry.hasFeature()` are NEVER consumed — `activate()` only calls `registerDependencies()`; the `/` route hardcodes bilibili `MainApp` (not `active.homePage`); routes register unconditionally (no feature gating). `AdapterRegistry.active` has exactly 2 consumers: `lib/router/app_pages.dart` (routes) + `lib/common/widgets/image/network_img_layer.dart` (processImageUrl).
 - **GetX** throughout: `GetMaterialApp`, `GetPage`, `Get.lazyPut`, `Get.put`, `Get.find`, `Get.toNamed()`.
 - **LoadingState<T>** everywhere: sealed class with `Success`, `Error`, `Loading` variants.
 
@@ -84,7 +83,7 @@ lib/
 | Adapter | Status | Repository Coverage | Notes |
 |---------|--------|-------------------|-------|
 | Bilibili | Complete | 24/24 | All features |
-| OttoHub | In Progress | 24/24 registered (13 real, 2 partial, 9 stubs) | Core playback + account |
+| OttoHub | In Progress | 24/24 registered (13 real, 2 partial, 9 stubs) | 测试/验证用（生产仅 Bilibili） |
 
 ## Adapter development
 
@@ -100,18 +99,7 @@ class NewAdapter implements AppAdapter {
 }
 ```
 
-### Feature flag reference
-
-All 11 flags default **true**; disable with `--dart-define=FEATURE_X=false`:
-
-| Flag | Use |
-|---|---|
-| `FEATURE_SEARCH` | Disable for SDKs without search |
-| `FEATURE_LIVE` | Disable if no live streaming |
-| `FEATURE_MUSIC` | |
-| `FEATURE_PGC` | Disable if no drama/anime |
-| `FEATURE_DOWNLOAD` | Disable if client handles downloads |
-| `FEATURE_DM_FILTER` / `FEATURE_AUDIO` / `FEATURE_MATCH` / `FEATURE_SPACE` / `FEATURE_SPONSOR` / `FEATURE_VALIDATE` | |
+生产环境只启用一个适配器（Bilibili）；多适配器（OttoHub）仅为测试/验证架构可行性。
 
 ### Launch configs (VS Code)
 
@@ -124,29 +112,18 @@ All 11 flags default **true**; disable with `--dart-define=FEATURE_X=false`:
   "name": "SKF (OttoHub)",
   "args": [
     "--dart-define=ADAPTER=ottohub",
-    "--dart-define=FEATURE_SEARCH=false",
-    "--dart-define=FEATURE_LIVE=false",
-    "--dart-define=FEATURE_MUSIC=false",
-    "--dart-define=FEATURE_PGC=false",
-    "--dart-define=FEATURE_DOWNLOAD=false",
-    "--dart-define=FEATURE_DM_FILTER=false",
-    "--dart-define=FEATURE_AUDIO=false",
-    "--dart-define=FEATURE_MATCH=false",
-    "--dart-define=FEATURE_SPACE=false",
-    "--dart-define=FEATURE_SPONSOR=false",
-    "--dart-define=FEATURE_VALIDATE=false"
   ]
 }
 ```
 
-**CI note:** the `ottohub_analyze` job (`.github/workflows/build.yml`) runs bare `flutter analyze` with **no dart-defines** — all 11 flags default to `true` in CI. The 11-flag `=false` set exists ONLY in the VS Code launch config; analyze output is flag-independent (const `bool.fromEnvironment` does not change dead-branch analysis).
+**CI note:** the `ottohub_analyze` job (`.github/workflows/build.yml`) runs bare `flutter analyze` — no feature flags; all routes are registered unconditionally.
 
 ## Key dev commands
 
 | Action | Command |
 |--------|---------|
 | Analyze (Bilibili) | `flutter analyze --dart-define=ADAPTER=bilibili` — must stay **0 errors, 0 warnings** |
-| Analyze (OttoHub) | `flutter analyze --dart-define=ADAPTER=ottohub` + all 11 flags `=false` (see launch config) |
+| Analyze (OttoHub) | `flutter analyze --dart-define=ADAPTER=ottohub` |
 | Test | `flutter test` — **87 tests** (72 repo + 7 num_utils + 5 ottohub_bridge + 3 model_converters) |
 | Codegen | `dart run build_runner build --delete-conflicting-outputs` |
 | Mock codegen | Same command — generates `*.mocks.dart` in `test/repository/` |

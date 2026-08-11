@@ -25,7 +25,7 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 
 - initHive(): registers 7 Hive TypeAdapters (Owner, UserInfoData, LevelInfo, BiliCookieJar, LoginAccount, AccountType, RuleFilter). MUST run before GStorage.init() (root gotcha).
 - register(): idempotent. Get.lazyPut for all 24 Bili*Repository (bound to core interfaces), PlaybackReporter, AccountProvider, PlayerFactory, AccountService, DownloadService. PluginRegistry + LocalFilePlugin. setupServiceLocator(). _initHttp(). Search special-case: lazyPut<BiliSearchRepository>, then lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>()).
-- registerRoutes(): ~60 GetPage, feature-gated by AppFeatures.* flags at registration time.
+- registerRoutes(): ~60 GetPage, all registered unconditionally (no feature flags).
 
 ## HTTP stack
 
