@@ -17,7 +17,6 @@ import 'package:skf/core/plugin/local_file_plugin.dart';
 import 'package:skf/core/plugin/plugin_registry.dart';
 import 'package:skf/core/player/player_factory.dart';
 import 'package:skf/core/player/playback_reporter.dart';
-import 'package:skf/core/config/features.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
@@ -228,9 +227,9 @@ class BiliBridge {
     // 历史记录
     GetPage(name: '/history', page: () => const HistoryPage()),
     // 搜索页面
-    if (AppFeatures.hasSearch) GetPage(name: '/search', page: () => const SearchPage()),
+    GetPage(name: '/search', page: () => const SearchPage()),
     // 搜索结果
-    if (AppFeatures.hasSearch) GetPage(name: '/searchResult', page: () => const SearchResultPage()),
+    GetPage(name: '/searchResult', page: () => const SearchResultPage()),
     // 动态
     GetPage(name: '/dynamics', page: () => const DynamicsPage()),
     // 动态详情
@@ -240,7 +239,7 @@ class BiliBridge {
     // 粉丝
     GetPage(name: '/fan', page: () => const FansPage()),
     // 直播详情
-    if (AppFeatures.hasLive) GetPage(name: '/liveRoom', page: () => const LiveRoomPage()),
+    GetPage(name: '/liveRoom', page: () => const LiveRoomPage()),
     // 用户中心
     GetPage(name: '/member', page: () => const MemberPage()),
     GetPage(name: '/memberSearch', page: () => const MemberSearchPage()),
@@ -283,31 +282,31 @@ class BiliBridge {
     // 订阅详情
     GetPage(name: '/subDetail', page: () => const SubDetailPage()),
     // 弹幕屏蔽管理
-    if (AppFeatures.hasDanmakuFilter) GetPage(name: '/danmakuBlock', page: () => const DanmakuBlockPage()),
-    if (AppFeatures.hasSponsorBlock) GetPage(name: '/sponsorBlock', page: () => const SponsorBlockPage()),
+    GetPage(name: '/danmakuBlock', page: () => const DanmakuBlockPage()),
+    GetPage(name: '/sponsorBlock', page: () => const SponsorBlockPage()),
     GetPage(name: '/createFav', page: () => const CreateFavPage()),
     GetPage(name: '/editProfile', page: () => const EditProfilePage()),
-    if (AppFeatures.hasSearch) GetPage(name: '/settingsSearch', page: () => const SettingsSearchPage()),
-    if (AppFeatures.hasSearch) GetPage(name: '/searchTrending', page: () => const SearchTrendingPage()),
+    GetPage(name: '/settingsSearch', page: () => const SettingsSearchPage()),
+    GetPage(name: '/searchTrending', page: () => const SearchTrendingPage()),
     GetPage(name: '/dynTopic', page: () => const DynTopicPage()),
     GetPage(name: '/articleList', page: () => const ArticleListPage()),
     GetPage(name: '/barSetting', page: () => const BarSetPage()),
     GetPage(name: '/upowerRank', page: () => const UpowerRankPage()),
     GetPage(name: '/spaceSetting', page: () => const SpaceSettingPage()),
     GetPage(name: '/dynTopicRcmd', page: () => const DynTopicRcmdPage()),
-    if (AppFeatures.hasMatch) GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
+    GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
     GetPage(name: '/msgLikeDetail', page: () => const LikeDetailPage()),
-    if (AppFeatures.hasDanmakuFilter) GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage()),
+    GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage()),
     GetPage(name: '/createVote', page: () => const CreateVotePage()),
-    if (AppFeatures.hasMusic) GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
+    GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
     GetPage(name: '/popularSeries', page: () => const PopularSeriesPage()),
     GetPage(name: '/popularPrecious', page: () => const PopularPreciousPage()),
-    if (AppFeatures.hasAudio) GetPage(name: '/audio', page: () => const AudioPage()),
+    GetPage(name: '/audio', page: () => const AudioPage()),
     GetPage(name: '/mainReply', page: () => const MainReplyPage()),
     GetPage(name: '/followed', page: () => const FollowedPage()),
     GetPage(name: '/sameFollowing', page: () => const FollowSamePage()),
-    if (AppFeatures.hasDownload) GetPage(name: '/download', page: () => const DownloadPage()),
-    if (AppFeatures.hasAudio) GetPage(name: '/dlna', page: () => const DLNAPage()),
+    GetPage(name: '/download', page: () => const DownloadPage()),
+    GetPage(name: '/dlna', page: () => const DLNAPage()),
     GetPage(name: '/myReply', page: () => const MyReply()),
     GetPage(name: '/videoWeb', page: () => const MemberVideoWeb()),
     GetPage(name: '/ssWeb', page: () => const MemberSSWeb()),

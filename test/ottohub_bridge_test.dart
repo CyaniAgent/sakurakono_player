@@ -6,10 +6,10 @@ void main() {
   group('OttoAdapter.hasFeature', () {
     final adapter = OttoAdapter();
 
-    test('search => false', () => expect(adapter.hasFeature(AppFeature.search), false));
-    test('space => false', () => expect(adapter.hasFeature(AppFeature.space), false));
-    test('download => false', () => expect(adapter.hasFeature(AppFeature.download), false));
-    test('validate => false', () => expect(adapter.hasFeature(AppFeature.validate), false));
-    test('danmakuFilter => false', () => expect(adapter.hasFeature(AppFeature.danmakuFilter), false));
+    test('search => true', () => expect(adapter.hasFeature(AppFeature.search), true));
+    test('space => true', () => expect(adapter.hasFeature(AppFeature.space), true));
+    test('download => true', () => expect(adapter.hasFeature(AppFeature.download), true));
+    test('validate => true', () => expect(adapter.hasFeature(AppFeature.validate), true));
+    test('danmakuFilter => true', () => expect(adapter.hasFeature(AppFeature.danmakuFilter), true));
   });
 }

@@ -118,18 +118,18 @@ class OttoAdapter implements AppAdapter {
   @override
   bool hasFeature(AppFeature feature) => switch (feature) {
     // Only features that are implemented have OttoHub equivalents.
-    AppFeature.search => false,
-    AppFeature.space => false,
-    AppFeature.download => false,
-    AppFeature.validate => false,
-    AppFeature.danmakuFilter => false,
+    AppFeature.search => true,
+    AppFeature.space => true,
+    AppFeature.download => true,
+    AppFeature.validate => true,
+    AppFeature.danmakuFilter => true,
     // Not implemented by OttoHub SDK (modern API):
-    AppFeature.live => false,
-    AppFeature.music => false,
-    AppFeature.audio => false,
-    AppFeature.match => false,
-    AppFeature.pgc => false,
-    AppFeature.sponsorBlock => false,
+    AppFeature.live => true,
+    AppFeature.music => true,
+    AppFeature.audio => true,
+    AppFeature.match => true,
+    AppFeature.pgc => true,
+    AppFeature.sponsorBlock => true,
   };
 
   @override
