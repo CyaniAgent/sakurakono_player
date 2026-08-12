@@ -1,0 +1,28 @@
+{
+  "code": 0,
+  "message": "0",
+  "ttl": 1,
+  "data": {
+    "list": [
+      {
+        "mid": 10001,
+        "uname": "UP主一",
+        "face": "https://i0.hdslb.com/bfs/face/1.jpg",
+        "attribute": 1,
+        "sign": "签名一",
+        "official_verify": {
+          "type": 1,
+          "desc": "认证信息"
+        }
+      },
+      {
+        "mid": 10002,
+        "uname": "UP主二",
+        "face": "https://i0.hdslb.com/bfs/face/2.jpg",
+        "attribute": 2,
+        "sign": ""
+      }
+    ],
+    "total": 2
+  }
+}

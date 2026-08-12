@@ -1,0 +1,14 @@
+{
+  "code": 0,
+  "message": "0",
+  "ttl": 1,
+  "data": {
+    "mid": 10001,
+    "attribute": 2,
+    "mtime": 1700000000,
+    "tag": [
+      10
+    ],
+    "special": 0
+  }
+}
