@@ -20,13 +20,16 @@ class OttoMemberRepository implements MemberRepository {
 
   OttoMemberRepository(this._client);
 
+  LoadingState<T> _err<T>(ApiException e) =>
+      Error(e.errorCode, code: e.httpStatus);
+
   @override
   Future<void> reportMember(
     int mid, {
     String? reason,
     int? reasonV2,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
+    // no SDK API (SDK lacks member report endpoint)
   }
 
   @override
@@ -34,8 +37,8 @@ class OttoMemberRepository implements MemberRepository {
     required int mid,
     required int page,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks space article list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -43,8 +46,8 @@ class OttoMemberRepository implements MemberRepository {
     required int? mid,
     required int pn,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks season/series list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -90,8 +93,8 @@ class OttoMemberRepository implements MemberRepository {
     required int page,
     required mid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks space audio list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -99,8 +102,8 @@ class OttoMemberRepository implements MemberRepository {
     required int page,
     required mid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks space cheese list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -228,8 +231,8 @@ class OttoMemberRepository implements MemberRepository {
     required int pn,
     CoreArchiveSortTypeApp sort = CoreArchiveSortTypeApp.desc,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks season/series web endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -274,14 +277,14 @@ class OttoMemberRepository implements MemberRepository {
     required String? offset,
     required String keyword,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks dynamic search endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreMemberTagItemModel>>> followUpTags() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks follow tag list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -307,8 +310,8 @@ class OttoMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<void>> addUsers(String fids, String tagids) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks follow tag add-users endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -318,14 +321,35 @@ class OttoMemberRepository implements MemberRepository {
     int? pn,
     int ps = 20,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // SDK getFollowingList cannot filter by follow tag — tagid is ignored;
+    // a null mid resolves to the caller's own uid via the profile.
+    try {
+      final uid = mid ?? (await _client.oldProfile.getUserProfile()).uid;
+      final list = await _client.following.getFollowingList(
+        uid,
+        offset: pn != null ? (pn - 1) * ps : null,
+        num: ps,
+      );
+      return Success(CoreFollowData(
+        list: list.userList
+            .map((u) => CoreFollowItemModel(
+                  mid: u.uid,
+                  uname: u.username,
+                  face: u.avatarUrl,
+                  sign: u.intro,
+                ))
+            .toList(),
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoMemberRepository.followUpGroup ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
   Future<LoadingState<int>> createFollowTag(String tagName) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks follow tag create endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -333,20 +357,20 @@ class OttoMemberRepository implements MemberRepository {
     Object tagid,
     Object name,
   ) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks follow tag update endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFollowTag(Object tagid) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks follow tag delete endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreMemberTagItemModel>?>> getTopVideo() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks pinned video endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -430,8 +454,8 @@ class OttoMemberRepository implements MemberRepository {
     required int page,
     int? privilegeType,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks upower rank endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -439,8 +463,8 @@ class OttoMemberRepository implements MemberRepository {
     required int mid,
     required int page,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks coin archive list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -448,16 +472,16 @@ class OttoMemberRepository implements MemberRepository {
     required int mid,
     required int page,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks liked archive list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreSpaceShopData>> spaceShop({
     required int mid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks space shop endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -465,7 +489,7 @@ class OttoMemberRepository implements MemberRepository {
     required int ruid,
     required int page,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks member guard endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 }

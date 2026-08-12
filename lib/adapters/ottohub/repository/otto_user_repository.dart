@@ -35,6 +35,9 @@ class OttoUserRepository implements UserRepository {
 
   OttoUserRepository(this._client);
 
+  LoadingState<T> _err<T>(ApiException e) =>
+      Error(e.errorCode, code: e.httpStatus);
+
   // ── Profile & stats ──────────────────────────────────────────────
 
   @override
@@ -83,8 +86,8 @@ class OttoUserRepository implements UserRepository {
     String keyword = '',
     bool asc = false,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks watch_later list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -92,20 +95,20 @@ class OttoUserRepository implements UserRepository {
     String? bvid,
     Object? aid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks watch_later add endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> toViewDel({required String aids}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks watch_later delete endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> toViewClear([int? cleanType]) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks watch_later clear endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── History ──────────────────────────────────────────────────────
@@ -118,11 +121,9 @@ class OttoUserRepository implements UserRepository {
     Object? account,
   }) async {
     try {
-      final listData = await _client.video.getHistoryList();
+      final list = await _client.oldProfile.getHistoryVideoList();
       return Success(CoreHistoryData(
-        list: listData.videoList
-            .map(_convertVideoSummaryToHistory)
-            .toList(),
+        list: list.map(_convertVideoSummaryToHistory).toList(),
       ));
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.historyList ApiException: ${e.errorCode}');
@@ -132,26 +133,26 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> pauseHistory(bool switchStatus, {Object? account}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks history pause endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<bool>> historyStatus({Object? account}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks history status endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> clearHistory({Object? account}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks history clear endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delHistory(String kid, {Object? account}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks history delete endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -160,8 +161,8 @@ class OttoUserRepository implements UserRepository {
     required String keyword,
     Object? account,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks history search endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── Relationships ────────────────────────────────────────────────
@@ -187,8 +188,31 @@ class OttoUserRepository implements UserRepository {
     required int pn,
     required int ps,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // SDK returns collection names only (no ids/metadata) — titles become
+    // item titles with index-based ids; pn/ps slice client-side.
+    try {
+      final collections = await _client.oldCollection
+          .getUserVideoCollections(mid);
+      final start = (pn - 1) * ps;
+      final end = start + ps > collections.length
+          ? collections.length
+          : start + ps;
+      final page = start >= collections.length
+          ? const <String>[]
+          : collections.sublist(start, end);
+      return Success(CoreSubData(
+        list: page.asMap().entries.map((e) => CoreSubItemModel(
+              id: start + e.key,
+              fid: start + e.key,
+              title: e.value,
+              type: 2,
+            )).toList(),
+        hasMore: end < collections.length,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoUserRepository.userSubFolder ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   // ── Video tags ───────────────────────────────────────────────────
@@ -198,8 +222,8 @@ class OttoUserRepository implements UserRepository {
     required String bvid,
     Object? cid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks video tag list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── Media list ───────────────────────────────────────────────────
@@ -216,22 +240,22 @@ class OttoUserRepository implements UserRepository {
     dynamic sortField = 1,
     bool direction = false,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks media list endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── Coins ────────────────────────────────────────────────────────
 
   @override
   Future<LoadingState<num?>> getCoin() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks coin balance endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreCoinLogData>> coinLog() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks coin log endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── Reporting ────────────────────────────────────────────────────
@@ -243,22 +267,30 @@ class OttoUserRepository implements UserRepository {
     required int reasonType,
     String? reasonDesc,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks dynamic report endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── Space / profile settings ─────────────────────────────────────
 
   @override
   Future<LoadingState<CoreSpaceSettingData>> spaceSetting() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // SDK UserProfile carries no privacy flags; return the default shell.
+    try {
+      await _client.oldProfile.getUserProfile();
+      return Success(CoreSpaceSettingData(
+        privacy: CorePrivacy.fromJson(<String, dynamic>{}),
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoUserRepository.spaceSetting ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
   Future<LoadingState<void>> spaceSettingMod(Map<String, dynamic> data) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks space privacy settings update endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -266,38 +298,45 @@ class OttoUserRepository implements UserRepository {
     required String sid,
     required bool isFollow,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks space reserve endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── VIP ──────────────────────────────────────────────────────────
 
   @override
   Future<LoadingState<void>> vipExpAdd() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks vip exp add endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── Logs ─────────────────────────────────────────────────────────
 
   @override
   Future<LoadingState<CoreLoginLogData>> loginLog() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks login log endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreCoinLogData>> expLog() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API (SDK lacks exp log endpoint)
+    return _err(const ApiException('not_implemented'));
   }
 
   // ── User identity ────────────────────────────────────────────────
 
   @override
   Future<LoadingState<CoreUserRealNameData>> getUserRealName(Object mid) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    try {
+      final midNum = int.tryParse(mid.toString());
+      if (midNum == null) return const Error('missing_argument');
+      final detail = await _client.oldUser.getUserDetail(midNum);
+      return Success(CoreUserRealNameData(name: detail.username));
+    } on ApiException catch (e) {
+      debugPrint('OttoUserRepository.getUserRealName ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   // ── Following ────────────────────────────────────────────────────
@@ -336,7 +375,25 @@ class OttoUserRepository implements UserRepository {
     required int mid,
     int? pn,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    try {
+      final list = await _client.following.getFollowingList(
+        mid,
+        offset: pn != null ? (pn - 1) * 20 : null,
+        num: 20,
+      );
+      return Success(CoreFollowData(
+        list: list.userList
+            .map((u) => CoreFollowItemModel(
+                  mid: u.uid,
+                  uname: u.username,
+                  face: u.avatarUrl,
+                  sign: u.intro,
+                ))
+            .toList(),
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoUserRepository.sameFollowing ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 }
