@@ -13,13 +13,19 @@ class OttoMsgRepository implements MsgRepository {
 
   OttoMsgRepository(this._client);
 
+  // ---- helpers ----
+
+  LoadingState<T> _err<T>(ApiException e) =>
+      Error(e.errorCode, code: e.httpStatus);
+
+  
   @override
   Future<LoadingState<CoreMsgReplyData>> msgFeedReplyMe({
     int? cursor,
     int? cursorTime,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无回复列表接口 (无 reply-feed)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -27,8 +33,8 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无 @我 列表接口 (无 at-feed)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -36,8 +42,8 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无点赞列表接口 (无 like-feed)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -46,8 +52,8 @@ class OttoMsgRepository implements MsgRepository {
     required int pn,
     Object lastMid = 0,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无点赞明细接口 (无 like-detail)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -95,8 +101,8 @@ class OttoMsgRepository implements MsgRepository {
     required String bucket,
     required String dir,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK 无图片上传接口 (无 uploadImage)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -106,14 +112,14 @@ class OttoMsgRepository implements MsgRepository {
     String? biz,
     CancelToken? cancelToken,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK 无 BFS 上传接口 (无 uploadBfs)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> createTextDynamic(Object content) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldBlog 无发布接口 (无 createBlog)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -122,8 +128,8 @@ class OttoMsgRepository implements MsgRepository {
     Object? dynType,
     Object? ridStr,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK 无动态删除接口 (无 deleteDynamic)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -170,8 +176,8 @@ class OttoMsgRepository implements MsgRepository {
     required int talkerId,
     required int opType,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无会话置顶接口 (无 pinSession)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -193,8 +199,8 @@ class OttoMsgRepository implements MsgRepository {
     required String id,
     required int noticeState,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无通知状态设置接口 (无 setNotice)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -203,8 +209,8 @@ class OttoMsgRepository implements MsgRepository {
     required int setting,
     required dndUid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无免打扰设置接口 (无 setDnd)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -212,32 +218,57 @@ class OttoMsgRepository implements MsgRepository {
     required int setting,
     required talkerUid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无推送设置接口 (无 setPushSs)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreImUserInfosData>?>> imUserInfos({
     required String uids,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // SDK `IOldUserApi.getUserById(uid)` is single-uid; core passes a
+    // comma-separated list, so resolve each uid and merge the results.
+    try {
+      final ids = uids
+          .split(',')
+          .map((s) => int.tryParse(s.trim()))
+          .where((e) => e != null)
+          .cast<int>()
+          .toList();
+      if (ids.isEmpty) return const Error('missing_argument');
+      final list = <CoreImUserInfosData>[];
+      for (final uid in ids) {
+        final users = await _client.oldUser.getUserById(uid);
+        if (users.isEmpty) continue;
+        final u = users.first;
+        list.add(CoreImUserInfosData(
+          mid: u.uid,
+          name: u.username,
+          face: u.avatarUrl,
+          sign: u.intro,
+        ));
+      }
+      return Success(list);
+    } on ApiException catch (e) {
+      debugPrint('OttoMsgRepository.imUserInfos ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
   Future<LoadingState<CoreSessionSsData>> getSessionSs({
     required int talkerUid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无会话设置查询接口 (无 getSessionSs)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreUidSetting>?>> getMsgDnd({
     required String uidsStr,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无免打扰查询接口 (无 getMsgDnd)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -284,7 +315,7 @@ class OttoMsgRepository implements MsgRepository {
     required Map comment,
     required Map extra,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无 IM 举报接口 (无 reportMessage)
+    return _err(const ApiException('not_implemented'));
   }
 }

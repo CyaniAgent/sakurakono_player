@@ -12,6 +12,12 @@ class OttoImRepository implements ImRepository {
 
   OttoImRepository(this._client);
 
+  // ---- helpers ----
+
+  LoadingState<T> _err<T>(ApiException e) =>
+      Error(e.errorCode, code: e.httpStatus);
+
+  
   @override
   Future<LoadingState<CoreImRspSendMsg>> sendMsg({
     required int senderUid,
@@ -30,8 +36,8 @@ class OttoImRepository implements ImRepository {
 
   @override
   Future<LoadingState<CoreImRspShareList>> shareList({int size = 10}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无分享列表接口 (无 shareList)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -91,8 +97,8 @@ class OttoImRepository implements ImRepository {
     Map<int, CoreImOffset>? offset,
     CoreImSessionPageType? pageType,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无会话次级列表接口 (无 secondary list)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -114,8 +120,8 @@ class OttoImRepository implements ImRepository {
     CoreImSessionPageType? pageType,
     CoreImSessionId? sessionId,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无会话更新接口 (无 updateSession)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -123,62 +129,78 @@ class OttoImRepository implements ImRepository {
     CoreImSessionId? sessionId,
     int? topTimeMicros,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无会话置顶接口 (无 pinSession)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImUnPinSessionReply>> unpinSession({
     CoreImSessionId? sessionId,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无取消置顶接口 (无 unpinSession)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImDeleteSessionListReply>> deleteSessionList({
     CoreImSessionPageType? pageType,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // SDK `IOldImApi.deleteMessage(msgId)` is keyed by msgId; the core call
+    // carries no session id, so the closest equivalent is deleting every
+    // friend-session message (clearing the session list).
+    try {
+      final friends = await _client.oldIm.getFriendList();
+      for (final friend in friends) {
+        final msgs = await _client.oldIm.getFriendMessages(
+          friendUid: friend.uid,
+        );
+        for (final m in msgs) {
+          await _client.oldIm.deleteMessage(m.msgId);
+        }
+      }
+      return const Success(CoreImDeleteSessionListReply());
+    } on ApiException catch (e) {
+      debugPrint('OttoImRepository.deleteSessionList ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
   Future<LoadingState<CoreImGetImSettingsReply>> getImSettings({
     CoreImSettingType? type,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无 IM 设置查询接口 (无 getImSettings)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImSetImSettingsReply>> setImSettings({
     Map<int, CoreImSetting>? settings,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无 IM 设置写入接口 (无 setImSettings)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImKeywordBlockingListReply>> keywordBlockingList() async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无关键词屏蔽列表接口 (无 keywordBlockingList)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImKeywordBlockingAddReply>> keywordBlockingAdd(
     String keyword,
   ) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无关键词屏蔽添加接口 (无 keywordBlockingAdd)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImKeywordBlockingDeleteReply>> keywordBlockingDelete(
     String keyword,
   ) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — SDK oldIm 无关键词屏蔽删除接口 (无 keywordBlockingDelete)
+    return _err(const ApiException('not_implemented'));
   }
 
   @override

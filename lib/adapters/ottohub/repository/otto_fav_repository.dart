@@ -20,6 +20,9 @@ import 'package:ottohub_sdk_dart/src/models/old_api/old_profile_models.dart'
 /// | favVideo                   | ✅ `IVideoApi.toggleFavorite(vid)` per resource|
 /// | userfavFolder              | ✅ `IOldCollectionApi.getUserVideoCollections` |
 /// | allFavFolders              | ✅ `IOldCollectionApi.getUserVideoCollections` |
+/// | userFavFolderDetail        | ✅ `IVideoApi.getFavoriteList({offset, num})` |
+/// | addOrEditFolder            | ✅ `IOldCollectionApi.setVideoCollection({vid, collection})` |
+/// | favFolderInfo              | ✅ `IOldCollectionApi.getVideoCollection(vid)` |
 /// | sortFav                    | ✅ `IOldCollectionApi.setVideoCollectionSortOrder` |
 /// | Others                     | ❌ No OttoHub SDK equivalent                   |
 class OttoFavRepository implements FavRepository {
@@ -209,8 +212,40 @@ class OttoFavRepository implements FavRepository {
     CoreFavOrderType order = CoreFavOrderType.mtime,
     int type = 0,
   }) async {
-    // OttoHub SDK has no paginated folder-detail endpoint keyed by numeric ID.
-    return _err(const ApiException('not_implemented'));
+    // SDK `IVideoApi.getFavoriteList({offset, num})` returns the current
+    // user's favorite videos as a flat paginated list — the folder id is
+    // not part of the response, so `info` is synthesized from mediaId.
+    // keyword/order/type have no SDK counterpart and are ignored.
+    try {
+      final result = await _client.video.getFavoriteList(
+        offset: (pn - 1) * ps,
+        num: ps,
+      );
+      final total = result.totalCount ?? result.videoList.length;
+      final medias = result.videoList.map((v) => CoreFavDetailItemModel(
+        id: v.vid,
+        type: 2,
+        title: v.title,
+        cover: v.coverUrl,
+        intro: v.intro,
+        duration: v.duration,
+        upper: CoreOwner(mid: v.uid, name: v.username, face: v.avatarUrl),
+        cntInfo: CoreCntInfo(play: v.viewCount),
+      )).toList();
+      return _ok(CoreFavDetailData(
+        info: CoreFavFolderInfo(
+          id: mediaId,
+          title: '',
+          mid: 0,
+          mediaCount: total,
+        ),
+        medias: medias,
+        hasMore: (pn * ps) < total,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoFavRepository.userFavFolderDetail ApiException: ${e.errorCode}');
+      return _err(e);
+    }
   }
 
   @override
@@ -237,16 +272,19 @@ class OttoFavRepository implements FavRepository {
     required int mid,
     required int page,
   }) async {
+    // no SDK API — SDK 无课程收藏列表方法 (无 getPugvFavList)
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> addFavPugv(Object seasonId) async {
+    // no SDK API — SDK 无课程收藏方法 (无 addPugvFav)
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFavPugv(Object seasonId) async {
+    // no SDK API — SDK 无课程取消收藏方法 (无 delPugvFav)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -254,16 +292,19 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<CoreFavTopicData>> favTopic({
     required int page,
   }) async {
+    // no SDK API — SDK 无话题收藏列表方法 (无 getTopicFavList)
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> addFavTopic(Object topicId) async {
+    // no SDK API — SDK 无话题收藏方法 (无 addTopicFav)
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFavTopic(Object topicId) async {
+    // no SDK API — SDK 无话题取消收藏方法 (无 delTopicFav)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -272,6 +313,7 @@ class OttoFavRepository implements FavRepository {
     Object topicId,
     bool isLike,
   ) async {
+    // no SDK API — SDK 无话题点赞方法 (无 likeTopic)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -279,6 +321,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<CoreFavArticleData>> favArticle({
     required int page,
   }) async {
+    // no SDK API — SDK 无文章收藏列表方法 (无 getArticleFavList)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -286,6 +329,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> addFavArticle({
     required String id,
   }) async {
+    // no SDK API — SDK 无文章收藏方法 (无 addArticleFav)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -293,6 +337,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> delFavArticle({
     required String id,
   }) async {
+    // no SDK API — SDK 无文章取消收藏方法 (无 delArticleFav)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -385,6 +430,7 @@ class OttoFavRepository implements FavRepository {
     int? followStatus,
     Object? mid,
   }) async {
+    // no SDK API — SDK 无番剧收藏列表方法 (无 getPgcFavList)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -412,6 +458,7 @@ class OttoFavRepository implements FavRepository {
     required bool isFav,
     required String? seasonId,
   }) async {
+    // no SDK API — SDK 无番剧收藏开关方法 (无 seasonFavorite)
     return _err(const ApiException('not_implemented'));
   }
 
@@ -432,17 +479,53 @@ class OttoFavRepository implements FavRepository {
     required String cover,
     required String intro,
   }) async {
-    // OttoHub SDK collections are named groups, not structured folders with
-    // numeric IDs, privacy settings, or description.  No operation equivalent.
-    return _err(const ApiException('not_implemented'));
+    // SDK `IOldCollectionApi.setVideoCollection({vid, collection})` assigns
+    // a video to a named collection — the closest folder-write equivalent.
+    // `collection` is the folder title; `vid` is the folder/media id when
+    // editing (OttoHub collection ids ARE video ids). privacy/cover/intro
+    // have no SDK counterpart and are ignored.
+    try {
+      final id = mediaId != null ? int.tryParse(mediaId.toString()) : null;
+      if (mediaId != null && id == null) {
+        return _err(const ApiException('invalid_media_id'));
+      }
+      await _client.oldCollection.setVideoCollection(
+        vid: id ?? 0,
+        collection: title,
+      );
+      return _ok(CoreFavFolderInfo(
+        id: id ?? 0,
+        title: title,
+        mid: 0,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoFavRepository.addOrEditFolder ApiException: ${e.errorCode}');
+      return _err(e);
+    }
   }
 
   @override
   Future<LoadingState<CoreFavFolderInfo>> favFolderInfo({
     required String mediaId,
   }) async {
-    // OttoHub SDK uses string collection names, not numeric folder IDs.
-    return _err(const ApiException('not_implemented'));
+    // SDK `IOldCollectionApi.getVideoCollection(vid)` returns the named
+    // collection a video belongs to — the closest folder-info equivalent
+    // (OttoHub collection ids ARE video ids).
+    try {
+      final id = int.tryParse(mediaId);
+      if (id == null) return _err(const ApiException('invalid_media_id'));
+      final detail = await _client.oldCollection.getVideoCollection(id);
+      return _ok(CoreFavFolderInfo(
+        id: id,
+        title: detail.collection,
+        mid: 0,
+        cover: detail.videoList.firstOrNull?.coverUrl ?? '',
+        mediaCount: detail.videoList.length,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoFavRepository.favFolderInfo ApiException: ${e.errorCode}');
+      return _err(e);
+    }
   }
 
   @override
