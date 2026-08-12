@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "data": {
+    "uid": 10086,
+    "username": "测试用户",
+    "intro": null,
+    "time": "2023-01-01T00:00:00Z",
+    "sex": "男",
+    "honour": null,
+    "experience": 100,
+    "avatar_url": "https://example.com/avatar.jpg",
+    "cover_url": null,
+    "video_num": 5,
+    "blog_num": 2,
+    "media_num": 0,
+    "followings_count": 50,
+    "fans_count": 800
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "data": {
+    "uid": 7,
+    "username": "用户七",
+    "intro": "签名七",
+    "time": "2023-05-01T00:00:00Z",
+    "sex": "男",
+    "honour": null,
+    "experience": 10,
+    "avatar_url": "https://example.com/u7.jpg",
+    "cover_url": "https://example.com/u7cover.jpg",
+    "video_num": 12,
+    "blog_num": 3,
+    "media_num": 1,
+    "followings_count": 50,
+    "fans_count": 800
+  }
+}

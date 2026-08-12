@@ -1,0 +1,25 @@
+{
+  "status": "ok",
+  "data": {
+    "user_list": [
+      {
+        "uid": 3001,
+        "username": "私信好友甲",
+        "intro": "好友简介甲",
+        "avatar_url": "https://example.com/friend1.jpg",
+        "last_time": "2024-07-03T08:00:00Z",
+        "last_message": "在吗",
+        "new_message_num": 2
+      },
+      {
+        "uid": 3002,
+        "username": "私信好友乙",
+        "intro": null,
+        "avatar_url": null,
+        "last_time": null,
+        "last_message": null,
+        "new_message_num": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "status": "ok",
+  "data": {
+    "vid": "42",
+    "uid": "10086",
+    "title": "无播放地址视频",
+    "time": "2024-01-15T10:30:00Z",
+    "like_count": 1,
+    "favorite_count": 0,
+    "view_count": 10,
+    "cover_url": "https://example.com/cover.jpg",
+    "video_url": null,
+    "audio_url": null,
+    "username": "测试UP主",
+    "avatar_url": "https://example.com/avatar.jpg",
+    "if_like": 0,
+    "if_favorite": 0,
+    "video_width": null,
+    "video_height": null,
+    "duration": 60,
+    "comment_count": 0,
+    "video_m3u8_url": null,
+    "channel_id": null,
+    "channel_detail": null,
+    "last_watch_second": null
+  }
+}

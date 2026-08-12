@@ -1,0 +1,31 @@
+{
+  "status": "ok",
+  "data": {
+    "unread_message_list": [
+      {
+        "msg_id": 801,
+        "sender": 2001,
+        "receiver": 10086,
+        "content": "系统消息一",
+        "time": "2024-07-01T08:00:00Z",
+        "sender_name": "系统",
+        "receiver_name": null,
+        "sender_avatar_url": null,
+        "receiver_avatar_url": null,
+        "is_read": 0
+      },
+      {
+        "msg_id": 802,
+        "sender": 2001,
+        "receiver": 10086,
+        "content": "系统消息二",
+        "time": "2024-07-02T08:00:00Z",
+        "sender_name": "通知",
+        "receiver_name": null,
+        "sender_avatar_url": null,
+        "receiver_avatar_url": null,
+        "is_read": 0
+      }
+    ]
+  }
+}

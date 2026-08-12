@@ -1,0 +1,35 @@
+{
+  "status": "ok",
+  "data": {
+    "blog_list": [
+      {
+        "bid": 301,
+        "uid": 10086,
+        "title": "作品一",
+        "content": "作品一内容",
+        "time": "2024-02-10T00:00:00Z",
+        "like_count": 15,
+        "favorite_count": 3,
+        "view_count": 100,
+        "avatar_url": "https://example.com/avatar.jpg",
+        "comment_count": 1,
+        "thumbnails": [
+          "https://example.com/b1.jpg"
+        ]
+      },
+      {
+        "bid": 302,
+        "uid": 10086,
+        "title": "作品二",
+        "content": null,
+        "time": "2024-02-11T00:00:00Z",
+        "like_count": 2,
+        "favorite_count": 0,
+        "view_count": 10,
+        "avatar_url": null,
+        "comment_count": 0,
+        "thumbnails": null
+      }
+    ]
+  }
+}

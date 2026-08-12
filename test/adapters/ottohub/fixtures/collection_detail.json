@@ -1,0 +1,34 @@
+{
+  "status": "ok",
+  "data": {
+    "collection": "合集A",
+    "video_list": [
+      {
+        "vid": 501,
+        "uid": 10086,
+        "title": "合集视频一",
+        "time": "2024-02-01T00:00:00Z",
+        "like_count": 10,
+        "favorite_count": 2,
+        "view_count": 300,
+        "cover_url": "https://example.com/c1.jpg",
+        "username": "测试用户",
+        "avatar_url": null,
+        "collection_sort_order": 0
+      },
+      {
+        "vid": 502,
+        "uid": 10086,
+        "title": "合集视频二",
+        "time": "2024-02-02T00:00:00Z",
+        "like_count": 5,
+        "favorite_count": 1,
+        "view_count": 150,
+        "cover_url": "https://example.com/c2.jpg",
+        "username": "测试用户",
+        "avatar_url": null,
+        "collection_sort_order": 1
+      }
+    ]
+  }
+}

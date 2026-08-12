@@ -1,0 +1,38 @@
+{
+  "status": "ok",
+  "data": {
+    "blog_list": [
+      {
+        "bid": 1001,
+        "uid": 10086,
+        "title": "收藏笔记一",
+        "content": "笔记内容一",
+        "time": "2024-06-10T00:00:00Z",
+        "like_count": 8,
+        "favorite_count": 2,
+        "view_count": 60,
+        "is_deleted": 0,
+        "audit_status": 1,
+        "avatar_url": null,
+        "thumbnails": [
+          "https://example.com/n1.jpg"
+        ]
+      },
+      {
+        "bid": 1002,
+        "uid": 10086,
+        "title": "收藏笔记二",
+        "content": null,
+        "time": "2024-06-11T00:00:00Z",
+        "like_count": 1,
+        "favorite_count": 0,
+        "view_count": 6,
+        "is_deleted": 0,
+        "audit_status": 1,
+        "avatar_url": null,
+        "thumbnails": null
+      }
+    ],
+    "favorite_blog_count": 2
+  }
+}

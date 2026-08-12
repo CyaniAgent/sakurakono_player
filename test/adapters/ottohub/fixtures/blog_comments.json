@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "data": {
+    "comment_list": [
+      {
+        "bcid": 701,
+        "parent_bcid": 0,
+        "uid": 2003,
+        "content": "博客评论一",
+        "time": "2024-05-03 12:00:00",
+        "child_comment_num": 0,
+        "if_my_comment": 0,
+        "username": "评论者乙",
+        "honour": null,
+        "avatar_url": "https://example.com/cmt2.jpg"
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "status": "ok",
+  "data": {
+    "video_list": [
+      {
+        "vid": "201",
+        "uid": "1001",
+        "title": "历史视频一",
+        "time": "2024-01-01T08:00:00Z",
+        "like_count": "20",
+        "favorite_count": "5",
+        "view_count": "900",
+        "duration": "240",
+        "cover_url": "https://example.com/h1.jpg",
+        "username": "UP主A",
+        "avatar_url": null,
+        "intro": null,
+        "tag": null,
+        "collection": null,
+        "type": "0",
+        "category": "1",
+        "collection_sort_order": null,
+        "channel_id": null,
+        "channel_detail": null
+      },
+      {
+        "vid": "202",
+        "uid": "1002",
+        "title": "历史视频二",
+        "time": "2024-01-02T09:00:00Z",
+        "like_count": "2",
+        "favorite_count": "1",
+        "view_count": "90",
+        "duration": "30",
+        "cover_url": "https://example.com/h2.jpg",
+        "username": "UP主B",
+        "avatar_url": null,
+        "intro": null,
+        "tag": null,
+        "collection": null,
+        "type": "1",
+        "category": "2",
+        "collection_sort_order": null,
+        "channel_id": null,
+        "channel_detail": null
+      }
+    ]
+  }
+}

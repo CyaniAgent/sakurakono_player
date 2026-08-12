@@ -1,0 +1,31 @@
+{
+  "status": "ok",
+  "data": {
+    "message_list": [
+      {
+        "msg_id": 901,
+        "sender": 3001,
+        "receiver": 10086,
+        "content": "你好呀",
+        "time": "2024-07-04 10:00:00",
+        "sender_name": "私信好友甲",
+        "receiver_name": null,
+        "sender_avatar_url": null,
+        "receiver_avatar_url": null,
+        "is_read": 1
+      },
+      {
+        "msg_id": 902,
+        "sender": 10086,
+        "receiver": 3001,
+        "content": "你好",
+        "time": "2024-07-04 10:05:00",
+        "sender_name": null,
+        "receiver_name": "私信好友甲",
+        "sender_avatar_url": null,
+        "receiver_avatar_url": null,
+        "is_read": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "status": "ok",
+  "data": {
+    "timeline_list": [
+      {
+        "content_type": "video",
+        "vid": 42,
+        "bid": null,
+        "uid": 10086,
+        "title": "动态视频",
+        "content": "发布了一个新视频",
+        "time": "2024-03-05T10:00:00Z",
+        "like_count": 99,
+        "favorite_count": 11,
+        "view_count": 1234,
+        "cover_url": "https://example.com/dyn1.jpg",
+        "username": "测试用户",
+        "avatar_url": "https://example.com/avatar.jpg",
+        "thumbnails": null
+      },
+      {
+        "content_type": "blog",
+        "vid": null,
+        "bid": 7,
+        "uid": 10087,
+        "title": "动态博客",
+        "content": "写了一篇博客",
+        "time": "2024-03-06T09:00:00Z",
+        "like_count": 5,
+        "favorite_count": 1,
+        "view_count": 50,
+        "cover_url": null,
+        "username": "用户乙",
+        "avatar_url": null,
+        "thumbnails": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": "ok",
+  "data": {
+    "sender": 1,
+    "receiver": 2,
+    "content": "ok",
+    "sender_name": null,
+    "receiver_name": null
+  }
+}

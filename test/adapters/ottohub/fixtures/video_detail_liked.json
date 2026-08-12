@@ -1,0 +1,18 @@
+{
+  "status": "ok",
+  "data": {
+    "vid": "42",
+    "uid": "10086",
+    "title": "已点赞视频",
+    "time": "2024-01-15T10:30:00Z",
+    "like_count": 99,
+    "favorite_count": 1,
+    "view_count": 1000,
+    "cover_url": "https://example.com/cover.jpg",
+    "username": "测试UP主",
+    "if_like": 1,
+    "if_favorite": 0,
+    "duration": 60,
+    "last_watch_second": null
+  }
+}

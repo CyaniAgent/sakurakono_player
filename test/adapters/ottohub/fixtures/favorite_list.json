@@ -1,0 +1,52 @@
+{
+  "status": "ok",
+  "data": {
+    "video_list": [
+      {
+        "vid": "401",
+        "uid": "1001",
+        "title": "收藏视频一",
+        "time": "2024-06-01T00:00:00Z",
+        "like_count": "10",
+        "favorite_count": "2",
+        "view_count": "200",
+        "duration": "120",
+        "cover_url": "https://example.com/f1.jpg",
+        "username": "UP主A",
+        "avatar_url": "https://example.com/avatar1.jpg",
+        "intro": "收藏简介一",
+        "tag": null,
+        "collection": null,
+        "type": "0",
+        "category": "1",
+        "collection_sort_order": null,
+        "channel_id": null,
+        "channel_detail": null
+      },
+      {
+        "vid": "402",
+        "uid": "1002",
+        "title": "收藏视频二",
+        "time": "2024-06-02T00:00:00Z",
+        "like_count": "1",
+        "favorite_count": "0",
+        "view_count": "20",
+        "duration": "60",
+        "cover_url": "https://example.com/f2.jpg",
+        "username": "UP主B",
+        "avatar_url": null,
+        "intro": null,
+        "tag": null,
+        "collection": null,
+        "type": "1",
+        "category": "2",
+        "collection_sort_order": null,
+        "channel_id": null,
+        "channel_detail": null
+      }
+    ],
+    "total_count": 2,
+    "favorite_video_count": null,
+    "manage_video_count": null
+  }
+}

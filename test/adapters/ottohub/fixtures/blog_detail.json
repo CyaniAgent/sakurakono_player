@@ -1,0 +1,23 @@
+{
+  "status": "ok",
+  "data": {
+    "bid": 42,
+    "uid": 10086,
+    "title": "博客标题",
+    "content": "博客正文内容",
+    "time": "2024-04-01T00:00:00Z",
+    "like_count": 120,
+    "favorite_count": 30,
+    "view_count": 500,
+    "avatar_url": "https://example.com/avatar.jpg",
+    "username": "测试用户",
+    "comment_count": 5,
+    "if_like": 1,
+    "if_favorite": 1,
+    "thumbnails": [
+      "https://example.com/t1.jpg"
+    ],
+    "channel_id": null,
+    "channel_detail": null
+  }
+}
