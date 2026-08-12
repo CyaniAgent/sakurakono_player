@@ -1,0 +1,18 @@
+{
+  "status": "ok",
+  "data": {
+    "vid": "7",
+    "uid": "1",
+    "title": "最小字段视频",
+    "time": "2024-02-01T00:00:00Z",
+    "like_count": 0,
+    "favorite_count": 0,
+    "view_count": 1,
+    "cover_url": "https://example.com/min.jpg",
+    "username": "无头像用户",
+    "if_like": 0,
+    "if_favorite": 0,
+    "duration": 60,
+    "last_watch_second": null
+  }
+}

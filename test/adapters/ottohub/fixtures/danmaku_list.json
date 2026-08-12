@@ -1,0 +1,32 @@
+{
+  "status": "ok",
+  "data": [
+    {
+      "danmaku_id": 11,
+      "text": "哈哈哈",
+      "time": 5.5,
+      "mode": "scroll",
+      "color": "#FFFFFF",
+      "font_size": "25",
+      "render": "normal"
+    },
+    {
+      "danmaku_id": 22,
+      "text": "顶部弹幕",
+      "time": 12.25,
+      "mode": "top",
+      "color": "#FF0000",
+      "font_size": "32",
+      "render": "normal"
+    },
+    {
+      "danmaku_id": 33,
+      "text": "底部弹幕",
+      "time": 30.0,
+      "mode": "bottom",
+      "color": "#00FF00",
+      "font_size": "18",
+      "render": "normal"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "status": "ok",
+  "data": {
+    "target_user_id": 777,
+    "i_blocked": true,
+    "he_blocked": false,
+    "mutual_block": false,
+    "any_block": true,
+    "my_reason": null,
+    "his_reason": null,
+    "his_reason_visible": null
+  }
+}

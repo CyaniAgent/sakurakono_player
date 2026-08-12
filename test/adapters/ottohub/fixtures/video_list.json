@@ -1,0 +1,52 @@
+{
+  "status": "ok",
+  "data": {
+    "video_list": [
+      {
+        "vid": "101",
+        "uid": "1001",
+        "title": "推荐视频A",
+        "time": "2024-03-01T12:00:00Z",
+        "like_count": "120",
+        "favorite_count": "30",
+        "view_count": "4500",
+        "duration": "300",
+        "cover_url": "https://example.com/a.jpg",
+        "username": "UP主A",
+        "avatar_url": "https://example.com/a_avatar.jpg",
+        "intro": "简介A",
+        "tag": "标签A",
+        "collection": null,
+        "type": "0",
+        "category": "1",
+        "collection_sort_order": null,
+        "channel_id": null,
+        "channel_detail": null
+      },
+      {
+        "vid": "102",
+        "uid": "1002",
+        "title": "推荐视频B",
+        "time": "2024-03-02T08:30:00Z",
+        "like_count": "12",
+        "favorite_count": "3",
+        "view_count": "450",
+        "duration": "90",
+        "cover_url": "https://example.com/b.jpg",
+        "username": "UP主B",
+        "avatar_url": null,
+        "intro": null,
+        "tag": null,
+        "collection": null,
+        "type": "1",
+        "category": "2",
+        "collection_sort_order": null,
+        "channel_id": null,
+        "channel_detail": null
+      }
+    ],
+    "total_count": 2,
+    "favorite_video_count": null,
+    "manage_video_count": null
+  }
+}

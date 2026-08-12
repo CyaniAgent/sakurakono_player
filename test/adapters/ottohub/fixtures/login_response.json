@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "uid": "10086",
+  "token": "tok_abc123",
+  "avatar_url": "https://example.com/avatar.jpg",
+  "cover_url": null,
+  "if_today_first_login": "1",
+  "email": "user@example.com",
+  "is_audit": 0,
+  "is_admin": 0
+}

@@ -1,0 +1,13 @@
+{
+  "status": "ok",
+  "data": {
+    "user_list": [
+      {
+        "uid": 3001,
+        "username": "活跃粉丝一号",
+        "avatar_url": "https://example.com/fan1.jpg",
+        "latest_activity_time": "2024-06-01T08:00:00Z"
+      }
+    ]
+  }
+}
