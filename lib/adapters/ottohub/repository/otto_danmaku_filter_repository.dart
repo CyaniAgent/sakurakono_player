@@ -3,6 +3,7 @@ import 'package:skf/core/models/danmaku_block.dart';
 import 'package:skf/core/repository/danmaku_filter_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
+// impossible — no SDK API (OttoHub 无此域)
 /// Stub [DanmakuFilterRepository] — OttoHub SDK has no danmaku filter API.
 class OttoDanmakuFilterRepository implements DanmakuFilterRepository {
   LoadingState<T> _err<T>(ApiException e) =>

@@ -3,6 +3,7 @@ import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
+// impossible — no SDK API (OttoHub 无此域)
 /// Stub [SponsorBlockRepository] — SponsorBlock is a Bilibili-adjacent service
 /// with no OttoHub equivalent.
 class OttoSponsorBlockRepository implements SponsorBlockRepository {

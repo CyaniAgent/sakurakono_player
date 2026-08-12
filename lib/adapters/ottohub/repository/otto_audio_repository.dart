@@ -4,6 +4,7 @@ import 'package:skf/core/models/audio_types.dart';
 import 'package:skf/core/repository/audio_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
+// impossible — no SDK API (OttoHub 无此域)
 /// Stub [AudioRepository] — OttoHub SDK has no audio playback API.
 class OttoAudioRepository implements AudioRepository {
   LoadingState<T> _err<T>(ApiException e) =>

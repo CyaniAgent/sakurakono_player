@@ -3,6 +3,7 @@ import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
+// impossible — no SDK API (OttoHub 无此域)
 /// Stub [MusicRepository] — OttoHub SDK has no BGM/music API.
 class OttoMusicRepository implements MusicRepository {
   LoadingState<T> _err<T>(ApiException e) =>

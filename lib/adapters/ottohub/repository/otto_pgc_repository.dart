@@ -3,6 +3,7 @@ import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
+// impossible — no SDK API (OttoHub 无此域)
 /// Stub [PgcRepository] — OttoHub SDK has no PGC/bangumi API.
 class OttoPgcRepository implements PgcRepository {
   LoadingState<T> _err<T>(ApiException e) =>

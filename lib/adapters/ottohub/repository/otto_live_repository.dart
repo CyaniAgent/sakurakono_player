@@ -4,6 +4,7 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
+// impossible — no SDK API (OttoHub 无此域)
 /// Stub [LiveRepository] — OttoHub SDK has no live streaming API.
 ///
 /// All methods return [Error] with code 'not_implemented'.
