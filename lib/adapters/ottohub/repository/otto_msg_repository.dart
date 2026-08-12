@@ -101,7 +101,8 @@ class OttoMsgRepository implements MsgRepository {
     required String bucket,
     required String dir,
   }) async {
-    // no SDK API — SDK 无图片上传接口 (无 uploadImage)
+    // SDK 有 oldCreator.submitImage(File) 但 path/bucket/dir 参数语义不匹配 —
+    // core 传本地路径+存储桶，SDK 只收 File，无法忠实映射，保留桩
     return _err(const ApiException('not_implemented'));
   }
 
@@ -118,8 +119,21 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> createTextDynamic(Object content) async {
-    // no SDK API — SDK oldBlog 无发布接口 (无 createBlog)
-    return _err(const ApiException('not_implemented'));
+    // Bilibili text dynamics are title-less; the SDK's blog API requires a
+    // title, so the first non-empty line becomes the title and the full text
+    // the content (channelId/channelSectionId unused).
+    try {
+      final text = content.toString();
+      final firstLine = text.split('\n').first.trim();
+      await _client.oldCreator.submitBlog(
+        title: firstLine.isEmpty ? '动态' : firstLine,
+        content: text,
+      );
+      return const Success(null);
+    } on ApiException catch (e) {
+      debugPrint('OttoMsgRepository.createTextDynamic ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
