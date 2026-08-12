@@ -289,7 +289,8 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> spaceSettingMod(Map<String, dynamic> data) async {
-    // no SDK API (SDK lacks space privacy settings update endpoint)
+    // SDK 有 updateUsername/updateSex/updateIntro/updateAvatar/updateCover 等
+    // 单项更新接口，但 core 传的是隐私开关 flags 的 Map，语义不匹配，保留桩
     return _err(const ApiException('not_implemented'));
   }
 
