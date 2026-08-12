@@ -16,6 +16,8 @@ class OttoReplyRepository implements ReplyRepository {
   final OttohubClient _client;
 
   OttoReplyRepository(this._client);
+  LoadingState<T> _err<T>(ApiException e) =>
+      Error(e.errorCode, code: e.httpStatus);
 
   @override
   Future<LoadingState<CoreMainListReply>> mainList({
@@ -136,8 +138,8 @@ class OttoReplyRepository implements ReplyRepository {
     required int dialog,
     required String? offset,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dialogList
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -148,8 +150,8 @@ class OttoReplyRepository implements ReplyRepository {
     int type = 1,
     String? keyword,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: searchItem
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -158,8 +160,8 @@ class OttoReplyRepository implements ReplyRepository {
     required int oid,
     required int rpid,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: translateReply
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -169,8 +171,8 @@ class OttoReplyRepository implements ReplyRepository {
     required String rpid,
     required bool isUpTop,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: replyTop
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -179,8 +181,8 @@ class OttoReplyRepository implements ReplyRepository {
     required int type,
     required int action,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: replySubjectModify
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -222,8 +224,8 @@ class OttoReplyRepository implements ReplyRepository {
     required int rpid,
     required int action,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: likeReply
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -233,8 +235,8 @@ class OttoReplyRepository implements ReplyRepository {
     required int rpid,
     required int action,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: hateReply
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -245,14 +247,27 @@ class OttoReplyRepository implements ReplyRepository {
     bool banUid = true,
     String? reasonDesc,
   }) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    final vcid = int.tryParse(rpid);
+    if (vcid == null) {
+      return const Error('OttoHub: 无法解析评论ID');
+    }
+    try {
+      // Core report has no type param — video-comment report (mapping: oldComment.reportVideoComment).
+      await _client.oldComment.reportVideoComment(
+        vcid,
+        reason: reasonDesc ?? '',
+      );
+      return const Success(null);
+    } on ApiException catch (e) {
+      debugPrint('OttoReplyRepository.report ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
   }
 
   @override
   Future<LoadingState<dynamic>> getEmoteList({String? business}) async {
-    // TODO(otto): not yet implemented - SDK API unavailable
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: getEmoteList
+    return _err(const ApiException('not_implemented'));
   }
 
   @override

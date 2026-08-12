@@ -253,8 +253,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     String? title,
     Map? attachCard,
   }) async {
-    // OttoHub SDK does not expose a generic "create dynamic" API.
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: createDynamic
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -309,32 +309,55 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<void>> setTop({
     required String dynamicId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: setTop
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> rmTop({
     required String dynamicId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: rmTop
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
-  // Article (not supported by OttoHub SDK)
+  // Article (articleInfo 经 oldBlog.getBlogDetail 实现；articleView 无 SDK API)
   // ---------------------------------------------------------------------------
 
   @override
   Future<LoadingState<CoreArticleInfoData>> articleInfo({
     required String cvId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    final rawId = cvId.replaceFirst(RegExp(r'^cv', caseSensitive: false), '');
+    final bid = _parseId(rawId);
+    if (bid == null) {
+      return const Error('OttoHub: 无法解析专栏ID');
+    }
+    try {
+      final detail = await _client.oldBlog.getBlogDetail(bid);
+      return _ok(CoreArticleInfoData(
+        favorite: detail.ifFavorite == 1,
+        stats: CoreArticleInfoStats(
+          favorite: detail.favoriteCount,
+          like: detail.likeCount,
+          reply: detail.commentCount,
+        ),
+        title: detail.title,
+        originImageUrls: detail.thumbnails,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoDynamicsRepository.articleInfo ApiException: ${e.errorCode}');
+      return _err(e);
+    }
   }
 
   @override
   Future<LoadingState<CoreArticleViewData>> articleView({
     required String? cvId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: articleView
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -383,7 +406,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreVoteInfo>> voteInfo(int voteId) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: voteInfo
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -393,7 +417,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     bool anonymous = false,
     int? dynamicId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: doVote
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -404,7 +429,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<CoreTopDetails?>> topicTop({
     required String topicId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: topicTop
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -413,7 +439,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     String? offset,
     required int sortBy,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: topicFeed
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -421,7 +448,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String topicId,
     required int sortBy,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: topicFold
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -432,7 +460,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<CoreArticleListData>> articleList({
     required String id,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: articleList
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -446,26 +475,30 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String dynamicIdStr,
     required int? reserveTotal,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dynReserve
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreTopicItem>?>> dynTopicRcmd({
     int ps = 25,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dynTopicRcmd
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(String? id) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dynPic
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreMentionGroup>?>> dynMention({
     String? keyword,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dynMention
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -474,12 +507,14 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<int?>> createVote(CoreVoteInfo voteInfo) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: createVote
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<int?>> updateVote(CoreVoteInfo voteInfo) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: updateVote
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -492,7 +527,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String title,
     required int livePlanStartTime,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: createReserve
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -502,14 +538,16 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required int livePlanStartTime,
     required int sid,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: updateReserve
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreReserveInfoData>> reserveInfo({
     required int? sid,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: reserveInfo
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -520,7 +558,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<List<CoreFolloweeVote>?>> followeeVotes({
     required String voteId,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: followeeVotes
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -533,7 +572,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     int? dynType,
     required String action,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dynPrivatePubSetting
+    return _err(const ApiException('not_implemented'));
   }
 
   @override
@@ -549,7 +589,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     String? title,
     Map? attachCard,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: editDyn
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -563,7 +604,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     int? sortType,
     required int page,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: bubble
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -575,7 +617,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String id,
     String? offset,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: dynReaction
+    return _err(const ApiException('not_implemented'));
   }
 
   // ---------------------------------------------------------------------------
@@ -584,6 +627,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<int?> dynRed() async {
+    // no SDK API — 缺失 SDK 方法: dynRed (gRPC)
     return null;
   }
 
@@ -592,6 +636,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     CoreOpusType? opusType,
     required int oid,
   }) async {
-    return const Error('OttoHub: 功能暂未支持');
+    // no SDK API — 缺失 SDK 方法: opusDetailGrpc (gRPC)
+    return _err(const ApiException('not_implemented'));
   }
 }
