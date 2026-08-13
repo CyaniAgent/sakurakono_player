@@ -253,7 +253,7 @@ class OttoFavRepository implements FavRepository {
     required int id,
     required int type,
   }) async {
-    // No subscription concept in OttoHub.
+    // no SDK API — SDK 缺 cancelSub 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -263,7 +263,7 @@ class OttoFavRepository implements FavRepository {
     required int pn,
     required int ps,
   }) async {
-    // No PGC/season concept in OttoHub.
+    // no SDK API — SDK 缺 favSeasonList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -272,19 +272,19 @@ class OttoFavRepository implements FavRepository {
     required int mid,
     required int page,
   }) async {
-    // no SDK API — SDK 无课程收藏列表方法 (无 getPugvFavList)
+    // no SDK API — SDK 缺 getPugvFavList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> addFavPugv(Object seasonId) async {
-    // no SDK API — SDK 无课程收藏方法 (无 addPugvFav)
+    // no SDK API — SDK 缺 addPugvFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFavPugv(Object seasonId) async {
-    // no SDK API — SDK 无课程取消收藏方法 (无 delPugvFav)
+    // no SDK API — SDK 缺 delPugvFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -292,19 +292,19 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<CoreFavTopicData>> favTopic({
     required int page,
   }) async {
-    // no SDK API — SDK 无话题收藏列表方法 (无 getTopicFavList)
+    // no SDK API — SDK 缺 getTopicFavList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> addFavTopic(Object topicId) async {
-    // no SDK API — SDK 无话题收藏方法 (无 addTopicFav)
+    // no SDK API — SDK 缺 addTopicFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFavTopic(Object topicId) async {
-    // no SDK API — SDK 无话题取消收藏方法 (无 delTopicFav)
+    // no SDK API — SDK 缺 delTopicFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -313,7 +313,7 @@ class OttoFavRepository implements FavRepository {
     Object topicId,
     bool isLike,
   ) async {
-    // no SDK API — SDK 无话题点赞方法 (无 likeTopic)
+    // no SDK API — SDK 缺 likeTopic 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -321,7 +321,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<CoreFavArticleData>> favArticle({
     required int page,
   }) async {
-    // no SDK API — SDK 无文章收藏列表方法 (无 getArticleFavList)
+    // no SDK API — SDK 缺 getArticleFavList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -329,7 +329,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> addFavArticle({
     required String id,
   }) async {
-    // no SDK API — SDK 无文章收藏方法 (无 addArticleFav)
+    // no SDK API — SDK 缺 addArticleFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -337,7 +337,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> delFavArticle({
     required String id,
   }) async {
-    // no SDK API — SDK 无文章取消收藏方法 (无 delArticleFav)
+    // no SDK API — SDK 缺 delArticleFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -430,7 +430,7 @@ class OttoFavRepository implements FavRepository {
     int? followStatus,
     Object? mid,
   }) async {
-    // no SDK API — SDK 无番剧收藏列表方法 (无 getPgcFavList)
+    // no SDK API — SDK 缺 getPgcFavList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -440,7 +440,7 @@ class OttoFavRepository implements FavRepository {
     Object? rid,
     Object? type,
   }) async {
-    // OttoHub SDK provides no query to enumerate which collections contain a video.
+    // no SDK API — SDK 缺 videoInFolder 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -449,7 +449,7 @@ class OttoFavRepository implements FavRepository {
     Object rid,
     Object type,
   ) async {
-    // OttoHub SDK has no batch unfavorite endpoint.
+    // no SDK API — SDK 缺 unfavAll 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -458,7 +458,7 @@ class OttoFavRepository implements FavRepository {
     required bool isFav,
     required String? seasonId,
   }) async {
-    // no SDK API — SDK 无番剧收藏开关方法 (无 seasonFavorite)
+    // no SDK API — SDK 缺 seasonFavorite 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -466,7 +466,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<List<CoreSpaceFavData>?>> spaceFav({
     required int mid,
   }) async {
-    // OttoHub SDK has no space-favourites concept.
+    // no SDK API — SDK 缺 spaceFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -532,7 +532,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> deleteFolder({
     required String mediaIds,
   }) async {
-    // OttoHub SDK has no folder deletion endpoint.
+    // no SDK API — SDK 缺 deleteFolder 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -540,7 +540,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> sortFavFolder({
     required String sort,
   }) async {
-    // OttoHub SDK has no folder-level sort operation.
+    // no SDK API — SDK 缺 sortFavFolder 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -548,7 +548,7 @@ class OttoFavRepository implements FavRepository {
   Future<LoadingState<void>> cleanFav({
     required String mediaId,
   }) async {
-    // OttoHub SDK has no "clean" / clear-folder operation.
+    // no SDK API — SDK 缺 cleanFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -561,7 +561,7 @@ class OttoFavRepository implements FavRepository {
     int? mid,
     required String resources,
   }) async {
-    // OttoHub SDK has no copy/move between folders operation.
+    // no SDK API — SDK 缺 copyOrMoveFav 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -570,7 +570,7 @@ class OttoFavRepository implements FavRepository {
     required String opusId,
     required int action,
   }) async {
-    // OttoHub SDK has no community/opus action endpoint.
+    // no SDK API — SDK 缺 communityAction 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 }

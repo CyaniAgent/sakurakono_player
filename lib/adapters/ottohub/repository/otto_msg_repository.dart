@@ -24,7 +24,7 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // no SDK API — SDK oldIm 无回复列表接口 (无 reply-feed)
+    // no SDK API — SDK 缺 oldIm.reply-feed 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -33,7 +33,7 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // no SDK API — SDK oldIm 无 @我 列表接口 (无 at-feed)
+    // no SDK API — SDK 缺 oldIm.at-feed 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -42,7 +42,7 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // no SDK API — SDK oldIm 无点赞列表接口 (无 like-feed)
+    // no SDK API — SDK 缺 oldIm.like-feed 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -52,7 +52,7 @@ class OttoMsgRepository implements MsgRepository {
     required int pn,
     Object lastMid = 0,
   }) async {
-    // no SDK API — SDK oldIm 无点赞明细接口 (无 like-detail)
+    // no SDK API — SDK 缺 oldIm.like-detail 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -113,7 +113,7 @@ class OttoMsgRepository implements MsgRepository {
     String? biz,
     CancelToken? cancelToken,
   }) async {
-    // no SDK API — SDK 无 BFS 上传接口 (无 uploadBfs)
+    // no SDK API — SDK 缺 uploadBfs 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -142,7 +142,7 @@ class OttoMsgRepository implements MsgRepository {
     Object? dynType,
     Object? ridStr,
   }) async {
-    // no SDK API — SDK 无动态删除接口 (无 deleteDynamic)
+    // no SDK API — SDK 缺 deleteDynamic 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -190,7 +190,7 @@ class OttoMsgRepository implements MsgRepository {
     required int talkerId,
     required int opType,
   }) async {
-    // no SDK API — SDK oldIm 无会话置顶接口 (无 pinSession)
+    // no SDK API — SDK 缺 oldIm.pinSession 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -213,7 +213,7 @@ class OttoMsgRepository implements MsgRepository {
     required String id,
     required int noticeState,
   }) async {
-    // no SDK API — SDK oldIm 无通知状态设置接口 (无 setNotice)
+    // no SDK API — SDK 缺 oldIm.setNotice 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -223,7 +223,7 @@ class OttoMsgRepository implements MsgRepository {
     required int setting,
     required dndUid,
   }) async {
-    // no SDK API — SDK oldIm 无免打扰设置接口 (无 setDnd)
+    // no SDK API — SDK 缺 oldIm.setDnd 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -232,7 +232,7 @@ class OttoMsgRepository implements MsgRepository {
     required int setting,
     required talkerUid,
   }) async {
-    // no SDK API — SDK oldIm 无推送设置接口 (无 setPushSs)
+    // no SDK API — SDK 缺 oldIm.setPushSs 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -273,7 +273,7 @@ class OttoMsgRepository implements MsgRepository {
   Future<LoadingState<CoreSessionSsData>> getSessionSs({
     required int talkerUid,
   }) async {
-    // no SDK API — SDK oldIm 无会话设置查询接口 (无 getSessionSs)
+    // no SDK API — SDK 缺 oldIm.getSessionSs 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -281,7 +281,7 @@ class OttoMsgRepository implements MsgRepository {
   Future<LoadingState<List<CoreUidSetting>?>> getMsgDnd({
     required String uidsStr,
   }) async {
-    // no SDK API — SDK oldIm 无免打扰查询接口 (无 getMsgDnd)
+    // no SDK API — SDK 缺 oldIm.getMsgDnd 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -329,7 +329,7 @@ class OttoMsgRepository implements MsgRepository {
     required Map comment,
     required Map extra,
   }) async {
-    // no SDK API — SDK oldIm 无 IM 举报接口 (无 reportMessage)
+    // no SDK API — SDK 缺 oldIm.reportMessage 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 }

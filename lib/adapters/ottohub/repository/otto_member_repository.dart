@@ -29,7 +29,7 @@ class OttoMemberRepository implements MemberRepository {
     String? reason,
     int? reasonV2,
   }) async {
-    // no SDK API (SDK lacks member report endpoint)
+    // no SDK API — SDK 缺 member report 或等效端点
   }
 
   @override
@@ -37,7 +37,7 @@ class OttoMemberRepository implements MemberRepository {
     required int mid,
     required int page,
   }) async {
-    // no SDK API (SDK lacks space article list endpoint)
+    // no SDK API — SDK 缺 space article list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -46,7 +46,7 @@ class OttoMemberRepository implements MemberRepository {
     required int? mid,
     required int pn,
   }) async {
-    // no SDK API (SDK lacks season/series list endpoint)
+    // no SDK API — SDK 缺 season/series list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -93,7 +93,7 @@ class OttoMemberRepository implements MemberRepository {
     required int page,
     required mid,
   }) async {
-    // no SDK API (SDK lacks space audio list endpoint)
+    // no SDK API — SDK 缺 space audio list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -102,7 +102,7 @@ class OttoMemberRepository implements MemberRepository {
     required int page,
     required mid,
   }) async {
-    // no SDK API (SDK lacks space cheese list endpoint)
+    // no SDK API — SDK 缺 space cheese list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -231,7 +231,7 @@ class OttoMemberRepository implements MemberRepository {
     required int pn,
     CoreArchiveSortTypeApp sort = CoreArchiveSortTypeApp.desc,
   }) async {
-    // no SDK API (SDK lacks season/series web endpoint)
+    // no SDK API — SDK 缺 season/series web 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -277,13 +277,13 @@ class OttoMemberRepository implements MemberRepository {
     required String? offset,
     required String keyword,
   }) async {
-    // no SDK API (SDK lacks dynamic search endpoint)
+    // no SDK API — SDK 缺 dynamic search 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreMemberTagItemModel>>> followUpTags() async {
-    // no SDK API (SDK lacks follow tag list endpoint)
+    // no SDK API — SDK 缺 follow tag list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -310,7 +310,7 @@ class OttoMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<void>> addUsers(String fids, String tagids) async {
-    // no SDK API (SDK lacks follow tag add-users endpoint)
+    // no SDK API — SDK 缺 follow tag add-users 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -348,7 +348,7 @@ class OttoMemberRepository implements MemberRepository {
 
   @override
   Future<LoadingState<int>> createFollowTag(String tagName) async {
-    // no SDK API (SDK lacks follow tag create endpoint)
+    // no SDK API — SDK 缺 follow tag create 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -357,19 +357,19 @@ class OttoMemberRepository implements MemberRepository {
     Object tagid,
     Object name,
   ) async {
-    // no SDK API (SDK lacks follow tag update endpoint)
+    // no SDK API — SDK 缺 follow tag update 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delFollowTag(Object tagid) async {
-    // no SDK API (SDK lacks follow tag delete endpoint)
+    // no SDK API — SDK 缺 follow tag delete 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreMemberTagItemModel>?>> getTopVideo() async {
-    // no SDK API (SDK lacks pinned video endpoint)
+    // no SDK API — SDK 缺 pinned video 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -454,7 +454,7 @@ class OttoMemberRepository implements MemberRepository {
     required int page,
     int? privilegeType,
   }) async {
-    // no SDK API (SDK lacks upower rank endpoint)
+    // no SDK API — SDK 缺 upower rank 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -463,7 +463,7 @@ class OttoMemberRepository implements MemberRepository {
     required int mid,
     required int page,
   }) async {
-    // no SDK API (SDK lacks coin archive list endpoint)
+    // no SDK API — SDK 缺 coin archive list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -472,7 +472,7 @@ class OttoMemberRepository implements MemberRepository {
     required int mid,
     required int page,
   }) async {
-    // no SDK API (SDK lacks liked archive list endpoint)
+    // no SDK API — SDK 缺 liked archive list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -480,7 +480,7 @@ class OttoMemberRepository implements MemberRepository {
   Future<LoadingState<CoreSpaceShopData>> spaceShop({
     required int mid,
   }) async {
-    // no SDK API (SDK lacks space shop endpoint)
+    // no SDK API — SDK 缺 space shop 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -489,7 +489,7 @@ class OttoMemberRepository implements MemberRepository {
     required int ruid,
     required int page,
   }) async {
-    // no SDK API (SDK lacks member guard endpoint)
+    // no SDK API — SDK 缺 member guard 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 }

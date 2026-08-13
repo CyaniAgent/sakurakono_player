@@ -86,7 +86,7 @@ class OttoUserRepository implements UserRepository {
     String keyword = '',
     bool asc = false,
   }) async {
-    // no SDK API (SDK lacks watch_later list endpoint)
+    // no SDK API — SDK 缺 watch_later list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -95,19 +95,19 @@ class OttoUserRepository implements UserRepository {
     String? bvid,
     Object? aid,
   }) async {
-    // no SDK API (SDK lacks watch_later add endpoint)
+    // no SDK API — SDK 缺 watch_later add 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> toViewDel({required String aids}) async {
-    // no SDK API (SDK lacks watch_later delete endpoint)
+    // no SDK API — SDK 缺 watch_later delete 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> toViewClear([int? cleanType]) async {
-    // no SDK API (SDK lacks watch_later clear endpoint)
+    // no SDK API — SDK 缺 watch_later clear 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -133,25 +133,25 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> pauseHistory(bool switchStatus, {Object? account}) async {
-    // no SDK API (SDK lacks history pause endpoint)
+    // no SDK API — SDK 缺 history pause 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<bool>> historyStatus({Object? account}) async {
-    // no SDK API (SDK lacks history status endpoint)
+    // no SDK API — SDK 缺 history status 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> clearHistory({Object? account}) async {
-    // no SDK API (SDK lacks history clear endpoint)
+    // no SDK API — SDK 缺 history clear 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<void>> delHistory(String kid, {Object? account}) async {
-    // no SDK API (SDK lacks history delete endpoint)
+    // no SDK API — SDK 缺 history delete 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -161,7 +161,7 @@ class OttoUserRepository implements UserRepository {
     required String keyword,
     Object? account,
   }) async {
-    // no SDK API (SDK lacks history search endpoint)
+    // no SDK API — SDK 缺 history search 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -222,7 +222,7 @@ class OttoUserRepository implements UserRepository {
     required String bvid,
     Object? cid,
   }) async {
-    // no SDK API (SDK lacks video tag list endpoint)
+    // no SDK API — SDK 缺 video tag list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -240,7 +240,7 @@ class OttoUserRepository implements UserRepository {
     dynamic sortField = 1,
     bool direction = false,
   }) async {
-    // no SDK API (SDK lacks media list endpoint)
+    // no SDK API — SDK 缺 media list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -248,13 +248,13 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<num?>> getCoin() async {
-    // no SDK API (SDK lacks coin balance endpoint)
+    // no SDK API — SDK 缺 coin balance 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreCoinLogData>> coinLog() async {
-    // no SDK API (SDK lacks coin log endpoint)
+    // no SDK API — SDK 缺 coin log 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -267,7 +267,7 @@ class OttoUserRepository implements UserRepository {
     required int reasonType,
     String? reasonDesc,
   }) async {
-    // no SDK API (SDK lacks dynamic report endpoint)
+    // no SDK API — SDK 缺 dynamic report 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -299,7 +299,7 @@ class OttoUserRepository implements UserRepository {
     required String sid,
     required bool isFollow,
   }) async {
-    // no SDK API (SDK lacks space reserve endpoint)
+    // no SDK API — SDK 缺 space reserve 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -307,7 +307,7 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> vipExpAdd() async {
-    // no SDK API (SDK lacks vip exp add endpoint)
+    // no SDK API — SDK 缺 vip exp add 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -315,13 +315,13 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<CoreLoginLogData>> loginLog() async {
-    // no SDK API (SDK lacks login log endpoint)
+    // no SDK API — SDK 缺 login log 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreCoinLogData>> expLog() async {
-    // no SDK API (SDK lacks exp log endpoint)
+    // no SDK API — SDK 缺 exp log 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 

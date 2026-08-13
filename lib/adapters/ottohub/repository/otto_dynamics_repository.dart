@@ -253,7 +253,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     String? title,
     Map? attachCard,
   }) async {
-    // no SDK API — 缺失 SDK 方法: createDynamic
+    // no SDK API — SDK 缺 createDynamic 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -309,7 +309,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<void>> setTop({
     required String dynamicId,
   }) async {
-    // no SDK API — 缺失 SDK 方法: setTop
+    // no SDK API — SDK 缺 setTop 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -317,7 +317,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<void>> rmTop({
     required String dynamicId,
   }) async {
-    // no SDK API — 缺失 SDK 方法: rmTop
+    // no SDK API — SDK 缺 rmTop 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -356,7 +356,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<CoreArticleViewData>> articleView({
     required String? cvId,
   }) async {
-    // no SDK API — 缺失 SDK 方法: articleView
+    // no SDK API — SDK 缺 articleView 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -406,7 +406,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<CoreVoteInfo>> voteInfo(int voteId) async {
-    // no SDK API — 缺失 SDK 方法: voteInfo
+    // no SDK API — SDK 缺 voteInfo 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -417,7 +417,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     bool anonymous = false,
     int? dynamicId,
   }) async {
-    // no SDK API — 缺失 SDK 方法: doVote
+    // no SDK API — SDK 缺 doVote 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -429,7 +429,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<CoreTopDetails?>> topicTop({
     required String topicId,
   }) async {
-    // no SDK API — 缺失 SDK 方法: topicTop
+    // no SDK API — SDK 缺 topicTop 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -439,7 +439,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     String? offset,
     required int sortBy,
   }) async {
-    // no SDK API — 缺失 SDK 方法: topicFeed
+    // no SDK API — SDK 缺 topicFeed 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -448,7 +448,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String topicId,
     required int sortBy,
   }) async {
-    // no SDK API — 缺失 SDK 方法: topicFold
+    // no SDK API — SDK 缺 topicFold 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -460,7 +460,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<CoreArticleListData>> articleList({
     required String id,
   }) async {
-    // no SDK API — 缺失 SDK 方法: articleList
+    // no SDK API — SDK 缺 articleList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -475,7 +475,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String dynamicIdStr,
     required int? reserveTotal,
   }) async {
-    // no SDK API — 缺失 SDK 方法: dynReserve
+    // no SDK API — SDK 缺 dynReserve 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -483,13 +483,13 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<List<CoreTopicItem>?>> dynTopicRcmd({
     int ps = 25,
   }) async {
-    // no SDK API — 缺失 SDK 方法: dynTopicRcmd
+    // no SDK API — SDK 缺 dynTopicRcmd 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<List<CoreOpusPicModel>?>> dynPic(String? id) async {
-    // no SDK API — 缺失 SDK 方法: dynPic
+    // no SDK API — SDK 缺 dynPic 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -497,7 +497,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<List<CoreMentionGroup>?>> dynMention({
     String? keyword,
   }) async {
-    // no SDK API — 缺失 SDK 方法: dynMention
+    // no SDK API — SDK 缺 dynMention 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -507,13 +507,13 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<LoadingState<int?>> createVote(CoreVoteInfo voteInfo) async {
-    // no SDK API — 缺失 SDK 方法: createVote
+    // no SDK API — SDK 缺 createVote 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<int?>> updateVote(CoreVoteInfo voteInfo) async {
-    // no SDK API — 缺失 SDK 方法: updateVote
+    // no SDK API — SDK 缺 updateVote 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -527,7 +527,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String title,
     required int livePlanStartTime,
   }) async {
-    // no SDK API — 缺失 SDK 方法: createReserve
+    // no SDK API — SDK 缺 createReserve 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -538,7 +538,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required int livePlanStartTime,
     required int sid,
   }) async {
-    // no SDK API — 缺失 SDK 方法: updateReserve
+    // no SDK API — SDK 缺 updateReserve 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -546,7 +546,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<CoreReserveInfoData>> reserveInfo({
     required int? sid,
   }) async {
-    // no SDK API — 缺失 SDK 方法: reserveInfo
+    // no SDK API — SDK 缺 reserveInfo 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -558,7 +558,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   Future<LoadingState<List<CoreFolloweeVote>?>> followeeVotes({
     required String voteId,
   }) async {
-    // no SDK API — 缺失 SDK 方法: followeeVotes
+    // no SDK API — SDK 缺 followeeVotes 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -572,7 +572,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     int? dynType,
     required String action,
   }) async {
-    // no SDK API — 缺失 SDK 方法: dynPrivatePubSetting
+    // no SDK API — SDK 缺 dynPrivatePubSetting 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -589,7 +589,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     String? title,
     Map? attachCard,
   }) async {
-    // no SDK API — 缺失 SDK 方法: editDyn
+    // no SDK API — SDK 缺 editDyn 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -604,7 +604,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     int? sortType,
     required int page,
   }) async {
-    // no SDK API — 缺失 SDK 方法: bubble
+    // no SDK API — SDK 缺 bubble 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -617,7 +617,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     required String id,
     String? offset,
   }) async {
-    // no SDK API — 缺失 SDK 方法: dynReaction
+    // no SDK API — SDK 缺 dynReaction 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -627,7 +627,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   @override
   Future<int?> dynRed() async {
-    // no SDK API — 缺失 SDK 方法: dynRed (gRPC)
+    // no SDK API — SDK 缺 dynRed (gRPC) 或等效端点
     return null;
   }
 
@@ -636,7 +636,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
     CoreOpusType? opusType,
     required int oid,
   }) async {
-    // no SDK API — 缺失 SDK 方法: opusDetailGrpc (gRPC)
+    // no SDK API — SDK 缺 opusDetailGrpc (gRPC) 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 }

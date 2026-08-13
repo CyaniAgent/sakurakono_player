@@ -36,7 +36,7 @@ class OttoImRepository implements ImRepository {
 
   @override
   Future<LoadingState<CoreImRspShareList>> shareList({int size = 10}) async {
-    // no SDK API — SDK oldIm 无分享列表接口 (无 shareList)
+    // no SDK API — SDK 缺 oldIm.shareList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -104,7 +104,7 @@ class OttoImRepository implements ImRepository {
     Map<int, CoreImOffset>? offset,
     CoreImSessionPageType? pageType,
   }) async {
-    // no SDK API — SDK oldIm 无会话次级列表接口 (无 secondary list)
+    // no SDK API — SDK 缺 oldIm.secondary list 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -127,7 +127,7 @@ class OttoImRepository implements ImRepository {
     CoreImSessionPageType? pageType,
     CoreImSessionId? sessionId,
   }) async {
-    // no SDK API — SDK oldIm 无会话更新接口 (无 updateSession)
+    // no SDK API — SDK 缺 oldIm.updateSession 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -136,7 +136,7 @@ class OttoImRepository implements ImRepository {
     CoreImSessionId? sessionId,
     int? topTimeMicros,
   }) async {
-    // no SDK API — SDK oldIm 无会话置顶接口 (无 pinSession)
+    // no SDK API — SDK 缺 oldIm.pinSession 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -144,7 +144,7 @@ class OttoImRepository implements ImRepository {
   Future<LoadingState<CoreImUnPinSessionReply>> unpinSession({
     CoreImSessionId? sessionId,
   }) async {
-    // no SDK API — SDK oldIm 无取消置顶接口 (无 unpinSession)
+    // no SDK API — SDK 缺 oldIm.unpinSession 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -185,7 +185,7 @@ class OttoImRepository implements ImRepository {
   Future<LoadingState<CoreImGetImSettingsReply>> getImSettings({
     CoreImSettingType? type,
   }) async {
-    // no SDK API — SDK oldIm 无 IM 设置查询接口 (无 getImSettings)
+    // no SDK API — SDK 缺 oldIm.getImSettings 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -193,13 +193,13 @@ class OttoImRepository implements ImRepository {
   Future<LoadingState<CoreImSetImSettingsReply>> setImSettings({
     Map<int, CoreImSetting>? settings,
   }) async {
-    // no SDK API — SDK oldIm 无 IM 设置写入接口 (无 setImSettings)
+    // no SDK API — SDK 缺 oldIm.setImSettings 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<CoreImKeywordBlockingListReply>> keywordBlockingList() async {
-    // no SDK API — SDK oldIm 无关键词屏蔽列表接口 (无 keywordBlockingList)
+    // no SDK API — SDK 缺 oldIm.keywordBlockingList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -207,7 +207,7 @@ class OttoImRepository implements ImRepository {
   Future<LoadingState<CoreImKeywordBlockingAddReply>> keywordBlockingAdd(
     String keyword,
   ) async {
-    // no SDK API — SDK oldIm 无关键词屏蔽添加接口 (无 keywordBlockingAdd)
+    // no SDK API — SDK 缺 oldIm.keywordBlockingAdd 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -215,7 +215,7 @@ class OttoImRepository implements ImRepository {
   Future<LoadingState<CoreImKeywordBlockingDeleteReply>> keywordBlockingDelete(
     String keyword,
   ) async {
-    // no SDK API — SDK oldIm 无关键词屏蔽删除接口 (无 keywordBlockingDelete)
+    // no SDK API — SDK 缺 oldIm.keywordBlockingDelete 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 

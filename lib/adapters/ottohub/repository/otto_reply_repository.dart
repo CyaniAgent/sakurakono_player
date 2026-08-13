@@ -138,7 +138,7 @@ class OttoReplyRepository implements ReplyRepository {
     required int dialog,
     required String? offset,
   }) async {
-    // no SDK API — 缺失 SDK 方法: dialogList
+    // no SDK API — SDK 缺 dialogList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -150,7 +150,7 @@ class OttoReplyRepository implements ReplyRepository {
     int type = 1,
     String? keyword,
   }) async {
-    // no SDK API — 缺失 SDK 方法: searchItem
+    // no SDK API — SDK 缺 searchItem 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -160,7 +160,7 @@ class OttoReplyRepository implements ReplyRepository {
     required int oid,
     required int rpid,
   }) async {
-    // no SDK API — 缺失 SDK 方法: translateReply
+    // no SDK API — SDK 缺 translateReply 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -171,7 +171,7 @@ class OttoReplyRepository implements ReplyRepository {
     required String rpid,
     required bool isUpTop,
   }) async {
-    // no SDK API — 缺失 SDK 方法: replyTop
+    // no SDK API — SDK 缺 replyTop 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -181,7 +181,7 @@ class OttoReplyRepository implements ReplyRepository {
     required int type,
     required int action,
   }) async {
-    // no SDK API — 缺失 SDK 方法: replySubjectModify
+    // no SDK API — SDK 缺 replySubjectModify 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -224,7 +224,7 @@ class OttoReplyRepository implements ReplyRepository {
     required int rpid,
     required int action,
   }) async {
-    // no SDK API — 缺失 SDK 方法: likeReply
+    // no SDK API — SDK 缺 likeReply 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -235,7 +235,7 @@ class OttoReplyRepository implements ReplyRepository {
     required int rpid,
     required int action,
   }) async {
-    // no SDK API — 缺失 SDK 方法: hateReply
+    // no SDK API — SDK 缺 hateReply 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
@@ -266,7 +266,7 @@ class OttoReplyRepository implements ReplyRepository {
 
   @override
   Future<LoadingState<dynamic>> getEmoteList({String? business}) async {
-    // no SDK API — 缺失 SDK 方法: getEmoteList
+    // no SDK API — SDK 缺 getEmoteList 或等效端点
     return _err(const ApiException('not_implemented'));
   }
 
