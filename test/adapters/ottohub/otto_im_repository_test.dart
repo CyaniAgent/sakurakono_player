@@ -94,6 +94,29 @@ void main() {
       expect(fake.requestCount, 1);
     });
 
+    test('happy: sessionMain forwards the first offset entry as pagination',
+        () async {
+      makeRepo(<String, String>{
+        'GET /im/friend_list': fixture('ottohub/im_friend_list'),
+      });
+
+      final result = await repo.sessionMain(
+        offset: {
+          CoreImSessionPageType.home.index: const CoreImOffset(
+            normalOffset: 40,
+            topOffset: 5,
+          ),
+        },
+      );
+
+      // Non-empty offset map must not crash and yields the same conversion.
+      expect(result, isA<Success<CoreImSessionMainReply>>());
+      final reply = (result as Success<CoreImSessionMainReply>).response;
+      expect(reply.sessions, hasLength(2));
+      expect(reply.sessions.first.talkerId, 3001);
+      expect(fake.requestCount, 1);
+    });
+
     test('happy: clearUnread marks all system messages read', () async {
       makeRepo(<String, String>{
         'POST /im/read_all_system_message': fixture('ottohub/ok'),

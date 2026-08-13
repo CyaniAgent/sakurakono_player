@@ -74,8 +74,15 @@ class OttoImRepository implements ImRepository {
   Future<LoadingState<CoreImSessionMainReply>> sessionMain({
     Map<int, CoreImOffset>? offset,
   }) async {
+    // Core keys pagination by session type; the SDK friend list is not
+    // session-type-keyed, so the FIRST entry's normalOffset is forwarded as
+    // the SDK offset (num: 20, approximate mapping) when the map is non-empty.
     try {
-      final friends = await _client.oldIm.getFriendList();
+      final firstOffset = offset?.values.firstOrNull?.normalOffset;
+      final friends = await _client.oldIm.getFriendList(
+        offset: firstOffset,
+        num: firstOffset != null ? 20 : null,
+      );
       return Success(CoreImSessionMainReply(
         sessions: friends
             .map((f) => CoreImSession(
@@ -147,15 +154,24 @@ class OttoImRepository implements ImRepository {
   }) async {
     // SDK `IOldImApi.deleteMessage(msgId)` is keyed by msgId; the core call
     // carries no session id, so the closest equivalent is deleting every
-    // friend-session message (clearing the session list).
+    // friend-session message (clearing the session list). Bounded paged sweep
+    // (num: 50, loop while a full page returns); abort-on-error — no per-friend
+    // swallowing, any ApiException surfaces as Error.
     try {
       final friends = await _client.oldIm.getFriendList();
       for (final friend in friends) {
-        final msgs = await _client.oldIm.getFriendMessages(
-          friendUid: friend.uid,
-        );
-        for (final m in msgs) {
-          await _client.oldIm.deleteMessage(m.msgId);
+        var pageStart = 0;
+        while (true) {
+          final msgs = await _client.oldIm.getFriendMessages(
+            friendUid: friend.uid,
+            offset: pageStart,
+            num: 50,
+          );
+          for (final m in msgs) {
+            await _client.oldIm.deleteMessage(m.msgId);
+          }
+          if (msgs.length < 50) break;
+          pageStart += msgs.length;
         }
       }
       return const Success(CoreImDeleteSessionListReply());
