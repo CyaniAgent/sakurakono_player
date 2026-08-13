@@ -99,7 +99,7 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<AudioRepository>(OttoAudioRepository.new)
       // impossible — no SDK API (OttoHub 无此域)
       ..lazyPut<DanmakuFilterRepository>(OttoDanmakuFilterRepository.new)
-      ..lazyPut<DownloadRepository>(OttoDownloadRepository.new)
+      ..lazyPut<DownloadRepository>(() => OttoDownloadRepository(client))
       // impossible — no SDK API (OttoHub 无此域)
       ..lazyPut<LiveRepository>(OttoLiveRepository.new)
       // impossible — no SDK API (OttoHub 无此域)
