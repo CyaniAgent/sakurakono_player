@@ -12,18 +12,7 @@
       "request": "launch",
       "type": "dart",
       "args": [
-        "--dart-define=ADAPTER=ottohub",
-        "--dart-define=FEATURE_SEARCH=false",
-        "--dart-define=FEATURE_LIVE=false",
-        "--dart-define=FEATURE_MUSIC=false",
-        "--dart-define=FEATURE_DM_FILTER=false",
-        "--dart-define=FEATURE_AUDIO=false",
-        "--dart-define=FEATURE_MATCH=false",
-        "--dart-define=FEATURE_SPACE=false",
-        "--dart-define=FEATURE_DOWNLOAD=false",
-        "--dart-define=FEATURE_PGC=false",
-        "--dart-define=FEATURE_SPONSOR=false",
-        "--dart-define=FEATURE_VALIDATE=false"
+        "--dart-define=ADAPTER=ottohub"
       ]
     }
   ]
