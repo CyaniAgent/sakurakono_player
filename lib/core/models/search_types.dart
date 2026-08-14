@@ -562,3 +562,143 @@ class CoreTopicPubSearchData {
             : null,
       );
 }
+
+// ---------------------------------------------------------------------------
+// CoreSearchResultKind / CoreSearchResultItem — typed search result (GAP-S1/9)
+// ---------------------------------------------------------------------------
+//
+// Typed counterpart of the raw entries carried by [CoreSearchAllData.list].
+
+/// Kind of a typed search result.
+enum CoreSearchResultKind { video, bangumi, user, live, unknown }
+
+/// A single typed search result entry.
+class CoreSearchResultItem {
+  /// Result kind inferred from the source type field.
+  final CoreSearchResultKind kind;
+
+  /// Result title.
+  final String title;
+
+  /// Cover image URL.
+  final String cover;
+
+  /// Author / uploader name.
+  final String author;
+
+  /// Play count.
+  final int play;
+
+  /// Danmaku count.
+  final int danmaku;
+
+  /// Duration in seconds.
+  final int duration;
+
+  /// Video ID (BV), video results only.
+  final String? bvid;
+
+  /// Video/archive ID, video results only.
+  final int? aid;
+
+  /// Author user ID.
+  final int? mid;
+
+  /// Live room ID, live results only.
+  final int? roomId;
+
+  /// Description.
+  final String desc;
+
+  /// Whether the result is a live room currently streaming.
+  final bool isLive;
+
+  /// Badge text (e.g. 会员 / 官方), may be absent.
+  final String? badge;
+
+  const CoreSearchResultItem({
+    this.kind = CoreSearchResultKind.unknown,
+    this.title = '',
+    this.cover = '',
+    this.author = '',
+    this.play = 0,
+    this.danmaku = 0,
+    this.duration = 0,
+    this.bvid,
+    this.aid,
+    this.mid,
+    this.roomId,
+    this.desc = '',
+    this.isLive = false,
+    this.badge,
+  });
+
+  /// Lenient parse: missing or mistyped fields fall back to defaults,
+  /// never throws. kind is inferred from the type field.
+  factory CoreSearchResultItem.fromMap(Map<String, dynamic> map) =>
+      CoreSearchResultItem(
+        kind: _searchKindOf(map['type']),
+        title: _searchString(map['title']) ??
+            _searchString(map['uname']) ?? '',
+        cover: _searchString(map['cover']) ??
+            _searchString(map['pic']) ?? '',
+        author: _searchString(map['author']) ??
+            _searchString(map['uname']) ?? '',
+        play: _searchInt(map['play']),
+        danmaku: _searchInt(map['danmaku']),
+        duration: _searchInt(map['duration']),
+        bvid: _searchString(map['bvid']),
+        aid: _searchIntOrNull(map['aid']),
+        mid: _searchIntOrNull(map['mid']),
+        roomId: _searchIntOrNull(map['room_id']) ??
+            _searchIntOrNull(map['roomid']),
+        desc: _searchString(map['desc']) ??
+            _searchString(map['description']) ?? '',
+        isLive: map['is_live'] as bool? ?? map['live_status'] == 1,
+        badge: _searchString(map['badge']),
+      );
+}
+
+/// Infers [CoreSearchResultKind] from a raw type field value.
+/// Accepts both string type names (video / media_bangumi / bangumi /
+/// bili_user / live_room / live) and the numeric bilibili search API
+/// codes (1 = video, 2 = bangumi, 4 = live, 5 = user).
+CoreSearchResultKind _searchKindOf(Object? type) {
+  if (type is String) {
+    switch (type) {
+      case 'video':
+        return CoreSearchResultKind.video;
+      case 'media_bangumi':
+      case 'bangumi':
+        return CoreSearchResultKind.bangumi;
+      case 'bili_user':
+        return CoreSearchResultKind.user;
+      case 'live_room':
+      case 'live':
+        return CoreSearchResultKind.live;
+    }
+    return CoreSearchResultKind.unknown;
+  }
+  if (type is num) {
+    switch (type.toInt()) {
+      case 1:
+        return CoreSearchResultKind.video;
+      case 2:
+        return CoreSearchResultKind.bangumi;
+      case 4:
+        return CoreSearchResultKind.live;
+      case 5:
+        return CoreSearchResultKind.user;
+    }
+  }
+  return CoreSearchResultKind.unknown;
+}
+
+/// String value or null (never throws).
+String? _searchString(Object? value) => value is String ? value : null;
+
+/// Numeric value as int, else 0 (never throws).
+int _searchInt(Object? value) => _searchIntOrNull(value) ?? 0;
+
+/// Numeric value as int, else null (never throws).
+int? _searchIntOrNull(Object? value) => value is num ? value.toInt() : null;
