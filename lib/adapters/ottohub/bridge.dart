@@ -29,6 +29,7 @@ import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
+import 'package:skf/core/models/media_id.dart';
 import 'package:skf/core/repository/auth_repository.dart';
 import 'package:skf/core/repository/black_repository.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
@@ -116,6 +117,12 @@ class OttoAdapter implements AppAdapter {
   String processImageUrl(String? originalUrl, {int quality = 1}) {
     // OttoHub images don't need CDN suffix processing
     return originalUrl?.http2https ?? '';
+  }
+
+  @override
+  String? buildShareLink(CoreMediaId id, {String? title}) {
+    // OttoHub has no web share-link concept — pure-numeric IDs only.
+    return null;
   }
 }
 
