@@ -46,7 +46,7 @@ import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/dynamic/v2.pb.dart'
     show OpusType, OpusDetailResp;
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';

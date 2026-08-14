@@ -1,4 +1,4 @@
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 

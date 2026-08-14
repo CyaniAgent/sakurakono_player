@@ -7,7 +7,7 @@ import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/common/widgets/flutter/draggable_scrollable_sheet.dart';
 import 'package:skf/common/widgets/flutter/text_field/controller.dart';
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/common/widgets/time_picker.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';

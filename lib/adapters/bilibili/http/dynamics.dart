@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:skf/adapters/bilibili/common/constants.dart';
 
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/adapters/bilibili/http/api.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/http/error_msg.dart';

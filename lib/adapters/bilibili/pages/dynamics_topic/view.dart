@@ -4,7 +4,7 @@ import 'package:skf/common/widgets/dynamic_sliver_app_bar/dynamic_sliver_app_bar
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';

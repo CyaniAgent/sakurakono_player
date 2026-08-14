@@ -4,7 +4,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/flutter/text_field/controller.dart';
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/common/widgets/sliver/sliver_to_box_adapter.dart';

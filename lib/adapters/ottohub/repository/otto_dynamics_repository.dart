@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:get/get.dart';
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
