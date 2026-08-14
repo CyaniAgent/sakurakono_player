@@ -75,15 +75,18 @@ void showPlayInputDialog(BuildContext context) {
 /// 提示），ottoVid 按 OttoHub identity mapping 直通
 /// [PageUtils.toVideoPage]（bvid=数字字符串），unknown 仅提示。
 Future<void> _dispatchPlayInput(String input) async {
-  switch (classifyPlayInput(input)) {
+  // classifyPlayInput 基于 trim 后值判定，分派必须使用同一 trimmed 值：
+  // 直接 int.parse(input) 会在粘贴含首尾空白/换行的纯数字时抛 FormatException。
+  final trimmed = input.trim();
+  switch (classifyPlayInput(trimmed)) {
     case PlayInputKind.biliUrl:
       // b23.tv 等短链在此走网络 302，因此只出现在异步分派中，不进纯函数。
-      final ok = await PiliScheme.routePushFromUrl(input);
+      final ok = await PiliScheme.routePushFromUrl(trimmed);
       if (!ok) SmartDialog.showToast('无法识别的链接');
     case PlayInputKind.ottoVid:
-      // classifyPlayInput 已保证 ^\d+$，int.parse 不会失败。
-      final id = int.parse(input);
-      PageUtils.toVideoPage(bvid: input, aid: id, cid: id);
+      // classifyPlayInput 已保证 trim 后 ^\d+$，int.parse(trimmed) 不会失败。
+      final id = int.parse(trimmed);
+      PageUtils.toVideoPage(bvid: trimmed, aid: id, cid: id);
     case PlayInputKind.unknown:
       SmartDialog.showToast('无法识别的链接');
   }
