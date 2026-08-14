@@ -4,8 +4,6 @@ import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/pages/main/view.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
-import 'package:skf/adapters/ottohub/player/otto_player_factory.dart';
-import 'package:skf/adapters/ottohub/player/otto_reporter.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_black_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_danmaku_repository.dart';
@@ -33,8 +31,6 @@ import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
-import 'package:skf/core/player/player_factory.dart';
-import 'package:skf/core/player/playback_reporter.dart';
 import 'package:skf/core/repository/auth_repository.dart';
 import 'package:skf/core/repository/black_repository.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
@@ -115,9 +111,7 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<SearchRepository>(() => OttoSearchRepository(client))
       ..lazyPut<SpaceRepository>(() => OttoSpaceRepository(client))
       ..lazyPut<DownloadService>(_StubDownloadService.new)
-      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
-      ..lazyPut<PlaybackReporter>(OttoReporter.new)
-      ..lazyPut<PlayerFactory>(OttoPlayerFactory.new);
+      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client));
   }
 
   @override

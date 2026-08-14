@@ -3,8 +3,6 @@ import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule_adapter.dart';
 import 'package:skf/adapters/bilibili/models/user/info.dart';
-import 'package:skf/adapters/bilibili/player/bili_player_factory.dart';
-import 'package:skf/adapters/bilibili/player/bili_reporter.dart';
 import 'package:skf/adapters/bilibili/services/account_service.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
@@ -13,10 +11,6 @@ import 'package:skf/adapters/bilibili/utils/accounts/account_type_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/cookie_jar_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/core/account/account_provider.dart';
-import 'package:skf/core/plugin/local_file_plugin.dart';
-import 'package:skf/core/plugin/plugin_registry.dart';
-import 'package:skf/core/player/player_factory.dart';
-import 'package:skf/core/player/playback_reporter.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
@@ -161,9 +155,7 @@ class BiliBridge {
 
     initHive();
     Get
-      ..lazyPut<PlaybackReporter>(BiliReporter.new)
       ..lazyPut<AccountProvider>(BiliAccountProvider.new)
-      ..lazyPut<PlayerFactory>(BiliPlayerFactory.new)
       ..lazyPut(AccountService.new)
       ..lazyPut(DownloadService.new)
       // Repositories
@@ -192,10 +184,6 @@ class BiliBridge {
       ..lazyPut<PgcRepository>(BiliPgcRepository.new)
       ..lazyPut<SponsorBlockRepository>(BiliSponsorBlockRepository.new)
       ..lazyPut<ValidateRepository>(BiliValidateRepository.new);
-    // Plugin registry
-    final pluginRegistry = PluginRegistry();
-    Get.put(pluginRegistry);
-    pluginRegistry.register(LocalFilePlugin());
     setupServiceLocator();
     _initHttp();
   }
