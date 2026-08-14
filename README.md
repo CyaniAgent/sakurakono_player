@@ -41,10 +41,12 @@
 
 ## 当前阶段说明
 
-- **已完成**: B站 业务代码已隔离到 `adapters/bilibili/`，核心账户/Repository 接口已定义（`lib/core/`），Bridge 层作为适配器唯一入口。项目已从 PiliPlus 更名为 SKF。数据层 Repository 模式重构完成（24 个 Repository 接口）。OttoHub 适配器已实现基础播放和账户功能（14/24 Repository）。
+- **B站 适配器完整可用**（24/24 Repository，生产默认）：业务代码已隔离到 `adapters/bilibili/`，核心接口定义在 `lib/core/`（24 个 Repository 接口 + `AppAdapter` + `LoadingState`），Bridge 层作为适配器唯一入口。项目已从 PiliPlus 更名为 SKF。
+- **OttoHub 实验性**（24/24 已注册，14 real + 2 partial + 8 stub）：未实现的 stub 调用会抛 `not_implemented`，仅用于验证多适配器架构；生产请使用 B站 模式。
 - **进行中**: 补齐剩余 OttoHub Repository 实现、UI 解耦。
 - **统一播放入口**: 设置页 →「播放链接」→ 粘贴 B站 链接 / BV / av，或 OttoHub 纯数字视频 ID，即可直接播放。
-- 当前可编译运行，支持 B站 和 OttoHub 两种适配器模式。
+- **测试**: `flutter test` 232 个测试全部通过（24 个核心 Repository 全覆盖 + 适配器与工具测试）。
+- **已知缺口**: 暂无 widget / 集成测试；代码尚未经过充分人工审查（详见文末「AI 辅助开发声明」）。
 
 ---
 
@@ -55,8 +57,36 @@ git clone https://github.com/CyaniAgent/sakurakono_player
 cd sakurakono_player
 flutter pub get
 flutter analyze   # 0 errors
+flutter test      # 232 tests
 flutter run       # 启动 B站 客户端模式
 ```
+
+## 常用命令
+
+| 命令 | 用途 |
+|---|---|
+| `flutter analyze` | 静态检查（裸跑，0 errors 0 warnings；不支持 `--dart-define`） |
+| `flutter test` | 232 个测试 |
+| `dart run build_runner build --delete-conflicting-outputs` | 生成 mocks |
+| `flutter run --dart-define=ADAPTER=bilibili` | 启动 B站 客户端（默认） |
+| `flutter run --dart-define=ADAPTER=ottohub` | 启动 OttoHub 模式（实验性） |
+| `lib/scripts/patch.ps1 <platform>` | 构建前 Flutter SDK 补丁（锁定 3.44.9） |
+| `flutter build apk --release` | Android 构建（其余平台见 AGENTS.md） |
+
+---
+
+## 项目结构
+
+| 目录 | 说明 |
+|---|---|
+| `lib/core/` | 契约层：24 个 Repository 接口、`AppAdapter`、`LoadingState`（零适配器依赖） |
+| `lib/adapters/bilibili/` | B站 适配器，全功能（441 个页面文件） |
+| `lib/adapters/ottohub/` | OttoHub 适配器，实验性（14/24 真实实现） |
+| `lib/common/` | 共享 UI 组件 |
+| `lib/utils/` | 存储（Hive）、主题、平台工具 |
+| `lib/router/` | GetX 路由（使用激活适配器的 routes） |
+
+详细架构见 [架构指南](docs/architecture.md)。
 
 ---
 
@@ -72,7 +102,14 @@ flutter run       # 启动 B站 客户端模式
 - [x] 数据层 Repository 模式重构完成（24 Repository 接口）
 - [x] OttoHub 适配器基础实现（14/24 Repository）
 - [ ] 示例应用（Demo App）供开发者参考
-- [ ] 完善的文档和接入指南
+- [x] 完善的文档和接入指南
+
+## 文档
+
+- [架构指南](docs/architecture.md)
+- [贡献指南](CONTRIBUTING.md)
+- [更新日志](CHANGELOG.md)
+- [许可证](LICENSE)（GPLv3）
 
 ---
 
