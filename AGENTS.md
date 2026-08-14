@@ -9,7 +9,7 @@
 
 ## Current Phase
 
-Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (14 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. Repository params fully typed (91 Object→String/int, 2026-08-09); 34 Pref getters typed (B站 enum getters moved to BiliPref); as-dynamic casts eliminated (2 features fixed via SelectionArea.onSelectionChanged, 2026-08-10). 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter. Dead-surface cleanup (2026-08): `core/player/`, `core/plugin/`, adapter player factories/reporters, `bilibili/account/` + `bilibili/router/`, and 5 dead AppAdapter members all deleted; unified playback entry added (设置页「播放链接」).
+Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (14 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. Repository params fully typed (91 Object→String/int, 2026-08-09); 34 Pref getters typed (B站 enum getters moved to BiliPref); as-dynamic casts eliminated (2 features fixed via SelectionArea.onSelectionChanged, 2026-08-10). 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter, then deleted in the dead-surface cleanup (2026-08, zero consumers; only the `CoreMediaId` base class remains in core). Dead-surface cleanup (2026-08): `core/player/`, `core/plugin/`, adapter player factories/reporters, `bilibili/account/` + `bilibili/router/`, `player/media_ids.dart`, and 5 dead AppAdapter members all deleted; unified playback entry added (设置页「播放链接」).
 
 ## SDK & env
 
@@ -47,7 +47,6 @@ lib/
 │   │   ├── pages/             # All B站 UI (441 files, 114 page dirs, 161 view.dart)
 │   │   ├── http/              # Dio + HTTP/2 adapter
 │   │   ├── grpc/              # Bilibili gRPC endpoints (hand-written + generated .pb.dart)
-│   │   ├── player/            # media_ids (B站 media-ID 类型)
 │   │   ├── utils/model_converters.dart  # Core→adapter type converters (runtime crash fixes)
 │   │   ├── models/ + models_new/
 │   │   └── services/ + plugin/ + common/ + tcp/  # DI, pl_player, shared widgets, tcp live

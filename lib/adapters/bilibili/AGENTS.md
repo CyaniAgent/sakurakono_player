@@ -6,7 +6,7 @@ Child of root AGENTS.md. Adapter-specific facts only; root rules (lints, CI, dep
 
 Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client. 24 repositories, all UI pages, HTTP/2 + gRPC networking, media_kit player, Core↔adapter converters.
 
-## Layout (12 subdirs)
+## Layout (11 subdirs)
 
 - root (2): bili_adapter.dart (22ln thin AppAdapter), bridge.dart (311ln, single entry point)
 - repository/ 24: Bili*Repository for all core interfaces
@@ -16,7 +16,6 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 - utils/ 32: model_converters.dart (1446ln) + accounts/ (AccountManager) + extension/
 - models/ 87: legacy PiliPlus-era models (@HiveType + .g.dart codegen)
 - models_new/ 366: plain fromJson DTOs, <feature>/<endpoint>/data|result|item.dart, 42 top-level feature dirs
-- player/ 1: media_ids
 - services/ 9: account provider, download/, audio, logger, service_locator
 - plugin/ 27: pl_player/ = media_kit player UI layer
 - common/ 7, tcp/ 1
@@ -62,7 +61,6 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 - http/error_msg.dart has mojibake encoding issue in Chinese strings. Fix encoding if touched.
 
 - `AccountService` + local `AccountMixin` (services/account_service.dart) are DEPRECATED backward-compat wrappers — new code uses core `AccountProvider`/`AccountMixin` (`package:skf/core/account/`) directly.
-- `player/media_ids.dart` is NOT deprecated — `@Deprecated` annotations were removed; these B站 media-ID types are live implementations.
 
 ## Where to look
 
