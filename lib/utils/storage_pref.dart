@@ -83,11 +83,6 @@ abstract final class Pref {
     ),
   );
 
-  static List? get blockSettings =>
-      _setting.get(SettingBoxKey.blockSettings);
-
-  static List? get blockColor => _setting.get(SettingBoxKey.blockColor);
-
   static bool get feedBackEnable =>
       _setting.get(SettingBoxKey.feedBackEnable, defaultValue: false);
 
@@ -99,9 +94,6 @@ abstract final class Pref {
 
   static int get msgBadgeMode =>
       _setting.get(SettingBoxKey.msgBadgeMode, defaultValue: 0);
-
-  static List<int>? get msgUnReadTypeV2 =>
-      (_setting.get(SettingBoxKey.msgUnReadTypeV2) as List?)?.fromCast<int>();
 
   static int get defaultHomePage =>
       _setting.get(SettingBoxKey.defaultHomePage, defaultValue: 0);
@@ -482,9 +474,6 @@ abstract final class Pref {
     }
     return horizontalScreen;
   }
-
-  static String get banWordForDyn =>
-      _setting.get(SettingBoxKey.banWordForDyn, defaultValue: '');
 
   static bool get enableLog =>
       _setting.get(SettingBoxKey.enableLog, defaultValue: true);
