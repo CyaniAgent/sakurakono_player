@@ -6,6 +6,7 @@ import 'package:skf/adapters/bilibili/pages/about/view.dart';
 import 'package:skf/adapters/bilibili/pages/login/controller.dart';
 import 'package:skf/adapters/bilibili/pages/setting/common_setting.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/multi_select_dialog.dart';
+import 'package:skf/adapters/bilibili/pages/setting/play_input_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/webdav/view.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
@@ -191,6 +192,11 @@ class _SettingPageState extends State<SettingPage> {
                     : Text(item.subtitle!, style: subTitleStyle),
               ),
             ),
+        ListTile(
+          onTap: () => showPlayInputDialog(context),
+          leading: const Icon(Icons.play_circle_outline),
+          title: Text('播放链接', style: titleStyle),
+        ),
         ListTile(
           onTap: () => LoginPageController.switchAccountDialog(context),
           leading: const Icon(Icons.switch_account_outlined),
