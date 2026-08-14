@@ -423,6 +423,263 @@ class CoreHotVideoItemModel extends CoreBaseVideoItemModel {
 // Video play URL
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Typed play stream models (typed views over CorePlayUrlModel raw maps)
+// ---------------------------------------------------------------------------
+
+/// Base dash stream — fields shared by dash video/audio streams.
+class CoreDashStream {
+  /// Stream format id (raw JSON may carry an int or a numeric String).
+  final int? id;
+  final String? baseUrl;
+  final List<String>? backupUrl;
+  final int? bandwidth;
+  final String? mimeType;
+  final String? codecs;
+  final int? width;
+  final int? height;
+  final String? frameRate;
+  final String? sar;
+  final int? startWithSap;
+  final bool? selected;
+  final String? url;
+
+  const CoreDashStream({
+    this.id,
+    this.baseUrl,
+    this.backupUrl,
+    this.bandwidth,
+    this.mimeType,
+    this.codecs,
+    this.width,
+    this.height,
+    this.frameRate,
+    this.sar,
+    this.startWithSap,
+    this.selected,
+    this.url,
+  });
+}
+
+/// Dash video stream — adds segment base and segment list.
+class CoreDashVideoStream extends CoreDashStream {
+  final Map<String, dynamic>? segmentBase;
+  final List<Map<String, dynamic>>? segments;
+
+  const CoreDashVideoStream({
+    super.id,
+    super.baseUrl,
+    super.backupUrl,
+    super.bandwidth,
+    super.mimeType,
+    super.codecs,
+    super.width,
+    super.height,
+    super.frameRate,
+    super.sar,
+    super.startWithSap,
+    super.selected,
+    super.url,
+    this.segmentBase,
+    this.segments,
+  });
+}
+
+/// Dash audio stream — adds segment base, segment list and audio type.
+class CoreDashAudioStream extends CoreDashStream {
+  final Map<String, dynamic>? segmentBase;
+  final List<Map<String, dynamic>>? segments;
+  final String? audioType;
+
+  const CoreDashAudioStream({
+    super.id,
+    super.baseUrl,
+    super.backupUrl,
+    super.bandwidth,
+    super.mimeType,
+    super.codecs,
+    super.width,
+    super.height,
+    super.frameRate,
+    super.sar,
+    super.startWithSap,
+    super.selected,
+    super.url,
+    this.segmentBase,
+    this.segments,
+    this.audioType,
+  });
+}
+
+/// Typed view over a playurl `dash` map (duration + streams).
+class CoreDashData {
+  final int? duration;
+  final double? minBufferTime;
+  final List<CoreDashVideoStream>? video;
+  final List<CoreDashAudioStream>? audio;
+
+  const CoreDashData({
+    this.duration,
+    this.minBufferTime,
+    this.video,
+    this.audio,
+  });
+}
+
+/// Typed view over a playurl `durl` entry.
+class CoreDurl {
+  final int? order;
+  final int? length;
+  final int? size;
+  final String? ahead;
+  final String? vhead;
+  final String? url;
+  final List<String>? backupUrl;
+
+  const CoreDurl({
+    this.order,
+    this.length,
+    this.size,
+    this.ahead,
+    this.vhead,
+    this.url,
+    this.backupUrl,
+  });
+}
+int? _asInt(dynamic v) => switch (v) {
+      int i => i,
+      double d => d.toInt(),
+      String s => int.tryParse(s),
+      _ => null,
+    };
+
+double? _asDouble(dynamic v) => switch (v) {
+      double d => d,
+      int i => i.toDouble(),
+      String s => double.tryParse(s),
+      _ => null,
+    };
+
+String? _asString(dynamic v) => v is String ? v : null;
+
+bool? _asBool(dynamic v) => v is bool ? v : null;
+
+List<String>? _asStringList(dynamic v) =>
+    v is List ? v.whereType<String>().toList() : null;
+
+Map<String, dynamic>? _asMap(dynamic v) =>
+    v is Map ? Map<String, dynamic>.from(v) : null;
+
+List<Map<String, dynamic>>? _asMapList(dynamic v) {
+  if (v is! List) return null;
+  return v.whereType<Map>().map(_asMap).whereType<Map<String, dynamic>>().toList();
+}
+
+CoreDashStream _parseDashStream(Map<String, dynamic> raw) => CoreDashStream(
+        id: _asInt(raw['id']),
+        baseUrl: _asString(raw['baseUrl']),
+        backupUrl: _asStringList(raw['backupUrl']),
+        bandwidth: _asInt(raw['bandwidth']),
+        mimeType: _asString(raw['mimeType']),
+        codecs: _asString(raw['codecs']),
+        width: _asInt(raw['width']),
+        height: _asInt(raw['height']),
+        frameRate: _asString(raw['frameRate']),
+        sar: _asString(raw['sar']),
+        startWithSap: _asInt(raw['startWithSap']),
+        selected: _asBool(raw['selected']),
+        url: _asString(raw['url']),
+      );
+
+CoreDashVideoStream? _parseDashVideoStream(dynamic raw) {
+  if (raw is! Map<String, dynamic>) return null;
+  final base = _parseDashStream(raw);
+  if (base.baseUrl == null && base.url == null) return null;
+  return CoreDashVideoStream(
+    id: base.id,
+    baseUrl: base.baseUrl,
+    backupUrl: base.backupUrl,
+    bandwidth: base.bandwidth,
+    mimeType: base.mimeType,
+    codecs: base.codecs,
+    width: base.width,
+    height: base.height,
+    frameRate: base.frameRate,
+    sar: base.sar,
+    startWithSap: base.startWithSap,
+    selected: base.selected,
+    url: base.url,
+    segmentBase: _asMap(raw['SegmentBase']),
+    segments: _asMapList(raw['segments']),
+  );
+}
+
+CoreDashAudioStream? _parseDashAudioStream(dynamic raw) {
+  if (raw is! Map<String, dynamic>) return null;
+  final base = _parseDashStream(raw);
+  if (base.baseUrl == null && base.url == null) return null;
+  return CoreDashAudioStream(
+    id: base.id,
+    baseUrl: base.baseUrl,
+    backupUrl: base.backupUrl,
+    bandwidth: base.bandwidth,
+    mimeType: base.mimeType,
+    codecs: base.codecs,
+    width: base.width,
+    height: base.height,
+    frameRate: base.frameRate,
+    sar: base.sar,
+    startWithSap: base.startWithSap,
+    selected: base.selected,
+    url: base.url,
+    segmentBase: _asMap(raw['SegmentBase']),
+    segments: _asMapList(raw['segments']),
+    audioType: _asString(raw['audioType']),
+  );
+}
+
+List<CoreDashVideoStream>? _parseDashVideoStreams(dynamic raw) {
+  if (raw is! List) return null;
+  return raw.map(_parseDashVideoStream).whereType<CoreDashVideoStream>().toList();
+}
+
+List<CoreDashAudioStream>? _parseDashAudioStreams(dynamic raw) {
+  if (raw is! List) return null;
+  return raw.map(_parseDashAudioStream).whereType<CoreDashAudioStream>().toList();
+}
+
+CoreDashData? _parseDashData(Map<String, dynamic>? raw) {
+  if (raw == null) return null;
+  final duration = _asInt(raw['duration']);
+  final minBufferTime = _asDouble(raw['minBufferTime']);
+  if (duration == null || minBufferTime == null) return null;
+  return CoreDashData(
+    duration: duration,
+    minBufferTime: minBufferTime,
+    video: _parseDashVideoStreams(raw['video']),
+    audio: _parseDashAudioStreams(raw['audio']),
+  );
+}
+
+List<CoreDurl>? _parseDurlList(List<Map<String, dynamic>>? raw) {
+  if (raw == null) return null;
+  final result = <CoreDurl>[];
+  for (final item in raw) {
+    final durl = CoreDurl(
+      order: _asInt(item['order']),
+      length: _asInt(item['length']),
+      size: _asInt(item['size']),
+      ahead: _asString(item['ahead']),
+      vhead: _asString(item['vhead']),
+      url: _asString(item['url']),
+      backupUrl: _asStringList(item['backup_url']),
+    );
+    if (durl.url == null) continue;
+    result.add(durl);
+  }
+  return result;
+}
+
 class CorePlayUrlModel {
   String? from;
   String? result;
@@ -519,6 +776,11 @@ class CorePlayUrlModel {
         if (language != null) 'language': language,
         if (clipInfoList != null) 'clip_info_list': clipInfoList,
       };
+  /// Typed view over [dash] — null when dash is null or unparseable.
+  CoreDashData? get dashData => _parseDashData(dash);
+
+  /// Typed view over [durl] — null when durl is null or unparseable.
+  List<CoreDurl>? get durlList => _parseDurlList(durl);
 }
 
 // ---------------------------------------------------------------------------
