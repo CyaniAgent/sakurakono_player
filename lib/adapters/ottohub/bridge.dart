@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/adapters/ottohub/repository/otto_app_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_black_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_danmaku_repository.dart';
@@ -22,6 +23,7 @@ import 'package:skf/adapters/ottohub/repository/otto_live_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_match_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_music_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_pgc_repository.dart';
+import 'package:skf/adapters/ottohub/repository/otto_progress_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_sponsor_block_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_validate_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
@@ -30,6 +32,7 @@ import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
+import 'package:skf/core/repository/app_repository.dart';
 import 'package:skf/core/repository/auth_repository.dart';
 import 'package:skf/core/repository/black_repository.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
@@ -41,6 +44,7 @@ import 'package:skf/core/repository/im_repository.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
+import 'package:skf/core/repository/progress_repository.dart';
 import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/repository/live_repository.dart';
@@ -84,6 +88,7 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<MsgRepository>(() => OttoMsgRepository(client))
       ..lazyPut<ImRepository>(() => OttoImRepository(client))
       ..lazyPut<FanRepository>(() => OttoFanRepository(client))
+      ..lazyPut<ProgressRepository>(OttoProgressRepository.new)
       // Stub registrations for features the OttoHub SDK does not support.
       // These prevent crashes when Bilibili UI code does Get.find<>()
       // for features not implemented by the OttoHub adapter.
@@ -107,7 +112,8 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<SearchRepository>(() => OttoSearchRepository(client))
       ..lazyPut<SpaceRepository>(() => OttoSpaceRepository(client))
       ..lazyPut<DownloadService>(_StubDownloadService.new)
-      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client));
+      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
+      ..lazyPut<AppRepository>(OttoAppRepository.new);
   }
 
   @override

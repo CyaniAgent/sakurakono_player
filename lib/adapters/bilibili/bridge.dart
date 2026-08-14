@@ -80,6 +80,7 @@ import 'package:skf/adapters/bilibili/pages/video/view.dart';
 import 'package:skf/adapters/bilibili/pages/webview/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_detail/view.dart';
+import 'package:skf/adapters/bilibili/repository/bili_app_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_audio_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_auth_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_black_repository.dart';
@@ -97,6 +98,7 @@ import 'package:skf/adapters/bilibili/repository/bili_member_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_msg_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_music_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_pgc_repository.dart';
+import 'package:skf/adapters/bilibili/repository/bili_progress_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_reply_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_search_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_space_repository.dart';
@@ -104,6 +106,7 @@ import 'package:skf/adapters/bilibili/repository/bili_sponsor_block_repository.d
 import 'package:skf/adapters/bilibili/repository/bili_user_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_validate_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_video_repository.dart';
+import 'package:skf/core/repository/app_repository.dart';
 import 'package:skf/core/repository/audio_repository.dart';
 import 'package:skf/core/repository/auth_repository.dart';
 import 'package:skf/core/repository/black_repository.dart';
@@ -121,6 +124,7 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
+import 'package:skf/core/repository/progress_repository.dart';
 import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/repository/space_repository.dart';
@@ -183,7 +187,9 @@ class BiliBridge {
       ..lazyPut<DownloadRepository>(BiliDownloadRepository.new)
       ..lazyPut<PgcRepository>(BiliPgcRepository.new)
       ..lazyPut<SponsorBlockRepository>(BiliSponsorBlockRepository.new)
-      ..lazyPut<ValidateRepository>(BiliValidateRepository.new);
+      ..lazyPut<ValidateRepository>(BiliValidateRepository.new)
+      ..lazyPut<ProgressRepository>(BiliProgressRepository.new)
+      ..lazyPut<AppRepository>(BiliAppRepository.new);
     setupServiceLocator();
     _initHttp();
   }
