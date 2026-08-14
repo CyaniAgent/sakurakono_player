@@ -5,9 +5,6 @@ class AdapterRegistry {
   static final Map<String, AppAdapter> _adapters = {};
   static AppAdapter? _active;
 
-  /// All registered adapter names.
-  static Set<String> get availableNames => _adapters.keys.toSet();
-
   /// The currently active adapter.
   static AppAdapter get active {
     if (_active == null) {
@@ -29,10 +26,5 @@ class AdapterRegistry {
     }
     _active = adapter;
     await adapter.registerDependencies();
-  }
-
-  /// Whether the active adapter supports a feature.
-  static bool hasFeature(AppFeature feature) {
-    return _active?.hasFeature(feature) ?? false;
   }
 }

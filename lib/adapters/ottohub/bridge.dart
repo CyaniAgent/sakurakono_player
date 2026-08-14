@@ -1,8 +1,6 @@
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
-import 'package:skf/adapters/bilibili/pages/main/view.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_black_repository.dart';
@@ -67,9 +65,6 @@ class OttoAdapter implements AppAdapter {
   String get name => 'ottohub';
 
   @override
-  String get displayName => 'OttoHub';
-
-  @override
   Future<void> registerDependencies() async {
     final client = OttohubClient();
 
@@ -116,31 +111,6 @@ class OttoAdapter implements AppAdapter {
 
   @override
   List<GetPage> get routes => BiliBridge.registerRoutes();
-
-  @override
-  bool hasFeature(AppFeature feature) => switch (feature) {
-    // Only features that are implemented have OttoHub equivalents.
-    AppFeature.search => true,
-    AppFeature.space => true,
-    AppFeature.download => true,
-    AppFeature.validate => true,
-    AppFeature.danmakuFilter => true,
-    // Not implemented by OttoHub SDK (modern API):
-    AppFeature.live => true,
-    AppFeature.music => true,
-    AppFeature.audio => true,
-    AppFeature.match => true,
-    AppFeature.pgc => true,
-    AppFeature.sponsorBlock => true,
-  };
-
-  @override
-  Widget get homePage => const MainApp();
-
-  @override
-  Future<void> onInit() async {
-    // OttoHub-specific initialization can be added here.
-  }
 
   @override
   String processImageUrl(String? originalUrl, {int quality = 1}) {
