@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
+import 'package:skf/player/models/play_status.dart';
 import 'package:audio_session/audio_session.dart';
 
 class AudioSessionHandler {

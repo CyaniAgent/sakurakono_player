@@ -4,8 +4,8 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/community/service/dm/v1.pb.d
 import 'package:skf/adapters/bilibili/pages/danmaku/controller.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/utils/danmaku_options.dart';
+import 'package:skf/player/models/play_status.dart';
+import 'package:skf/player/utils/danmaku_options.dart';
 import 'package:skf/utils/danmaku_utils.dart';
 import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:flutter/material.dart';

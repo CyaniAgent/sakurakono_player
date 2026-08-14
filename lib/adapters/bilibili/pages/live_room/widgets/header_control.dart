@@ -10,7 +10,7 @@ import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
     show showPlayerVolumeDialog;
 import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/widgets/common_btn.dart';
+import 'package:skf/player/widgets/common_btn.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart'
     show shutdownTimerService;
 import 'package:skf/utils/android/bindings.g.dart';

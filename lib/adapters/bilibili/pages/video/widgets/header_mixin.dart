@@ -1,7 +1,7 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/utils/danmaku_options.dart';
+import 'package:skf/player/utils/danmaku_options.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/theme_utils.dart';

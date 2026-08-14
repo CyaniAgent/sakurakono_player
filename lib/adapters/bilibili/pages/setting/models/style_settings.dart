@@ -17,7 +17,7 @@ import 'package:skf/adapters/bilibili/pages/setting/widgets/dual_slider_dialog.d
 import 'package:skf/adapters/bilibili/pages/setting/widgets/multi_select_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/slider_dialog.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
+import 'package:skf/player/utils/fullscreen.dart';
 import 'package:skf/utils/extension/file_ext.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';

@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
+import 'package:skf/player/models/play_status.dart';
 import 'package:skf/utils/android/android_helper.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/extension/context_ext.dart';

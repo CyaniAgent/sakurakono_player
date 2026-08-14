@@ -9,7 +9,7 @@ import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/data.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/page.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
+import 'package:skf/player/models/play_status.dart';
 import 'package:skf/utils/android/bindings.g.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/utils/path_utils.dart';

@@ -5,7 +5,7 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/community/service/dm/v1.pb.d
 import 'package:skf/adapters/bilibili/grpc/dm.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/data_source.dart';
+import 'package:skf/player/models/data_source.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/utils.dart';

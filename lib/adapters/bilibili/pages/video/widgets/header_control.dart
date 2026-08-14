@@ -37,7 +37,7 @@ import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/actio
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:skf/adapters/bilibili/pages/video/widgets/header_mixin.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/data_source.dart';
+import 'package:skf/player/models/data_source.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart'
     show shutdownTimerService;

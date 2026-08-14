@@ -41,10 +41,10 @@ import 'package:skf/adapters/bilibili/pages/video/view_point/view.dart';
 import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/pages/video/widgets/player_focus.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/fullscreen_mode.dart';
+import 'package:skf/player/models/fullscreen_mode.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
+import 'package:skf/player/models/play_status.dart';
+import 'package:skf/player/utils/fullscreen.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/view/view.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart'

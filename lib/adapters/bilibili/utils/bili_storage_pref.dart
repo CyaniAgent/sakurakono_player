@@ -35,9 +35,9 @@ import 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
 import 'package:skf/adapters/bilibili/models/user/info.dart';
 import 'package:skf/adapters/bilibili/pages/setting/pages/fullscreen_sc_size.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/audio_output_type.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/bottom_progress_behavior.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/fullscreen_mode.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/hwdec_type.dart';
+import 'package:skf/player/models/bottom_progress_behavior.dart';
+import 'package:skf/player/models/fullscreen_mode.dart';
+import 'package:skf/player/models/hwdec_type.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
 
 export 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
@@ -64,9 +64,9 @@ export 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
 export 'package:skf/adapters/bilibili/models/user/info.dart';
 export 'package:skf/adapters/bilibili/pages/setting/pages/fullscreen_sc_size.dart';
 export 'package:skf/adapters/bilibili/plugin/pl_player/models/audio_output_type.dart';
-export 'package:skf/adapters/bilibili/plugin/pl_player/models/bottom_progress_behavior.dart';
-export 'package:skf/adapters/bilibili/plugin/pl_player/models/fullscreen_mode.dart';
-export 'package:skf/adapters/bilibili/plugin/pl_player/models/hwdec_type.dart';
+export 'package:skf/player/models/bottom_progress_behavior.dart';
+export 'package:skf/player/models/fullscreen_mode.dart';
+export 'package:skf/player/models/hwdec_type.dart';
 export 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
 
 abstract final class BiliPref {

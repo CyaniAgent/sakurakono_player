@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
+import 'package:skf/player/models/play_status.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

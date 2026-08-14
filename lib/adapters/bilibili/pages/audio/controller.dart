@@ -28,7 +28,7 @@ import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/triple_mixin.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_status.dart';
+import 'package:skf/player/models/play_status.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';

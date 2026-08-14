@@ -7,7 +7,7 @@ import 'package:skf/adapters/bilibili/models_new/live/live_superchat/item.dart'
     show SuperChatItem;
 import 'package:skf/core/models/live_types.dart' show CoreSuperChatItem;
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/utils/fullscreen.dart';
+import 'package:skf/player/utils/fullscreen.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
