@@ -6,9 +6,9 @@ Child of root AGENTS.md. Adapter-specific facts only; root rules (lints, CI, dep
 
 Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client. 24 repositories, all UI pages, HTTP/2 + gRPC networking, media_kit player, Core↔adapter converters.
 
-## Layout (14 subdirs)
+## Layout (12 subdirs)
 
-- root (2): bili_adapter.dart (38ln thin AppAdapter), bridge.dart (311ln, single entry point)
+- root (2): bili_adapter.dart (22ln thin AppAdapter), bridge.dart (311ln, single entry point)
 - repository/ 24: Bili*Repository for all core interfaces
 - pages/ 441 (114 page dirs): all B站 UI (161 view.dart, 138 controllers)
 - http/ 27: Request singleton + 25 endpoint files + retry_interceptor
@@ -16,15 +16,15 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 - utils/ 32: model_converters.dart (1446ln) + accounts/ (AccountManager) + extension/
 - models/ 87: legacy PiliPlus-era models (@HiveType + .g.dart codegen)
 - models_new/ 366: plain fromJson DTOs, <feature>/<endpoint>/data|result|item.dart, 42 top-level feature dirs
-- player/ 3: bili_player_factory, bili_reporter, media_ids
+- player/ 1: media_ids
 - services/ 9: account provider, download/, audio, logger, service_locator
 - plugin/ 27: pl_player/ = media_kit player UI layer
-- common/ 7, router/ 1, account/ 1, tcp/ 1
+- common/ 7, tcp/ 1
 
 ## bridge.dart (entry point, all static)
 
 - initHive(): registers 7 Hive TypeAdapters (Owner, UserInfoData, LevelInfo, BiliCookieJar, LoginAccount, AccountType, RuleFilter). MUST run before GStorage.init() (root gotcha).
-- register(): idempotent. Get.lazyPut for all 24 Bili*Repository (bound to core interfaces), PlaybackReporter, AccountProvider, PlayerFactory, AccountService, DownloadService. PluginRegistry + LocalFilePlugin. setupServiceLocator(). _initHttp(). Search special-case: lazyPut<BiliSearchRepository>, then lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>()).
+- register(): idempotent. Get.lazyPut for all 24 Bili*Repository (bound to core interfaces), AccountProvider, AccountService, DownloadService. setupServiceLocator(). _initHttp(). Search special-case: lazyPut<BiliSearchRepository>, then lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>()).
 - registerRoutes(): ~60 GetPage, all registered unconditionally (no feature flags).
 
 ## HTTP stack
@@ -53,11 +53,6 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 - models/ = shared/cross-feature + Hive-persisted types. model_owner, model_avatar, model_video, model_hot_video_item, model_rec_video_item, pgc_lcf have @HiveType + .g.dart. common/ has enums: video_type, audio_quality, subtitle_pref_type, account_type.
 - models_new/ = endpoint-specific plain DTOs, no Hive. Both live and both imported by repos + model_converters. 'new' is historical naming (both added at repo inception).
 
-## Dead code (do not use)
-
-- router/app_pages.dart: Routes.getPages. Ungated duplicate of bridge routes, ZERO references.
-- account/bili_account_provider.dart: legacy GetxService class, same name as live services/bili_account_provider.dart, ZERO references.
-
 ## Anti-patterns
 
 - `as dynamic` is BANNED (SPES-014); use ModelConverters. Remaining casts are compile-visible type-identity casts ((m.stat as RcmdStat?), (dio.httpClientAdapter as Http2Adapter), .cast<String,dynamic>()).
@@ -76,5 +71,5 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 | Add API endpoint | http/<domain>.dart + repository/bili_<domain>_repository.dart |
 | New page | pages/<page>/{view,controller}.dart + register in bridge.registerRoutes() |
 | Core↔adapter type conversion | utils/model_converters.dart |
-| Player behavior | player/ + plugin/pl_player/ (media_kit wrapper) |
+| Player behavior | plugin/pl_player/ (media_kit wrapper) |
 | gRPC API | grpc/ (hand-written wrappers only) |

@@ -9,7 +9,7 @@
 
 ## Current Phase
 
-Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (13 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. Repository params fully typed (91 Object→String/int, 2026-08-09); 34 Pref getters typed (B站 enum getters moved to BiliPref); as-dynamic casts eliminated (2 features fixed via SelectionArea.onSelectionChanged, 2026-08-10). 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter.
+Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (14 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. Repository params fully typed (91 Object→String/int, 2026-08-09); 34 Pref getters typed (B站 enum getters moved to BiliPref); as-dynamic casts eliminated (2 features fixed via SelectionArea.onSelectionChanged, 2026-08-10). 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter. Dead-surface cleanup (2026-08): `core/player/`, `core/plugin/`, adapter player factories/reporters, `bilibili/account/` + `bilibili/router/`, and 5 dead AppAdapter members all deleted; unified playback entry added (设置页「播放链接」).
 
 ## SDK & env
 
@@ -37,8 +37,6 @@ lib/
 │   ├── account/               # AccountProvider (GetxService) + AccountMixin
 │   ├── models/                # ~30 Core* type files (video, user, live, fav, msg, …)
 │   ├── repository/            # 24 repository interfaces (Video, User, Auth, Danmaku, …)
-│   ├── player/                # PlayerFactory, MediaSource, PlaybackReporter
-│   ├── plugin/                # Plugin interface, PluginRegistry, LocalFilePlugin, DataSource
 │   ├── utils/                # pair, subtitle_utils, image_action_registry
 │   └── result/               # LoadingState<T> — sealed class (single unified version)
 ├── adapters/
@@ -49,14 +47,13 @@ lib/
 │   │   ├── pages/             # All B站 UI (441 files, 114 page dirs, 161 view.dart)
 │   │   ├── http/              # Dio + HTTP/2 adapter
 │   │   ├── grpc/              # Bilibili gRPC endpoints (hand-written + generated .pb.dart)
-│   │   ├── player/            # bili_player_factory (media_kit wrapper)
+│   │   ├── player/            # media_ids (B站 media-ID 类型)
 │   │   ├── utils/model_converters.dart  # Core→adapter type converters (runtime crash fixes)
 │   │   ├── models/ + models_new/
-│   │   └── services/ + plugin/ + common/ + tcp/ + account/ + router/  # DI, pl_player, shared widgets, tcp live, legacy+dead
+│   │   └── services/ + plugin/ + common/ + tcp/  # DI, pl_player, shared widgets, tcp live
 │   └── ottohub/               # OttoHub adapter
 │       ├── bridge.dart        # OttoAdapter implements AppAdapter
-│       ├── repository/        # 24 Otto*Repository files (13 real + 2 partial + 9 stubs)
-│       ├── player/            # OttoPlayerFactory + otto_reporter.dart
+│       ├── repository/        # 24 Otto*Repository files (14 real + 2 partial + 8 stubs)
 │       └── services/          # OttoAccountProvider
 ├── ottohub_sdk_fix/           # Vendored ottohub_sdk_dart (pubspec path override)
 ├── common/                    # Shared widgets — 0 adapter imports (common⇄utils coupled)
@@ -78,7 +75,7 @@ lib/
   3. 删除仅该功能使用的 repository 注册/依赖。
 - **Pages → Repository**: Bilibili pages use `Get.find<Repository>()` (not direct HTTP). OttoHub pages share the same UI but use Otto*Repository implementations.
 - **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; repository params are typed String/int (no `as dynamic` — SPES-014).
-- **Dead AppAdapter surfaces**: `homePage`, `onInit()`, and `AdapterRegistry.hasFeature()` are NEVER consumed — `activate()` only calls `registerDependencies()`; the `/` route hardcodes bilibili `MainApp` (not `active.homePage`); routes register unconditionally (no feature gating). `AdapterRegistry.active` has exactly 2 consumers: `lib/router/app_pages.dart` (routes) + `lib/common/widgets/image/network_img_layer.dart` (processImageUrl).
+- **Unified playback entry (统一播放入口)**: 设置页「播放链接」(`lib/adapters/bilibili/pages/setting/play_input_dialog.dart`) → `classifyPlayInput` (`lib/adapters/bilibili/utils/play_input.dart`, pure function) → B站 URL/BV/av → `PiliScheme.routePushFromUrl`; OttoHub pure-numeric ID → `PageUtils.toVideoPage`. **Dynamic plugin loading is NOT feasible under Flutter AOT** (`Isolate.spawnUri` unsupported, `dart:mirrors` disabled, dart_eval runtime cost high — AppFlowy 2023 case); long-term vision = JS/LUA script engine (quickjs-class), NOT done this round.
 - **GetX** throughout: `GetMaterialApp`, `GetPage`, `Get.lazyPut`, `Get.put`, `Get.find`, `Get.toNamed()`.
 - **LoadingState<T>** everywhere: sealed class with `Success`, `Error`, `Loading` variants.
 
@@ -87,7 +84,7 @@ lib/
 | Adapter | Status | Repository Coverage | Notes |
 |---------|--------|-------------------|-------|
 | Bilibili | Complete | 24/24 | All features |
-| OttoHub | In Progress | 24/24 registered (13 real, 2 partial, 9 stubs) | 测试/验证用（生产仅 Bilibili） |
+| OttoHub | In Progress | 24/24 registered (14 real, 2 partial, 8 stubs) | 测试/验证用（生产仅 Bilibili） |
 
 ## Adapter development
 
@@ -96,10 +93,8 @@ lib/
 ```dart
 class NewAdapter implements AppAdapter {
   String get name => 'newadapter';
-  String get displayName => 'New Platform';
   Future<void> registerDependencies() { /* Get.lazyPut<Repo>(Impl.new) */ }
   List<GetPage> get routes => BiliBridge.registerRoutes(); // reuse pages
-  bool hasFeature(AppFeature f) => /* true for supported features */;
 }
 ```
 
@@ -128,7 +123,7 @@ class NewAdapter implements AppAdapter {
 |--------|---------|
 | Analyze (Bilibili) | `flutter analyze --dart-define=ADAPTER=bilibili` — must stay **0 errors, 0 warnings** |
 | Analyze (OttoHub) | `flutter analyze --dart-define=ADAPTER=ottohub` |
-| Test | `flutter test` — **87 tests** (72 repo + 7 num_utils + 5 ottohub_bridge + 3 model_converters) |
+| Test | `flutter test` — **232 tests** (24 repo envelope 72 + num_utils 7 + bilibili adapter 28 + ottohub adapter 121 + helpers 4) |
 | Codegen | `dart run build_runner build --delete-conflicting-outputs` |
 | Mock codegen | Same command — generates `*.mocks.dart` in `test/repository/` |
 | Fix warnings | `dart fix --apply` (auto-fixes prefer_const_*, trailing comma, etc.) |
@@ -152,7 +147,7 @@ class NewAdapter implements AppAdapter {
 | Linux | `flutter build linux --release -v --pub --dart-define-from-file=skf_release.json` |
 
 - CI: `.github/workflows/build.yml` orchestrates android + ottohub_analyze, delegating to 4 reusable workflows (`ios.yml`/`mac.yml`/`win_x64.yml`/`linux_x64.yml`). **PR runs only android + win_x64 (+ottohub_analyze); ios/mac/linux are workflow_dispatch-only.** PR android uses `--android-project-arg dev=1` → `.dev` suffix + debug-signed (no keystore). Release android is signed only if `SIGN_KEYSTORE_BASE64` secret set; GitHub Release created only when `tag` input non-empty. **No `flutter test` job exists in CI — tests run locally only.**
-- CI Flutter version is NOT pinned for build jobs: `flutter-version-file: pubspec.yaml` reads a `>=3.12.0` range; only `ottohub_analyze` pins `flutter-version: 3.44.9`. CI artifacts: Windows emits BOTH a portable zip and the Inno setup exe; Android emits 3 split-per-abi APKs (arm64-v8a/armeabi-v7a/x86_64) as separate artifacts.
+- CI Flutter version is NOT pinned for build jobs: `flutter-version-file: pubspec.yaml` reads a `>=3.12.0` range; only `ottohub_analyze` pins `flutter-version: 3.44.6`. CI artifacts: Windows emits BOTH a portable zip and the Inno setup exe; Android emits 3 split-per-abi APKs (arm64-v8a/armeabi-v7a/x86_64) as separate artifacts.
 - Windows: fastforge + Inno Setup; Chinese language file at `windows/packaging/exe/ChineseSimplified.isl`.
 - Linux: CI produces .tar.gz, .deb, .rpm, and .AppImage artifacts.
 
@@ -167,10 +162,10 @@ See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview
 
 ## Testing
 
-- **87 tests total**: 24 repo test files in `test/repository/` (72 tests, 3 per repo: happy + error + edge) + `test/num_utils_test.dart` (7) + `test/ottohub_bridge_test.dart` (5) + `test/adapters/bilibili/model_converters_test.dart` (3). All 24 core repositories covered 1:1 — no gaps.
+- **232 tests total**: `test/repository/` 24 envelope tests (72, 3 per repo: happy + error + edge) + `test/num_utils_test.dart` (7) + `test/adapters/bilibili/` (28: bili_follow 7, bili_video 5, model_converters 3, play_input 13) + `test/adapters/ottohub/` (121 across 14 Otto*Repository test files) + `test/helpers/fake_http_adapter_test.dart` (4). All 24 core repositories covered 1:1 — no gaps.
 - Uses `mockito: ^5.7.0` + `build_runner` (resolved: mockito 5.7.0 / build_runner 2.15.1). **No `build.yaml` exists** — mockito's builder config ships in-package, `@GenerateMocks` annotation is sufficient.
 - `*.mocks.dart` files are **gitignored** — regenerate with `dart run build_runner build`. ⚠️ Local mocks currently claim generation by mockito **5.4.6** (stale vs resolved 5.7.0) — regenerate before `flutter test`.
-- Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types. Every generic `LoadingState<T>` return needs `provideDummy<LoadingState<...>>(...)` or build_runner fails. The 24 repo tests are envelope/shape tests of the LoadingState contract — they do NOT exercise Bili*/Otto* implementations (exception: `ottohub_bridge_test.dart` + `model_converters_test.dart` DO exercise real adapter code). Adapter-scoped tests live in `test/adapters/<adapter>/`.
+- Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types. Every generic `LoadingState<T>` return needs `provideDummy<LoadingState<...>>(...)` or build_runner fails. The 24 repo tests are envelope/shape tests of the LoadingState contract — they do NOT exercise Bili*/Otto* implementations. Adapter-scoped tests (`test/adapters/<adapter>/`) DO exercise real adapter code (fixtures + FakeHttpAdapter in `test/helpers/`).
 - **No widget or integration tests exist.**
 
 ## Gotchas

@@ -41,8 +41,9 @@
 
 ## 当前阶段说明
 
-- **已完成**: B站 业务代码已隔离到 `adapters/bilibili/`，核心播放器/账户/上报接口已定义（`lib/core/`），Bridge 层作为适配器唯一入口。项目已从 PiliPlus 更名为 SKF。数据层 Repository 模式重构完成（24 个 Repository 接口）。OttoHub 适配器已实现基础播放和账户功能（13/24 Repository）。
-- **进行中**: 补齐剩余 OttoHub Repository 实现、UI 解耦、插件化架构。
+- **已完成**: B站 业务代码已隔离到 `adapters/bilibili/`，核心账户/Repository 接口已定义（`lib/core/`），Bridge 层作为适配器唯一入口。项目已从 PiliPlus 更名为 SKF。数据层 Repository 模式重构完成（24 个 Repository 接口）。OttoHub 适配器已实现基础播放和账户功能（14/24 Repository）。
+- **进行中**: 补齐剩余 OttoHub Repository 实现、UI 解耦。
+- **统一播放入口**: 设置页 →「播放链接」→ 粘贴 B站 链接 / BV / av，或 OttoHub 纯数字视频 ID，即可直接播放。
 - 当前可编译运行，支持 B站 和 OttoHub 两种适配器模式。
 
 ---
@@ -64,12 +65,12 @@ flutter run       # 启动 B站 客户端模式
 > 以下为设想目标，并非已实现功能，将在后续开发中逐步落地。
 
 - [x] B站 业务逻辑已隔离到 `adapters/bilibili/`
-- [ ] 插件化架构（规划中）
+- [ ] 动态脚本引擎插件（远期愿景：Flutter AOT 不支持动态加载——`Isolate.spawnUri` 不可用、`dart:mirrors` 禁用，需 JS/LUA 解释器方案如 quickjs）
 - [x] 主题系统（已有）
 - [ ] 更完善的跨平台适配（桌面端、移动端、Web）
 - [x] 核心接口已定义（`lib/core/`）
 - [x] 数据层 Repository 模式重构完成（24 Repository 接口）
-- [x] OttoHub 适配器基础实现（13/24 Repository）
+- [x] OttoHub 适配器基础实现（14/24 Repository）
 - [ ] 示例应用（Demo App）供开发者参考
 - [ ] 完善的文档和接入指南
 
