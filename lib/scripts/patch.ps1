@@ -2,6 +2,15 @@ param(
     [string]$platform = ""
 )
 
+# Audited against Flutter 3.47.0 (2026-08-15):
+#   - 16/16 SDK .patch files + bottom_sheet_ios_app.patch still apply cleanly (git apply --check OK)
+#   - 2 commit ops STALE on 3.47.0 (upstream merged?):
+#     TextSelectionMenuFix cherry-pick (#185054), NewOverScrollIndicator revert (#173849)
+#     — both commits are ancestors of 3.47.0; dry-run FAIL. Commented out below (not deleted);
+#     re-enable only after confirming upstream state.
+
+# STALE on 3.47.0 (upstream merged?): commit 362b1de2 is an ancestor of 3.47.0;
+# overscroll_indicator.dart was rewritten upstream — `git revert` dry-run FAILs.
 # TODO: remove
 # https://github.com/flutter/flutter/issues/182281
 $NewOverScrollIndicator = "362b1de29974ffc1ed6faa826e1df870d7bec75f";
@@ -12,6 +21,8 @@ $BottomSheetAndroidPatch = "lib/scripts/bottom_sheet_android.patch"
 $BottomSheetIOSFlutterPatch = "lib/scripts/bottom_sheet_ios_flutter.patch"
 $BottomSheetIOSAppPatch = "lib/scripts/bottom_sheet_ios_app.patch"
 
+# STALE on 3.47.0 (upstream merged?): commit beb2ad17 is an ancestor of 3.47.0;
+# editable_text.dart already contains the fix — cherry-pick dry-run FAILs.
 # TODO: remove
 # https://github.com/flutter/flutter/issues/185052
 $TextSelectionMenuFix = "beb2ad17004a1b118ff2bd09f55cee23198f6652";
@@ -67,7 +78,9 @@ if ($platform.ToLower() -eq "ios") {
 
 Set-Location $env:FLUTTER_ROOT
 
-$picks   = @($TextSelectionMenuFix)
+$picks   = @()
+# STALE on 3.47.0 (upstream merged?): $TextSelectionMenuFix already in 3.47.0 — cherry-pick FAILs
+# $picks   = @($TextSelectionMenuFix)
 $reverts = @()
 $patches = @($ModalBarrierPatch, $TextSelectionPatch, $MouseCursorPatch,
             $ImageAnimPatch, $LayoutBuilderPatch, $NavigationDrawerPatch,
@@ -76,7 +89,8 @@ $patches = @($ModalBarrierPatch, $TextSelectionPatch, $MouseCursorPatch,
 
 switch ($platform.ToLower()) {
     "android" {
-        $reverts += $NewOverScrollIndicator
+        # STALE on 3.47.0 (upstream merged?): $NewOverScrollIndicator revert FAILs (overscroll rewritten upstream)
+        # $reverts += $NewOverScrollIndicator
         $patches += $BottomSheetAndroidPatch
         $patches += $ScrollViewPatch
         $patches += $NavigatorPatch
