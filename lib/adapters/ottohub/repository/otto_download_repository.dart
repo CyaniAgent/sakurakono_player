@@ -20,8 +20,8 @@ class OttoDownloadRepository implements DownloadRepository {
       : _client = client ?? OttohubClient();
 
   @override
-  Future<LoadingState<BiliDownloadMediaInfo>> getVideoUrl({
-    required CoreBiliDownloadEntryInfo entry,
+  Future<LoadingState<CoreDownloadMediaInfo>> getVideoUrl({
+    required CoreDownloadEntryInfo entry,
     CoreSourceInfo? source,
     CorePageInfo? pageData,
     CoreEpInfo? ep,
@@ -67,4 +67,27 @@ class OttoDownloadRepository implements DownloadRepository {
       return Error(e.errorCode, code: e.httpStatus);
     }
   }
+
+  LoadingState<T> _err<T>(ApiException e) =>
+      Error(e.errorCode, code: e.httpStatus);
+
+  @override
+  Future<LoadingState<List<CoreDownloadEntryInfo>>> downloadList() async =>
+      // no SDK API — SDK 缺下载管理端点
+      _err(const ApiException('not_implemented'));
+
+  @override
+  Future<LoadingState<void>> addDownload(CoreDownloadEntryInfo entry) async =>
+      // no SDK API — SDK 缺下载管理端点
+      _err(const ApiException('not_implemented'));
+
+  @override
+  Future<LoadingState<void>> removeDownload(String entryDirPath) async =>
+      // no SDK API — SDK 缺下载管理端点
+      _err(const ApiException('not_implemented'));
+
+  @override
+  Future<LoadingState<void>> clearCompletedDownloads() async =>
+      // no SDK API — SDK 缺下载管理端点
+      _err(const ApiException('not_implemented'));
 }

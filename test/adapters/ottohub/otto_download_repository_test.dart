@@ -8,8 +8,8 @@ import 'package:skf/core/result/loading_state.dart';
 import '../../helpers/fake_http_adapter.dart';
 import '../../helpers/fixtures.dart';
 
-/// Minimal entry whose [CoreBiliDownloadEntryInfo.avid] drives the SDK call.
-CoreBiliDownloadEntryInfo makeEntry({int avid = 42}) => CoreBiliDownloadEntryInfo(
+/// Minimal entry whose [CoreDownloadEntryInfo.avid] drives the SDK call.
+CoreDownloadEntryInfo makeEntry({int avid = 42}) => CoreDownloadEntryInfo(
       isCompleted: false,
       totalBytes: 0,
       downloadedBytes: 0,
@@ -50,8 +50,8 @@ void main() {
 
       final result = await repo.getVideoUrl(entry: makeEntry());
 
-      expect(result, isA<Success<BiliDownloadMediaInfo>>());
-      final media = (result as Success<BiliDownloadMediaInfo>).response
+      expect(result, isA<Success<CoreDownloadMediaInfo>>());
+      final media = (result as Success<CoreDownloadMediaInfo>).response
           as CoreType1;
       expect(media.format, 'mp4');
       expect(media.isResolved, isTrue);
@@ -70,8 +70,8 @@ void main() {
 
       final result = await repo.getVideoUrl(entry: makeEntry());
 
-      expect(result, isA<Success<BiliDownloadMediaInfo>>());
-      final media = (result as Success<BiliDownloadMediaInfo>).response
+      expect(result, isA<Success<CoreDownloadMediaInfo>>());
+      final media = (result as Success<CoreDownloadMediaInfo>).response
           as CoreType1;
       expect(media.format, 'm3u8');
       expect(media.timeLength, 60);
@@ -100,8 +100,8 @@ void main() {
 
       final result = await repo.getVideoUrl(entry: makeEntry());
 
-      expect(result, isA<Success<BiliDownloadMediaInfo>>());
-      final media = (result as Success<BiliDownloadMediaInfo>).response
+      expect(result, isA<Success<CoreDownloadMediaInfo>>());
+      final media = (result as Success<CoreDownloadMediaInfo>).response
           as CoreNone;
       expect(media.message, 'no playable url');
       expect(fake.requestCount, 1);
@@ -114,11 +114,53 @@ void main() {
 
       final result = await repo.getVideoUrl(entry: makeEntry());
 
-      expect(result, isA<Success<BiliDownloadMediaInfo>>());
-      final media = (result as Success<BiliDownloadMediaInfo>).response
+      expect(result, isA<Success<CoreDownloadMediaInfo>>());
+      final media = (result as Success<CoreDownloadMediaInfo>).response
           as CoreNone;
       expect(media.message, 'no playable url');
       expect(fake.requestCount, 1);
+    });
+  });
+
+  group('management APIs (stub contract)', () {
+    test('stub: downloadList() returns Error(not_implemented)', () async {
+      makeRepo(<String, String>{});
+
+      final result = await repo.downloadList();
+
+      expect(result, isA<Error>());
+      expect((result as Error).errMsg, 'not_implemented');
+      expect(fake.requestCount, 0);
+    });
+
+    test('stub: addDownload() returns Error(not_implemented)', () async {
+      makeRepo(<String, String>{});
+
+      final result = await repo.addDownload(makeEntry());
+
+      expect(result, isA<Error>());
+      expect((result as Error).errMsg, 'not_implemented');
+      expect(fake.requestCount, 0);
+    });
+
+    test('stub: removeDownload() returns Error(not_implemented)', () async {
+      makeRepo(<String, String>{});
+
+      final result = await repo.removeDownload('/some/entry/dir');
+
+      expect(result, isA<Error>());
+      expect((result as Error).errMsg, 'not_implemented');
+      expect(fake.requestCount, 0);
+    });
+
+    test('stub: clearCompletedDownloads() returns Error(not_implemented)', () async {
+      makeRepo(<String, String>{});
+
+      final result = await repo.clearCompletedDownloads();
+
+      expect(result, isA<Error>());
+      expect((result as Error).errMsg, 'not_implemented');
+      expect(fake.requestCount, 0);
     });
   });
 }

@@ -9,9 +9,13 @@ import 'download_repository_test.mocks.dart';
 @GenerateMocks([DownloadRepository])
 
 void main() {
-  provideDummy<LoadingState<BiliDownloadMediaInfo>>(
+  provideDummy<LoadingState<CoreDownloadMediaInfo>>(
     Success(CoreType2(video: <CoreType2File>[])),
   );
+  provideDummy<LoadingState<List<CoreDownloadEntryInfo>>>(
+    const Success(<CoreDownloadEntryInfo>[]),
+  );
+  provideDummy<LoadingState<void>>(const Success<void>(null));
   late MockDownloadRepository mockRepo;
 
   setUp(() {
@@ -23,7 +27,7 @@ void main() {
       when(mockRepo.getVideoUrl(
         entry: anyNamed('entry'),
       )).thenAnswer((_) async => Success(CoreType2(video: <CoreType2File>[])));
-      final entry = CoreBiliDownloadEntryInfo(
+      final entry = CoreDownloadEntryInfo(
         isCompleted: false,
         totalBytes: 0,
         downloadedBytes: 0,
@@ -37,14 +41,14 @@ void main() {
         bvid: 'BV1',
       );
       final result = await mockRepo.getVideoUrl(entry: entry);
-      expect(result, isA<Success<BiliDownloadMediaInfo>>());
+      expect(result, isA<Success<CoreDownloadMediaInfo>>());
     });
 
     test('error: getVideoUrl() returns Error', () async {
       when(mockRepo.getVideoUrl(
         entry: anyNamed('entry'),
       )).thenAnswer((_) async => const Error('网络错误'));
-      final entry = CoreBiliDownloadEntryInfo(
+      final entry = CoreDownloadEntryInfo(
         isCompleted: false,
         totalBytes: 0,
         downloadedBytes: 0,
@@ -65,7 +69,7 @@ void main() {
       when(mockRepo.getVideoUrl(
         entry: anyNamed('entry'),
       )).thenAnswer((_) async => Success(CoreType2(video: <CoreType2File>[])));
-      final entry = CoreBiliDownloadEntryInfo(
+      final entry = CoreDownloadEntryInfo(
         isCompleted: false,
         totalBytes: 0,
         downloadedBytes: 0,

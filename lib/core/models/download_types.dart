@@ -9,10 +9,10 @@ library;
 import 'package:skf/core/models/ui/multi_select_data.dart';
 
 // ---------------------------------------------------------------------------
-// CoreBiliDownloadEntryInfo
+// CoreDownloadEntryInfo
 // ---------------------------------------------------------------------------
 
-class CoreBiliDownloadEntryInfo with MultiSelectData {
+class CoreDownloadEntryInfo with MultiSelectData {
   int mediaType;
   bool hasDashAudio;
   bool isCompleted;
@@ -61,7 +61,7 @@ class CoreBiliDownloadEntryInfo with MultiSelectData {
     return title;
   }
 
-  CoreBiliDownloadEntryInfo({
+  CoreDownloadEntryInfo({
     this.mediaType = 1,
     this.hasDashAudio = false,
     required this.isCompleted,
@@ -91,8 +91,8 @@ class CoreBiliDownloadEntryInfo with MultiSelectData {
     this.ep,
   });
 
-  factory CoreBiliDownloadEntryInfo.fromJson(Map<String, dynamic> json) =>
-      CoreBiliDownloadEntryInfo(
+  factory CoreDownloadEntryInfo.fromJson(Map<String, dynamic> json) =>
+      CoreDownloadEntryInfo(
         mediaType: json['media_type'] as int,
         hasDashAudio: json['has_dash_audio'] as bool,
         isCompleted: json['is_completed'] as bool,
@@ -164,7 +164,7 @@ class CoreBiliDownloadEntryInfo with MultiSelectData {
     if (identical(this, other)) {
       return true;
     }
-    if (other is CoreBiliDownloadEntryInfo) {
+    if (other is CoreDownloadEntryInfo) {
       return cid == other.cid;
     }
     return false;
@@ -371,18 +371,18 @@ enum CoreDownloadStatus {
 }
 
 // ---------------------------------------------------------------------------
-// BiliDownloadMediaInfo (sealed class hierarchy)
+// CoreDownloadMediaInfo (sealed class hierarchy)
 // ---------------------------------------------------------------------------
 
-sealed class BiliDownloadMediaInfo {
-  const BiliDownloadMediaInfo();
+sealed class CoreDownloadMediaInfo {
+  const CoreDownloadMediaInfo();
 
   Map<String, String> get httpHeader => {};
 
   Map<String, dynamic> toJson();
 }
 
-class CoreType1 extends BiliDownloadMediaInfo {
+class CoreType1 extends CoreDownloadMediaInfo {
   final int availablePeriodMilli;
   final String description;
   final String format;
@@ -552,7 +552,7 @@ class CoreType1Segment {
   };
 }
 
-class CoreType2 extends BiliDownloadMediaInfo {
+class CoreType2 extends CoreDownloadMediaInfo {
   final int duration;
   final List<CoreType2File> video;
   final List<CoreType2File>? audio;
@@ -657,7 +657,7 @@ class CoreType2File {
   };
 }
 
-class CoreNone extends BiliDownloadMediaInfo {
+class CoreNone extends CoreDownloadMediaInfo {
   final String message;
 
   const CoreNone({
