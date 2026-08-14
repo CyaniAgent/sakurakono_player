@@ -1056,6 +1056,41 @@ class CoreMemberInfoModel {
       );
 }
 
+/// Parsed member statistics.
+///
+/// Adapter [MemberRepository.memberStat] still returns [LoadingState]<[Map]>;
+/// this type provides a lenient parser for that map (missing fields fall back
+/// to null, never throws).
+class CoreMemberStat {
+  final int? view;
+  final int? like;
+  final int? archive;
+  final int? follower;
+  final int? following;
+  final String? likeText;
+
+  const CoreMemberStat({
+    this.view,
+    this.like,
+    this.archive,
+    this.follower,
+    this.following,
+    this.likeText,
+  });
+
+  factory CoreMemberStat.fromMap(Map<String, dynamic> json) {
+    final archive = json['archive'];
+    return CoreMemberStat(
+      view: (json['view'] as num?)?.toInt(),
+      like: (json['like'] ?? json['likes'] as num?)?.toInt(),
+      archive: archive is num ? archive.toInt() : null,
+      follower: (json['follower'] as num?)?.toInt(),
+      following: (json['following'] as num?)?.toInt(),
+      likeText: (json['like_text'] ?? json['likeText']) as String?,
+    );
+  }
+}
+
 class CoreBaseOfficialVerify {
   int? type;
   String? coreDesc;
