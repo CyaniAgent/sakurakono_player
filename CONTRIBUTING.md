@@ -6,7 +6,7 @@ SakuraKono Player Framework（SKF，`package:skf`）是基于 Flutter 的通用�
 
 ## 开发环境
 
-- **Flutter 3.44.9 / Dart `>=3.12.0`**：版本由 `.fvmrc` 固定，建议使用 `fvm flutter`（FVM 已配置）。更换 Flutter 版本会破坏 SDK 补丁（见下）。
+- **Flutter 3.47.0 / Dart 3.13.0**：版本由 `.fvmrc` 固定，建议使用 `fvm flutter`（FVM 已配置）。更换 Flutter 版本会破坏 SDK 补丁（见下）。
 - 安装依赖：`flutter pub get`（不是 `dart pub get`；依赖含大量 git fork 与 `lib/ottohub_sdk_fix` 本地路径覆盖）。
 
 ## 常用命令
@@ -20,7 +20,7 @@ SakuraKono Player Framework（SKF，`package:skf`）是基于 Flutter 的通用�
 | `flutter run --dart-define=ADAPTER=ottohub` | 启动 OttoHub 适配器 |
 | `flutter build apk --release` | Android 构建；其余平台命令见 [AGENTS.md](AGENTS.md) 的「Build & release」节 |
 
-**运行/构建前**须先执行 `lib/scripts/patch.ps1 <platform>`：该脚本向 Flutter SDK 应用本地补丁，版本锁定 3.44.9，换版本会破坏补丁。
+**运行/构建前**须先执行 `lib/scripts/patch.ps1 <platform>`：该脚本向 Flutter SDK 应用本地补丁，版本锁定 3.47.0，换版本会破坏补丁。
 
 ## 代码规范
 

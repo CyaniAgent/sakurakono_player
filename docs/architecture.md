@@ -21,7 +21,7 @@
 
 - 所有 `package:` 导入统一使用 `skf` 前缀（`package:skf/...`），禁止相对导入。
 - `lib/core/` 与 `lib/common/` 对 `lib/adapters/` 的导入数为 **零**（grep 可验证）。
-- 技术栈：Flutter 3.44.9 / Dart `>=3.12.0`（`.fvmrc` 与 `pubspec.yaml` 已锁定），GetX 状态管理，media_kit 播放内核。
+- 技术栈：Flutter 3.47.0 / Dart 3.13.0（`.fvmrc` 与 `pubspec.yaml` 已锁定），GetX 状态管理，media_kit 播放内核。
 
 ---
 

@@ -13,7 +13,7 @@ Structural work complete: Bilibili adapter fully separated (24/24 repositories),
 
 ## SDK & env
 
-- **Flutter 3.44.9 / Dart `>=3.12.0`** — pinned in `.fvmrc` and `pubspec.yaml`. Use `fvm flutter` if FVM is configured.
+- **Flutter 3.47.0 / Dart 3.13.0** — pinned in `.fvmrc` and `pubspec.yaml`. Use `fvm flutter` if FVM is configured.
 - Dart MCP server required for code intelligence: `opencode.jsonc` configures `dart mcp-server`.
 
 ## Linting & formatting
@@ -135,7 +135,7 @@ class NewAdapter implements AppAdapter {
 
 **Version injection** (CI only): `lib/scripts/build.ps1 <platform>` writes `skf_release.json` with `{skf.name, skf.code, skf.hash, skf.time}`, read by `BuildConfig` via `String.fromEnvironment`. Side effects: rewrites `pubspec.yaml` `version:` (`<name>+<code>`; android name gets `-<9-char hash>` suffix) and exports `version` to `GITHUB_ENV` (used by artifact rename/package steps). Requires `fetch-depth: 0` (versionCode = `git rev-list --count HEAD`).
 
-**Flutter SDK patching**: `lib/scripts/patch.ps1 <platform>` MUST run before build. Applies 17 local `.patch` files indexed to Flutter 3.44.9 — changing Flutter version breaks patches. 16 apply inside the Flutter SDK (`FLUTTER_ROOT`); 1 (`bottom_sheet_ios_app.patch`) applies to the APP repo on iOS only. Platform matrix varies: android also reverts `NewOverScrollIndicator` + cherry-picks `TextSelectionMenuFix`; linux/mac/windows get only the shared 12.
+**Flutter SDK patching**: `lib/scripts/patch.ps1 <platform>` MUST run before build. Applies 17 local `.patch` files indexed to Flutter 3.47.0 — changing Flutter version breaks patches. 16 apply inside the Flutter SDK (`FLUTTER_ROOT`); 1 (`bottom_sheet_ios_app.patch`) applies to the APP repo on iOS only. Platform matrix varies: android also reverts `NewOverScrollIndicator` + cherry-picks `TextSelectionMenuFix`; linux/mac/windows get only the shared 12.
 
 | Platform | Command |
 |----------|---------|

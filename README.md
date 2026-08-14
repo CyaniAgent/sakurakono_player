@@ -70,7 +70,7 @@ flutter run       # 启动 B站 客户端模式
 | `dart run build_runner build --delete-conflicting-outputs` | 生成 mocks |
 | `flutter run --dart-define=ADAPTER=bilibili` | 启动 B站 客户端（默认） |
 | `flutter run --dart-define=ADAPTER=ottohub` | 启动 OttoHub 模式（实验性） |
-| `lib/scripts/patch.ps1 <platform>` | 构建前 Flutter SDK 补丁（锁定 3.44.9） |
+| `lib/scripts/patch.ps1 <platform>` | 构建前 Flutter SDK 补丁（锁定 3.47.0） |
 | `flutter build apk --release` | Android 构建（其余平台见 AGENTS.md） |
 
 ---
