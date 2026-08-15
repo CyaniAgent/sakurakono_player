@@ -18,13 +18,19 @@ class AdapterRegistry {
     _adapters[adapter.name] = adapter;
   }
 
-  /// Activate the named adapter, registering its DI bindings.
-  static Future<void> activate(String name) async {
+  /// Look up a registered adapter by name without activating it.
+  static AppAdapter lookup(String name) {
     final adapter = _adapters[name];
     if (adapter == null) {
-      throw ArgumentError('Adapter not registered: $name. Available: ${_adapters.keys}');
+      throw ArgumentError("Adapter not registered: $name. Available: ${_adapters.keys}");
     }
-    _active = adapter;
-    await adapter.registerDependencies();
+    return adapter;
+  }
+
+  /// Activate the named adapter, registering its DI bindings.
+  static Future<void> activate(String name) async {
+    final target = lookup(name);
+    _active = target;
+    await target.registerDependencies();
   }
 }

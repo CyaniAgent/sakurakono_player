@@ -1,4 +1,5 @@
 import 'package:skf/adapters/bilibili/utils/bili_colors.dart';
+import 'package:skf/utils/theme_ext.dart' show colorSchemeFromSeed;
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:flutter/material.dart'
     show ThemeData, Color, ColorScheme, Brightness, Colors;
@@ -36,12 +37,7 @@ extension ColorExtension on Color {
   ColorScheme asColorSchemeSeed([
     FlexSchemeVariant variant = .material,
     Brightness brightness = .light,
-  ]) => SeedColorScheme.fromSeeds(
-    primaryKey: this,
-    variant: variant,
-    brightness: brightness,
-    useExpressiveOnContainerColors: false,
-  );
+  ]) => colorSchemeFromSeed(this, variant: variant, brightness: brightness);
 }
 
 extension BrightnessExt on Brightness {

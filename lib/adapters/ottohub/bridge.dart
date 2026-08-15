@@ -87,6 +87,16 @@ class OttoAdapter implements AppAdapter {
   String get name => 'ottohub';
 
   @override
+  Future<void> onAppStartPreStorage() async {
+    // OttoHub has no pre-storage startup (no Hive TypeAdapters).
+  }
+
+  @override
+  Future<void> onAppStart() async {
+    // OttoHub has no post-storage startup (credentials are restored lazily).
+  }
+
+  @override
   Future<void> registerDependencies() async {
     final client = OttohubClient();
 

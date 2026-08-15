@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
+import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
@@ -8,6 +9,17 @@ import 'package:skf/utils/image_utils.dart';
 class BiliAdapter implements AppAdapter {
   @override
   String get name => 'bilibili';
+
+  @override
+  Future<void> onAppStartPreStorage() async {
+    // Hive TypeAdapters MUST be registered before GStorage.init().
+    BiliBridge.initHive();
+  }
+
+  @override
+  Future<void> onAppStart() async {
+    await Accounts.init();
+  }
 
   @override
   Future<void> registerDependencies() async {

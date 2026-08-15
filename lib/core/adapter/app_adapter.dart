@@ -4,6 +4,16 @@ import 'package:skf/core/models/media_id.dart';
 /// Abstract interface for a platform adapter (Bilibili, OttoHub, etc.).
 abstract class AppAdapter {
   String get name;
+
+  /// Adapter-specific startup BEFORE generic storage init (Hive TypeAdapter
+  /// registration etc.). Runs before [GStorage.init]; must not touch Hive
+  /// boxes or GetX DI. Default no-op.
+  Future<void> onAppStartPreStorage() async {}
+
+  /// Adapter-specific startup AFTER generic storage init (account bootstrap
+  /// etc.). Runs before the adapter's DI registration. Default no-op.
+  Future<void> onAppStart() async {}
+
   /// Register all DI bindings for this adapter via GetX.
   Future<void> registerDependencies();
 

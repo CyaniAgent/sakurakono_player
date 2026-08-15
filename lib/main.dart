@@ -7,26 +7,23 @@ import 'package:skf/common/widgets/custom_toast.dart';
 import 'package:skf/common/widgets/route_aware_mixin.dart';
 import 'package:skf/common/widgets/scale_app.dart';
 import 'package:skf/common/widgets/scroll_behavior.dart';
-import 'package:skf/adapters/bilibili/bili_adapter.dart';
-import 'package:skf/adapters/bilibili/bridge.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
-import 'package:skf/adapters/ottohub/bridge.dart' show OttoAdapter;
+import 'package:skf/adapters/adapters.dart';
 import 'package:skf/core/adapter/adapter_registry.dart';
-import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
 import 'package:skf/player/utils/fullscreen.dart';
 import 'package:skf/router/app_pages.dart';
-import 'package:skf/adapters/bilibili/services/logger.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/calc_window_position.dart';
 import 'package:skf/utils/date_utils.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
-import 'package:skf/adapters/bilibili/utils/bili_json_handler.dart';
+import 'package:skf/utils/json_file_handler.dart';
+import 'package:skf/utils/logger.dart';
 import 'package:skf/utils/max_screen_size.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/utils/theme_color_type.dart';
+import 'package:skf/utils/theme_ext.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:catcher_2/catcher_2.dart';
@@ -92,7 +89,16 @@ void main() async {
   ScaledWidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   await _initAppPath();
-  BiliBridge.initHive();
+
+  // Register all available adapters (compile-time included via ADAPTER define).
+  registerAllAdapters();
+
+  const adapterName =
+      String.fromEnvironment('ADAPTER', defaultValue: 'bilibili');
+  final adapter = AdapterRegistry.lookup(adapterName);
+
+  // Adapter-specific pre-storage startup (Hive TypeAdapter registration).
+  await adapter.onAppStartPreStorage();
   try {
     await GStorage.init();
   } catch (e) {
@@ -100,19 +106,15 @@ void main() async {
     if (kDebugMode) debugPrint('GStorage init error: $e');
     exit(0);
   }
-  await Accounts.init();
+  // Adapter-specific post-storage startup (account bootstrap etc.).
+  await adapter.onAppStart();
   ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
   await Future.wait([
     _initDownPath(),
     _initTmpPath(),
     CacheManager.ensureInitialized(),
   ]);
-  // Register all available adapters
-  AdapterRegistry.register(BiliAdapter());
-  AdapterRegistry.register(OttoAdapter());
-
-  const adapterName =
-      String.fromEnvironment('ADAPTER', defaultValue: 'bilibili');
+  // Activate the active adapter (DI bindings + routes).
   await AdapterRegistry.activate(adapterName);
   HttpOverrides.global = _CustomHttpOverrides();
 
@@ -197,7 +199,10 @@ void main() async {
       'MPV Api Version':
           '${NativePlayer.apiVersion >> 16}.${NativePlayer.apiVersion & 0xFFFF}',
     };
-    final fileHandler = await BiliJsonFileHandler.init();
+    final fileHandler = await JsonFileHandler.init(
+      getLogsPath: LoggerUtils.getLogsPath,
+      logger: logger,
+    );
 
     Catcher2(
       [?fileHandler, const ConsoleHandler()],
@@ -243,14 +248,14 @@ class MyApp extends StatelessWidget {
       ThemeUtils.lightTheme = ThemeUtils.getThemeData(
         colorScheme: dynamicColor
             ? _light!
-            : brandColor.asColorSchemeSeed(variant, .light),
+            : colorSchemeFromSeed(brandColor, variant: variant, brightness: .light),
         isDynamic: dynamicColor,
       ),
       ThemeUtils.darkTheme = ThemeUtils.getThemeData(
         isDark: true,
         colorScheme: dynamicColor
             ? _dark!
-            : brandColor.asColorSchemeSeed(variant, .dark),
+            : colorSchemeFromSeed(brandColor, variant: variant, brightness: .dark),
         isDynamic: dynamicColor,
       ),
     );
@@ -357,8 +362,8 @@ class MyApp extends StatelessWidget {
           debugPrint('dynamic_color: Accent color detected.');
         }
         final variant = Pref.schemeVariant;
-        _light = accentColor.asColorSchemeSeed(variant, .light);
-        _dark = accentColor.asColorSchemeSeed(variant, .dark);
+        _light = colorSchemeFromSeed(accentColor, variant: variant, brightness: .light);
+        _dark = colorSchemeFromSeed(accentColor, variant: variant, brightness: .dark);
         return true;
       }
     } on PlatformException {
