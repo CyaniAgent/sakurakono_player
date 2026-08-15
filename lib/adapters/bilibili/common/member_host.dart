@@ -43,7 +43,11 @@ import 'package:skf/utils/share_utils.dart';
 /// sub-page tabs, follow/block feedback, report dialog, live medal wall,
 /// login devices/logs, home-screen shortcut, deep URL routing.
 class BiliMemberHost implements MemberHost {
-  CoreMedalWallData? _cacheMedalData;
+  /// Medal wall cache keyed by mid (never shared across users), with a TTL
+  /// so repeated opens of the same mid reuse the data but eventually refresh.
+  static const Duration _medalCacheTtl = Duration(minutes: 5);
+  final Map<int, ({CoreMedalWallData data, DateTime fetchedAt})> _medalCache =
+      {};
 
   @override
   int get currentUserId => Accounts.main.mid;
@@ -169,25 +173,27 @@ class BiliMemberHost implements MemberHost {
 
   @override
   Future<void> showLiveMedalWall(int mid) async {
-    void onShow() {
+    void onShow(CoreMedalWallData data) {
       final context = Get.context;
       if (context == null) return;
       showDialog(
         context: context,
-        builder: (_) => MedalWall(response: _cacheMedalData!),
+        builder: (_) => MedalWall(response: data),
       );
     }
 
-    if (_cacheMedalData != null) {
-      onShow();
+    final cached = _medalCache[mid];
+    if (cached != null &&
+        DateTime.now().difference(cached.fetchedAt) < _medalCacheTtl) {
+      onShow(cached.data);
       return;
     }
     SmartDialog.showLoading();
     final res = await Get.find<LiveRepository>().liveMedalWall(mid: mid);
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
-      _cacheMedalData = response;
-      onShow();
+      _medalCache[mid] = (data: response, fetchedAt: DateTime.now());
+      onShow(response);
     } else {
       res.toast();
     }

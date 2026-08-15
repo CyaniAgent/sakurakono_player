@@ -360,7 +360,10 @@ class BiliMemberRepository implements MemberRepository {
       'uri': e.uri,
       'title': e.title,
     }).toList(),
-    'pr_info': d.prInfo == null
+    // SpacePrInfo color fields are late-initialized only when content is
+    // non-empty (see SpacePrInfo.fromJson) - guard against accessing
+    // uninitialized late fields when content is empty/null.
+    'pr_info': d.prInfo == null || d.prInfo.content?.isNotEmpty != true
         ? null
         : <String, dynamic>{
             'content': d.prInfo.content,

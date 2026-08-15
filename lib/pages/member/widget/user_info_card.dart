@@ -716,8 +716,12 @@ class UserInfoCard extends StatelessWidget {
     bool isLight,
     CoreSpacePrInfo prInfo,
   ) {
+    // Core colors are nullable - fall back to the same defaults the adapter
+    // SpacePrInfo.fromJson would have applied.
     final textColor = ColourUtils.parseColor(
-      isLight ? prInfo.textColor! : prInfo.textColorNight!,
+      isLight
+          ? (prInfo.textColor ?? '#999999')
+          : (prInfo.textColorNight ?? '#727272'),
     );
     String? icon = !isLight && prInfo.iconNight?.isNotEmpty == true
         ? prInfo.iconNight
@@ -729,7 +733,9 @@ class UserInfoCard extends StatelessWidget {
       margin: const .only(top: 8),
       padding: const .symmetric(horizontal: 16, vertical: 10),
       color: ColourUtils.parseColor(
-        isLight ? prInfo.bgColor! : prInfo.bgColorNight!,
+        isLight
+            ? (prInfo.bgColor ?? '#e7e7e7')
+            : (prInfo.bgColorNight ?? '#2A2A2A'),
       ),
       child: Row(
         children: [
