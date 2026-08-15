@@ -11,6 +11,7 @@ import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.da
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/pages/common/cover_ratio.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -95,7 +96,10 @@ class VideoCardH extends StatelessWidget {
                 crossAxisAlignment: .start,
                 children: [
                   AspectRatio(
-                    aspectRatio: Style.aspectRatio,
+                    aspectRatio: coverAspectRatio(
+                      videoItem.dimension?.width,
+                      videoItem.dimension?.height,
+                    ),
                     child: LayoutBuilder(
                       builder: (context, boxConstraints) {
                         final double maxWidth = boxConstraints.maxWidth;

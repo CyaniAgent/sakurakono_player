@@ -144,7 +144,7 @@ void main() {
 
       final result = await repo.videoIntro(bvid: 'BV1xx');
 
-      expect(result, const Error('missing_argument'));
+      expect(result, const Error('OttoHub: 无效的视频ID（仅支持纯数字ID）'));
       expect(fake.requestCount, 0);
     });
 

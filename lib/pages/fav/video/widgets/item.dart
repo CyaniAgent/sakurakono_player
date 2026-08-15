@@ -1,6 +1,6 @@
-import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/fav_types.dart';
+import 'package:skf/pages/common/cover_ratio.dart';
 import 'package:flutter/material.dart';
 
 class FavVideoItem extends StatelessWidget {
@@ -33,7 +33,8 @@ class FavVideoItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: Style.aspectRatio,
+                // 收藏夹数据无 dimension 字段（核心模型与 SDK 均无宽高），保持 16:10。
+                aspectRatio: coverAspectRatio(null, null),
                 child: LayoutBuilder(
                   builder: (context, boxConstraints) {
                     return Hero(

@@ -1,4 +1,3 @@
-import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -9,6 +8,7 @@ import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/pages/common/cover_ratio.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/dimension_ext.dart';
@@ -113,7 +113,10 @@ class VideoCardV extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AspectRatio(
-                  aspectRatio: Style.aspectRatio,
+                  aspectRatio: coverAspectRatio(
+                    videoItem.dimension?.width,
+                    videoItem.dimension?.height,
+                  ),
                   child: LayoutBuilder(
                     builder: (context, boxConstraints) {
                       double maxWidth = boxConstraints.maxWidth;

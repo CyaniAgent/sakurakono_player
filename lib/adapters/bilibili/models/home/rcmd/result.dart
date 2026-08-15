@@ -1,5 +1,6 @@
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/model_video.dart';
+import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/utils/num_utils.dart';
 
@@ -48,6 +49,9 @@ class RcmdVideoItemAppModel extends BaseRcmdVideoItemModel {
         ? ThreePoint.fromJson(json['three_point_v2'])
         : null;
     desc = json['desc'];
+    dimension = json['dimension'] == null
+        ? null
+        : Dimension.fromJson(json['dimension']);
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/model_video.dart';
+import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 
 abstract class BaseRcmdVideoItemModel extends BaseVideoItemModel {
   String? goto;
@@ -9,6 +10,9 @@ abstract class BaseRcmdVideoItemModel extends BaseVideoItemModel {
   // app推荐专属
   int? param;
   String? pgcBadge;
+
+  /// 封面宽高（按真实比例裁切；无数据时卡片回退 16:10）。
+  Dimension? dimension;
 }
 
 class RcmdVideoItemModel extends BaseRcmdVideoItemModel {
@@ -29,6 +33,9 @@ class RcmdVideoItemModel extends BaseRcmdVideoItemModel {
     //     ? RcmdReason.fromJson(json["rcmd_reason"])
     //     : RcmdReason(content: '');
     rcmdReason = json["rcmd_reason"]?['content'];
+    dimension = json['dimension'] == null
+        ? null
+        : Dimension.fromJson(json['dimension']);
   }
 
   // @override

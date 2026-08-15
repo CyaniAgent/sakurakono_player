@@ -20,6 +20,12 @@ class OttoVideoRepository implements VideoRepository {
   LoadingState<T> _err<T>(ApiException e) =>
       Error(e.errorCode, code: e.httpStatus);
 
+  /// User-visible error when the shared B站 UI passes a non-numeric video ID
+  /// (e.g. `bvid="BV1xxx"`) that OttoHub cannot resolve — clearer than the
+  /// API-internal `missing_argument` code.
+  LoadingState<T> _invalidVideoIdError<T>() =>
+      const Error('OttoHub: 无效的视频ID（仅支持纯数字ID）');
+
   // ---- Core model conversion ----
 
   /// Parse a publish-date or timestamp string into a Unix timestamp (seconds).
@@ -65,6 +71,12 @@ class OttoVideoRepository implements VideoRepository {
       'favorite': d.favoriteCount,
       'danmu': d.commentCount ?? 0,
     },
+    dimension: d.videoWidth != null &&
+        d.videoHeight != null &&
+        d.videoWidth! > 0 &&
+        d.videoHeight! > 0
+        ? <String, dynamic>{'width': d.videoWidth, 'height': d.videoHeight}
+        : null,
     cid: int.tryParse(d.vid) ?? 0,
   );
 
@@ -208,7 +220,7 @@ class OttoVideoRepository implements VideoRepository {
   }) async {
     try {
       final vid = avid ?? int.tryParse(bvid ?? '');
-      if (vid == null) return _err(const ApiException('missing_argument'));
+      if (vid == null) return _invalidVideoIdError();
       final result = await _api.getDetail(vid);
       return _ok(_toCorePlayUrl(result));
     } on ApiException catch (e) {
@@ -223,7 +235,7 @@ class OttoVideoRepository implements VideoRepository {
   }) async {
     try {
       final vid = int.tryParse(bvid);
-      if (vid == null) return _err(const ApiException('missing_argument'));
+      if (vid == null) return _invalidVideoIdError();
       final result = await _api.getDetail(vid);
       return _ok(_toCoreVideoDetail(result));
     } on ApiException catch (e) {
@@ -247,7 +259,7 @@ class OttoVideoRepository implements VideoRepository {
   }) async {
     try {
       final vid = int.tryParse(bvid);
-      if (vid == null) return _err(const ApiException('missing_argument'));
+      if (vid == null) return _invalidVideoIdError();
       final result = await _api.getRelated(vid);
       return _ok(result.videoList.map(_toCoreHotVideo).toList());
     } on ApiException catch (e) {
@@ -302,7 +314,7 @@ class OttoVideoRepository implements VideoRepository {
   }) async {
     try {
       final vid = int.tryParse(bvid);
-      if (vid == null) return _err(const ApiException('missing_argument'));
+      if (vid == null) return _invalidVideoIdError();
       // The SDK only exposes a toggle, so read the current like state first
       // and only toggle when it differs from the requested direction.
       final desired = type ? 1 : 0;

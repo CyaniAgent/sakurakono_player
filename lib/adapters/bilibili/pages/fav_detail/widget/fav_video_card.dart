@@ -10,6 +10,7 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pbenum.dart'
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/core/models/fav_types.dart';
+import 'package:skf/pages/common/cover_ratio.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -97,7 +98,8 @@ class FavVideoCardH extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: Style.aspectRatio,
+                // CoreFavDetailItemModel 无 dimension 字段（B站/OttoHub 均未映射），保持 16:10。
+                aspectRatio: coverAspectRatio(null, null),
                 child: LayoutBuilder(
                   builder: (context, boxConstraints) {
                     double maxWidth = boxConstraints.maxWidth;
