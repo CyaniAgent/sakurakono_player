@@ -1,20 +1,17 @@
 part of 'view.dart';
 
+/// B站 高能进度条（弹幕趋势折线图），注入为 [PlayerDmChartBuilder]。
 Widget buildDmChart(
   Color color,
-  List<double> dmTrend,
-  VideoDetailController videoDetailController, [
+  List<double> dmTrend, {
   double offset = 0,
-]) {
+  bool viewPointsVisible = false,
+}) {
   return IgnorePointer(
     child: Container(
       height: 12,
       margin: EdgeInsets.only(
-        bottom:
-            videoDetailController.viewPointList.isNotEmpty &&
-                videoDetailController.showVP.value
-            ? 19.25 + offset
-            : 4.25 + offset,
+        bottom: viewPointsVisible ? 19.25 + offset : 4.25 + offset,
       ),
       child: LineChart(
         LineChartData(
@@ -51,6 +48,7 @@ Widget buildDmChart(
   );
 }
 
+/// B站 拖动预览浮层（video shot 截图精灵图）。
 Widget buildSeekPreviewWidget(
   PlPlayerController plPlayerController,
   double maxWidth,
@@ -377,126 +375,3 @@ class _RenderDanmakuTip extends RenderProxyBox {
     super.paint(context, offset);
   }
 }
-
-class _VideoTime extends LeafRenderObjectWidget {
-  const _VideoTime({
-    required this.position,
-    required this.duration,
-  });
-
-  final String position;
-  final String duration;
-
-  @override
-  _RenderVideoTime createRenderObject(BuildContext context) => _RenderVideoTime(
-    position: position,
-    duration: duration,
-  );
-
-  @override
-  void updateRenderObject(
-    BuildContext context,
-    covariant _RenderVideoTime renderObject,
-  ) {
-    renderObject
-      ..position = position
-      ..duration = duration;
-  }
-}
-
-class _RenderVideoTime extends RenderBox {
-  _RenderVideoTime({
-    required this._position,
-    required this._duration,
-  });
-
-  String _duration;
-  set duration(String value) {
-    _duration = value;
-    final paragraph = _buildParagraph(const Color(0xFFD0D0D0), _duration);
-    if (paragraph.maxIntrinsicWidth != _cache?.maxIntrinsicWidth) {
-      markNeedsLayout();
-    }
-    _cache?.dispose();
-    _cache = paragraph;
-    markNeedsSemanticsUpdate();
-  }
-
-  String _position;
-  set position(String value) {
-    _position = value;
-    markNeedsPaint();
-    markNeedsSemanticsUpdate();
-  }
-
-  ui.Paragraph? _cache;
-
-  ui.Paragraph _buildParagraph(Color color, String time) {
-    final builder =
-        ui.ParagraphBuilder(
-            ui.ParagraphStyle(
-              fontSize: 10,
-              height: 1.4,
-              fontFamily: 'Monospace',
-            ),
-          )
-          ..pushStyle(
-            ui.TextStyle(
-              color: color,
-              fontSize: 10,
-              height: 1.4,
-              fontFamily: 'Monospace',
-              fontFeatures: const [FontFeature.tabularFigures()],
-            ),
-          )
-          ..addText(time);
-    return builder.build()
-      ..layout(const ui.ParagraphConstraints(width: .infinity));
-  }
-
-  @override
-  ui.Size computeDryLayout(covariant BoxConstraints constraints) {
-    final paragraph = _cache ??= _buildParagraph(
-      const Color(0xFFD0D0D0),
-      _duration,
-    );
-    return Size(paragraph.maxIntrinsicWidth, paragraph.height * 2);
-  }
-
-  @override
-  void describeSemanticsConfiguration(SemanticsConfiguration config) {
-    super.describeSemanticsConfiguration(config);
-    config.label = 'position:$_position\nduration:$_duration';
-  }
-
-  @override
-  void performLayout() {
-    size = computeDryLayout(constraints);
-  }
-
-  @override
-  void paint(PaintingContext context, ui.Offset offset) {
-    final para = _buildParagraph(Colors.white, _position);
-    context.canvas
-      ..drawParagraph(
-        para,
-        Offset(
-          offset.dx + _cache!.maxIntrinsicWidth - para.maxIntrinsicWidth,
-          offset.dy,
-        ),
-      )
-      ..drawParagraph(_cache!, Offset(offset.dx, offset.dy + para.height));
-    para.dispose();
-  }
-
-  @override
-  void dispose() {
-    _cache?.dispose();
-    _cache = null;
-    super.dispose();
-  }
-
-  @override
-  bool get isRepaintBoundary => true;
-}
-
