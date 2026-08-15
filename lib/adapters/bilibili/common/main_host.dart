@@ -58,11 +58,11 @@ class BiliMainHost implements MainHost {
 
   @override
   ScrollOrRefreshMixin homeTabCtrFor(HomeTabItem tab) =>
-      home_tab_helper.homeTabCtrFor(HomeTabType.values.byName(tab.id));
+      home_tab_helper.homeTabCtrFor(_homeTabTypeFor(tab));
 
   @override
   Widget homeTabPageFor(HomeTabItem tab) =>
-      home_tab_helper.homeTabPageFor(HomeTabType.values.byName(tab.id));
+      home_tab_helper.homeTabPageFor(_homeTabTypeFor(tab));
 
   @override
   Future<String> fetchDefaultSearchWord() async {
@@ -77,4 +77,11 @@ class BiliMainHost implements MainHost {
     } catch (_) {}
     return '';
   }
+
+  /// Hive `tabBarSort` 可能存旧索引/未知值——未知 id 回退默认 tab（rcmd），
+  /// 避免 `HomeTabType.values.byName` 对未知 name 抛 ArgumentError 崩首页。
+  HomeTabType _homeTabTypeFor(HomeTabItem tab) => HomeTabType.values.firstWhere(
+        (e) => e.name == tab.id,
+        orElse: () => HomeTabType.rcmd,
+      );
 }
