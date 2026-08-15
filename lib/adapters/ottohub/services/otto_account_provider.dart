@@ -18,7 +18,7 @@ class OttoAccountProvider extends AccountProvider {
   final RxString rxFace = ''.obs;
 
   @override
-  String? get userId => _loggedInUid;
+  int? get userId => int.tryParse(_loggedInUid ?? '');
   @override
   String? get displayName => _loggedInName;
   @override

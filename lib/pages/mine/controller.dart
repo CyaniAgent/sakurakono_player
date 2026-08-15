@@ -108,7 +108,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
     final result = await Get.find<FavRepository>().userfavFolder(
       pn: 1,
       ps: 20,
-      mid: Pref.userInfoCache?.mid,
+      mid: accountService.userId,
     );
     return switch (result) {
       Loading _ => LoadingState.loading(),

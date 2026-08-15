@@ -1,4 +1,5 @@
 import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:get/get.dart';
 
@@ -9,9 +10,10 @@ class BiliAccountProvider extends AccountProvider {
   final RxString rxFace = ''.obs;
 
   @override
-  String? get userId => null; // TODO: expose from Accounts
+  int? get userId => Accounts.main.isLogin ? Accounts.main.mid : null;
   @override
-  String? get displayName => null; // TODO: expose from Accounts
+  // 展示缓存（与 rxFace 同源）；身份判断请用 userId / isLogin。
+  String? get displayName => BiliPref.userInfoCache?.uname;
 
   @override
   bool get isLogin => rxIsLogin.value;

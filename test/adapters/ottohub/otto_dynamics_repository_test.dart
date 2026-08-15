@@ -16,7 +16,7 @@ import '../../helpers/fixtures.dart';
 class _FakeAccountProvider extends AccountProvider {
   _FakeAccountProvider(this._uid);
 
-  final String? _uid;
+  final int? _uid;
 
   @override
   RxString get rxFace => ''.obs;
@@ -27,7 +27,7 @@ class _FakeAccountProvider extends AccountProvider {
   @override
   bool get isLogin => false;
   @override
-  String? get userId => _uid;
+  int? get userId => _uid;
   @override
   String? get displayName => null;
   @override
@@ -59,7 +59,7 @@ void main() {
   }
 
   setUp(() {
-    Get.put<AccountProvider>(_FakeAccountProvider('10086'));
+    Get.put<AccountProvider>(_FakeAccountProvider(10086));
   });
 
   tearDown(Get.reset);

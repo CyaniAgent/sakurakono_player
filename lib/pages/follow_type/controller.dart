@@ -2,7 +2,7 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
-import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:get/get.dart';
 
 abstract class FollowTypeController
@@ -19,7 +19,7 @@ abstract class FollowTypeController
   }
 
   void init() {
-    final ownerMid = Pref.userInfoCache?.mid ?? 0;
+    final ownerMid = Get.find<AccountProvider>().userId ?? 0;
     final Map? args = Get.arguments;
     mid = args?['mid'] ?? ownerMid;
     final String? name = args?['name'];

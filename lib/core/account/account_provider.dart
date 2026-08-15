@@ -13,8 +13,8 @@ abstract class AccountProvider extends GetxService {
   String? get face;
   /// Whether the user is logged in.
   bool get isLogin;
-  /// Current user ID.
-  String? get userId;
+  /// Current user ID (null when not logged in).
+  int? get userId;
   /// User display name.
   String? get displayName;
 

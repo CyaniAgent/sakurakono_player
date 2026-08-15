@@ -4,7 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/pages/follow_type/controller.dart';
-import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FansController extends FollowTypeController {
@@ -15,7 +15,7 @@ class FansController extends FollowTypeController {
   @override
   void init() {
     final Map? args = Get.arguments;
-    final ownerMid = Pref.userInfoCache?.mid ?? 0;
+    final ownerMid = Get.find<AccountProvider>().userId ?? 0;
     final int? mid = args?['mid'];
     this.mid = mid ?? ownerMid;
     isOwner = ownerMid == this.mid;

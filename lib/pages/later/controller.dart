@@ -12,7 +12,7 @@ import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/pages/later/base_controller.dart';
 import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -90,8 +90,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
   /// 导航契约（适配器注入），null 时对应导航动作禁用。
   final LaterActions? actions;
 
-  // 登录态 mid：core 通用路径（BiliAccountProvider.userId 未实现，改用缓存）。
-  late final int mid = Pref.userInfoCache?.mid ?? 0;
+  late final int mid = Get.find<AccountProvider>().userId ?? 0;
 
   final RxBool asc = false.obs;
 

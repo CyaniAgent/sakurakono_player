@@ -109,7 +109,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   int get _currentUid {
     try {
       final uid = Get.find<AccountProvider>().userId;
-      if (uid != null) return int.tryParse(uid) ?? 0;
+      if (uid != null) return uid;
     } catch (e) {
       debugPrint('OttoDynamicsRepository._currentUid error: $e');
     }

@@ -13,7 +13,6 @@ import 'package:skf/pages/later/controller.dart';
 import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -202,7 +201,7 @@ class _LaterPageState extends State<LaterPage>
           IconButton(
             tooltip: '搜索',
             onPressed: () {
-              final mid = Pref.userInfoCache?.mid ?? 0;
+              final mid = currCtr().mid;
               Get.toNamed(
                 '/laterSearch',
                 arguments: {
