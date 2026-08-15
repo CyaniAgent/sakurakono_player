@@ -5,21 +5,25 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/fav/pgc/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav/pgc/widget/item.dart';
+import 'package:skf/pages/fav/fav_actions.dart';
+import 'package:skf/pages/fav/pgc/controller.dart';
+import 'package:skf/pages/fav/pgc/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 class FavPgcChildPage extends StatefulWidget {
   const FavPgcChildPage({
     super.key,
     required this.type,
     required this.followStatus,
+    this.actions,
   });
 
   final int type;
   final int followStatus;
+
+  /// 收藏域导航契约（由 FavPgcPage 注入）。
+  final FavActions? actions;
 
   @override
   State<FavPgcChildPage> createState() => _FavPgcChildPageState();
@@ -188,6 +192,9 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                     item: item,
                     ctr: _favPgcController,
                     onSelect: () => _favPgcController.onSelect(item),
+                    onOpen: () => widget.actions?.onViewPgc?.call(
+                      item.seasonId,
+                    ),
                     onUpdateStatus: () => showPgcFollowDialog(
                       context: context,
                       type: widget.type == 0 ? '追番' : '追剧',

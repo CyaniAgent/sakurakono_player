@@ -4,21 +4,23 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/fav/note/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav/note/widget/item.dart';
+import 'package:skf/pages/fav/fav_actions.dart';
+import 'package:skf/pages/fav/note/controller.dart';
+import 'package:skf/pages/fav/note/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 class FavNoteChildPage extends StatefulWidget {
-  const FavNoteChildPage({super.key, required this.isPublish});
+  const FavNoteChildPage({super.key, required this.isPublish, this.actions});
 
   final bool isPublish;
+
+  /// 收藏域导航契约（由 FavNotePage 注入）。
+  final FavActions? actions;
 
   @override
   State<FavNoteChildPage> createState() => _FavNoteChildPageState();
 }
-
 class _FavNoteChildPageState extends State<FavNoteChildPage>
     with AutomaticKeepAliveClientMixin, GridMixin {
   late final FavNoteController _favNoteController;
@@ -159,6 +161,9 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                     item: item,
                     ctr: _favNoteController,
                     onSelect: () => _favNoteController.onSelect(item),
+                    onOpen: () => widget.actions?.onHandleWebview?.call(
+                      item.webUrl!,
+                    ),
                   );
                 },
                 itemCount: response.length,

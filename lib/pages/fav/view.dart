@@ -1,25 +1,26 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/fav_type.dart';
-import 'package:skf/adapters/bilibili/pages/common/fav_helper.dart';
-import 'package:skf/adapters/bilibili/pages/fav/article/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav/cheese/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav/topic/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav/video/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav_folder_sort/view.dart';
+import 'package:skf/pages/fav/fav_actions.dart';
+import 'package:skf/pages/fav/fav_type.dart';
+import 'package:skf/pages/fav/article/controller.dart';
+import 'package:skf/pages/fav/cheese/controller.dart';
+import 'package:skf/pages/fav/topic/controller.dart';
+import 'package:skf/pages/fav/video/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class FavPage extends StatefulWidget {
-  const FavPage({super.key});
+  const FavPage({super.key, this.actions});
+
+  /// 收藏域导航契约（适配器注入，见 bilibili bridge）。
+  final FavActions? actions;
 
   @override
   State<FavPage> createState() => _FavPageState();
 }
-
 class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   final FavController _favController = Get.put(FavController());
@@ -88,8 +89,8 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                           SmartDialog.showToast('加载全部收藏夹再排序');
                           return;
                         }
-                        Get.to(
-                          FavFolderSortPage(favController: _favController),
+                        widget.actions?.onOpenFolderSort?.call(
+                          _favController,
                         );
                       }
                     },
@@ -157,7 +158,9 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
       body: ViewSafeArea(
         child: tabBarView(
           controller: _tabController,
-          children: FavTabType.values.map(favPageFor).toList(),
+          children: FavTabType.values
+              .map((type) => favPageFor(type, actions: widget.actions))
+              .toList(),
         ),
       ),
     );

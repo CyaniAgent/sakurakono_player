@@ -2,20 +2,22 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/fav/video/controller.dart';
-import 'package:skf/adapters/bilibili/pages/fav/video/widgets/item.dart';
+import 'package:skf/pages/fav/fav_actions.dart';
+import 'package:skf/pages/fav/video/controller.dart';
+import 'package:skf/pages/fav/video/widgets/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 class FavVideoPage extends StatefulWidget {
-  const FavVideoPage({super.key});
+  const FavVideoPage({super.key, this.actions});
+
+  /// 收藏域导航契约（由 FavPage 注入）。
+  final FavActions? actions;
 
   @override
   State<FavVideoPage> createState() => _FavVideoPageState();
 }
-
 class _FavVideoPageState extends State<FavVideoPage>
     with AutomaticKeepAliveClientMixin, GridMixin {
   final FavController _favController = Get.find<FavController>();
@@ -62,6 +64,10 @@ class _FavVideoPageState extends State<FavVideoPage>
                   return FavVideoItem(
                     heroTag: heroTag,
                     item: item,
+                    onSaveImage: () => widget.actions?.onSaveImage?.call(
+                      item.title,
+                      item.cover,
+                    ),
                     onTap: () async {
                       final res = await Get.toNamed(
                         '/favDetail',

@@ -1,8 +1,6 @@
 import 'package:skf/common/style.dart';
-import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:flutter/material.dart';
 
 class FavVideoItem extends StatelessWidget {
@@ -10,11 +8,13 @@ class FavVideoItem extends StatelessWidget {
   final CoreFavFolderInfo item;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final VoidCallback? onSaveImage;
 
   const FavVideoItem({
     super.key,
     this.onTap,
     this.onLongPress,
+    this.onSaveImage,
     required this.heroTag,
     required this.item,
   });
@@ -26,13 +26,7 @@ class FavVideoItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         onLongPress:
-            onLongPress ??
-            (onTap == null
-                ? null
-                : () => imageSaveDialog(
-                    title: item.title,
-                    cover: item.cover,
-                  )),
+            onLongPress ?? (onTap == null ? null : onSaveImage),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           child: Row(
@@ -96,7 +90,7 @@ class FavVideoItem extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            BiliUtils.isPublicFavText(item.attr),
+            isPublicFavText(item.attr),
             style: TextStyle(
               fontSize: fontSize,
               color: color,
@@ -106,4 +100,12 @@ class FavVideoItem extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 收藏夹公开性文案（迁移自 adapter utils/bili_utils.dart，纯逻辑副本）。
+String isPublicFavText(int? attr) {
+  if (attr == null) {
+    return '';
+  }
+  return (attr & 1) == 0 ? '公开' : '私密';
 }

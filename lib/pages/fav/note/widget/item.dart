@@ -2,8 +2,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/fav/note/controller.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/pages/fav/note/controller.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +12,15 @@ class FavNoteItem extends StatelessWidget {
     required this.item,
     required this.ctr,
     required this.onSelect,
+    this.onOpen,
   });
 
   final CoreFavNoteItemModel item;
   final FavNoteController ctr;
   final VoidCallback onSelect;
 
+  /// 打开笔记网页（适配器注入，见 FavActions.onHandleWebview）。
+  final VoidCallback? onOpen;
   void onLongPress() {
     if (!ctr.enableMultiSelect.value) {
       ctr.enableMultiSelect.value = true;
@@ -38,10 +40,7 @@ class FavNoteItem extends StatelessWidget {
             return;
           }
           if (item.webUrl?.isNotEmpty == true) {
-            PageUtils.handleWebview(
-              item.webUrl!,
-              inApp: true,
-            );
+            onOpen?.call();
           }
         },
         onLongPress: onLongPress,

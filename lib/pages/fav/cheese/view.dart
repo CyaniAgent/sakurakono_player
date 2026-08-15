@@ -3,19 +3,21 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/fav/cheese/controller.dart';
-import 'package:skf/adapters/bilibili/pages/member_cheese/widgets/item.dart';
+import 'package:skf/pages/fav/cheese/controller.dart';
+import 'package:skf/pages/fav/cheese/widgets/item.dart';
+import 'package:skf/pages/fav/fav_actions.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 class FavCheesePage extends StatefulWidget {
-  const FavCheesePage({super.key});
+  const FavCheesePage({super.key, this.actions});
+
+  /// 收藏域导航契约（由 FavPage 注入）。
+  final FavActions? actions;
 
   @override
   State<FavCheesePage> createState() => _FavCheesePageState();
 }
-
 class _FavCheesePageState extends State<FavCheesePage>
     with AutomaticKeepAliveClientMixin, GridMixin {
   final FavCheeseController _controller = Get.put(FavCheeseController());
@@ -62,8 +64,15 @@ class _FavCheesePageState extends State<FavCheesePage>
                     _controller.onLoadMore();
                   }
                   final item = response[index];
-                  return MemberCheeseItem(
+                  return FavCheeseItem(
                     item: item,
+                    onOpen: () => widget.actions?.onViewPugv?.call(
+                      item.seasonId,
+                    ),
+                    onSaveImage: () => widget.actions?.onSaveImage?.call(
+                      item.title,
+                      item.cover,
+                    ),
                     onRemove: () => showConfirmDialog(
                       context: context,
                       title: const Text('确定取消收藏该课堂？'),

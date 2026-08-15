@@ -26,7 +26,7 @@ import 'package:skf/adapters/bilibili/pages/dynamics_detail/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic_rcmd/view.dart';
 import 'package:skf/pages/fan/view.dart';
-import 'package:skf/adapters/bilibili/pages/fav/view.dart';
+import 'package:skf/pages/fav/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_create/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_search/view.dart';
@@ -39,6 +39,7 @@ import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
+import 'package:skf/adapters/bilibili/utils/fav_actions.dart';
 import 'package:skf/adapters/bilibili/utils/history_actions.dart';
 import 'package:skf/adapters/bilibili/utils/later_actions.dart';
 import 'package:skf/pages/later/view.dart';
@@ -223,7 +224,7 @@ class BiliBridge {
     // 设置
     GetPage(name: '/setting', page: () => const SettingPage()),
     //
-    GetPage(name: '/fav', page: () => const FavPage()),
+    GetPage(name: '/fav', page: () => FavPage(actions: biliFavActions)),
     //
     GetPage(name: '/favDetail', page: () => const FavDetailPage()),
     GetPage(

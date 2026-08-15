@@ -6,10 +6,8 @@ import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-
 class FavPgcItem extends StatelessWidget {
   const FavPgcItem({
     super.key,
@@ -17,6 +15,7 @@ class FavPgcItem extends StatelessWidget {
     required this.ctr,
     required this.onSelect,
     required this.onUpdateStatus,
+    this.onOpen,
   });
 
   final CoreFavPgcItemModel item;
@@ -24,6 +23,8 @@ class FavPgcItem extends StatelessWidget {
   final VoidCallback onSelect;
   final VoidCallback onUpdateStatus;
 
+  /// 打开 PGC（适配器注入，见 FavActions.onViewPgc）。
+  final VoidCallback? onOpen;
   void onLongPress() {
     if (!ctr.enableMultiSelect.value) {
       ctr.enableMultiSelect.value = true;
@@ -45,7 +46,7 @@ class FavPgcItem extends StatelessWidget {
                 onSelect();
                 return;
               }
-              PageUtils.viewPgc(seasonId: item.seasonId);
+              onOpen?.call();
             },
             onLongPress: onLongPress,
             onSecondaryTap: PlatformUtils.isMobile ? null : onLongPress,

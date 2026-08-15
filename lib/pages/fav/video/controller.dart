@@ -3,10 +3,13 @@ import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/utils/storage_pref.dart';
+class FavController
+    extends CommonListController<CoreFavFolderData, CoreFavFolderInfo> {
+  late final bool isLogin = Pref.userInfoCache?.isLogin == true;
 
-class FavController extends CommonListController<CoreFavFolderData, CoreFavFolderInfo> {
-  late final account = Accounts.main;
+  // 登录态 mid：core 通用路径（BiliAccountProvider.userId 未实现，改用缓存）。
+  late final int mid = Pref.userInfoCache?.mid ?? 0;
 
   @override
   void onInit() {
@@ -16,7 +19,7 @@ class FavController extends CommonListController<CoreFavFolderData, CoreFavFolde
 
   @override
   Future<void> queryData([bool isRefresh = true]) {
-    if (!account.isLogin) {
+    if (!isLogin) {
       loadingState.value = const Error('账号未登录');
       return Future.syncValue(null);
     }
@@ -36,7 +39,7 @@ class FavController extends CommonListController<CoreFavFolderData, CoreFavFolde
     final result = await Get.find<FavRepository>().userfavFolder(
     pn: page,
     ps: 20,
-    mid: account.mid,
+    mid: mid,
   );
     return switch (result) {
       Loading _ => LoadingState.loading(),

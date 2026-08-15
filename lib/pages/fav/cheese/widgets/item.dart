@@ -1,0 +1,129 @@
+import 'package:skf/common/style.dart';
+import 'package:skf/common/widgets/badge.dart';
+import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/core/models/fav_types.dart';
+import 'package:skf/utils/date_utils.dart';
+import 'package:skf/utils/platform_utils.dart';
+import 'package:flutter/material.dart';
+
+/// 收藏课堂条目（本地版，替代 adapter member_cheese/widgets/item.dart 的
+/// MemberCheeseItem —— 后者仍服务 member_cheese 页，留 adapter）。
+class FavCheeseItem extends StatelessWidget {
+  const FavCheeseItem({
+    super.key,
+    required this.item,
+    this.onRemove,
+    this.onOpen,
+    this.onSaveImage,
+  });
+
+  final CoreSpaceCheeseItem item;
+  final VoidCallback? onRemove;
+  final VoidCallback? onOpen;
+  final VoidCallback? onSaveImage;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          item.title!,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (item.status != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            item.status!,
+            style: TextStyle(
+              fontSize: 13,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+        if (item.ctime != null) ...[
+          const Spacer(),
+          Text(
+            '收藏于${DateFormatUtils.dateFormat(int.parse(item.ctime!))}',
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.colorScheme.outline,
+            ),
+          ),
+        ],
+      ],
+    );
+    if (onRemove != null) {
+      child = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          child,
+          Positioned(
+            right: 0,
+            bottom: -8,
+            child: iconButton(
+              tooltip: '移除',
+              onPressed: onRemove,
+              icon: const Icon(Icons.clear),
+              iconColor: theme.colorScheme.outline,
+            ),
+          ),
+        ],
+      );
+    }
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: onOpen,
+        onLongPress: onSaveImage,
+        onSecondaryTap: PlatformUtils.isMobile ? null : onSaveImage,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Style.safeSpace,
+            vertical: 5,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AspectRatio(
+                aspectRatio: Style.aspectRatio,
+                child: LayoutBuilder(
+                  builder: (context, boxConstraints) {
+                    Widget child = NetworkImgLayer(
+                      src: item.cover,
+                      width: boxConstraints.maxWidth,
+                      height: boxConstraints.maxHeight,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(4),
+                      ),
+                    );
+                    if (item.marks?.isNotEmpty == true) {
+                      return Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          child,
+                          PBadge(
+                            right: 6,
+                            top: 6,
+                            text: item.marks!.join('|'),
+                          ),
+                        ],
+                      );
+                    }
+                    return child;
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: child),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

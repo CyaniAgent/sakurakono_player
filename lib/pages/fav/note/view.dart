@@ -1,29 +1,30 @@
-import 'package:skf/adapters/bilibili/pages/fav/pgc/child_view.dart';
-import 'package:skf/adapters/bilibili/pages/fav/pgc/controller.dart';
+import 'package:skf/pages/fav/fav_actions.dart';
+import 'package:skf/pages/fav/note/child_view.dart';
+import 'package:skf/pages/fav/note/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FavPgcPage extends StatefulWidget {
-  const FavPgcPage({super.key, required this.type});
+class FavNotePage extends StatefulWidget {
+  const FavNotePage({super.key, this.actions});
 
-  final int type;
+  /// 收藏域导航契约（由 FavPage 注入）。
+  final FavActions? actions;
 
   @override
-  State<FavPgcPage> createState() => _FavPgcPageState();
+  State<FavNotePage> createState() => _FavNotePageState();
 }
 
-class _FavPgcPageState extends State<FavPgcPage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+class _FavNotePageState extends State<FavNotePage>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 3,
+      length: 2,
       vsync: this,
-      initialIndex: 1,
     );
   }
 
@@ -72,15 +73,14 @@ class _FavPgcPageState extends State<FavPgcPage>
                 labelColor: theme.colorScheme.onSecondaryContainer,
                 unselectedLabelColor: theme.colorScheme.outline,
                 tabs: const [
-                  Tab(text: '想看'),
-                  Tab(text: '在看'),
-                  Tab(text: '看过'),
+                  Tab(text: '未发布笔记'),
+                  Tab(text: '公开笔记'),
                 ],
                 onTap: (index) {
                   try {
                     if (!_tabController.indexIsChanging) {
-                      Get.find<FavPgcController>(
-                        tag: '${widget.type}${index + 1}',
+                      Get.find<FavNoteController>(
+                        tag: index == 0 ? 'false' : 'true',
                       ).scrollController.animToTop();
                     }
                   } catch (_) {}
@@ -90,11 +90,22 @@ class _FavPgcPageState extends State<FavPgcPage>
             // TextButton(
             //   style: TextButton.styleFrom(
             //     foregroundColor: theme.colorScheme.onSurfaceVariant,
-            //     visualDensity:
-            //         const VisualDensity(horizontal: -2, vertical: -2),
+            //     visualDensity: VisualDensity.compact,
             //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             //   ),
-            //   onPressed: () {},
+            //   onPressed: () async {
+            //     final favNoteController = Get.find<FavNoteController>(
+            //         tag: _tabController.index == 0 ? 'false' : 'true');
+            //     if (favNoteController.enableMultiSelect.value) {
+            //       favNoteController.onDisable();
+            //     } else {
+            //       if (favNoteController.loadingState.value.isSuccess &&
+            //           favNoteController.loadingState.value.data?.isNotEmpty ==
+            //               true) {
+            //         favNoteController.enableMultiSelect.value = true;
+            //       }
+            //     }
+            //   },
             //   child: const Text('管理'),
             // ),
             // const SizedBox(width: 12),
@@ -104,13 +115,10 @@ class _FavPgcPageState extends State<FavPgcPage>
           child: TabBarView(
             controller: _tabController,
             physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(
-              3,
-              (index) => FavPgcChildPage(
-                type: widget.type,
-                followStatus: index + 1,
-              ),
-            ),
+            children: [
+              FavNoteChildPage(isPublish: false, actions: widget.actions),
+              FavNoteChildPage(isPublish: true, actions: widget.actions),
+            ],
           ),
         ),
       ],
