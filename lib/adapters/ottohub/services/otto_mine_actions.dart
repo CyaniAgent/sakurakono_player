@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
@@ -7,9 +8,8 @@ import 'package:skf/pages/mine/mine_actions.dart';
 ///
 /// OttoHub 复用 Bilibili 路由表（`routes => BiliBridge.registerRoutes()`），
 /// 导航类动作直接走共享路由；账号类操作（切换账号/退出/无痕模式）无 SDK
-/// API，抛 `not_implemented`（与 OttoHub stub 契约一致）。
+/// API，降级为 toast 提示/空操作（防御性降级，不抛异常）。
 class OttoMineActions implements MineActions {
-  Never _err() => throw UnimplementedError('not_implemented');
 
   @override
   List<MineMenuItem> get menuItems => const <MineMenuItem>[];
@@ -33,7 +33,10 @@ class OttoMineActions implements MineActions {
   void openSetting() => Get.toNamed('/setting', preventDuplicates: false);
 
   @override
-  Future<void>? switchAccountDialog(BuildContext context) => _err();
+  Future<void>? switchAccountDialog(BuildContext context) {
+    SmartDialog.showToast('OttoHub 暂不支持');
+    return null;
+  }
 
   @override
   void openLoginPage() => Get.toNamed('/loginPage');
@@ -63,7 +66,7 @@ class OttoMineActions implements MineActions {
       )?.whenComplete(onPop);
 
   @override
-  Future<void> logout() => _err();
+  Future<void> logout() => SmartDialog.showToast('OttoHub 暂不支持');
 
   @override
   bool get canToggleAnonymity => false;
@@ -72,7 +75,7 @@ class OttoMineActions implements MineActions {
   bool get isAnonymity => false;
 
   @override
-  void setAnonymity(bool on, {bool permanent = false}) => _err();
+  void setAnonymity(bool on, {bool permanent = false}) {}
 
   @override
   Color? vipNameColor(ThemeData theme) => null;

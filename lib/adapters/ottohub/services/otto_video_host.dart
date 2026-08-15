@@ -2,21 +2,18 @@
 //
 // OttoHub 复用 Bilibili 路由表（`routes => BiliBridge.registerRoutes()`），
 // 视频页主框架为通用层（lib/pages/video/）；OttoHub 播放能力由 SDK 承载，
-// 本桩仅保证编译通过，播放器/弹幕/回复/下载等 B站 专属能力在 OttoHub
-// 模式下均抛 `not_implemented`（与 OttoHub stub 约定一致）。
+// 本桩仅保证页面可打开不崩：播放器返回可构造的 PlayerController 实例（不实际
+// 播放），面板/弹层返回占位或空实现（防御性降级，不抛异常）。
 
-import 'dart:ui' show Color;
 
-import 'package:flutter/widgets.dart'
-    show
-    BuildContext,
-    GlobalKey,
-    Key,
-    ValueChanged,
-    VoidCallback,
-    Widget;
+import 'package:flutter/material.dart';
 
+import 'package:get/get.dart';
+
+import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
+import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/user_types.dart';
+
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/video/controller.dart';
@@ -28,10 +25,10 @@ import 'package:skf/player/models/play_repeat.dart';
 import 'package:skf/player/player_controller.dart';
 
 class _OttoPlayerHost implements VideoPlayerHost {
-  Never _err() => throw UnimplementedError('not_implemented');
+  PlayerController? _player;
 
   @override
-  PlayerController get player => _err();
+  PlayerController get player => _player ??= PlayerController();
 
   @override
   bool get tryLook => false;
@@ -109,7 +106,7 @@ class _OttoPlayerHost implements VideoPlayerHost {
   void updatePlayCount() {}
 
   @override
-  bool dmStateContains(int cid) => _err();
+  bool dmStateContains(int cid) => false;
 
   @override
   bool get showDmChart => false;
@@ -122,7 +119,6 @@ class _OttoPlayerHost implements VideoPlayerHost {
 class OttoVideoHost implements VideoHost {
   final _playerHost = _OttoPlayerHost();
 
-  Never _err() => throw UnimplementedError('not_implemented');
 
   @override
   VideoPlayerHost get playerHost => _playerHost;
@@ -141,14 +137,20 @@ class OttoVideoHost implements VideoHost {
     required CorePlayUrlModel data,
     required int? cacheVideoQa,
     required int cacheAudioQa,
-  }) =>
-      _err();
+  }) {
+    return CorePlaybackConfig(
+      videoUrl: '',
+      audioUrl: '',
+      videoQaCode: VideoQuality.fluent360.code,
+      decodeFormat: VideoDecodeFormatType.AVC,
+    );
+  }
 
   @override
-  VideoBlock createBlock(VideoDetailController controller) => _err();
+  VideoBlock createBlock(VideoDetailController controller) => _OttoVideoBlock();
 
   @override
-  void reportVideo(int aid) => _err();
+  void reportVideo(int aid) {}
 
   @override
   Future<void> onVideoDetailDispose(String heroTag) async {}
@@ -158,12 +160,14 @@ class OttoVideoHost implements VideoHost {
 
   @override
   Widget buildPlayer({
+    required String heroTag,
     required double width,
     required double height,
     bool isPipMode = false,
     required bool isPortrait,
-  }) =>
-      _err();
+  }) {
+    return const SizedBox.expand();
+  }
 
   @override
   List<Widget> buildPlayerOverlays({
@@ -188,7 +192,7 @@ class OttoVideoHost implements VideoHost {
 
   @override
   Widget buildLocalIntroPanel({required Key key, required String heroTag}) =>
-      _err();
+      const SizedBox.shrink();
 
   @override
   Widget buildUgcIntroPanel({
@@ -196,12 +200,13 @@ class OttoVideoHost implements VideoHost {
     required String heroTag,
     required bool isPortrait,
     required bool isHorizontal,
-  }) =>
-      _err();
+  }) {
+    return const SizedBox.shrink();
+  }
 
   @override
   Widget buildRelatedPanel({required Key key, required String heroTag}) =>
-      _err();
+      const SizedBox.shrink();
 
   @override
   Widget buildPgcIntroPage({
@@ -210,22 +215,24 @@ class OttoVideoHost implements VideoHost {
     required int cid,
     required double maxWidth,
     required bool isLandscape,
-  }) =>
-      _err();
+  }) {
+    return const SizedBox.shrink();
+  }
 
   @override
-  Widget buildSeasonPanel({required String heroTag}) => _err();
+  Widget buildSeasonPanel({required String heroTag}) => const SizedBox.shrink();
 
   @override
   Widget buildReplyPanel({
     required Key key,
     required String heroTag,
     bool isNested = false,
-  }) =>
-      _err();
+  }) {
+    return const SizedBox.shrink();
+  }
 
   @override
-  Widget buildReplyTabLabel({required String heroTag}) => _err();
+  Widget buildReplyTabLabel({required String heroTag}) => const SizedBox.shrink();
 
   @override
   void animateReplyToTop(String heroTag) {}
@@ -236,6 +243,7 @@ class OttoVideoHost implements VideoHost {
 
   @override
   Future<void> showShootDanmakuSheet({
+    required String heroTag,
     required String bvid,
     required int cid,
     required int progress,
@@ -261,22 +269,22 @@ class OttoVideoHost implements VideoHost {
   Future<void> viewLater(String heroTag) async {}
 
   @override
-  void showMediaListPanel(BuildContext context, String heroTag) => _err();
+  void showMediaListPanel(BuildContext context, String heroTag) {}
 
   @override
-  void showNoteList(BuildContext context, String heroTag) => _err();
+  void showNoteList(BuildContext context, String heroTag) {}
 
   @override
   Future<void> showDownloadPanel(BuildContext context, String heroTag) async {}
 
   @override
-  void openAudioPage(String heroTag) => _err();
+  void openAudioPage(String heroTag) {}
 
   @override
-  void onBlock(BuildContext context, String heroTag) => _err();
+  void onBlock(BuildContext context, String heroTag) {}
 
   @override
-  void showSBDetail(String heroTag) => _err();
+  void showSBDetail(String heroTag) {}
 
   @override
   Future<bool> getSteinEdgeInfo({
@@ -345,4 +353,59 @@ class OttoVideoHost implements VideoHost {
 
   @override
   void handleShutdownTimer() {}
+}
+
+/// OttoHub 片段跳过引擎桩：全部 no-op，不抛异常。
+class _OttoVideoBlock implements VideoBlock {
+  @override
+  RxList<Segment> get segmentProgressList => RxList<Segment>([]);
+
+  @override
+  GlobalKey<AnimatedListState> get listKey => GlobalKey<AnimatedListState>();
+
+  @override
+  List<Object> get listData => const <Object>[];
+
+  @override
+  bool get isBlock => false;
+
+  @override
+  bool get enableBlock => false;
+
+  @override
+  void initSkip() {}
+
+  @override
+  void resetBlock() {}
+
+  @override
+  void handleSBData(List<CoreSegmentItemModel> list) {}
+
+  @override
+  Future<void> querySponsorBlock({required String bvid, required int cid}) async {}
+
+  @override
+  void onAddItem(Object item) {}
+
+  @override
+  void onRemoveItem(int index, Object item) {}
+
+  @override
+  Future<void>? onSkip(Object item, {bool isSeek = true}) => null;
+
+  @override
+  Duration? getFirstSegment([int pos = 0]) => null;
+
+  @override
+  Widget buildItem(Object item, Animation<double> animation) =>
+      const SizedBox.shrink();
+
+  @override
+  void cancelBlockListener() {}
+
+  @override
+  void showSBDetail() {}
+
+  @override
+  void dispose() {}
 }

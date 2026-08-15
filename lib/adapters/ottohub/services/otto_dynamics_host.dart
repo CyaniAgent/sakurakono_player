@@ -6,16 +6,15 @@ import 'package:skf/pages/dynamics/dynamics_host.dart';
 /// OttoHub stub for [DynamicsHost].
 ///
 /// OttoHub has no dynamics-page UI of its own (test-only adapter); the
-/// Bilibili pages are not reused here. All deep interactions throw
-/// `not_implemented` (crash-prevention, consistent with OttoHub stubs).
+/// Bilibili pages are not reused here. All deep interactions degrade to
+/// no-op / placeholder (defensive degradation, no exceptions thrown).
 class OttoDynamicsHost implements DynamicsHost {
-  Never _err() => throw UnimplementedError('not_implemented');
 
   @override
-  Widget buildTabPage(CoreDynamicsTabType type) => _err();
+  Widget buildTabPage(CoreDynamicsTabType type) => const SizedBox.shrink();
 
   @override
-  void showCreateDynPanel(BuildContext context) => _err();
+  void showCreateDynPanel(BuildContext context) {}
 
   @override
   bool get isMainDynamicsTab => false;
@@ -24,13 +23,13 @@ class OttoDynamicsHost implements DynamicsHost {
   int get currentUserId => -1;
 
   @override
-  Future<void> reloadTab(CoreDynamicsTabType type) => _err();
+  Future<void> reloadTab(CoreDynamicsTabType type) async {}
 
   @override
-  Future<void> refreshTab(CoreDynamicsTabType type) => _err();
+  Future<void> refreshTab(CoreDynamicsTabType type) async {}
 
   @override
-  void animateTabToTop(CoreDynamicsTabType type) => _err();
+  void animateTabToTop(CoreDynamicsTabType type) {}
 
   @override
   bool tabHasScrollClients(CoreDynamicsTabType type) => false;
@@ -39,28 +38,26 @@ class OttoDynamicsHost implements DynamicsHost {
   double tabScrollPixels(CoreDynamicsTabType type) => 0;
 
   @override
-  void tabAnimToTop(CoreDynamicsTabType type) => _err();
+  void tabAnimToTop(CoreDynamicsTabType type) {}
 
   @override
   Future<void> pushDynDetail(
     CoreDynamicItemModel item, {
     bool isPush = false,
     bool viewComment = false,
-  }) =>
-      _err();
+  }) async {}
 
   @override
   bool viewPgcFromUri(String uri) => false;
 
   @override
-  void toVideoPage({String? bvid, int? cid, CoreDimension? dimension}) =>
-      _err();
+  void toVideoPage({String? bvid, int? cid, CoreDimension? dimension}) {}
 
   @override
-  void openLiveFollowPage() => _err();
+  void openLiveFollowPage() {}
 
   @override
-  void toLiveRoom(int? roomId) => _err();
+  void toLiveRoom(int? roomId) {}
 
   @override
   void handleWebview(
@@ -68,25 +65,25 @@ class OttoDynamicsHost implements DynamicsHost {
     bool off = false,
     bool inApp = false,
     Map? parameters,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
-  void showSavePanel({dynamic upMid, dynamic item}) => _err();
+  void showSavePanel({dynamic upMid, dynamic item}) {}
 
   @override
-  void pmShare(BuildContext context, {required Map content}) => _err();
+  void pmShare(BuildContext context, {required Map content}) {}
 
   @override
-  void checkCreatedDyn({dynamic id, bool isManual = false}) => _err();
+  void checkCreatedDyn({dynamic id, bool isManual = false}) {}
 
   @override
   void showReportDialog(
     BuildContext context, {
     required int mid,
     required String dynId,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
   Future<void> showReplyInteractionDialog(
@@ -94,20 +91,18 @@ class OttoDynamicsHost implements DynamicsHost {
     required String oid,
     required int type,
     required ValueChanged<int> onSetReplySubject,
-  }) =>
-      _err();
+  }) async {}
 
   @override
   void showRepostPanel(
     BuildContext context,
     CoreDynamicItemModel item,
     VoidCallback onSuccess,
-  ) =>
-      _err();
+  ) {
+  }
 
   @override
-  void showImageSaveDialog({String? title, String? cover, String? bvid}) =>
-      _err();
+  void showImageSaveDialog({String? title, String? cover, String? bvid}) {}
 
   @override
   Widget buildBlockedItem(
@@ -115,5 +110,5 @@ class OttoDynamicsHost implements DynamicsHost {
     ThemeData theme,
     CoreModuleBlocked blocked,
   ) =>
-      _err();
+      const SizedBox.shrink();
 }

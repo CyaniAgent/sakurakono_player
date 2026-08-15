@@ -6,10 +6,9 @@ import 'package:skf/pages/member/member_host.dart';
 /// OttoHub stub for [MemberHost].
 ///
 /// OttoHub has no member-page UI of its own (test-only adapter); the
-/// Bilibili pages are not reused here. All deep interactions throw
-/// `not_implemented` (crash-prevention, consistent with OttoHub stubs).
+/// Bilibili pages are not reused here. All deep interactions degrade to
+/// no-op / placeholder (defensive degradation, no exceptions thrown).
 class OttoMemberHost implements MemberHost {
-  Never _err() => throw UnimplementedError('not_implemented');
 
   @override
   int get currentUserId => -1;
@@ -28,7 +27,7 @@ class OttoMemberHost implements MemberHost {
     required int mid,
     required RxInt contributeInitialIndex,
   }) =>
-      _err();
+      const SizedBox.shrink();
 
   @override
   bool canToWebArchive(String heroTag) => false;
@@ -38,8 +37,8 @@ class OttoMemberHost implements MemberHost {
     required String heroTag,
     required int mid,
     required String username,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
   void actionRelationMod(
@@ -47,65 +46,65 @@ class OttoMemberHost implements MemberHost {
     required int mid,
     required bool isFollow,
     required ValueChanged<int> afterMod,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
-  void shareUser(int mid) => _err();
+  void shareUser(int mid) {}
 
   @override
-  void openLoginDevices() => _err();
+  void openLoginDevices() {}
 
   @override
-  void openLoginLog() => _err();
+  void openLoginLog() {}
 
   @override
-  void openCoinLog() => _err();
+  void openCoinLog() {}
 
   @override
-  void openExpLog() => _err();
+  void openExpLog() {}
 
   @override
   void showReportDialog(
     BuildContext context, {
     required String? name,
     required int mid,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
-  Future<void> showLiveMedalWall(int mid) => _err();
+  Future<void> showLiveMedalWall(int mid) async {}
 
   @override
   void createShortcut({
     required int mid,
     required String name,
     required String avatar,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
-  void pushDynFromId(String? id) => _err();
+  void pushDynFromId(String? id) {}
 
   @override
-  void handleWebview(String url) => _err();
+  void handleWebview(String url) {}
 
   @override
-  void pushFromUri(String uri) => _err();
+  void pushFromUri(String uri) {}
 
   @override
   void openMemberGuard({
     required int mid,
     required String name,
     required Object? count,
-  }) =>
-      _err();
+  }) {
+  }
 
   @override
   void openUpowerRank({
     required int mid,
     required String name,
     required Object? count,
-  }) =>
-      _err();
+  }) {
+  }
 }

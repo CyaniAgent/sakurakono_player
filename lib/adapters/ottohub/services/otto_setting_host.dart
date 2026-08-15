@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/about/view.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/pages/setting/setting_host.dart';
@@ -7,9 +8,8 @@ import 'package:skf/pages/setting/setting_host.dart';
 ///
 /// OttoHub 复用 Bilibili 路由表；设置页框架渲染通用行（播放链接/关于），
 /// B站 专属设置项不注入；账号类操作（切换账号/退出）无 SDK API，
-/// 抛 `not_implemented`（与 OttoHub stub 契约一致）。
+/// 降级为 toast 提示（防御性降级，不抛异常）。
 class OttoSettingHost implements SettingHost {
-  Never _err() => throw UnimplementedError('not_implemented');
 
   @override
   List<SettingMenuItem> get menuItems => const <SettingMenuItem>[];
@@ -27,13 +27,15 @@ class OttoSettingHost implements SettingHost {
   VoidCallback? get searchTap => null;
 
   @override
-  Future<void> switchAccountDialog(BuildContext context) => _err();
+  Future<void> switchAccountDialog(BuildContext context) =>
+      SmartDialog.showToast('OttoHub 暂不支持');
 
   @override
   bool get hasAccount => false;
 
   @override
-  Future<void> logout(BuildContext context) => _err();
+  Future<void> logout(BuildContext context) =>
+      SmartDialog.showToast('OttoHub 暂不支持');
 
   @override
   void openVideoById(String id) {
