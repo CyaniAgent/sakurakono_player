@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:skf/adapters/bilibili/utils/play_input.dart';
+import 'package:skf/pages/setting/play_input.dart';
 
 void main() {
   group('classifyPlayInput', () {

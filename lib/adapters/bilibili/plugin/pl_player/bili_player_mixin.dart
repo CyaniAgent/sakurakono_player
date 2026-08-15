@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_shot/data.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/play_settings.dart'
     show kMaxVolume;
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';

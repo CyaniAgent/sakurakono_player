@@ -5,7 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
-import 'package:skf/adapters/bilibili/pages/setting/slide_color_picker.dart';
+import 'package:skf/pages/setting/slide_color_picker.dart';
 import 'package:skf/utils/filtering_text.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';

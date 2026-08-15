@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/flutter/draggable_scrollable_sheet.dart';
 import 'package:skf/common/widgets/marquee.dart';
 import 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/play_settings.dart'
     show showPlayerVolumeDialog;
 import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';

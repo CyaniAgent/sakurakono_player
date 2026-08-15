@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/ordered_multi_select_dialog.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
+import 'package:skf/pages/setting/models/model.dart';
+import 'package:skf/pages/setting/widgets/ordered_multi_select_dialog.dart';
+import 'package:skf/pages/setting/widgets/select_dialog.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/widgets/cdn_select_dialog.dart';
 import 'package:skf/utils/filtering_text.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';

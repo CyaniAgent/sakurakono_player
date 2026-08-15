@@ -1,10 +1,10 @@
-import 'package:skf/adapters/bilibili/pages/setting/models/extra_settings.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/privacy_settings.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/recommend_settings.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/style_settings.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/video_settings.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/extra_settings.dart';
+import 'package:skf/pages/setting/models/model.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/play_settings.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/privacy_settings.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/recommend_settings.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/style_settings.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/video_settings.dart';
 
 enum SettingType {
   privacySetting('隐私设置'),

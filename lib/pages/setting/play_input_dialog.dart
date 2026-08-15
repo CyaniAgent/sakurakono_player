@@ -1,6 +1,6 @@
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
-import 'package:skf/adapters/bilibili/utils/play_input.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
+import 'package:skf/pages/setting/play_input.dart';
+import 'package:skf/pages/setting/setting_host.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -71,9 +71,6 @@ void showPlayInputDialog(BuildContext context) {
   );
 }
 
-/// 分派播放输入：biliUrl 走 [PiliScheme.routePushFromUrl]（返回 false 时
-/// 提示），ottoVid 按 OttoHub identity mapping 直通
-/// [PageUtils.toVideoPage]（bvid=数字字符串），unknown 仅提示。
 Future<void> _dispatchPlayInput(String input) async {
   // classifyPlayInput 基于 trim 后值判定，分派必须使用同一 trimmed 值：
   // 直接 int.parse(input) 会在粘贴含首尾空白/换行的纯数字时抛 FormatException。
@@ -81,12 +78,13 @@ Future<void> _dispatchPlayInput(String input) async {
   switch (classifyPlayInput(trimmed)) {
     case PlayInputKind.biliUrl:
       // b23.tv 等短链在此走网络 302，因此只出现在异步分派中，不进纯函数。
-      final ok = await PiliScheme.routePushFromUrl(trimmed);
+      // 分派走激活适配器的 openUrl（B站: PiliScheme.routePushFromUrl）。
+      final ok = await AdapterRegistry.active.openUrl(trimmed);
       if (!ok) SmartDialog.showToast('无法识别的链接');
     case PlayInputKind.ottoVid:
       // classifyPlayInput 已保证 trim 后 ^\d+$，int.parse(trimmed) 不会失败。
-      final id = int.parse(trimmed);
-      PageUtils.toVideoPage(bvid: trimmed, aid: id, cid: id);
+      // 纯数字 ID 打开视频页由宿主分派（B站: PageUtils.toVideoPage）。
+      SettingHost.of().openVideoById(trimmed);
     case PlayInputKind.unknown:
       SmartDialog.showToast('无法识别的链接');
   }

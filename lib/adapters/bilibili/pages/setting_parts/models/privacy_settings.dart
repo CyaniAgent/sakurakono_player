@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
+import 'package:skf/pages/setting/models/model.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/api_type.dart';
 import 'package:flutter/material.dart';

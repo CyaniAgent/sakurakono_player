@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/switch_item.dart';
+import 'package:skf/pages/setting/widgets/switch_item.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/filtering_text.dart';
 import 'package:skf/utils/storage.dart';

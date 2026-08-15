@@ -33,7 +33,7 @@ import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
-import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_setting_host.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
@@ -71,7 +71,9 @@ import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
+import 'package:skf/pages/setting/setting_host.dart';
 import 'package:skf/pages/video/video_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 
@@ -143,7 +145,9 @@ class OttoAdapter implements AppAdapter {
       // Download page host (empty-state stub, no download support)
       ..lazyPut<DownloadActions>(OttoDownloadActions.new)
       // Video page host (crash-prevention stub)
-      ..lazyPut<VideoHost>(OttoVideoHost.new);
+      ..lazyPut<VideoHost>(OttoVideoHost.new)
+      // Setting page host (framework rows; account ops stub)
+      ..lazyPut<SettingHost>(OttoSettingHost.new);
   }
 
   @override

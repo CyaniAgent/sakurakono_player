@@ -1,6 +1,6 @@
 import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/utils/recommend_filter.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
+import 'package:skf/pages/setting/models/model.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -29,6 +29,7 @@ import 'package:skf/adapters/bilibili/pages/dynamics_topic/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic_rcmd/view.dart';
 import 'package:skf/adapters/bilibili/common/dynamics_host.dart';
 import 'package:skf/adapters/bilibili/common/mine_actions.dart';
+import 'package:skf/adapters/bilibili/common/setting_host.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/pages/fan/view.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
@@ -81,13 +82,14 @@ import 'package:skf/adapters/bilibili/pages/search_panel/builder.dart';
 import 'package:skf/pages/search/view.dart';
 import 'package:skf/pages/search_result/view.dart';
 import 'package:skf/adapters/bilibili/pages/search_trending/view.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/bar_set.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/color_select.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/display_mode.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/font_size_select.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/logs.dart';
-import 'package:skf/adapters/bilibili/pages/setting/pages/play_speed_set.dart';
-import 'package:skf/adapters/bilibili/pages/setting/view.dart';
+import 'package:skf/pages/setting/pages/bar_set.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/pages/color_select.dart';
+import 'package:skf/pages/setting/pages/display_mode.dart';
+import 'package:skf/pages/setting/pages/font_size_select.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/pages/logs.dart';
+import 'package:skf/pages/setting/pages/play_speed_set.dart';
+import 'package:skf/pages/setting/setting_host.dart';
+import 'package:skf/pages/setting/view.dart';
 import 'package:skf/adapters/bilibili/pages/settings_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/space_setting/view.dart';
 import 'package:skf/adapters/bilibili/pages/sponsor_block/view.dart';
@@ -224,7 +226,9 @@ class BiliBridge {
       // Download page host (download service + local playback navigation)
       ..lazyPut<DownloadActions>(BiliDownloadActions.new)
       // Video page host (player extras, danmaku, reply, intro panels, sheets)
-      ..lazyPut<VideoHost>(BiliVideoHost.new);
+      ..lazyPut<VideoHost>(BiliVideoHost.new)
+      // Setting page host (menu items, account ops, play-input dispatch)
+      ..lazyPut<SettingHost>(BiliSettingHost.new);
     setupServiceLocator();
     _initHttp();
   }

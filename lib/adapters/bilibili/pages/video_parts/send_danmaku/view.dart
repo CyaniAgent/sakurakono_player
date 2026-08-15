@@ -7,7 +7,7 @@ import 'package:skf/core/repository/danmaku_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/slide_color_picker.dart';
+import 'package:skf/pages/setting/slide_color_picker.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:canvas_danmaku/models/danmaku_content_item.dart';

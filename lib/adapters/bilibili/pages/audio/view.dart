@@ -15,7 +15,7 @@ import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/pages/audio/controller.dart';
 import 'package:skf/adapters/bilibili/pages/audio/volume_button.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/play_settings.dart'
     show showPlayerVolumeDialog;
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/action_item.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart'

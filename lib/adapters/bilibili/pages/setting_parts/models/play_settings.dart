@@ -1,10 +1,10 @@
 import 'dart:io' show Platform;
 
 import 'package:skf/common/widgets/custom_icon.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/slider_dialog.dart';
+import 'package:skf/pages/main/controller.dart';
+import 'package:skf/pages/setting/models/model.dart';
+import 'package:skf/pages/setting/widgets/select_dialog.dart';
+import 'package:skf/pages/setting/widgets/slider_dialog.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/platform_utils.dart';

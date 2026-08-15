@@ -21,7 +21,7 @@ import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart'
     show FavMixin;
 import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
 import 'package:skf/adapters/bilibili/pages/main_reply/view.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/play_settings.dart'
     show kMaxVolume;
 import 'package:skf/adapters/bilibili/pages/sponsor_block/block_mixin.dart';
 import 'package:skf/pages/video/controller.dart';

@@ -16,11 +16,11 @@ import 'package:skf/adapters/bilibili/models/common/audio_normalization.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart'
     show DynamicsDataModel, ItemModulesModel;
 import 'package:skf/pages/common/slide/common_slide_page.dart';
-import 'package:skf/adapters/bilibili/pages/home/controller.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/slider_dialog.dart';
+import 'package:skf/pages/home/controller.dart';
+import 'package:skf/pages/main/controller.dart';
+import 'package:skf/pages/setting/models/model.dart';
+import 'package:skf/pages/setting/widgets/select_dialog.dart';
+import 'package:skf/pages/setting/widgets/slider_dialog.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply/widgets/reply_item_grpc.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';

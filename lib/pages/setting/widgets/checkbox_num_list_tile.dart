@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/pages/setting/widgets/checkbox_num.dart';
+import 'package:skf/pages/setting/widgets/checkbox_num.dart';
 import 'package:flutter/material.dart';
 
 class OrderedCheckboxListTile extends StatelessWidget {

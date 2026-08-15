@@ -22,10 +22,10 @@ import 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
-import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
+import 'package:skf/adapters/bilibili/pages/setting_parts/models/play_settings.dart'
     show showPlayerVolumeDialog;
-import 'package:skf/adapters/bilibili/pages/setting/widgets/popup_item.dart';
-import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';
+import 'package:skf/pages/setting/widgets/popup_item.dart';
+import 'package:skf/adapters/bilibili/pages/setting_parts/widgets/cdn_select_dialog.dart';
 import 'package:skf/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/common/video_host.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/local/controller.dart';
