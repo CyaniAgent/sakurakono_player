@@ -3,8 +3,8 @@ import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
-import 'package:skf/adapters/bilibili/pages/common/search/common_search_controller.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

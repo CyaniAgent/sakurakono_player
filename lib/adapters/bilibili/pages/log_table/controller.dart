@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 
 abstract class LogController<R, T> extends CommonListController<R, T> {
   @override

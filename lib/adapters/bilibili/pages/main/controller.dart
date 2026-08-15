@@ -6,6 +6,7 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/mine/view.dart';
 import 'package:skf/core/account/account_mixin.dart';
@@ -23,13 +24,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainController extends GetxController
-    with GetSingleTickerProviderStateMixin, AccountMixin {
+    with GetSingleTickerProviderStateMixin, AccountMixin
+    implements MainBarState {
   List<NavigationBarType> navigationBars = <NavigationBarType>[];
 
+  @override
   RxDouble? barOffset;
+  @override
   RxBool? showBottomBar;
   late final bool hideBottomBar;
   late final barHideType = BiliPref.barHideType;
+  @override
   bool useBottomNav = false;
   late dynamic controller;
   final RxInt selectedIndex = 0.obs;

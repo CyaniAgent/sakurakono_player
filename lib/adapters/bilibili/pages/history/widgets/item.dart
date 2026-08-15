@@ -8,7 +8,7 @@ import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/adapters/bilibili/models_new/history/list.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';

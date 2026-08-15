@@ -1,7 +1,7 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show MainListReply, VoteCard, ReplyInfo;
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 
 mixin ReplyVoteMixin<R> on CommonListController<R, ReplyInfo> {
   VoteCard? voteCard;

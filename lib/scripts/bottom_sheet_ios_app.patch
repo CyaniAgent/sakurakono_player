@@ -1,7 +1,7 @@
-diff --git a/lib/adapters/bilibili/pages/common/slide/common_slide_page.dart b/lib/adapters/bilibili/pages/common/slide/common_slide_page.dart
+diff --git a/lib/pages/common/slide/common_slide_page.dart b/lib/pages/common/slide/common_slide_page.dart
 index 58ba68b7c..a6bb398ac 100644
---- a/lib/adapters/bilibili/pages/common/slide/common_slide_page.dart
-+++ b/lib/adapters/bilibili/pages/common/slide/common_slide_page.dart
+--- a/lib/pages/common/slide/common_slide_page.dart
++++ b/lib/pages/common/slide/common_slide_page.dart
 @@ -3,7 +3,8 @@ import 'dart:math' show max;
  
  import 'package:skf/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart';

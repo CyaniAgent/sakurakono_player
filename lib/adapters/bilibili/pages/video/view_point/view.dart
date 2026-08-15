@@ -2,7 +2,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/utils/duration_utils.dart';

@@ -1,7 +1,7 @@
 import 'dart:io' show Platform, Process;
 
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart'
+import 'package:skf/pages/common/multi_select/base.dart'
     show MultiSelectData;
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';

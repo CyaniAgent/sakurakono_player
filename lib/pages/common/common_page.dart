@@ -1,15 +1,28 @@
 import 'package:skf/common/style.dart';
-import 'package:skf/adapters/bilibili/pages/home/controller.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+/// Bar-state contract consumed by [CommonPageState].
+///
+/// Implemented by the active adapter's main scaffold controller so the
+/// generic page layer stays free of adapter imports.
+abstract interface class MainBarState {
+  RxDouble? get barOffset;
+  RxBool? get showBottomBar;
+  bool get useBottomNav;
+}
+
+/// Top-bar visibility contract implemented by the adapter's home controller.
+abstract interface class HomeBarState {
+  RxBool? get showTopBar;
+}
 
 abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
   RxDouble? _barOffset;
   RxBool? _showTopBar;
   RxBool? _showBottomBar;
-  final _mainController = Get.find<MainController>();
+  final _mainController = Get.find<MainBarState>();
 
   bool get needsCorrection => false;
 
@@ -19,7 +32,7 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
     _barOffset = _mainController.barOffset;
     _showBottomBar = _mainController.showBottomBar;
     try {
-      _showTopBar = Get.find<HomeController>().showTopBar;
+      _showTopBar = Get.find<HomeBarState>().showTopBar;
     } catch (_) {}
   }
 

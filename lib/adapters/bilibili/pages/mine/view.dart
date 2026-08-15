@@ -8,7 +8,7 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_folder/list.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_page.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
 import 'package:skf/adapters/bilibili/pages/login/controller.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';

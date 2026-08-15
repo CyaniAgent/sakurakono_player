@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/models/common/dynamic/up_panel_position.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_page.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/up_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create/view.dart';

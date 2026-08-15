@@ -5,7 +5,7 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/video/note/controller.dart';
 import 'package:skf/adapters/bilibili/pages/webview/view.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';

@@ -7,7 +7,7 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart'
+import 'package:skf/pages/common/fab_mixin.dart'
     show NoRightMarginFabLocation;
 import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';

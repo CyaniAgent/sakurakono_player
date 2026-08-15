@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/utils/extension/dimension_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';

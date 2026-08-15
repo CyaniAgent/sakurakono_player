@@ -19,7 +19,7 @@ import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart' as pgc;
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/episode.dart' as ugc;
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/page.dart';
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/page.dart';

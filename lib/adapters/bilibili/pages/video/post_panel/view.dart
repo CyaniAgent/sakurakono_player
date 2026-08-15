@@ -10,7 +10,7 @@ import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart
 
 
 
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/post_panel/popup_menu_text.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';

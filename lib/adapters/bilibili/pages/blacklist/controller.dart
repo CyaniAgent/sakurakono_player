@@ -4,7 +4,7 @@ import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/blacklist_data.dart';
 import 'package:skf/core/models/blacklist_item.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';

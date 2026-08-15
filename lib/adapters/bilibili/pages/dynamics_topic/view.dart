@@ -11,7 +11,7 @@ import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
+import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic/controller.dart';

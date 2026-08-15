@@ -5,7 +5,7 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
+import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/member/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/widgets/video_card_h_member_video.dart';

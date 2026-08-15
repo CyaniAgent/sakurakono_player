@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/grpc/im.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/feed_back.dart';

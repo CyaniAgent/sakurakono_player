@@ -3,7 +3,7 @@ import 'package:skf/common/widgets/custom_height_widget.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_page.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/common/home_tab_helper.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';

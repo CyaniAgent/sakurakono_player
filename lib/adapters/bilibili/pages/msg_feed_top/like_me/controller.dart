@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_data_controller.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';

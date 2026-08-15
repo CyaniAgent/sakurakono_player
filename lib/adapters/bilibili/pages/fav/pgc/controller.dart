@@ -3,7 +3,7 @@ import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/multi_select_controller.dart';
+import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';

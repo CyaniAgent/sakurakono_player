@@ -15,7 +15,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/audio_normalization.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart'
     show DynamicsDataModel, ItemModulesModel;
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';

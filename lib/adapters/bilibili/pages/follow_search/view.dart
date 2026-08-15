@@ -1,6 +1,6 @@
 import 'package:skf/core/models/follow_data.dart' show CoreFollowData;
 import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
-import 'package:skf/adapters/bilibili/pages/common/search/common_search_page.dart';
+import 'package:skf/pages/common/search/common_search_page.dart';
 import 'package:skf/adapters/bilibili/pages/follow/widgets/follow_item.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/controller.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';

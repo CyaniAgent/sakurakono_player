@@ -1,10 +1,10 @@
 import 'package:skf/core/models/ui/multi_select_controller.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/multi_select_data.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/core/models/ui/multi_select_data.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:get/get.dart';
 
-export 'package:skf/adapters/bilibili/models/common/multi_select_data.dart';
+export 'package:skf/core/models/ui/multi_select_data.dart';
 
 abstract interface class MultiSelectBase<T extends MultiSelectData>
     implements CoreMultiSelectController {

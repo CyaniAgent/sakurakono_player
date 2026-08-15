@@ -4,7 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/controller.dart';
 
 class LiveSearchChildController

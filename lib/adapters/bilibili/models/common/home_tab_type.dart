@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_controller.dart';
+import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/pages/live/controller.dart';

@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 
 class FavNoteItemModel with MultiSelectData {
   FavNoteItemModel({

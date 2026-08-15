@@ -2,7 +2,7 @@ import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_detail/cnt_info.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_detail/ogv.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_detail/ugc.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 
 class FavDetailItemModel with MultiSelectData {
   int? id;

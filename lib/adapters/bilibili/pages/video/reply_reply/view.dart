@@ -8,7 +8,7 @@ import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply_reply/controller.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';

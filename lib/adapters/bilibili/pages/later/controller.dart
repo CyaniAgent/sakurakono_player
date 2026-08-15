@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/later_view_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart'
+import 'package:skf/pages/common/common_list_controller.dart'
     show CommonListController;
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/multi_select_controller.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/adapters/bilibili/pages/later/base_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';

@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/models_new/history/history.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 
 class HistoryItemModel with MultiSelectData {

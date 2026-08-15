@@ -1,7 +1,7 @@
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 
-import 'package:skf/adapters/bilibili/pages/common/search/common_search_page.dart';
+import 'package:skf/pages/common/search/common_search_page.dart';
 import 'package:skf/adapters/bilibili/pages/history/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/controller.dart';
 import 'package:skf/utils/grid.dart';

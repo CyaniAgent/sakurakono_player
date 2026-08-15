@@ -11,6 +11,7 @@ import 'package:skf/adapters/bilibili/utils/accounts/account_type_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/cookie_jar_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
@@ -36,6 +37,7 @@ import 'package:skf/adapters/bilibili/pages/follow_type/followed/view.dart';
 import 'package:skf/adapters/bilibili/pages/history/view.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
+import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/pages/later/view.dart';
 import 'package:skf/adapters/bilibili/pages/later_search/view.dart';
@@ -59,6 +61,7 @@ import 'package:skf/adapters/bilibili/pages/msg_feed_top/reply_me/view.dart';
 import 'package:skf/adapters/bilibili/pages/msg_feed_top/sys_msg/view.dart';
 import 'package:skf/adapters/bilibili/pages/music/view.dart';
 import 'package:skf/adapters/bilibili/pages/my_reply/view.dart';
+import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/popular_precious/view.dart';
 import 'package:skf/adapters/bilibili/pages/popular_series/view.dart';
 import 'package:skf/adapters/bilibili/pages/search/view.dart';
@@ -189,7 +192,10 @@ class BiliBridge {
       ..lazyPut<SponsorBlockRepository>(BiliSponsorBlockRepository.new)
       ..lazyPut<ValidateRepository>(BiliValidateRepository.new)
       ..lazyPut<ProgressRepository>(BiliProgressRepository.new)
-      ..lazyPut<AppRepository>(BiliAppRepository.new);
+      ..lazyPut<AppRepository>(BiliAppRepository.new)
+      // Generic page bar-state bridges: interface -> adapter controller
+      ..lazyPut<MainBarState>(() => Get.find<MainController>())
+      ..lazyPut<HomeBarState>(() => Get.find<HomeController>());
     setupServiceLocator();
     _initHttp();
   }

@@ -11,7 +11,7 @@ import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/adapters/bilibili/pages/download/downloading/view.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/utils/cache_manager.dart';

@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
+import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/vote/reply_vote_item.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/widgets/reply_item_grpc.dart';

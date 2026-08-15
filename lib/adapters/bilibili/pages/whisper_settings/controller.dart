@@ -3,7 +3,7 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pb.dart'
 import 'package:skf/adapters/bilibili/grpc/im.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_data_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:protobuf/protobuf.dart' show PbMap;

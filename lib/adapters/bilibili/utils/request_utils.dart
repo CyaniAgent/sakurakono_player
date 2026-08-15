@@ -21,7 +21,7 @@ import 'package:skf/adapters/bilibili/models/login/model.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_detail/media.dart';
 import 'package:skf/adapters/bilibili/models_new/later/list.dart';
 import 'package:skf/adapters/bilibili/models_new/relation/data.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart'
     show BaseFavController;

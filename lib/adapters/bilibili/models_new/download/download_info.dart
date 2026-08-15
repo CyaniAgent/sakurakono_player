@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart'
+import 'package:skf/pages/common/multi_select/base.dart'
     show MultiSelectData;
 
 class DownloadPageInfo with MultiSelectData {

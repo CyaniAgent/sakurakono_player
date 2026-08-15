@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/models/common/later_view_type.dart';
 import 'package:skf/core/models/user_types.dart' show CoreLaterItemModel;
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart'
+import 'package:skf/pages/common/fab_mixin.dart'
     show NoRightMarginFabLocation;
 import 'package:skf/adapters/bilibili/pages/later/base_controller.dart';
 import 'package:skf/adapters/bilibili/pages/later/controller.dart';

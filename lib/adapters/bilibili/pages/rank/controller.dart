@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:skf/adapters/bilibili/models/common/rank_type.dart'; // ignore: adapter import (no core equivalent for RankType)
-import 'package:skf/adapters/bilibili/pages/common/common_controller.dart';
+import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/zone/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

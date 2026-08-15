@@ -1,7 +1,7 @@
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 
 class ZoneController extends CommonListController {
   ZoneController({this.rid, this.seasonType});

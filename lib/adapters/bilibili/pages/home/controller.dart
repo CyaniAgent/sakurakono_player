@@ -5,9 +5,10 @@ import 'package:skf/adapters/bilibili/http/api.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart'; // ignore: adapter import (no core equivalent for HomeTabType)
 import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_controller.dart';
+import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/adapters/bilibili/pages/common/home_tab_helper.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
@@ -18,10 +19,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController
-    with GetSingleTickerProviderStateMixin, ScrollOrRefreshMixin {
+    with GetSingleTickerProviderStateMixin, ScrollOrRefreshMixin
+    implements HomeBarState {
   late List<HomeTabType> tabs;
   late TabController tabController;
 
+  @override
   RxBool? showTopBar;
   late final bool hideTopBar;
 

@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -8,7 +8,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/adapters/bilibili/models/common/follow_order_type.dart';
 import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
+import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/follow/child/child_controller.dart';
 import 'package:skf/adapters/bilibili/pages/follow/controller.dart';
 import 'package:skf/adapters/bilibili/pages/follow/widgets/follow_item.dart';

@@ -5,7 +5,7 @@ import 'package:skf/core/models/reply_types.dart' show CoreMode, CoreMainListRep
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show CursorReply, ReplyInfo, SubjectControl;
 import 'package:skf/adapters/bilibili/grpc/bilibili/pagination.pb.dart' show FeedPaginationReply;
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply_new/view.dart';
 import 'package:skf/utils/feed_back.dart';

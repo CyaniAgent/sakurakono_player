@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/models_new/fav/fav_pgc/new_ep.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/core/models/fav_types.dart';
 
 class FavPgcItemModel with MultiSelectData {

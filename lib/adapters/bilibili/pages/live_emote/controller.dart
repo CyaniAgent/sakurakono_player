@@ -2,7 +2,7 @@ import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

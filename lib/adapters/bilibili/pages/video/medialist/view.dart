@@ -9,7 +9,7 @@ import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/adapters/bilibili/models_new/media_list/media_list.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/episode.dart';
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';

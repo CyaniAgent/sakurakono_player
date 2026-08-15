@@ -1,5 +1,5 @@
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/search/common_search_page.dart';
+import 'package:skf/pages/common/search/common_search_page.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/widget/fav_video_card.dart';
 import 'package:skf/adapters/bilibili/pages/fav_search/controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';

@@ -7,7 +7,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/models/match_contest.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart'
+import 'package:skf/pages/common/fab_mixin.dart'
     show NoBottomPaddingFabLocation;
 import 'package:skf/adapters/bilibili/pages/match_info/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply_reply/view.dart';

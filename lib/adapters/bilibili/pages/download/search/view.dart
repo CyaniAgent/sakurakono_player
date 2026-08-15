@@ -1,7 +1,7 @@
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
-import 'package:skf/adapters/bilibili/pages/common/search/common_search_page.dart';
+import 'package:skf/pages/common/search/common_search_page.dart';
 import 'package:skf/adapters/bilibili/pages/download/detail/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/download/search/controller.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';

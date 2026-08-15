@@ -3,7 +3,7 @@ import 'package:skf/adapters/bilibili/models_new/later/bangumi.dart';
 import 'package:skf/adapters/bilibili/models_new/later/rights.dart';
 import 'package:skf/adapters/bilibili/models_new/later/stat.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 
 class LaterItemModel with MultiSelectData {
   int? aid;

@@ -9,7 +9,7 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
-import 'package:skf/adapters/bilibili/pages/common/fab_mixin.dart';
+import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/vote/reply_vote_item.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply_reply/view.dart';

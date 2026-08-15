@@ -3,8 +3,8 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
-import 'package:skf/adapters/bilibili/pages/common/search/common_search_controller.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 

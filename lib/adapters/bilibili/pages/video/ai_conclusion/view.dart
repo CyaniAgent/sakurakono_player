@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_ai_conclusion/model_result.dart';
-import 'package:skf/adapters/bilibili/pages/common/slide/common_slide_page.dart';
+import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';

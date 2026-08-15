@@ -5,7 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_data_controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
 import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/adapters/bilibili/models_new/download/download_info.dart'; // ignore: adapter import (no core equivalent for DownloadPageInfo)
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart'
+import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/utils/storage.dart';

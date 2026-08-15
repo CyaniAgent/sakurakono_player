@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart'
+import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
 import 'package:skf/adapters/bilibili/pages/download/controller.dart';
 import 'package:skf/adapters/bilibili/pages/download/detail/widgets/item.dart';

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage_pref.dart';

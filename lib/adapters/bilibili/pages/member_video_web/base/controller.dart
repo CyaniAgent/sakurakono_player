@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:get/get.dart';
 
 const int ps = 30;

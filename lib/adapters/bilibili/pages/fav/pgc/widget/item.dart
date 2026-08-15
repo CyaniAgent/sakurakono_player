@@ -5,7 +5,7 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/pages/common/multi_select/base.dart';
+import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
