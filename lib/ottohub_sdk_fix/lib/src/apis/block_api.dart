@@ -41,14 +41,14 @@ class BlockApi extends BaseApi implements IBlockApi {
       'reason': ?reason,
       'reason_visible': ?reasonVisible,
     };
-    final response = await post('/block', data: data);
+    final response = await post('/block', auth: true, data: data);
     return BlockResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<BlockResponse> unblockUser(int blockedId) async {
-    final response = await delete('/block/$blockedId');
+    final response = await delete('/block/$blockedId', auth: true);
     return BlockResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -61,7 +61,7 @@ class BlockApi extends BaseApi implements IBlockApi {
     final params = <String, dynamic>{};
     if (page != null) params['page'] = page;
     if (pageSize != null) params['page_size'] = pageSize;
-    final response = await get('/block/list', queryParameters: params);
+    final response = await get('/block/list', auth: true, queryParameters: params);
     return BlockListData.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -74,14 +74,14 @@ class BlockApi extends BaseApi implements IBlockApi {
     final params = <String, dynamic>{};
     if (page != null) params['page'] = page;
     if (pageSize != null) params['page_size'] = pageSize;
-    final response = await get('/block/blocked/list', queryParameters: params);
+    final response = await get('/block/blocked/list', auth: true, queryParameters: params);
     return BlockListData.fromJson(
         response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<BlockStatusResponse> getBlockStatus(int userId) async {
-    final response = await get('/block/status/$userId');
+    final response = await get('/block/status/$userId', auth: true);
     return BlockStatusResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }

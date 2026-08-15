@@ -20,21 +20,21 @@ class OldManageApi extends BaseApi implements IOldManageApi {
 
   @override
   Future<void> deleteBlog(int bid) async {
-    await post('/manage/delete_blog', data: {'bid': bid});
+    await post('/manage/delete_blog', auth: true, data: {'bid': bid});
   }
 
   @override
   Future<void> appealBlog(int bid, {required String reason}) async {
-    await post('/manage/appeal_blog', data: {'bid': bid, 'reason': reason});
+    await post('/manage/appeal_blog', auth: true, data: {'bid': bid, 'reason': reason});
   }
 
   @override
   Future<void> deleteVideo(int vid) async {
-    await post('/manage/delete_video', data: {'vid': vid});
+    await post('/manage/delete_video', auth: true, data: {'vid': vid});
   }
 
   @override
   Future<void> appealVideo(int vid, {required String reason}) async {
-    await post('/manage/appeal_video', data: {'vid': vid, 'reason': reason});
+    await post('/manage/appeal_video', auth: true, data: {'vid': vid, 'reason': reason});
   }
 }

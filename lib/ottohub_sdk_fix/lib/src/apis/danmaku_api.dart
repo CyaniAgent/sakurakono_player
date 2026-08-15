@@ -55,7 +55,7 @@ class DanmakuApi extends BaseApi implements IDanmakuApi {
     required String fontSize,
     required String render,
   }) async {
-    await post('/danmaku', data: {
+    await post('/danmaku', auth: true, data: {
       'vid': vid,
       'text': text,
       'time': time,
@@ -69,6 +69,6 @@ class DanmakuApi extends BaseApi implements IDanmakuApi {
   @override
   Future<void> deleteDanmaku(int danmakuId) async {
     final params = <String, dynamic>{};
-    await delete('/danmaku/$danmakuId', queryParameters: params);
+    await delete('/danmaku/$danmakuId', auth: true, queryParameters: params);
   }
 }

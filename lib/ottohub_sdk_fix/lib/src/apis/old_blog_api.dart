@@ -111,7 +111,7 @@ class OldBlogApi extends BaseApi implements IOldBlogApi {
 
   @override
   Future<List<BlogAuditItem>> getAuditBlogList({int? offset, int? num}) async {
-    final response = await get('/blog/audit_blog_list', queryParameters: {
+    final response = await get('/blog/audit_blog_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });

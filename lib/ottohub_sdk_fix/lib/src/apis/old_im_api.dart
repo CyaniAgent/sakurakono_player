@@ -39,13 +39,13 @@ class OldImApi extends BaseApi implements IOldImApi {
 
   @override
   Future<IMNewMessageNum> getNewMessageNum() async {
-    final response = await get('/im/new_message_num');
+    final response = await get('/im/new_message_num', auth: true);
     return IMNewMessageNum.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<List<IMMessage>> getReadMessageList({int? offset, int? num}) async {
-    final response = await get('/im/read_message_list', queryParameters: {
+    final response = await get('/im/read_message_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -56,7 +56,7 @@ class OldImApi extends BaseApi implements IOldImApi {
 
   @override
   Future<List<IMMessage>> getUnreadMessageList({int? offset, int? num}) async {
-    final response = await get('/im/unread_message_list', queryParameters: {
+    final response = await get('/im/unread_message_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -68,7 +68,7 @@ class OldImApi extends BaseApi implements IOldImApi {
 
   @override
   Future<List<IMMessage>> getSentMessageList({int? offset, int? num}) async {
-    final response = await get('/im/sent_message_list', queryParameters: {
+    final response = await get('/im/sent_message_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -82,7 +82,7 @@ class OldImApi extends BaseApi implements IOldImApi {
     required int receiver,
     required String message,
   }) async {
-    await post('/im/send_message', data: {
+    await post('/im/send_message', auth: true, data: {
       'receiver': receiver,
       'message': message,
     });
@@ -91,18 +91,18 @@ class OldImApi extends BaseApi implements IOldImApi {
   @override
   Future<IMReadMessage> readMessage(int msgId) async {
     final response =
-        await post('/im/read_message', data: {'msg_id': msgId});
+        await post('/im/read_message', auth: true, data: {'msg_id': msgId});
     return IMReadMessage.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<void> readAllSystemMessage() async {
-    await post('/im/read_all_system_message');
+    await post('/im/read_all_system_message', auth: true);
   }
 
   @override
   Future<void> deleteMessage(int msgId) async {
-    await post('/im/delete_message', data: {'msg_id': msgId});
+    await post('/im/delete_message', auth: true, data: {'msg_id': msgId});
   }
 
   @override
@@ -111,7 +111,7 @@ class OldImApi extends BaseApi implements IOldImApi {
     int? num,
     int? ifTimeDesc,
   }) async {
-    final response = await get('/im/friend_list', queryParameters: {
+    final response = await get('/im/friend_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
       'if_time_desc': ?ifTimeDesc,
@@ -128,7 +128,7 @@ class OldImApi extends BaseApi implements IOldImApi {
     int? num,
     int? ifTimeDesc,
   }) async {
-    final response = await get('/im/friend_message', queryParameters: {
+    final response = await get('/im/friend_message', auth: true, queryParameters: {
       'friend_uid': friendUid,
       'offset': ?offset,
       'num': ?num,

@@ -70,27 +70,27 @@ class OldEngagementApi extends BaseApi implements IOldEngagementApi {
 
   @override
   Future<OldLikeToggleResponse> likeBlog(int bid) async {
-    final response = await post('/engagement/like_blog', data: {'bid': bid});
+    final response = await post('/engagement/like_blog', auth: true, data: {'bid': bid});
     return OldLikeToggleResponse.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<OldFavoriteToggleResponse> favoriteBlog(int bid) async {
     final response =
-        await post('/engagement/favorite_blog', data: {'bid': bid});
+        await post('/engagement/favorite_blog', auth: true, data: {'bid': bid});
     return OldFavoriteToggleResponse.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<OldLikeToggleResponse> likeVideo(int vid) async {
-    final response = await post('/engagement/like_video', data: {'vid': vid});
+    final response = await post('/engagement/like_video', auth: true, data: {'vid': vid});
     return OldLikeToggleResponse.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<OldFavoriteToggleResponse> favoriteVideo(int vid) async {
     final response =
-        await post('/engagement/favorite_video', data: {'vid': vid});
+        await post('/engagement/favorite_video', auth: true, data: {'vid': vid});
     return OldFavoriteToggleResponse.fromJson(response['data'] as Map<String, dynamic>);
   }
 }

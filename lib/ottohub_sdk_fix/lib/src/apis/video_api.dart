@@ -181,7 +181,7 @@ class VideoApi extends BaseApi implements IVideoApi {
 
   @override
   Future<VideoDetail> getDetail(int vid) async {
-    final response = await get('/video/$vid');
+    final response = await get('/video/$vid', auth: true);
     return VideoDetail.fromJson(response['data'] as Map<String, dynamic>);
   }
 
@@ -222,7 +222,7 @@ class VideoApi extends BaseApi implements IVideoApi {
     if (offset != null) params['offset'] = offset;
     if (num != null) params['num'] = num;
     final response =
-        await get('/video/favorite-list', queryParameters: params);
+        await get('/video/favorite-list', auth: true, queryParameters: params);
     return VideoListData.fromJson(response['data'] as Map<String, dynamic>);
   }
 
@@ -235,19 +235,19 @@ class VideoApi extends BaseApi implements IVideoApi {
     if (offset != null) params['offset'] = offset;
     if (num != null) params['num'] = num;
     final response =
-        await get('/video/manage-list', queryParameters: params);
+        await get('/video/manage-list', auth: true, queryParameters: params);
     return VideoListData.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<VideoListData> getHistoryList() async {
-    final response = await get('/video/history-list');
+    final response = await get('/video/history-list', auth: true);
     return VideoListData.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<void> saveWatchHistory(int vid, int lastWatchSecond) async {
-    await post('/video/watch-history', data: {
+    await post('/video/watch-history', auth: true, data: {
       'vid': vid,
       'last_watch_second': lastWatchSecond,
     });
@@ -255,14 +255,14 @@ class VideoApi extends BaseApi implements IVideoApi {
 
   @override
   Future<FavoriteToggleResponse> toggleFavorite(int vid) async {
-    final response = await post('/video/favorite/$vid');
+    final response = await post('/video/favorite/$vid', auth: true);
     return FavoriteToggleResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<LikeToggleResponse> toggleLike(int vid) async {
-    final response = await post('/video/like/$vid');
+    final response = await post('/video/like/$vid', auth: true);
     return LikeToggleResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -290,7 +290,7 @@ class VideoApi extends BaseApi implements IVideoApi {
       'channel_id': ?channelId,
       'channel_section_id': ?channelSectionId,
     });
-    final response = await post('/video/submit', formData: formData);
+    final response = await post('/video/submit', auth: true, formData: formData);
     return SubmitResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -313,12 +313,12 @@ class VideoApi extends BaseApi implements IVideoApi {
       'file_jpg': ?fileJpg,
       'file_mp4': ?fileMp4,
     });
-    await post('/video/update/$vid', formData: formData);
+    await post('/video/update/$vid', auth: true, formData: formData);
   }
 
   @override
   Future<void> deleteVideo(int vid) async {
     final params = <String, dynamic>{};
-    await delete('/video/$vid', queryParameters: params);
+    await delete('/video/$vid', auth: true, queryParameters: params);
   }
 }

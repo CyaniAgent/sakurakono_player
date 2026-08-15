@@ -158,7 +158,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     String? coverUrl,
     int? joinPermission,
   }) async {
-    final response = await post('/channel/create', data: {
+    final response = await post('/channel/create', auth: true, data: {
       'channel_name': channelName,
       'channel_title': channelTitle,
       'description': ?description,
@@ -182,7 +182,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     String? coverUrl,
     int? joinPermission,
   }) async {
-    final response = await put('/channel/$channelId', data: {
+    final response = await put('/channel/$channelId', auth: true, data: {
       'channel_title': ?channelTitle,
       'description': ?description,
       'cover_url': ?coverUrl,
@@ -195,7 +195,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
   @override
   Future<DeleteChannelResponse> deleteChannel(
       int channelId, String verificationCode) async {
-    final response = await delete('/channel/$channelId', data: {
+    final response = await delete('/channel/$channelId', auth: true, data: {
       'verification_code': verificationCode,
     });
     return DeleteChannelResponse.fromJson(
@@ -232,7 +232,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
 
   @override
   Future<MemberActionResponse> joinChannel(int channelId) async {
-    final response = await post('/channel/$channelId/members');
+    final response = await post('/channel/$channelId/members', auth: true);
     return MemberActionResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -264,7 +264,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
   Future<MemberActionResponse> approveMember(
       int channelId, int uid, String action,
       {String? reason}) async {
-    final response = await put('/channel/$channelId/members/$uid', data: {
+    final response = await put('/channel/$channelId/members/$uid', auth: true, data: {
       'action': action,
       'reason': ?reason,
     });
@@ -276,12 +276,12 @@ class ChannelApi extends BaseApi implements IChannelApi {
   Future<void> kickMember(int channelId, int uid, {String? reason}) async {
     final data = <String, dynamic>{};
     if (reason != null) data['reason'] = reason;
-    await delete('/channel/$channelId/members/$uid', data: data);
+    await delete('/channel/$channelId/members/$uid', auth: true, data: data);
   }
 
   @override
   Future<void> leaveChannel(int channelId) async {
-    await delete('/channel/$channelId/members/me');
+    await delete('/channel/$channelId/members/me', auth: true);
   }
 
   @override
@@ -291,7 +291,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int role, {
     String? verificationCode,
   }) async {
-    final response = await put('/channel/$channelId/members/$uid/role', data: {
+    final response = await put('/channel/$channelId/members/$uid/role', auth: true, data: {
       'role': role,
       'verification_code': ?verificationCode,
     });
@@ -305,7 +305,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int? page,
     int? limit,
   }) async {
-    final response = await get('/channel/$channelId/members/pending',
+    final response = await get('/channel/$channelId/members/pending', auth: true,
         queryParameters: {
           'page': ?page,
           'limit': ?limit,
@@ -357,7 +357,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     required int contentId,
     int? channelSectionId,
   }) async {
-    final response = await post('/channel/$channelId/content', data: {
+    final response = await post('/channel/$channelId/content', auth: true, data: {
       'type': type,
       'content_id': contentId,
       'channel_section_id': ?channelSectionId,
@@ -369,19 +369,19 @@ class ChannelApi extends BaseApi implements IChannelApi {
   @override
   Future<void> removeContentFromChannel(
       int channelId, String type, int contentId) async {
-    await delete('/channel/$channelId/content/$type/$contentId');
+    await delete('/channel/$channelId/content/$type/$contentId', auth: true);
   }
 
   // ── Follow Management ──
 
   @override
   Future<void> followChannel(int channelId) async {
-    await post('/channel/$channelId/follow');
+    await post('/channel/$channelId/follow', auth: true);
   }
 
   @override
   Future<void> unfollowChannel(int channelId) async {
-    await delete('/channel/$channelId/follow');
+    await delete('/channel/$channelId/follow', auth: true);
   }
 
   @override
@@ -389,7 +389,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int? page,
     int? limit,
   }) async {
-    final response = await get('/channel/following', queryParameters: {
+    final response = await get('/channel/following', auth: true, queryParameters: {
       'page': ?page,
       'limit': ?limit,
     });
@@ -417,7 +417,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int? page,
     int? limit,
   }) async {
-    final response = await get('/channel/$channelId/history',
+    final response = await get('/channel/$channelId/history', auth: true,
         queryParameters: {
           'uid': ?uid,
           'operation_type': ?operationType,
@@ -438,7 +438,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int? limit,
     int? role,
   }) async {
-    final response = await get('/channel/my/channels', queryParameters: {
+    final response = await get('/channel/my/channels', auth: true, queryParameters: {
       'page': ?page,
       'limit': ?limit,
       'role': ?role,
@@ -505,7 +505,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
 
   @override
   Future<void> blockUser(int channelId, int uid, {String? reason}) async {
-    await post('/channel/$channelId/blacklist', data: {
+    await post('/channel/$channelId/blacklist', auth: true, data: {
       'uid': uid,
       'reason': ?reason,
     });
@@ -513,7 +513,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
 
   @override
   Future<void> unblockUser(int channelId, int uid) async {
-    await delete('/channel/$channelId/blacklist/$uid');
+    await delete('/channel/$channelId/blacklist/$uid', auth: true);
   }
 
   @override
@@ -522,7 +522,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int? page,
     int? limit,
   }) async {
-    final response = await get('/channel/$channelId/blacklist',
+    final response = await get('/channel/$channelId/blacklist', auth: true,
         queryParameters: {
           'page': ?page,
           'limit': ?limit,
@@ -579,7 +579,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     String? description,
     String? iconUrl,
   }) async {
-    final response = await post('/channel/$channelId/sections', data: {
+    final response = await post('/channel/$channelId/sections', auth: true, data: {
       'section_name': sectionName,
       'description': ?description,
       'icon_url': ?iconUrl,
@@ -595,7 +595,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     String? iconUrl,
     int? sortOrder,
   }) async {
-    final response = await put('/channel/$channelId/sections/$sectionId',
+    final response = await put('/channel/$channelId/sections/$sectionId', auth: true,
         data: {
           'description': ?description,
           'icon_url': ?iconUrl,
@@ -610,7 +610,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int sectionId, {
     int? transferToSectionId,
   }) async {
-    final response = await delete('/channel/$channelId/sections/$sectionId',
+    final response = await delete('/channel/$channelId/sections/$sectionId', auth: true,
         data: {
           'transfer_to_section_id': ?transferToSectionId,
         });
@@ -627,6 +627,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
   }) async {
     final response = await put(
         '/channel/$channelId/content/$type/$contentId/section',
+        auth: true,
         data: {
           'channel_section_id': channelSectionId,
         });
@@ -638,12 +639,12 @@ class ChannelApi extends BaseApi implements IChannelApi {
 
   @override
   Future<void> sendDeleteVerificationCode(int channelId) async {
-    await post('/channel/$channelId/delete_verification_code');
+    await post('/channel/$channelId/delete_verification_code', auth: true);
   }
 
   @override
   Future<void> sendTransferVerificationCode(int channelId) async {
-    await post('/channel/$channelId/transfer_verification_code');
+    await post('/channel/$channelId/transfer_verification_code', auth: true);
   }
 
   // ── Timeline ──
@@ -653,7 +654,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     int? page,
     int? limit,
   }) async {
-    final response = await get('/channel/following/timeline',
+    final response = await get('/channel/following/timeline', auth: true,
         queryParameters: {
           'page': ?page,
           'limit': ?limit,
@@ -695,7 +696,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
     String? title,
     required String content,
   }) async {
-    final response = await post('/channel/$channelId/notices', data: {
+    final response = await post('/channel/$channelId/notices', auth: true, data: {
       'title': ?title,
       'content': content,
     });
@@ -707,7 +708,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
   Future<NoticeDeleteResponse> deleteNotice(
       int channelId, int noticeId) async {
     final response =
-        await delete('/channel/$channelId/notices/$noticeId');
+        await delete('/channel/$channelId/notices/$noticeId', auth: true);
     return NoticeDeleteResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -717,6 +718,7 @@ class ChannelApi extends BaseApi implements IChannelApi {
       int channelId, int noticeId, int sortOrder) async {
     final response = await put(
         '/channel/$channelId/notices/$noticeId/sort',
+        auth: true,
         data: {'sort_order': sortOrder});
     return NoticeSortResponse.fromJson(
         response['data'] as Map<String, dynamic>);

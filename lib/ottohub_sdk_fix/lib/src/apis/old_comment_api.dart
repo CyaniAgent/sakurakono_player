@@ -95,7 +95,7 @@ class OldCommentApi extends BaseApi implements IOldCommentApi {
     required int parentBcid,
     required String content,
   }) async {
-    final response = await post('/comment/comment_blog', data: {
+    final response = await post('/comment/comment_blog', auth: true, data: {
       'bid': bid,
       'parent_bcid': parentBcid,
       'content': content,
@@ -109,7 +109,7 @@ class OldCommentApi extends BaseApi implements IOldCommentApi {
     required int parentVcid,
     required String content,
   }) async {
-    final response = await post('/comment/comment_video', data: {
+    final response = await post('/comment/comment_video', auth: true, data: {
       'vid': vid,
       'parent_vcid': parentVcid,
       'content': content,
@@ -119,23 +119,23 @@ class OldCommentApi extends BaseApi implements IOldCommentApi {
 
   @override
   Future<void> deleteBlogComment(int bcid) async {
-    await post('/comment/delete_blog_comment', data: {'bcid': bcid});
+    await post('/comment/delete_blog_comment', auth: true, data: {'bcid': bcid});
   }
 
   @override
   Future<void> deleteVideoComment(int vcid) async {
-    await post('/comment/delete_video_comment', data: {'vcid': vcid});
+    await post('/comment/delete_video_comment', auth: true, data: {'vcid': vcid});
   }
 
   @override
   Future<void> reportBlogComment(int bcid, {required String reason}) async {
-    await post('/comment/report_blog_comment',
+    await post('/comment/report_blog_comment', auth: true,
         data: {'bcid': bcid, 'reason': reason});
   }
 
   @override
   Future<void> reportVideoComment(int vcid, {required String reason}) async {
-    await post('/comment/report_video_comment',
+    await post('/comment/report_video_comment', auth: true,
         data: {'vcid': vcid, 'reason': reason});
   }
 
@@ -144,7 +144,7 @@ class OldCommentApi extends BaseApi implements IOldCommentApi {
     int? offset,
     int? num,
   }) async {
-    final response = await get('/comment/audit_blog_comment_list',
+    final response = await get('/comment/audit_blog_comment_list', auth: true,
         queryParameters: {
           'offset': ?offset,
           'num': ?num,
@@ -161,7 +161,7 @@ class OldCommentApi extends BaseApi implements IOldCommentApi {
     int? offset,
     int? num,
   }) async {
-    final response = await get('/comment/audit_video_comment_list',
+    final response = await get('/comment/audit_video_comment_list', auth: true,
         queryParameters: {
           'offset': ?offset,
           'num': ?num,
@@ -175,23 +175,23 @@ class OldCommentApi extends BaseApi implements IOldCommentApi {
 
   @override
   Future<void> approveBlogComment(int bcid) async {
-    await put('/comment/approve_blog_comment', data: {'bcid': bcid});
+    await put('/comment/approve_blog_comment', auth: true, data: {'bcid': bcid});
   }
 
   @override
   Future<void> approveVideoComment(int vcid) async {
-    await put('/comment/approve_video_comment', data: {'vcid': vcid});
+    await put('/comment/approve_video_comment', auth: true, data: {'vcid': vcid});
   }
 
   @override
   Future<void> rejectBlogComment(int bcid, {required String reason}) async {
-    await put('/comment/reject_blog_comment',
+    await put('/comment/reject_blog_comment', auth: true,
         data: {'bcid': bcid, 'reason': reason});
   }
 
   @override
   Future<void> rejectVideoComment(int vcid, {required String reason}) async {
-    await put('/comment/reject_video_comment',
+    await put('/comment/reject_video_comment', auth: true,
         data: {'vcid': vcid, 'reason': reason});
   }
 }

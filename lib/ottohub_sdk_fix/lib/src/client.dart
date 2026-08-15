@@ -106,12 +106,12 @@ class OttohubClient {
   /// 兼容模式配置。
   final BaseApiConfig config;
 
-  /// 当前认证令牌。登录后设置，所有 API 模块自动注入。
+  /// 当前认证令牌。登录后设置，由需要鉴权的 API（请求带 `auth: true`）注入；
+  /// 公开接口不注入，避免携带服务端不认识的参数导致请求失败。
   ///
-  /// - GET 请求注入到 queryParameters
-  /// - POST/PUT 注入到 body data
+  /// - GET / DELETE 注入到 queryParameters
+  /// - POST / PUT 注入到 body data
   /// - POST + FormData 注入为表单字段
-  /// - DELETE 注入到 queryParameters
   String? token;
 
   /// 认证模块。登录、注册、验证码、密码重置、签到。

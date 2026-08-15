@@ -75,13 +75,13 @@ class OldCollectionApi extends BaseApi implements IOldCollectionApi {
     required int vid,
     required String collection,
   }) async {
-    await post('/collection/set_video_collection',
+    await post('/collection/set_video_collection', auth: true,
         data: {'vid': vid, 'collection': collection});
   }
 
   @override
   Future<CollectionDetail> getVideoCollection(int vid) async {
-    final response = await get('/collection/get_video_collection',
+    final response = await get('/collection/get_video_collection', auth: true,
         queryParameters: {'vid': vid});
     return CollectionDetail.fromJson(response['data'] as Map<String, dynamic>);
   }
@@ -111,7 +111,7 @@ class OldCollectionApi extends BaseApi implements IOldCollectionApi {
     required int vid,
     required int collectionSortOrder,
   }) async {
-    await post('/collection/set_video_collection_sort_order',
+    await post('/collection/set_video_collection_sort_order', auth: true,
         data: {'vid': vid, 'collection_sort_order': collectionSortOrder});
   }
 }

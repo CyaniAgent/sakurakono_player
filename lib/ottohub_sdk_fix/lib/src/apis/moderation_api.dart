@@ -130,7 +130,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<List<ModerationVideo>> getVideoList({int? offset, int? num}) async {
-    final response = await get('/moderation/videos', queryParameters: {
+    final response = await get('/moderation/videos', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -143,7 +143,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<List<ModerationBlog>> getBlogList({int? offset, int? num}) async {
-    final response = await get('/moderation/blogs', queryParameters: {
+    final response = await get('/moderation/blogs', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -156,7 +156,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<List<ModerationAvatar>> getAvatarList({int? offset, int? num}) async {
-    final response = await get('/moderation/avatars', queryParameters: {
+    final response = await get('/moderation/avatars', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -169,7 +169,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<List<ModerationCover>> getCoverList({int? offset, int? num}) async {
-    final response = await get('/moderation/covers', queryParameters: {
+    final response = await get('/moderation/covers', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -183,7 +183,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
   @override
   Future<List<ModerationDanmaku>> getDanmakuList(
       {int? offset, int? num}) async {
-    final response = await get('/moderation/danmakus', queryParameters: {
+    final response = await get('/moderation/danmakus', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -198,7 +198,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
   Future<List<ModerationVideoComment>> getVideoCommentList(
       {int? offset, int? num}) async {
     final response =
-        await get('/moderation/video-comments', queryParameters: {
+        await get('/moderation/video-comments', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -214,7 +214,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
   Future<List<ModerationBlogComment>> getBlogCommentList(
       {int? offset, int? num}) async {
     final response =
-        await get('/moderation/blog-comments', queryParameters: {
+        await get('/moderation/blog-comments', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -230,76 +230,76 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<void> approveVideo(int vid) async {
-    await put('/moderation/videos/$vid/approve');
+    await put('/moderation/videos/$vid/approve', auth: true);
   }
 
   @override
   Future<void> approveBlog(int bid) async {
-    await put('/moderation/blogs/$bid/approve');
+    await put('/moderation/blogs/$bid/approve', auth: true);
   }
 
   @override
   Future<void> approveAvatar(int uid) async {
-    await put('/moderation/avatars/$uid/approve');
+    await put('/moderation/avatars/$uid/approve', auth: true);
   }
 
   @override
   Future<void> approveCover(int uid) async {
-    await put('/moderation/covers/$uid/approve');
+    await put('/moderation/covers/$uid/approve', auth: true);
   }
 
   @override
   Future<void> approveDanmaku(int danmakuId) async {
-    await put('/moderation/danmakus/$danmakuId/approve');
+    await put('/moderation/danmakus/$danmakuId/approve', auth: true);
   }
 
   @override
   Future<void> approveVideoComment(int vcid) async {
-    await put('/moderation/video-comments/$vcid/approve');
+    await put('/moderation/video-comments/$vcid/approve', auth: true);
   }
 
   @override
   Future<void> approveBlogComment(int bcid) async {
-    await put('/moderation/blog-comments/$bcid/approve');
+    await put('/moderation/blog-comments/$bcid/approve', auth: true);
   }
 
   // ── Reject ──
 
   @override
   Future<void> rejectVideo(int vid, {required String reason}) async {
-    await put('/moderation/videos/$vid/reject', data: {'reason': reason});
+    await put('/moderation/videos/$vid/reject', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> rejectBlog(int bid, {required String reason}) async {
-    await put('/moderation/blogs/$bid/reject', data: {'reason': reason});
+    await put('/moderation/blogs/$bid/reject', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> rejectAvatar(int uid, {required String reason}) async {
-    await put('/moderation/avatars/$uid/reject', data: {'reason': reason});
+    await put('/moderation/avatars/$uid/reject', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> rejectCover(int uid, {required String reason}) async {
-    await put('/moderation/covers/$uid/reject', data: {'reason': reason});
+    await put('/moderation/covers/$uid/reject', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> rejectDanmaku(int danmakuId, {required String reason}) async {
-    await put('/moderation/danmakus/$danmakuId/reject',
+    await put('/moderation/danmakus/$danmakuId/reject', auth: true,
         data: {'reason': reason});
   }
 
   @override
   Future<void> rejectVideoComment(int vcid, {required String reason}) async {
-    await put('/moderation/video-comments/$vcid/reject',
+    await put('/moderation/video-comments/$vcid/reject', auth: true,
         data: {'reason': reason});
   }
 
   @override
   Future<void> rejectBlogComment(int bcid, {required String reason}) async {
-    await put('/moderation/blog-comments/$bcid/reject',
+    await put('/moderation/blog-comments/$bcid/reject', auth: true,
         data: {'reason': reason});
   }
 
@@ -307,39 +307,39 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<void> reportVideo(int vid, {required String reason}) async {
-    await post('/moderation/videos/$vid/report', data: {'reason': reason});
+    await post('/moderation/videos/$vid/report', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> reportBlog(int bid, {required String reason}) async {
-    await post('/moderation/blogs/$bid/report', data: {'reason': reason});
+    await post('/moderation/blogs/$bid/report', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> reportAvatar(int uid, {required String reason}) async {
-    await post('/moderation/avatars/$uid/report', data: {'reason': reason});
+    await post('/moderation/avatars/$uid/report', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> reportCover(int uid, {required String reason}) async {
-    await post('/moderation/covers/$uid/report', data: {'reason': reason});
+    await post('/moderation/covers/$uid/report', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> reportDanmaku(int danmakuId, {required String reason}) async {
-    await post('/moderation/danmakus/$danmakuId/report',
+    await post('/moderation/danmakus/$danmakuId/report', auth: true,
         data: {'reason': reason});
   }
 
   @override
   Future<void> reportVideoComment(int vcid, {required String reason}) async {
-    await post('/moderation/video-comments/$vcid/report',
+    await post('/moderation/video-comments/$vcid/report', auth: true,
         data: {'reason': reason});
   }
 
   @override
   Future<void> reportBlogComment(int bcid, {required String reason}) async {
-    await post('/moderation/blog-comments/$bcid/report',
+    await post('/moderation/blog-comments/$bcid/report', auth: true,
         data: {'reason': reason});
   }
 
@@ -347,39 +347,39 @@ class ModerationApi extends BaseApi implements IModerationApi {
 
   @override
   Future<void> appealVideo(int vid, {required String reason}) async {
-    await post('/moderation/videos/$vid/appeal', data: {'reason': reason});
+    await post('/moderation/videos/$vid/appeal', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> appealBlog(int bid, {required String reason}) async {
-    await post('/moderation/blogs/$bid/appeal', data: {'reason': reason});
+    await post('/moderation/blogs/$bid/appeal', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> appealAvatar(int uid, {required String reason}) async {
-    await post('/moderation/avatars/$uid/appeal', data: {'reason': reason});
+    await post('/moderation/avatars/$uid/appeal', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> appealCover(int uid, {required String reason}) async {
-    await post('/moderation/covers/$uid/appeal', data: {'reason': reason});
+    await post('/moderation/covers/$uid/appeal', auth: true, data: {'reason': reason});
   }
 
   @override
   Future<void> appealDanmaku(int danmakuId, {required String reason}) async {
-    await post('/moderation/danmakus/$danmakuId/appeal',
+    await post('/moderation/danmakus/$danmakuId/appeal', auth: true,
         data: {'reason': reason});
   }
 
   @override
   Future<void> appealVideoComment(int vcid, {required String reason}) async {
-    await post('/moderation/video-comments/$vcid/appeal',
+    await post('/moderation/video-comments/$vcid/appeal', auth: true,
         data: {'reason': reason});
   }
 
   @override
   Future<void> appealBlogComment(int bcid, {required String reason}) async {
-    await post('/moderation/blog-comments/$bcid/appeal',
+    await post('/moderation/blog-comments/$bcid/appeal', auth: true,
         data: {'reason': reason});
   }
 
@@ -390,7 +390,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
     int? isAdmin,
     int? isAudit,
   }) async {
-    final response = await get('/moderation/logs/unread-count',
+    final response = await get('/moderation/logs/unread-count', auth: true,
         queryParameters: {
           'is_admin': ?isAdmin,
           'is_audit': ?isAudit,
@@ -409,7 +409,7 @@ class ModerationApi extends BaseApi implements IModerationApi {
     int? isAdmin,
     int? isAudit,
   }) async {
-    final response = await get('/moderation/logs', queryParameters: {
+    final response = await get('/moderation/logs', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
       'audit_type': ?auditType,

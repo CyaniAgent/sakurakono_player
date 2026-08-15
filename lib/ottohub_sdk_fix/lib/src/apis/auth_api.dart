@@ -118,7 +118,7 @@ class AuthApi extends BaseApi implements IAuthApi {
 
   @override
   Future<String> signIn() async {
-    final data = await post('/auth/sign-in');
+    final data = await post('/auth/sign-in', auth: true);
     return data['if_today_first_login'] as String;
   }
 }

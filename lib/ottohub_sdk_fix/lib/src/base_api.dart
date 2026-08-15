@@ -40,6 +40,8 @@ class BaseApiConfig {
 ///
 /// 提供统一的 HTTP 方法封装（GET / POST / PUT / DELETE）和响应校验。
 /// Token 自动注入规则：
+/// - 仅当请求显式传入 `auth: true` 时注入 token（默认不注入，避免公开接口
+///   携带服务端不认识的参数导致请求失败）。
 /// - GET / DELETE → queryParameters
 /// - POST / PUT → body data
 /// - POST + [FormData] → 表单字段
@@ -59,14 +61,17 @@ abstract class BaseApi {
   /// 发送 GET 请求。
   ///
   /// [path]: API 路径（不含 base URL）。
-  /// [queryParameters]: URL 查询参数。token 会自动注入。
+  /// [queryParameters]: URL 查询参数。
+  /// [auth]: 是否需要鉴权。为 `true` 且已设置 token 时，token 自动注入
+  ///   queryParameters；公开接口保持 `false`（默认），避免携带服务端不认识的参数。
   /// **返回**: 解析后的 JSON Map。
   /// **抛出**: [ApiException] 或 [DioException]。
   Future<Map<String, dynamic>> get(
     String path, {
     Map<String, dynamic>? queryParameters,
+    bool auth = false,
   }) async {
-    final token = _getToken();
+    final token = auth ? _getToken() : null;
     if (token != null) {
       (queryParameters ??= {})['token'] = token;
     }
@@ -80,16 +85,19 @@ abstract class BaseApi {
   /// 发送 POST 请求。
   ///
   /// [path]: API 路径（不含 base URL）。
-  /// [data]: JSON body（token 会自动注入）。
-  /// [formData]: 表单数据（用于文件上传，token 会自动添加为字段）。
+  /// [data]: JSON body。
+  /// [formData]: 表单数据（用于文件上传）。
+  /// [auth]: 是否需要鉴权。为 `true` 且已设置 token 时，token 自动注入
+  ///   data / FormData 字段；公开接口保持 `false`（默认）。
   /// **返回**: 解析后的 JSON Map。
   /// **抛出**: [ApiException] 或 [DioException]。
   Future<Map<String, dynamic>> post(
     String path, {
     Map<String, dynamic>? data,
     FormData? formData,
+    bool auth = false,
   }) async {
-    final token = _getToken();
+    final token = auth ? _getToken() : null;
     if (formData != null) {
       if (token != null) {
         formData.fields.add(MapEntry('token', token));
@@ -108,14 +116,17 @@ abstract class BaseApi {
   /// 发送 PUT 请求。
   ///
   /// [path]: API 路径（不含 base URL）。
-  /// [data]: JSON body（token 会自动注入）。
+  /// [data]: JSON body。
+  /// [auth]: 是否需要鉴权。为 `true` 且已设置 token 时，token 自动注入
+  ///   data；公开接口保持 `false`（默认）。
   /// **返回**: 解析后的 JSON Map。
   /// **抛出**: [ApiException] 或 [DioException]。
   Future<Map<String, dynamic>> put(
     String path, {
     Map<String, dynamic>? data,
+    bool auth = false,
   }) async {
-    final token = _getToken();
+    final token = auth ? _getToken() : null;
     if (token != null) {
       (data ??= {})['token'] = token;
     }
@@ -128,26 +139,23 @@ abstract class BaseApi {
   /// [path]: API 路径（不含 base URL）。
   /// [queryParameters]: URL 查询参数。
   /// [data]: JSON body。
-  /// Token 优先注入 queryParameters；如果提供了 [data] 则注入 data。
+  /// [auth]: 是否需要鉴权。为 `true` 且已设置 token 时，token 统一注入
+  ///   queryParameters（与 GET 一致，不写入 body）。
   /// **返回**: 解析后的 JSON Map。
   /// **抛出**: [ApiException] 或 [DioException]。
   Future<Map<String, dynamic>> delete(
     String path, {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? data,
+    bool auth = false,
   }) async {
-    final token = _getToken();
+    final token = auth ? _getToken() : null;
     if (token != null) {
-      if (queryParameters != null) {
-        queryParameters['token'] = token;
-      } else if (data != null) {
-        data['token'] = token;
-      }
+      (queryParameters ??= {})['token'] = token;
     }
     final response = await _wrapHttpError(() => _dio.delete(
           path,
-          queryParameters: queryParameters ??
-              (token != null && data == null ? {'token': token} : null),
+          queryParameters: queryParameters,
           data: data,
         ));
     return _validate(response);

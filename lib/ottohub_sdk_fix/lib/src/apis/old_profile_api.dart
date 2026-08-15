@@ -58,7 +58,7 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
     int? offset,
     int? num,
   }) async {
-    final response = await get('/profile/favorite_blog_list', queryParameters: {
+    final response = await get('/profile/favorite_blog_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -75,7 +75,7 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
     int? offset,
     int? num,
   }) async {
-    final response = await get('/profile/favorite_video_list', queryParameters: {
+    final response = await get('/profile/favorite_video_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -89,7 +89,7 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
 
   @override
   Future<List<VideoSummary>> getHistoryVideoList() async {
-    final response = await get('/profile/history_video_list');
+    final response = await get('/profile/history_video_list', auth: true);
     final list = (response['data'] as Map<String, dynamic>)['video_list']
         as List<dynamic>;
     return list
@@ -99,7 +99,7 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
 
   @override
   Future<UserProfile> getUserProfile() async {
-    final response = await get('/profile/user_profile');
+    final response = await get('/profile/user_profile', auth: true);
     return UserProfile.fromJson(
         (response['data'] as Map<String, dynamic>)['profile']
             as Map<String, dynamic>);
@@ -107,45 +107,45 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
 
   @override
   Future<void> updateUsername(String username) async {
-    await post('/profile/update_username', data: {'username': username});
+    await post('/profile/update_username', auth: true, data: {'username': username});
   }
 
   @override
   Future<NewTokenResponse> updatePassword(String pw) async {
     final response =
-        await post('/profile/update_pw', data: {'pw': pw});
+        await post('/profile/update_pw', auth: true, data: {'pw': pw});
     return NewTokenResponse.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<void> updatePhone(String phone) async {
-    await post('/profile/update_phone', data: {'pw': phone});
+    await post('/profile/update_phone', auth: true, data: {'pw': phone});
   }
 
   @override
   Future<void> updateQq(String qq) async {
-    await post('/profile/update_qq', data: {'qq': qq});
+    await post('/profile/update_qq', auth: true, data: {'qq': qq});
   }
 
   @override
   Future<void> updateSex(String sex) async {
-    await post('/profile/update_sex', data: {'sex': sex});
+    await post('/profile/update_sex', auth: true, data: {'sex': sex});
   }
 
   @override
   Future<void> updateIntro(String intro) async {
-    await post('/profile/update_intro', data: {'intro': intro});
+    await post('/profile/update_intro', auth: true, data: {'intro': intro});
   }
 
   @override
   Future<UserData> getUserData() async {
-    final response = await get('/profile/user_data');
+    final response = await get('/profile/user_data', auth: true);
     return UserData.fromJson(response['data'] as Map<String, dynamic>);
   }
 
   @override
   Future<Map<String, dynamic>> getManageBlogList({int? offset, int? num}) async {
-    final response = await get('/profile/manage_blog_list', queryParameters: {
+    final response = await get('/profile/manage_blog_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -159,7 +159,7 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
 
   @override
   Future<Map<String, dynamic>> getManageVideoList({int? offset, int? num}) async {
-    final response = await get('/profile/manage_video_list', queryParameters: {
+    final response = await get('/profile/manage_video_list', auth: true, queryParameters: {
       'offset': ?offset,
       'num': ?num,
     });
@@ -173,7 +173,7 @@ class OldProfileApi extends BaseApi implements IOldProfileApi {
 
   @override
   Future<int?> getIsAudit() async {
-    final response = await get('/profile/is_audit');
+    final response = await get('/profile/is_audit', auth: true);
     return (response['data'] as Map<String, dynamic>)['is_audit'] as int?;
   }
 }
@@ -217,7 +217,7 @@ class OldCreatorApi extends BaseApi implements IOldCreatorApi {
     int? channelId,
     int? channelSectionId,
   }) async {
-    final response = await post('/creator/submit_blog', data: {
+    final response = await post('/creator/submit_blog', auth: true, data: {
       'title': title,
       'content': content,
       'channel_id': ?channelId,
@@ -249,7 +249,7 @@ class OldCreatorApi extends BaseApi implements IOldCreatorApi {
       'channel_id': ?channelId,
       'channel_section_id': ?channelSectionId,
     });
-    final response = await post('/creator/submit_video', formData: formData);
+    final response = await post('/creator/submit_video', auth: true, formData: formData);
     return SubmitResult.fromJson(response['data'] as Map<String, dynamic>);
   }
 
@@ -258,7 +258,7 @@ class OldCreatorApi extends BaseApi implements IOldCreatorApi {
     final formData = FormData.fromMap({
       'file_jpg': await MultipartFile.fromFile(fileJpg.path),
     });
-    await post('/creator/update_avatar', formData: formData);
+    await post('/creator/update_avatar', auth: true, formData: formData);
   }
 
   @override
@@ -266,17 +266,17 @@ class OldCreatorApi extends BaseApi implements IOldCreatorApi {
     final formData = FormData.fromMap({
       'file_jpg': await MultipartFile.fromFile(fileJpg.path),
     });
-    await post('/creator/update_cover', formData: formData);
+    await post('/creator/update_cover', auth: true, formData: formData);
   }
 
   @override
   Future<void> saveBlogDraft(String content) async {
-    await post('/creator/save_blog', data: {'content': content});
+    await post('/creator/save_blog', auth: true, data: {'content': content});
   }
 
   @override
   Future<BlogDraft> loadBlogDraft() async {
-    final response = await get('/creator/load_blog');
+    final response = await get('/creator/load_blog', auth: true);
     return BlogDraft.fromJson(response['data'] as Map<String, dynamic>);
   }
 
@@ -285,7 +285,7 @@ class OldCreatorApi extends BaseApi implements IOldCreatorApi {
     final formData = FormData.fromMap({
       'file_img': await MultipartFile.fromFile(fileImg.path),
     });
-    final response = await post('/creator/submit_image', formData: formData);
+    final response = await post('/creator/submit_image', auth: true, formData: formData);
     return ImageUploadResult.fromJson(response['data'] as Map<String, dynamic>);
   }
 
@@ -312,9 +312,9 @@ class OldCreatorApi extends BaseApi implements IOldCreatorApi {
     }
     final hasFile = fileJpg != null || fileMp4 != null;
     if (hasFile) {
-      await post('/creator/update_video', formData: FormData.fromMap(data));
+      await post('/creator/update_video', auth: true, formData: FormData.fromMap(data));
     } else {
-      await post('/creator/update_video', data: data);
+      await post('/creator/update_video', auth: true, data: data);
     }
   }
 }

@@ -49,7 +49,7 @@ class FollowingApi extends BaseApi implements IFollowingApi {
 
   @override
   Future<FollowToggleResponse> toggleFollow(int followingUid) async {
-    final response = await post('/following/follow/$followingUid');
+    final response = await post('/following/follow/$followingUid', auth: true);
     return FollowToggleResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -57,7 +57,7 @@ class FollowingApi extends BaseApi implements IFollowingApi {
   @override
   Future<FollowStatusResponse> getStatus(int followingUid) async {
     final response =
-        await get('/following/status/$followingUid');
+        await get('/following/status/$followingUid', auth: true);
     return FollowStatusResponse.fromJson(
         response['data'] as Map<String, dynamic>);
   }
@@ -98,7 +98,7 @@ class FollowingApi extends BaseApi implements IFollowingApi {
     final params = <String, dynamic>{};
     if (offset != null) params['offset'] = offset;
     if (num != null) params['num'] = num;
-    final response = await get('/following/timeline', queryParameters: params);
+    final response = await get('/following/timeline', auth: true, queryParameters: params);
     return TimelineListData.fromJson(
         response['data'] as Map<String, dynamic>);
   }
