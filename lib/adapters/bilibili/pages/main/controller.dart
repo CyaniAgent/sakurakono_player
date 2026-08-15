@@ -5,7 +5,7 @@ import 'package:skf/adapters/bilibili/grpc/dyn.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
+import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/mine/view.dart';

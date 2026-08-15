@@ -1,18 +1,18 @@
-import 'dart:io' show Platform;
-
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
+import 'package:skf/common/widgets/image_viewer/gallery_viewer.dart';
+import 'package:skf/common/widgets/image_viewer/hero_dialog_route.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart'
     show CoreSourceModel;
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/core/models/dynamics_types.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/pages/dynamics/widgets/vote.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -24,20 +24,20 @@ const _linkFoldedText = '网页链接';
 TextSpan? richNode(
   BuildContext context, {
   required ThemeData theme,
-  required DynamicItemModel item,
+  required CoreDynamicItemModel item,
 }) {
   try {
     late final style = TextStyle(color: theme.colorScheme.primary);
     final List<InlineSpan> spanChildren = [];
 
-    final moduleDynamic = item.modules.moduleDynamic;
-    List<RichTextNodeItem>? richTextNodes;
+    final moduleDynamic = item.modules?.moduleDynamic;
+    List<CoreRichTextNodeItem>? richTextNodes;
     if (moduleDynamic?.desc case final desc?) {
       richTextNodes = desc.richTextNodes;
       if (richTextNodes == null || richTextNodes.isEmpty) {
         return TextSpan(text: desc.text);
       }
-    } else if (moduleDynamic?.major?.opus case DynamicOpusModel(
+    } else if (moduleDynamic?.major?.opus case CoreDynamicOpusModel(
       :final title,
       :final summary,
     )) {
@@ -124,7 +124,8 @@ TextSpan? richNode(
                   style: style,
                   recognizer: hasLink
                       ? (NoDeadlineTapGestureRecognizer()
-                          ..onTap = () => PageUtils.handleWebview(i.jumpUrl!))
+                          ..onTap = () =>
+                              DynamicsHost.of().handleWebview(i.jumpUrl!))
                       : null,
                 ),
               );
@@ -219,7 +220,8 @@ TextSpan? richNode(
                   recognizer: i.jumpUrl == null
                       ? null
                       : (NoDeadlineTapGestureRecognizer()
-                          ..onTap = () => PageUtils.handleWebview(i.jumpUrl!)),
+                          ..onTap = () =>
+                              DynamicsHost.of().handleWebview(i.jumpUrl!)),
                 ),
               );
             break;
@@ -243,15 +245,16 @@ TextSpan? richNode(
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () async {
                       try {
-                        final res = await Get.find<SearchRepository>().ab2cWithDimension(
+                        final res = await Get.find<SearchRepository>()
+                            .ab2cWithDimension(
                           bvid: i.rid,
                         );
                         final cid = res?.cid;
                         if (cid != null) {
-                          PageUtils.toVideoPage(
+                          DynamicsHost.of().toVideoPage(
                             bvid: i.rid,
                             cid: cid,
-                            dimension: ModelConverters.dimension(res!.dimension),
+                            dimension: res!.dimension,
                           );
                         }
                       } catch (err) {
@@ -288,11 +291,16 @@ TextSpan? richNode(
                   style: style,
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () {
-                      void onView(List<OpusPicModel> list) {
-                        PageUtils.imageView(
-                          imgList: list
-                              .map((e) => CoreSourceModel(url: e.src!))
-                              .toList(),
+                      void onView(List<CoreOpusPicModel> list) {
+                        Get.key.currentState!.push<void>(
+                          HeroDialogRoute(
+                            pageBuilder: (_, _, _) => GalleryViewer(
+                              sources: list
+                                  .map((e) => CoreSourceModel(url: e.src!))
+                                  .toList(),
+                              quality: GlobalData().imgQuality,
+                            ),
+                          ),
                         );
                       }
 
@@ -300,21 +308,11 @@ TextSpan? richNode(
                         onView(i.pics!);
                         return;
                       }
-                      if (i.dynPic?.isNotEmpty == true) {
-                        onView(i.dynPic!);
-                        return;
-                      }
 
                       Get.find<DynamicsRepository>().dynPic(i.rid).then((res) {
                         if (res case Success(:final response)) {
-                          final pics = response
-                              ?.map(ModelConverters.opusPic)
-                              .toList();
-                          if (Platform.isAndroid) {
-                            i.pics = pics;
-                          } else {
-                            i.dynPic = pics;
-                          }
+                          final pics = response;
+                          i.pics = pics;
                           if (pics != null && pics.isNotEmpty) {
                             onView(pics);
                           }
@@ -346,7 +344,8 @@ TextSpan? richNode(
                   recognizer: i.jumpUrl == null
                       ? null
                       : (NoDeadlineTapGestureRecognizer()
-                          ..onTap = () => PageUtils.handleWebview(i.jumpUrl!)),
+                          ..onTap = () =>
+                              DynamicsHost.of().handleWebview(i.jumpUrl!)),
                 ),
               );
             break;
@@ -358,7 +357,8 @@ TextSpan? richNode(
                 recognizer: i.jumpUrl == null
                     ? null
                     : (NoDeadlineTapGestureRecognizer()
-                        ..onTap = () => PageUtils.handleWebview(i.jumpUrl!)),
+                        ..onTap = () =>
+                            DynamicsHost.of().handleWebview(i.jumpUrl!)),
               ),
             );
             break;

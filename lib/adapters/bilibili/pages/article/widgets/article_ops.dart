@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:skf/common/style.dart';
 import 'package:skf/adapters/bilibili/models_new/article/article_view/ops.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
+import 'package:skf/pages/dynamics/widgets/vote.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/image_utils.dart';

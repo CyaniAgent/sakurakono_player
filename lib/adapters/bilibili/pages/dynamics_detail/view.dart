@@ -16,8 +16,8 @@ import 'package:skf/adapters/bilibili/models/common/reply/reply_option_type.dart
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/reaction/controller.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/reaction/view.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/author_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
+import 'package:skf/pages/dynamics/widgets/author_panel.dart';
+import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_detail/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';

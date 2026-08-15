@@ -5,8 +5,8 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
+import 'package:skf/pages/dynamics/widgets/vote.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +33,7 @@ Widget? addWidget(
           borderRadius: borderRadius,
           onTap: ugc.jumpUrl == null
               ? null
-              : () => PiliScheme.routePushFromUrl(ugc.jumpUrl!),
+              : () => AdapterRegistry.active.openUrl(ugc.jumpUrl!),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -171,7 +171,7 @@ Widget? addWidget(
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           onPressed: canJump
-                              ? () => PiliScheme.routePushFromUrl(
+                              ? () => AdapterRegistry.active.openUrl(
                                   btn.jumpUrl!,
                                 )
                               : btn.disable == 1
@@ -220,7 +220,7 @@ Widget? addWidget(
           borderRadius: borderRadius,
           onTap: content.jumpUrl == null
               ? null
-              : () => PiliScheme.routePushFromUrl(content.jumpUrl!),
+              : () => AdapterRegistry.active.openUrl(content.jumpUrl!),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
@@ -282,7 +282,7 @@ Widget? addWidget(
                   FilledButton.tonal(
                     onPressed: content.button!.jumpUrl == null
                         ? null
-                        : () => PiliScheme.routePushFromUrl(
+                        : () => AdapterRegistry.active.openUrl(
                             content.button!.jumpUrl!,
                           ),
                     style: FilledButton.styleFrom(
@@ -317,7 +317,7 @@ Widget? addWidget(
             children: content.items!.map((e) {
               return InkWell(
                 borderRadius: borderRadius,
-                onTap: () => PiliScheme.routePushFromUrl(e.jumpUrl!),
+                onTap: () => AdapterRegistry.active.openUrl(e.jumpUrl!),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -369,7 +369,7 @@ Widget? addWidget(
                         const SizedBox(width: 10),
                         FilledButton.tonal(
                           onPressed: () =>
-                              PiliScheme.routePushFromUrl(e.jumpUrl!),
+                              AdapterRegistry.active.openUrl(e.jumpUrl!),
                           style: FilledButton.styleFrom(
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
@@ -482,7 +482,7 @@ Widget? addWidget(
           borderRadius: borderRadius,
           onTap: content.jumpUrl == null
               ? null
-              : () => PiliScheme.routePushFromUrl(content.jumpUrl!),
+              : () => AdapterRegistry.active.openUrl(content.jumpUrl!),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
@@ -528,7 +528,7 @@ Widget? addWidget(
                 if (content.button?.jumpUrl?.isNotEmpty == true) ...[
                   const SizedBox(width: 10),
                   FilledButton.tonal(
-                    onPressed: () => PiliScheme.routePushFromUrl(
+                    onPressed: () => AdapterRegistry.active.openUrl(
                       content.button!.jumpUrl!,
                     ),
                     style: FilledButton.styleFrom(
@@ -606,7 +606,7 @@ Widget? addWidget(
           borderRadius: borderRadius,
           onTap: content.jumpUrl == null
               ? null
-              : () => PiliScheme.routePushFromUrl(content.jumpUrl!),
+              : () => AdapterRegistry.active.openUrl(content.jumpUrl!),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
@@ -651,7 +651,7 @@ Widget? addWidget(
                 if (content.button case final button?)
                   FilledButton.tonal(
                     onPressed: () =>
-                        PiliScheme.routePushFromUrl(button.jumpUrl!),
+                        AdapterRegistry.active.openUrl(button.jumpUrl!),
                     style: FilledButton.styleFrom(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(6)),

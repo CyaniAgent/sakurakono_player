@@ -1,22 +1,19 @@
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pbenum.dart'
-    show PlaylistSource;
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/audio/view.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/forward_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/live_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/live_panel_sub.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/live_rcmd_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/video_panel.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/pages/dynamics/widgets/forward_panel.dart';
+import 'package:skf/pages/dynamics/widgets/live_panel.dart';
+import 'package:skf/pages/dynamics/widgets/live_panel_sub.dart';
+import 'package:skf/pages/dynamics/widgets/live_rcmd_panel.dart';
+import 'package:skf/pages/dynamics/widgets/video_panel.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/image_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 Widget noneWidget(ThemeData theme, String? tips) => Row(
   spacing: 5,
@@ -72,7 +69,7 @@ Widget module(
       return videoSeasonWidget(
         context,
         theme: theme,
-        item: ModelConverters.moduleItem(item),
+        item: item,
         floor: floor,
         isSave: isSave,
         isDetail: isDetail,
@@ -93,7 +90,7 @@ Widget module(
         context,
         theme: theme,
         isDetail: isDetail,
-        item: ModelConverters.moduleItem(item),
+        item: item,
         floor: floor,
       );
     // 直播
@@ -101,7 +98,7 @@ Widget module(
       return livePanel(
         context,
         theme: theme,
-        item: ModelConverters.moduleItem(item),
+        item: item,
         floor: floor,
         isDetail: isDetail,
       );
@@ -123,10 +120,10 @@ Widget module(
               final url = common.jumpUrl;
               if (url == null || url.isEmpty) return;
               if (url.contains('bangumi/play') &&
-                  PageUtils.viewPgcFromUri(url)) {
+                  DynamicsHost.of().viewPgcFromUri(url)) {
                 return;
               }
-              PageUtils.handleWebview(url, inApp: true);
+              DynamicsHost.of().handleWebview(url, inApp: true);
             } catch (_) {}
           },
           child: Padding(
@@ -190,10 +187,13 @@ Widget module(
         borderRadius: borderRadius,
         child: InkWell(
           borderRadius: borderRadius,
-          onTap: () => AudioPage.toAudioPage(
-            oid: music.id!,
-            itemType: 3,
-            from: PlaylistSource.AUDIO_CARD.value,
+          onTap: () => Get.toNamed(
+            '/audio',
+            arguments: {
+              'oid': music.id,
+              'itemType': 3,
+              'from': 3, // PlaylistSource.AUDIO_CARD.value
+            },
           ),
           child: Padding(
             padding: const EdgeInsets.only(
@@ -308,7 +308,7 @@ Widget module(
         context,
         theme: theme,
         isDetail: isDetail,
-        item: ModelConverters.moduleItem(item),
+        item: item,
         floor: floor,
       );
 

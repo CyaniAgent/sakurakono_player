@@ -1,6 +1,6 @@
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show VoteCard;
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
+import 'package:skf/pages/dynamics/widgets/vote.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 

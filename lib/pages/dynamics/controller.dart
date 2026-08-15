@@ -6,12 +6,11 @@ import 'package:get/get.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_data_controller.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/core/account/account_mixin.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/up_panel_position.dart';
+import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
@@ -33,15 +32,9 @@ class DynamicsController
 
   final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
 
-  DynamicsTabController? get controller {
-    try {
-      return Get.find<DynamicsTabController>(
-        tag: CoreDynamicsTabType.values[tabController.index].name,
-      );
-    } catch (_) {
-      return null;
-    }
-  }
+  CoreDynamicsTabType get _currentTabType =>
+      CoreDynamicsTabType.values[tabController.index];
+
 
   @override
   void onInit() {
@@ -64,17 +57,13 @@ class DynamicsController
       if (mid == -1) {
         singleRefresh();
       }
-      controller?.onReload();
+      DynamicsHost.of().reloadTab(_currentTabType);
       return;
     }
 
     if (mid != -1) {
       hostMid = mid;
-      try {
-        Get.find<DynamicsTabController>(
-          tag: CoreDynamicsTabType.up.name,
-        ).onReload();
-      } catch (_) {}
+      DynamicsHost.of().reloadTab(CoreDynamicsTabType.up);
     }
 
     currentMid = mid;
@@ -94,20 +83,20 @@ class DynamicsController
   @override
   Future<void> onRefresh() {
     singleRefresh();
-    return controller!.onRefresh();
+    return DynamicsHost.of().refreshTab(_currentTabType);
   }
 
   @override
   void animateToTop() {
-    controller?.animateToTop();
+    DynamicsHost.of().animateTabToTop(_currentTabType);
     scrollController.animToTop();
   }
 
   @override
   void toTopOrRefresh() {
-    final ctr = controller;
-    if (ctr?.scrollController.hasClients == true) {
-      if (ctr!.scrollController.position.pixels == 0) {
+    final type = _currentTabType;
+    if (DynamicsHost.of().tabHasScrollClients(type)) {
+      if (DynamicsHost.of().tabScrollPixels(type) == 0) {
         if (scrollController.hasClients &&
             scrollController.position.pixels != 0) {
           scrollController.animToTop();
@@ -141,7 +130,7 @@ class DynamicsController
       biliResult = await Get.find<DynamicsRepository>().followUp();
     } else if (_showAllUp) {
       biliResult = await Get.find<DynamicsRepository>().followings(
-        vmid: Accounts.main.mid,
+        vmid: DynamicsHost.of().currentUserId,
         pn: _page,
         orderType: 'attention',
         ps: 50,

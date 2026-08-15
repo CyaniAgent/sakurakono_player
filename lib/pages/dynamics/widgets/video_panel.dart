@@ -4,7 +4,7 @@ import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/svg/play_icon.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
+import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ Widget videoSeasonWidget(
   BuildContext context, {
   required int floor,
   required ThemeData theme,
-  required DynamicItemModel item,
+  required CoreDynamicItemModel item,
   required bool isSave,
   required bool isDetail,
 }) {
@@ -20,12 +20,12 @@ Widget videoSeasonWidget(
   // archive 视频/显示发布人
   // ugcSeason 合集/不显示发布人
 
-  DynamicArchiveModel? video = switch (item.type) {
-    'DYNAMIC_TYPE_AV' => item.modules.moduleDynamic?.major?.archive,
-    'DYNAMIC_TYPE_UGC_SEASON' => item.modules.moduleDynamic?.major?.ugcSeason,
+  CoreDynamicArchiveModel? video = switch (item.type) {
+    'DYNAMIC_TYPE_AV' => item.modules?.moduleDynamic?.major?.archive,
+    'DYNAMIC_TYPE_UGC_SEASON' => item.modules?.moduleDynamic?.major?.ugcSeason,
     'DYNAMIC_TYPE_PGC' ||
-    'DYNAMIC_TYPE_PGC_UNION' => item.modules.moduleDynamic?.major?.pgc,
-    'DYNAMIC_TYPE_COURSES_SEASON' => item.modules.moduleDynamic?.major?.courses,
+    'DYNAMIC_TYPE_PGC_UNION' => item.modules?.moduleDynamic?.major?.pgc,
+    'DYNAMIC_TYPE_COURSES_SEASON' => item.modules?.moduleDynamic?.major?.courses,
     _ => null,
   };
 

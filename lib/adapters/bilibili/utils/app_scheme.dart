@@ -6,10 +6,10 @@ import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/grpc/bilibili/app/listener/v1.pbenum.dart'
     show PlaylistSource;
 import 'package:skf/adapters/bilibili/http/search.dart';
-import 'package:skf/adapters/bilibili/models/common/fav_type.dart';
+import 'package:skf/pages/fav/fav_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
+import 'package:skf/pages/dynamics/widgets/vote.dart';
 import 'package:skf/pages/fan/view.dart';
 import 'package:skf/pages/follow/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';

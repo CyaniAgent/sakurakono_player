@@ -10,7 +10,7 @@ import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/adapters/bilibili/models/common/fav_type.dart';
+import 'package:skf/pages/fav/fav_type.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_pgc/list.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_index_result/list.dart';

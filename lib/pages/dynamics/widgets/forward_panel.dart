@@ -1,9 +1,8 @@
-import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dyn_content.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/module_panel.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/pages/dynamics/widgets/dyn_content.dart';
+import 'package:skf/pages/dynamics/widgets/module_panel.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/utils/date_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -86,7 +85,7 @@ Widget forwardPanel(
         return;
     }
     if (cover != null) {
-      imageSaveDialog(
+      DynamicsHost.of().showImageSaveDialog(
         title: title,
         cover: cover,
         bvid: bvid,
@@ -95,7 +94,7 @@ Widget forwardPanel(
   }
 
   return InkWell(
-    onTap: () => PageUtils.pushDynDetail(orig),
+    onTap: () => DynamicsHost.of().pushDynDetail(orig),
     onLongPress: showMore,
     onSecondaryTap: PlatformUtils.isMobile ? null : showMore,
     child: child,

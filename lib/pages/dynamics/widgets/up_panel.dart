@@ -1,13 +1,11 @@
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/up_panel_position.dart';
+import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
-import 'package:skf/adapters/bilibili/pages/live_follow/view.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/pages/dynamics/controller.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +28,7 @@ class _UpPanelState extends State<UpPanel> {
   late final controller = widget.dynamicsController;
   late final isTop = controller.upPanelPosition == UpPanelPosition.top;
 
-  void toFollowPage() => Get.to(const LiveFollowPage());
+  void toFollowPage() => DynamicsHost.of().openLiveFollowPage();
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +109,7 @@ class _UpPanelState extends State<UpPanel> {
               CoreUpItem(
                 uname: '我',
                 face: controller.accountService.face,
-                mid: Accounts.main.mid,
+                mid: DynamicsHost.of().currentUserId,
               ),
             ),
           ),
@@ -209,7 +207,7 @@ class _UpPanelState extends State<UpPanel> {
         onTap: () {
           feedBack();
           if (isLive) {
-            PageUtils.toLiveRoom(item.roomId);
+            DynamicsHost.of().toLiveRoom(item.roomId);
           } else {
             _onSelect(item);
           }

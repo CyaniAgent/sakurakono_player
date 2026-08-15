@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/member/search_type.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
+import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/child/widgets/search_archive_grpc.dart';
 import 'package:skf/utils/global_data.dart';

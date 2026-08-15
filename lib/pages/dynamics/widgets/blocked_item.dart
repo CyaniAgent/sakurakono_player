@@ -1,7 +1,5 @@
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/article/widgets/opus_content.dart'
-    show moduleBlockedItem;
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:flutter/material.dart';
 
 Widget blockedItem(
@@ -11,10 +9,6 @@ Widget blockedItem(
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 1),
-    child: moduleBlockedItem(
-      context,
-      theme,
-      ModelConverters.blockedModule(blocked),
-    ),
+    child: DynamicsHost.of().buildBlockedItem(context, theme, blocked),
   );
 }

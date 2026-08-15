@@ -1,8 +1,8 @@
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/additional_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/blocked_item.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/content_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/module_panel.dart';
+import 'package:skf/pages/dynamics/widgets/additional_panel.dart';
+import 'package:skf/pages/dynamics/widgets/blocked_item.dart';
+import 'package:skf/pages/dynamics/widgets/content_panel.dart';
+import 'package:skf/pages/dynamics/widgets/module_panel.dart';
 import 'package:flutter/material.dart';
 
 List<Widget> dynContent(

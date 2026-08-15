@@ -20,11 +20,13 @@ import 'package:skf/adapters/bilibili/pages/bubble/view.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/dlna/view.dart';
 import 'package:skf/adapters/bilibili/pages/download/view.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/view.dart';
+import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_vote/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_detail/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic_rcmd/view.dart';
+import 'package:skf/adapters/bilibili/common/dynamics_host.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/pages/fan/view.dart';
 import 'package:skf/pages/fav/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_create/view.dart';
@@ -200,7 +202,9 @@ class BiliBridge {
       ..lazyPut<AppRepository>(BiliAppRepository.new)
       // Generic page bar-state bridges: interface -> adapter controller
       ..lazyPut<MainBarState>(() => Get.find<MainController>())
-      ..lazyPut<HomeBarState>(() => Get.find<HomeController>());
+      ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
+      // Dynamics page host (tab pages, deep dialogs, URL routing)
+      ..lazyPut<DynamicsHost>(BiliDynamicsHost.new);
     setupServiceLocator();
     _initHttp();
   }

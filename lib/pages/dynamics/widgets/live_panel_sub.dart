@@ -3,7 +3,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
+import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +11,12 @@ Widget livePanelSub(
   BuildContext context, {
   required int floor,
   required ThemeData theme,
-  required DynamicItemModel item,
+  required CoreDynamicItemModel item,
   required bool isDetail,
 }) {
-  LivePlayInfo? live = item
+  CoreLivePlayInfo? live = item
       .modules
-      .moduleDynamic!
+      ?.moduleDynamic!
       .major
       ?.subscriptionNew
       ?.liveRcmd
@@ -48,7 +48,7 @@ Widget livePanelSub(
               ),
             ),
             PBadge(
-              text: live.watchedShow?.textLarge,
+              text: live.watchedShow?.text,
               top: 6,
               right: 65,
               fontSize: 10.5,

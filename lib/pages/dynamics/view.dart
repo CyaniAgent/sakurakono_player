@@ -1,13 +1,11 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/models/common/dynamic/up_panel_position.dart';
+import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/pages/common/common_page.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/up_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_create/view.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_tab/view.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/pages/dynamics/controller.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/pages/dynamics/widgets/up_panel.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:flutter/material.dart' hide DraggableScrollableSheet;
 import 'package:get/get.dart';
@@ -23,7 +21,6 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     with AutomaticKeepAliveClientMixin {
   final _dynamicsController = Get.putOrFind(DynamicsController.new);
   UpPanelPosition get upPanelPosition => _dynamicsController.upPanelPosition;
-  late final MainController _mainController = Get.find<MainController>();
 
   @override
   bool get wantKeepAlive => true;
@@ -41,7 +38,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
             theme.colorScheme.secondaryContainer,
           ),
         ),
-        onPressed: () => CreateDynPanel.onCreateDyn(context),
+        onPressed: () => DynamicsHost.of().showCreateDynPanel(context),
         icon: Icon(
           Icons.add,
           size: 18,
@@ -92,9 +89,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     };
   }
 
-  bool get checkPage =>
-      _mainController.navigationBars[0] != .dynamics &&
-      _mainController.selectedIndex.value == 0;
+  bool get checkPage => DynamicsHost.of().isMainDynamicsTab;
 
   @override
   bool onNotificationType1(UserScrollNotification notification) {
@@ -126,7 +121,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     Widget child = tabBarView(
       controller: _dynamicsController.tabController,
       children: CoreDynamicsTabType.values
-          .map((e) => DynamicsTabPage(dynamicsType: e))
+          .map((e) => DynamicsHost.of().buildTabPage(e))
           .toList(),
     );
 

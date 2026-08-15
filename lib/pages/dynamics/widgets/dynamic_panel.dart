@@ -1,13 +1,11 @@
 import 'package:skf/common/widgets/avatars.dart';
-import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/action_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/author_panel.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dyn_content.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/interaction.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/pages/dynamics/widgets/action_panel.dart';
+import 'package:skf/pages/dynamics/widgets/author_panel.dart';
+import 'package:skf/pages/dynamics/widgets/dyn_content.dart';
+import 'package:skf/pages/dynamics/widgets/interaction.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +74,7 @@ class DynamicPanel extends StatelessWidget {
                   'DYNAMIC_TYPE_COURSES_SEASON',
                 }.contains(item.type)
             ? null
-            : () => PageUtils.pushDynDetail(item),
+            : () => DynamicsHost.of().pushDynDetail(item),
         onLongPress: showMore,
         onSecondaryTap: PlatformUtils.isMobile ? null : showMore,
         child: Column(
@@ -198,7 +196,7 @@ class DynamicPanel extends StatelessWidget {
         morePanel(context);
         return;
     }
-    imageSaveDialog(
+    DynamicsHost.of().showImageSaveDialog(
       title: title,
       cover: cover,
       bvid: bvid,
@@ -260,7 +258,7 @@ class DynamicPanel extends StatelessWidget {
       padding: const .symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: theme.colorScheme.secondaryContainer.withValues(
-          alpha: theme.isLight ? 0.5 : 0.7,
+          alpha: theme.brightness == Brightness.light ? 0.5 : 0.7,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(6)),
       ),
@@ -295,7 +293,7 @@ class DynamicPanel extends StatelessWidget {
     );
     if (moduleDispute.jumpUrl?.isNotEmpty == true) {
       return GestureDetector(
-        onTap: () => PageUtils.handleWebview(moduleDispute.jumpUrl!),
+        onTap: () => DynamicsHost.of().handleWebview(moduleDispute.jumpUrl!),
         child: child,
       );
     }

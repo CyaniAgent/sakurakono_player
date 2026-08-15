@@ -4,9 +4,8 @@ import 'package:skf/common/widgets/flutter/text/text.dart' as custom_text;
 import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
 import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/rich_node_panel.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/pages/dynamics/widgets/rich_node_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skf/common/widgets/context_menu/dyn_menu_helper.dart';
@@ -20,13 +19,11 @@ Widget content(
   required bool isSave,
   required bool isDetail,
 }) {
-  final itemVal = ModelConverters.moduleItem(item);
   TextSpan? richNodes = richNode(
     context,
     theme: theme,
-    item: itemVal,
+    item: item,
   );
-  item.linkFolded = itemVal.linkFolded;
   final moduleDynamic = item.modules?.moduleDynamic;
   final pics = moduleDynamic?.major?.opus?.pics;
   final text =
@@ -95,7 +92,7 @@ Widget content(
                       : const TextStyle(fontSize: 14),
                   richNodes,
                   maxLines: isSave ? null : 6,
-                  onShowMore: () => PageUtils.pushDynDetail(item, isPush: true),
+                  onShowMore: () => DynamicsHost.of().pushDynDetail(item, isPush: true),
                   primary: theme.colorScheme.primary,
                 ),
         if (pics != null && pics.isNotEmpty)

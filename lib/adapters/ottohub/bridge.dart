@@ -29,10 +29,12 @@ import 'package:skf/adapters/ottohub/repository/otto_validate_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
+import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
 import 'package:skf/core/repository/app_repository.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/core/repository/auth_repository.dart';
 import 'package:skf/core/repository/black_repository.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
@@ -113,7 +115,9 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<SpaceRepository>(() => OttoSpaceRepository(client))
       ..lazyPut<DownloadService>(_StubDownloadService.new)
       ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
-      ..lazyPut<AppRepository>(OttoAppRepository.new);
+      ..lazyPut<AppRepository>(OttoAppRepository.new)
+      // Dynamics page host (crash-prevention stub)
+      ..lazyPut<DynamicsHost>(OttoDynamicsHost.new);
   }
 
   @override

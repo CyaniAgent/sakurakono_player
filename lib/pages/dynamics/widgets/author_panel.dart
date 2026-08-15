@@ -3,26 +3,20 @@ import 'dart:math';
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
-import 'package:skf/adapters/bilibili/common/widgets/dialog/report.dart';
 import 'package:skf/common/widgets/extra_hit_test_widget.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
-import 'package:skf/adapters/bilibili/http/constants.dart';
-import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/http/reply.dart';
-import 'package:skf/adapters/bilibili/http/user.dart';
-import 'package:skf/adapters/bilibili/http/video.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
-import 'package:skf/adapters/bilibili/pages/save_panel/view.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/core/repository/user_repository.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/pages/dynamics/controller.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/image_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
-import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/share_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -260,6 +254,7 @@ class AuthorPanel extends StatelessWidget {
       builder: (context1) {
         final theme = Theme.of(context);
         final moduleAuthor = item.modules!.moduleAuthor!;
+        final host = DynamicsHost.of();
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.viewPaddingOf(context1).bottom,
@@ -288,7 +283,7 @@ class AuthorPanel extends StatelessWidget {
                 ListTile(
                   onTap: () {
                     Get.back();
-                    UserHttp.toViewLater(bvid: bvid);
+                    Get.find<UserRepository>().toViewLater(bvid: bvid);
                   },
                   minLeadingWidth: 0,
                   leading: const Icon(Icons.watch_later_outlined, size: 19),
@@ -300,7 +295,7 @@ class AuthorPanel extends StatelessWidget {
               ListTile(
                 onTap: () {
                   Get.back();
-                  SavePanel.toSavePanel(item: item);
+                  host.showSavePanel(item: item);
                 },
                 minLeadingWidth: 0,
                 leading: const Icon(Icons.save_alt, size: 19),
@@ -315,7 +310,7 @@ class AuthorPanel extends StatelessWidget {
                 onTap: () {
                   Get.back();
                   ShareUtils.shareText(
-                    '${HttpString.dynamicShareBaseUrl}/${item.idStr}',
+                    'https://t.bilibili.com/${item.idStr}',
                   );
                 },
                 minLeadingWidth: 0,
@@ -342,7 +337,7 @@ class AuthorPanel extends StatelessWidget {
                       String? thumb = isDyn
                           ? moduleAuthor.face
                           : moduleDynamic.major?.opus?.pics?.firstOrNull?.url;
-                      PageUtils.pmShare(
+                      host.pmShare(
                         context,
                         content: {
                           "id": id,
@@ -380,11 +375,11 @@ class AuthorPanel extends StatelessWidget {
                 },
                 minLeadingWidth: 0,
               ),
-              if (kDebugMode || moduleAuthor.mid == Accounts.main.mid) ...[
+              if (kDebugMode || moduleAuthor.mid == host.currentUserId) ...[
                 ListTile(
                   onTap: () {
                     Get.back();
-                    RequestUtils.checkCreatedDyn(
+                    host.checkCreatedDyn(
                       id: item.idStr,
                       isManual: true,
                     );
@@ -403,66 +398,19 @@ class AuthorPanel extends StatelessWidget {
                     leading: const Icon(Icons.vertical_align_top, size: 19),
                     title: Text(
                       '${moduleAuthor.isTop == true ? '取消' : ''}置顶',
-                      style: theme.textTheme.titleSmall!,
+                      style: theme.textTheme.titleSmall,
                     ),
                   ),
                 if (onSetReplySubject != null)
                   ListTile(
-                    onTap: () async {
+                    onTap: () {
                       Get.back();
-                      final res = await ReplyHttp.replyInteraction(
+                      host.showReplyInteractionDialog(
+                        context,
                         oid: item.basic!.commentIdStr!,
                         type: item.basic!.commentType!,
+                        onSetReplySubject: onSetReplySubject!,
                       );
-                      if (res case Success(:final response)) {
-                        if (context.mounted) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              final selection = response.upReplySelection;
-                              final enableSelection = selection.status == 1;
-
-                              final reply = response.upReply;
-                              final enableReply = reply.status == 1;
-
-                              return SimpleDialog(
-                                clipBehavior: .hardEdge,
-                                contentPadding: const .symmetric(vertical: 12),
-                                children: [
-                                  ListTile(
-                                    dense: true,
-                                    enabled: selection.canModify,
-                                    title: Text(
-                                      '${enableSelection ? '停止' : '开启'}评论精选',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    onTap: () {
-                                      Get.back();
-                                      onSetReplySubject!(
-                                        enableSelection ? 2 : 1,
-                                      );
-                                    },
-                                  ),
-                                  ListTile(
-                                    dense: true,
-                                    enabled: reply.canModify,
-                                    title: Text(
-                                      '${enableReply ? '关闭' : '恢复'}评论',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    onTap: () {
-                                      Get.back();
-                                      onSetReplySubject!(enableReply ? 3 : 4);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      } else {
-                        res.toast();
-                      }
                     },
                     minLeadingWidth: 0,
                     leading: const Icon(
@@ -577,7 +525,7 @@ class AuthorPanel extends StatelessWidget {
                     ),
                   ),
               ],
-              if (Accounts.main.isLogin)
+              if (Get.find<AccountProvider>().isLogin)
                 ListTile(
                   title: Text(
                     '举报',
@@ -592,24 +540,10 @@ class AuthorPanel extends StatelessWidget {
                   ),
                   onTap: () {
                     Get.back();
-                    autoWrapReportDialog(
+                    host.showReportDialog(
                       context,
-                      ReportOptions.dynamicReport,
-                      (reasonType, reasonDesc, banUid) {
-                        if (banUid) {
-                          VideoHttp.relationMod(
-                            mid: moduleAuthor.mid!,
-                            act: 5,
-                            reSrc: 11,
-                          );
-                        }
-                        return UserHttp.dynamicReport(
-                          mid: moduleAuthor.mid!,
-                          dynId: '${item.idStr}',
-                          reasonType: reasonType,
-                          reasonDesc: reasonType == 0 ? reasonDesc : null,
-                        );
-                      },
+                      mid: moduleAuthor.mid!,
+                      dynId: '${item.idStr}',
                     );
                   },
                   minLeadingWidth: 0,

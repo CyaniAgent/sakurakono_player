@@ -3,7 +3,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
+import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +11,11 @@ Widget liveRcmdPanel(
   BuildContext context, {
   required int floor,
   required ThemeData theme,
-  required DynamicItemModel item,
+  required CoreDynamicItemModel item,
   required bool isDetail,
   Function(List<String>, int)? callback,
 }) {
-  DynamicLiveModel? liveRcmd = item.modules.moduleDynamic?.major?.liveRcmd;
+  CoreDynamicLiveModel? liveRcmd = item.modules!.moduleDynamic?.major?.liveRcmd;
   if (liveRcmd == null) {
     return const SizedBox.shrink();
   }
@@ -42,7 +42,7 @@ Widget liveRcmdPanel(
               ),
             ),
             PBadge(
-              text: liveRcmd.watchedShow?.textLarge,
+              text: liveRcmd.watchedShow?.text,
               top: 6,
               right: 65,
               fontSize: 10.5,

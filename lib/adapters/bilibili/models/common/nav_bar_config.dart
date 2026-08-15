@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/view.dart';
+import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
 import 'package:skf/adapters/bilibili/pages/mine/view.dart';
 import 'package:flutter/material.dart';

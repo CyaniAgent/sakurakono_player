@@ -9,7 +9,7 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
+import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/music/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/controller.dart';

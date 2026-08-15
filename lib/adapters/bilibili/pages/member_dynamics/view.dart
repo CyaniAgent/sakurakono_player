@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicItemModel;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
+import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/member_dynamics/controller.dart';
 import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/utils.dart';

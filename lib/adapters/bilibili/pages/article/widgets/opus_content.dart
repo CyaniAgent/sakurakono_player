@@ -13,7 +13,7 @@ import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/article_content_model.dart'
     show ArticleContentModel, Rich, Style, Word, Node;
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics/widgets/vote.dart';
+import 'package:skf/pages/dynamics/widgets/vote.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';

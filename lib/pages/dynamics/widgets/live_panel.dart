@@ -1,16 +1,16 @@
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/models/dynamics/result.dart';
+import 'package:skf/core/models/dynamics_types.dart';
 import 'package:flutter/material.dart';
 
 Widget livePanel(
   BuildContext context, {
   required int floor,
   required ThemeData theme,
-  required DynamicItemModel item,
+  required CoreDynamicItemModel item,
   required bool isDetail,
   Function(List<String>, int)? callback,
 }) {
-  DynamicLive2Model? live = item.modules.moduleDynamic!.major!.live;
+  CoreDynamicLive2Model? live = item.modules!.moduleDynamic!.major!.live;
   if (live == null) {
     return const SizedBox.shrink();
   }

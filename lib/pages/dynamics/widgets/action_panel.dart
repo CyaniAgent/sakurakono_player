@@ -1,10 +1,12 @@
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
+import 'package:skf/core/repository/dynamics_repository.dart';
+import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/num_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
-import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class ActionPanel extends StatelessWidget {
   const ActionPanel({
@@ -34,20 +36,16 @@ class ActionPanel extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return TextButton.icon(
-                onPressed: () => showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  builder: (_) => RepostPanel(
-                    item: item,
-                    onSuccess: () {
-                      int count = forward.count ?? 0;
-                      forward.count = count + 1;
-                      if (context.mounted) {
-                        (context as Element?)?.markNeedsBuild();
-                      }
-                    },
-                  ),
+                onPressed: () => DynamicsHost.of().showRepostPanel(
+                  context,
+                  item,
+                  () {
+                    int count = forward.count ?? 0;
+                    forward.count = count + 1;
+                    if (context.mounted) {
+                      (context as Element?)?.markNeedsBuild();
+                    }
+                  },
                 ),
                 icon: Icon(
                   FontAwesomeIcons.shareFromSquare,
@@ -67,7 +65,7 @@ class ActionPanel extends StatelessWidget {
         ),
         Expanded(
           child: TextButton.icon(
-            onPressed: () => PageUtils.pushDynDetail(
+            onPressed: () => DynamicsHost.of().pushDynDetail(
               item,
               isPush: true,
               viewComment: true,
@@ -106,8 +104,7 @@ class ActionPanel extends StatelessWidget {
                 semanticLabel: label,
               );
               return TextButton.icon(
-                onPressed: () => RequestUtils.onLikeDynamic(
-                  item,
+                onPressed: () => _onLike(
                   likeIcon.color == primary,
                   () {
                     if (context.mounted) {
@@ -133,5 +130,29 @@ class ActionPanel extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _onLike(bool uiStatus, VoidCallback onSuccess) async {
+    feedBack();
+    final like = item.modules?.moduleStat?.like;
+    final status = like?.status ?? false;
+    if (status ^ uiStatus) {
+      SmartDialog.showToast(status ? '点赞成功' : '取消点赞');
+      onSuccess();
+      return;
+    }
+    final res = await Get.find<DynamicsRepository>().thumbDynamic(
+      dynamicId: item.idStr!,
+      up: status ? 2 : 1,
+    );
+    if (res.isSuccess) {
+      SmartDialog.showToast(status ? '取消点赞' : '点赞成功');
+      like
+        ?..count = (like.count ?? 0) + (status ? -1 : 1)
+        ..status = !status;
+      onSuccess();
+    } else {
+      res.toast();
+    }
   }
 }
