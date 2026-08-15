@@ -20,7 +20,7 @@ import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/pages/dynamics/widgets/vote.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_widget.dart';
+import 'package:skf/pages/member/widget/medal_widget.dart';
 import 'package:skf/adapters/bilibili/pages/save_panel/view.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/reply/widgets/zan_grpc.dart';

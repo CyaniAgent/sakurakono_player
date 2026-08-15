@@ -1,39 +1,31 @@
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/style.dart';
-import 'package:skf/core/models/member_types.dart';
 import 'package:skf/common/widgets/avatars.dart';
+import 'package:skf/common/widgets/image_viewer/gallery_viewer.dart';
 import 'package:skf/common/widgets/image_viewer/hero.dart';
+import 'package:skf/common/widgets/image_viewer/hero_dialog_route.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/selection_text.dart';
+import 'package:skf/common/widgets/svg/level_icon.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
+import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
-import 'package:skf/adapters/bilibili/models/common/member/user_info_type.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/card.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/followings_followed_upper.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/images.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/live.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/pr_info.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/top.dart';
 import 'package:skf/pages/fan/view.dart';
 import 'package:skf/pages/follow/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/header_layout_widget.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_widget.dart';
-import 'package:skf/adapters/bilibili/pages/member_guard/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_upower_rank/view.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
-import 'package:skf/adapters/bilibili/utils/bili_colors.dart';
-import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
+import 'package:skf/pages/member/member_host.dart';
+import 'package:skf/pages/member/widget/header_layout_widget.dart';
+import 'package:skf/pages/member/widget/medal_widget.dart';
+import 'package:skf/pages/member/widget/user_info_type.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/utils/num_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
@@ -62,10 +54,10 @@ class UserInfoCard extends StatelessWidget {
 
   final bool isOwner;
   final int relation;
-  final SpaceCard card;
-  final SpaceImages images;
+  final CoreSpaceCard card;
+  final CoreSpaceImages images;
   final VoidCallback onFollow;
-  final Live? live;
+  final CoreLive? live;
   final int? silence;
   final ValueGetter<PageController> headerControllerBuilder;
   final VoidCallback showLiveMedalWall;
@@ -77,7 +69,7 @@ class UserInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isLight = colorScheme.isLight;
+    final isLight = colorScheme.brightness == Brightness.light;
     final width = context.width;
     final isPortrait = width < 600;
     return ViewSafeArea(
@@ -151,7 +143,7 @@ class UserInfoCard extends StatelessWidget {
   ) {
     return [
       _buildName(context, colorScheme),
-      if (card.officialVerify?.desc?.isNotEmpty ?? false)
+      if (card.officialVerify?.coreDesc?.isNotEmpty ?? false)
         _buildVerify(colorScheme),
       if (card.sign?.isNotEmpty ?? false) _buildSign(),
       ?_buildChargeAndGuard(colorScheme, isPortrait),
@@ -213,14 +205,14 @@ class UserInfoCard extends StatelessWidget {
                 fontSize: 17,
                 fontWeight: .bold,
                 color: (card.vip?.status ?? -1) > 0 && card.vip?.type == 2
-                    ? colorScheme.vipColor
+                    ? vipColor(colorScheme)
                     : null,
               ),
             ),
           ),
-          BiliUtils.levelPicture(
+          UserLevel(
             card.levelInfo!.currentLevel!,
-            isSeniorMember: card.levelInfo?.identity == 2,
+            flash: card.levelInfo?.identity == 2,
             height: 11,
           ),
           if (card.vip?.status == 1)
@@ -228,7 +220,7 @@ class UserInfoCard extends StatelessWidget {
               padding: const .symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 borderRadius: Style.mdRadius,
-                color: colorScheme.vipColor,
+                color: vipColor(colorScheme),
               ),
               child: Text(
                 card.vip?.label?.text ?? '大会员',
@@ -282,7 +274,7 @@ class UserInfoCard extends StatelessWidget {
                   child: card.officialVerify?.type == 0
                       ? const Icon(
                           Icons.offline_bolt,
-                          color: BiliColors.yellow,
+                          color: Color(0xFFFFCC00),
                           size: 18,
                         )
                       : const Icon(
@@ -345,7 +337,7 @@ class UserInfoCard extends StatelessWidget {
               );
               if (hasUri) {
                 return GestureDetector(
-                  onTap: () => PiliScheme.routePushFromUrl(item.uri!),
+                  onTap: () => MemberHost.of().pushFromUri(item.uri!),
                   child: child,
                 );
               }
@@ -425,8 +417,8 @@ class UserInfoCard extends StatelessWidget {
           if (!isOwner)
             IconButton.outlined(
               onPressed: () {
-                if (Accounts.main.isLogin) {
-                  int mid = int.parse(card.mid!);
+                if (Get.find<AccountProvider>().isLogin) {
+                  int mid = int.parse(card.mid.toString());
                   Get.toNamed(
                     '/whisperDetail',
                     arguments: {
@@ -522,8 +514,7 @@ class UserInfoCard extends StatelessWidget {
       vipStatus: card.vip?.status,
       pendantImage: pendant,
       roomId: live?.liveStatus == 1 ? live!.roomid : null,
-      onTap: () => PageUtils.imageView(
-        tag: hashCode.toString(),
+      onTap: () => _imageView(
         imgList: [CoreSourceModel(url: card.face.http2https)],
       ),
     );
@@ -583,7 +574,7 @@ class UserInfoCard extends StatelessWidget {
     BuildContext context,
     ColorScheme scheme,
     bool isLight,
-    List<TopImage> imgUrls,
+    List<CoreTopImage> imgUrls,
     double width,
   ) {
     if (imgUrls.length == 1) {
@@ -593,7 +584,7 @@ class UserInfoCard extends StatelessWidget {
         context,
         isLight,
         width,
-        img.header,
+        img.header ?? img.fullCover ?? '',
         filter: false,
         fullCover: img.fullCover,
         alignment: Alignment(0.0, img.dy),
@@ -617,9 +608,11 @@ class UserInfoCard extends StatelessWidget {
     final memCacheWidth = width.cacheSize(context);
     return GestureDetector(
       behavior: .opaque,
-      onTap: () => PageUtils.imageView(
+      onTap: () => _imageView(
         initialPage: controller.page?.round() ?? 0,
-        imgList: imgUrls.map((e) => CoreSourceModel(url: e.fullCover)).toList(),
+        imgList: imgUrls
+            .map((e) => CoreSourceModel(url: e.fullCover ?? ''))
+            .toList(),
         onPageChanged: controller.jumpToPage,
       ),
       child: Stack(
@@ -635,14 +628,14 @@ class UserInfoCard extends StatelessWidget {
               itemBuilder: (context, index) {
                 final img = imgUrls[index];
                 return fromHero(
-                  tag: img.fullCover,
+                  tag: img.fullCover ?? '',
                   child: CachedNetworkImage(
                     fit: .cover,
                     alignment: Alignment(0.0, img.dy),
                     height: kHeaderHeight,
                     width: width,
                     memCacheWidth: memCacheWidth,
-                    imageUrl: ImageUtils.thumbnailUrl(img.header),
+                    imageUrl: ImageUtils.thumbnailUrl(img.header ?? ''),
                     fadeInDuration: const Duration(milliseconds: 120),
                     fadeOutDuration: const Duration(milliseconds: 120),
                     placeholder: (_, _) =>
@@ -688,7 +681,7 @@ class UserInfoCard extends StatelessWidget {
     final img = fullCover ?? imgUrl;
     return GestureDetector(
       behavior: .opaque,
-      onTap: () => PageUtils.imageView(imgList: [CoreSourceModel(url: img)]),
+      onTap: () => _imageView(imgList: [CoreSourceModel(url: img)]),
       child: fromHero(
         tag: img,
         child: CachedNetworkImage(
@@ -721,10 +714,10 @@ class UserInfoCard extends StatelessWidget {
     BuildContext context,
     ColorScheme colorScheme,
     bool isLight,
-    SpacePrInfo prInfo,
+    CoreSpacePrInfo prInfo,
   ) {
     final textColor = ColourUtils.parseColor(
-      isLight ? prInfo.textColor : prInfo.textColorNight,
+      isLight ? prInfo.textColor! : prInfo.textColorNight!,
     );
     String? icon = !isLight && prInfo.iconNight?.isNotEmpty == true
         ? prInfo.iconNight
@@ -736,7 +729,7 @@ class UserInfoCard extends StatelessWidget {
       margin: const .only(top: 8),
       padding: const .symmetric(horizontal: 16, vertical: 10),
       color: ColourUtils.parseColor(
-        isLight ? prInfo.bgColor : prInfo.bgColorNight,
+        isLight ? prInfo.bgColor! : prInfo.bgColorNight!,
       ),
       child: Row(
         children: [
@@ -769,7 +762,7 @@ class UserInfoCard extends StatelessWidget {
     );
     if (prInfo.url?.isNotEmpty ?? false) {
       return GestureDetector(
-        onTap: () => PageUtils.handleWebview(prInfo.url!),
+        onTap: () => MemberHost.of().handleWebview(prInfo.url!),
         child: child,
       );
     }
@@ -871,7 +864,7 @@ class UserInfoCard extends StatelessWidget {
           charges,
           chargeCount,
           '人为TA充电',
-          () => UpowerRankPage.toUpowerRank(
+          () => MemberHost.of().openUpowerRank(
             mid: card.mid!,
             name: card.name!,
             count: chargeCount,
@@ -883,7 +876,7 @@ class UserInfoCard extends StatelessWidget {
           guards,
           guardCount,
           '人加入大航海',
-          () => MemberGuard.toMemberGuard(
+          () => MemberHost.of().openMemberGuard(
             mid: card.mid!,
             name: card.name!,
             count: guardCount,
@@ -909,11 +902,11 @@ class UserInfoCard extends StatelessWidget {
 
   Widget _buildFollowedUp(
     ColorScheme colorScheme,
-    FollowingsFollowedUpper item,
+    CoreFollowingsFollowedUpper item,
   ) {
-    var list = item.items!;
+    final list = item.items ?? <CoreSpaceGuardItem>[];
     final flag = list.length > 3;
-    if (flag) list = list.sublist(0, 3);
+    final display = flag ? list.sublist(0, 3) : list;
     Widget child = Padding(
       padding: const .only(left: 20, top: 6, right: 20),
       child: Row(
@@ -922,12 +915,12 @@ class UserInfoCard extends StatelessWidget {
           avatars(
             gap: 10,
             colorScheme: colorScheme,
-            users: list,
+            users: display,
           ),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
-              list.map((e) => e.name).join('、'),
+              display.map((e) => e.name).join('、'),
               maxLines: 1,
               overflow: .ellipsis,
               style: TextStyle(
@@ -937,7 +930,7 @@ class UserInfoCard extends StatelessWidget {
             ),
           ),
           Text(
-            '${flag ? '等${item.items!.length}人' : ''}也关注了TA',
+            '${flag ? '等${list.length}人' : ''}也关注了TA',
             style: TextStyle(fontSize: 13, color: colorScheme.outline),
           ),
           Icon(
@@ -1013,7 +1006,7 @@ class HeaderTitle extends StatefulWidget {
     required this.pageController,
   });
 
-  final List<TopImage> images;
+  final List<CoreTopImage> images;
   final PageController pageController;
 
   @override
@@ -1053,7 +1046,7 @@ class _HeaderTitleState extends State<HeaderTitle> {
   }
 }
 
-Widget _headerTitle(TopTitle title) {
+Widget _headerTitle(CoreTopTitle title) {
   try {
     return Column(
       crossAxisAlignment: .end,
@@ -1108,6 +1101,28 @@ Widget _headerWrapper(Widget child) {
           padding: const .only(left: 15, right: 5, bottom: 2),
           child: child,
         ),
+      ),
+    ),
+  );
+}
+
+Color vipColor(ColorScheme scheme) =>
+    scheme.brightness == Brightness.light
+        ? const Color(0xFFFF6699)
+        : const Color(0xFFD44E7D);
+
+Future<void> _imageView({
+  int initialPage = 0,
+  required List<CoreSourceModel> imgList,
+  ValueChanged<int>? onPageChanged,
+}) {
+  return Get.key.currentState!.push<void>(
+    HeroDialogRoute(
+      pageBuilder: (context, animation, secondaryAnimation) => GalleryViewer(
+        sources: imgList,
+        initIndex: initialPage,
+        quality: GlobalData().imgQuality,
+        onPageChanged: onPageChanged,
       ),
     ),
   );

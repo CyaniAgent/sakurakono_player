@@ -278,7 +278,7 @@ class BiliMemberRepository implements MemberRepository {
     'setting': d.setting == null ? null : _spaceSettingToMap(d.setting!),
     'tab': null, // adapter SpaceTab (booleans) ≠ CoreSpaceTab (name/uri)
     'CoreCard': d.card == null ? null : _spaceCardToMap(d.card!),
-    'images': d.images == null ? null : {'img_count': null}, // adapter SpaceImages has URLs, not count
+    'images': d.images == null ? null : _spaceImagesToMap(d.images!),
     'CoreLive': d.live == null ? null : _spaceLiveToMap(d.live!),
     'CoreElec': d.elec == null ? null : _spaceElecToMap(d.elec!),
     'CoreArchive': d.archive == null ? null : _spaceArchiveItemListToMap(d.archive!),
@@ -308,13 +308,113 @@ class BiliMemberRepository implements MemberRepository {
     'face': d.face,
     'name': d.name,
     'mid': d.mid is String ? int.tryParse(d.mid as String) : d.mid,
+    'silence': d.silence,
+    'fans': d.fans,
+    'attention': d.attention,
+    'sign': d.sign,
     'vip': d.vip == null
         ? null
-        : <String, dynamic>{'type': d.vip.type, 'status': d.vip.status},
+        : <String, dynamic>{
+            'type': d.vip.type,
+            'status': d.vip.status,
+            'vipType': d.vip.vipType,
+            'vipStatus': d.vip.vipStatus,
+            'label': d.vip.label == null
+                ? null
+                : <String, dynamic>{'text': d.vip.label.text},
+          },
+    'level_info': d.levelInfo == null
+        ? null
+        : <String, dynamic>{
+            'current_level': d.levelInfo.currentLevel,
+            'identity': d.levelInfo.identity,
+          },
+    'pendant': d.pendant == null
+        ? null
+        : <String, dynamic>{'image': d.pendant.image},
+    'official_verify': d.officialVerify == null
+        ? null
+        : <String, dynamic>{
+            'type': d.officialVerify.type,
+            'CoreDesc': d.officialVerify.desc,
+            'splice_title': d.officialVerify.spliceTitle,
+          },
+    'likes': d.likes == null
+        ? null
+        : <String, dynamic>{'like_num': d.likes.likeNum},
+    'live_fans_wearing': d.liveFansWearing == null
+        ? null
+        : <String, dynamic>{
+            'detail_v2': d.liveFansWearing.detailV2 == null
+                ? null
+                : <String, dynamic>{
+                    'uid': d.liveFansWearing.detailV2.uid,
+                    'level': d.liveFansWearing.detailV2.level,
+                    'medal_color_name': d.liveFansWearing.detailV2.medalColorName,
+                    'medal_name': d.liveFansWearing.detailV2.medalName,
+                    'medal_id': d.liveFansWearing.detailV2.medalId,
+                    'medal_color': d.liveFansWearing.detailV2.medalColor,
+                  },
+          },
+    'space_tag': d.spaceTag?.map((e) => <String, dynamic>{
+      'uri': e.uri,
+      'title': e.title,
+    }).toList(),
+    'pr_info': d.prInfo == null
+        ? null
+        : <String, dynamic>{
+            'content': d.prInfo.content,
+            'url': d.prInfo.url,
+            'icon': d.prInfo.icon,
+            'icon_night': d.prInfo.iconNight,
+            'text_color': d.prInfo.textColor,
+            'bg_color': d.prInfo.bgColor,
+            'text_color_night': d.prInfo.textColorNight,
+            'bg_color_night': d.prInfo.bgColorNight,
+          },
+    'followings_followed_upper': d.followingsFollowedUpper == null
+        ? null
+        : <String, dynamic>{
+            'items': d.followingsFollowedUpper.items?.map((e) => <String, dynamic>{
+              'name': e.name,
+              'face': e.face,
+            }).toList(),
+          },
+  };
+
+  Map<String, dynamic> _spaceImagesToMap(dynamic d) => <String, dynamic>{
+    'img_url': d.imgUrl,
+    'night_imgurl': d.nightImgurl,
+    'collection_top_simple': d.collectionTopSimple == null
+        ? null
+        : <String, dynamic>{
+            'top': d.collectionTopSimple.top == null
+                ? null
+                : <String, dynamic>{
+                    'img_urls': d.collectionTopSimple.top.imgUrls?.map((e) =>
+                        <String, dynamic>{
+                          'header': e.header,
+                          'full_cover': e.fullCover,
+                          'dy': e.dy,
+                          'title': e.title == null
+                              ? null
+                              : <String, dynamic>{
+                                  'title': e.title.title,
+                                  'sub_title': e.title.subTitle,
+                                  'sub_title_color_format': e.title.subTitleColorFormat == null
+                                      ? null
+                                      : <String, dynamic>{
+                                          'colors': e.title.subTitleColorFormat.colors,
+                                        },
+                                },
+                        }).toList(),
+                },
+          },
   };
 
   Map<String, dynamic> _spaceLiveToMap(dynamic d) => <String, dynamic>{
     'liveStatus': d.liveStatus,
+    'roomid': d.roomid,
   };
 
   Map<String, dynamic> _spaceElecToMap(dynamic d) => <String, dynamic>{
@@ -443,8 +543,20 @@ class BiliMemberRepository implements MemberRepository {
   };
 
   Map<String, dynamic> _reservationCardItemToMap(dynamic d) => <String, dynamic>{
-    'rid': d.rid,
-    'title': d.title,
+    'sid': d.sid,
+    'name': d.name,
+    'total': d.total,
+    'is_follow': d.isFollow ? 1 : 0,
+    'desc_text_1': d.descText1 == null
+        ? null
+        : <String, dynamic>{'text': d.descText1},
+    'dynamic_id': d.dynamicId,
+    'lottery_prize_info': d.lotteryPrizeInfo == null
+        ? null
+        : <String, dynamic>{
+            'text': d.lotteryPrizeInfo.text,
+            'jump_url': d.lotteryPrizeInfo.jumpUrl,
+          },
   };
 
   // ---- SearchArchiveData -> CoreSearchArchiveData ----

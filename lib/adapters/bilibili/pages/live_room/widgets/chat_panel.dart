@@ -6,8 +6,7 @@ import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_widget.dart';
-import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/uinfo_medal.dart';
+import 'package:skf/pages/member/widget/medal_widget.dart';
 import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/utils.dart';
@@ -65,8 +64,11 @@ class LiveRoomChatPanel extends StatelessWidget {
                     medal = WidgetSpan(
                       child: Padding(
                         padding: const .only(right: 4),
-                        child: MedalWidget.fromMedalInfo(
-                          medal: UinfoMedal.fromJson(medalInfo.toJson()),
+                        child: MedalWidget.fromMedal(
+                          medalName: medalInfo.name!,
+                          level: medalInfo.level!,
+                          colorStart: medalInfo.v2MedalColorStart!,
+                          colorText: medalInfo.v2MedalColorText!,
                           padding: MedalWidget.mediumPadding,
                         ),
                       ),

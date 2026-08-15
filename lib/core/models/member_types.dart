@@ -594,6 +594,17 @@ class CoreSpaceCard {
   dynamic relation;
   int? silence;
   CoreVip? vip;
+  int? fans;
+  int? attention;
+  String? sign;
+  CoreSpaceLevelInfo? levelInfo;
+  CorePendant? pendant;
+  CoreBaseOfficialVerify? officialVerify;
+  CoreSpaceLikes? likes;
+  CoreLiveFansWearing? liveFansWearing;
+  List<CoreSpaceTag>? spaceTag;
+  CoreSpacePrInfo? prInfo;
+  CoreFollowingsFollowedUpper? followingsFollowedUpper;
 
   CoreSpaceCard({
     this.face,
@@ -602,38 +613,94 @@ class CoreSpaceCard {
     this.relation,
     this.silence,
     this.vip,
+    this.fans,
+    this.attention,
+    this.sign,
+    this.levelInfo,
+    this.pendant,
+    this.officialVerify,
+    this.likes,
+    this.liveFansWearing,
+    this.spaceTag,
+    this.prInfo,
+    this.followingsFollowedUpper,
   });
 
   factory CoreSpaceCard.fromJson(Map<String, dynamic> json) => CoreSpaceCard(
-        face: json['face'] as String?,
-        name: json['name'] as String?,
-        mid: json['mid'] as int?,
-        relation: json['relation'],
-        silence: json['silence'] as int?,
-        vip: json['vip'] == null
-            ? null
-            : CoreVip.fromJson(json['vip'] as Map<String, dynamic>),
-      );
+    face: json['face'] as String?,
+    name: json['name'] as String?,
+    mid: json['mid'] as int?,
+    relation: json['relation'],
+    silence: json['silence'] as int?,
+    vip: json['vip'] == null
+        ? null
+        : CoreVip.fromJson(json['vip'] as Map<String, dynamic>),
+    fans: json['fans'] as int?,
+    attention: json['attention'] as int?,
+    sign: json['sign'] as String?,
+    levelInfo: json['level_info'] == null
+        ? null
+        : CoreSpaceLevelInfo.fromJson(json['level_info'] as Map<String, dynamic>),
+    pendant: json['pendant'] == null
+        ? null
+        : CorePendant.fromJson(json['pendant'] as Map<String, dynamic>),
+    officialVerify: json['official_verify'] == null
+        ? null
+        : CoreBaseOfficialVerify.fromJson(
+            json['official_verify'] as Map<String, dynamic>,
+          ),
+    likes: json['likes'] == null
+        ? null
+        : CoreSpaceLikes.fromJson(json['likes'] as Map<String, dynamic>),
+    liveFansWearing: json['live_fans_wearing'] == null
+        ? null
+        : CoreLiveFansWearing.fromJson(
+            json['live_fans_wearing'] as Map<String, dynamic>,
+          ),
+    spaceTag: (json['space_tag'] as List<dynamic>?)
+        ?.map((e) => CoreSpaceTag.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    prInfo: json['pr_info'] == null
+        ? null
+        : CoreSpacePrInfo.fromJson(json['pr_info'] as Map<String, dynamic>),
+    followingsFollowedUpper: json['followings_followed_upper'] == null
+        ? null
+        : CoreFollowingsFollowedUpper.fromJson(
+            json['followings_followed_upper'] as Map<String, dynamic>,
+          ),
+  );
 }
 
 class CoreSpaceImages {
   int? imgCount;
+  String? imgUrl;
+  String? nightImgurl;
+  CoreCollectionTopSimple? collectionTopSimple;
 
-  CoreSpaceImages({this.imgCount});
+  CoreSpaceImages({this.imgCount, this.imgUrl, this.nightImgurl, this.collectionTopSimple});
 
   factory CoreSpaceImages.fromJson(Map<String, dynamic> json) => CoreSpaceImages(
-        imgCount: json['img_count'] as int?,
-      );
+    imgCount: json['img_count'] as int?,
+    imgUrl: json['img_url'] as String?,
+    nightImgurl: json['night_imgurl'] as String?,
+    collectionTopSimple: json['collection_top_simple'] == null
+        ? null
+        : CoreCollectionTopSimple.fromJson(
+            json['collection_top_simple'] as Map<String, dynamic>,
+          ),
+  );
 }
 
 class CoreLive {
   int? liveStatus;
+  int? roomid;
 
-  CoreLive({this.liveStatus});
+  CoreLive({this.liveStatus, this.roomid});
 
   factory CoreLive.fromJson(Map<String, dynamic> json) => CoreLive(
-        liveStatus: json['liveStatus'] as int?,
-      );
+    liveStatus: json['liveStatus'] as int?,
+    roomid: json['roomid'] as int?,
+  );
 }
 
 class CoreElec {
@@ -966,6 +1033,214 @@ class CoreSpaceGuardItem {
       );
 }
 
+class CoreSpaceLevelInfo {
+  int? currentLevel;
+  int? identity;
+
+  CoreSpaceLevelInfo({this.currentLevel, this.identity});
+
+  factory CoreSpaceLevelInfo.fromJson(Map<String, dynamic> json) =>
+      CoreSpaceLevelInfo(
+        currentLevel: json['current_level'] as int?,
+        identity: json['identity'] as int?,
+      );
+}
+
+class CoreSpaceLikes {
+  int? likeNum;
+
+  CoreSpaceLikes({this.likeNum});
+
+  factory CoreSpaceLikes.fromJson(Map<String, dynamic> json) => CoreSpaceLikes(
+        likeNum: json['like_num'] as int?,
+      );
+}
+
+class CoreLiveFansWearing {
+  CoreMedalDetailV2? detailV2;
+
+  CoreLiveFansWearing({this.detailV2});
+
+  factory CoreLiveFansWearing.fromJson(Map<String, dynamic> json) =>
+      CoreLiveFansWearing(
+        detailV2: json['detail_v2'] == null
+            ? null
+            : CoreMedalDetailV2.fromJson(
+                json['detail_v2'] as Map<String, dynamic>,
+              ),
+      );
+}
+
+class CoreMedalDetailV2 {
+  int? uid;
+  int? level;
+  String? medalColorName;
+  String? medalName;
+  int? medalId;
+  String? medalColor;
+
+  CoreMedalDetailV2({
+    this.uid,
+    this.level,
+    this.medalColorName,
+    this.medalName,
+    this.medalId,
+    this.medalColor,
+  });
+
+  factory CoreMedalDetailV2.fromJson(Map<String, dynamic> json) => CoreMedalDetailV2(
+        uid: json['uid'] as int?,
+        level: json['level'] as int?,
+        medalColorName: json['medal_color_name'] as String?,
+        medalName: json['medal_name'] as String?,
+        medalId: json['medal_id'] as int?,
+        medalColor: json['medal_color'] as String?,
+      );
+}
+
+class CoreSpaceTag {
+  String? uri;
+  String? title;
+
+  CoreSpaceTag({this.uri, this.title});
+
+  factory CoreSpaceTag.fromJson(Map<String, dynamic> json) => CoreSpaceTag(
+        uri: json['uri'] as String?,
+        title: json['title'] as String?,
+      );
+}
+
+class CoreSpacePrInfo {
+  String? content;
+  String? url;
+  String? icon;
+  String? iconNight;
+  String? textColor;
+  String? bgColor;
+  String? textColorNight;
+  String? bgColorNight;
+
+  CoreSpacePrInfo({
+    this.content,
+    this.url,
+    this.icon,
+    this.iconNight,
+    this.textColor,
+    this.bgColor,
+    this.textColorNight,
+    this.bgColorNight,
+  });
+
+  factory CoreSpacePrInfo.fromJson(Map<String, dynamic> json) => CoreSpacePrInfo(
+        content: json['content'] as String?,
+        url: json['url'] as String?,
+        icon: json['icon'] as String?,
+        iconNight: json['icon_night'] as String?,
+        textColor: json['text_color'] as String?,
+        bgColor: json['bg_color'] as String?,
+        textColorNight: json['text_color_night'] as String?,
+        bgColorNight: json['bg_color_night'] as String?,
+      );
+}
+
+class CoreFollowingsFollowedUpper {
+  List<CoreSpaceGuardItem>? items;
+
+  CoreFollowingsFollowedUpper({this.items});
+
+  factory CoreFollowingsFollowedUpper.fromJson(Map<String, dynamic> json) =>
+      CoreFollowingsFollowedUpper(
+        items: (json['items'] as List<dynamic>?)
+            ?.map((e) => CoreSpaceGuardItem.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+}
+
+class CoreCollectionTopSimple {
+  CoreTop? top;
+
+  CoreCollectionTopSimple({this.top});
+
+  factory CoreCollectionTopSimple.fromJson(Map<String, dynamic> json) =>
+      CoreCollectionTopSimple(
+        top: json['top'] == null
+            ? null
+            : CoreTop.fromJson(json['top'] as Map<String, dynamic>),
+      );
+}
+
+class CoreTop {
+  List<CoreTopImage>? imgUrls;
+
+  CoreTop({this.imgUrls});
+
+  factory CoreTop.fromJson(Map<String, dynamic> json) => CoreTop(
+        imgUrls: (json['img_urls'] as List<dynamic>?)
+            ?.map((e) => CoreTopImage.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+}
+
+class CoreTopImage {
+  String? header;
+  String? fullCover;
+  double dy;
+  CoreTopTitle? title;
+
+  CoreTopImage({this.header, this.fullCover, this.dy = 0, this.title});
+
+  factory CoreTopImage.fromJson(Map<String, dynamic> json) => CoreTopImage(
+        header: json['header'] as String?,
+        fullCover: json['full_cover'] as String?,
+        dy: (json['dy'] as num?)?.toDouble() ?? 0,
+        title: json['title'] == null
+            ? null
+            : CoreTopTitle.fromJson(json['title'] as Map<String, dynamic>),
+      );
+}
+
+class CoreTopTitle {
+  String? title;
+  String? subTitle;
+  CoreSubTitleColorFormat? subTitleColorFormat;
+
+  CoreTopTitle({this.title, this.subTitle, this.subTitleColorFormat});
+
+  factory CoreTopTitle.fromJson(Map<String, dynamic> json) => CoreTopTitle(
+        title: json['title'] as String?,
+        subTitle: json['sub_title'] as String?,
+        subTitleColorFormat: json['sub_title_color_format'] == null
+            ? null
+            : CoreSubTitleColorFormat.fromJson(
+                json['sub_title_color_format'] as Map<String, dynamic>,
+              ),
+      );
+}
+
+class CoreSubTitleColorFormat {
+  List<String>? colors;
+
+  CoreSubTitleColorFormat({this.colors});
+
+  factory CoreSubTitleColorFormat.fromJson(Map<String, dynamic> json) =>
+      CoreSubTitleColorFormat(
+        colors: (json['colors'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      );
+}
+
+class CoreLotteryPrizeInfo {
+  String? text;
+  String? jumpUrl;
+
+  CoreLotteryPrizeInfo({this.text, this.jumpUrl});
+
+  factory CoreLotteryPrizeInfo.fromJson(Map<String, dynamic> json) =>
+      CoreLotteryPrizeInfo(
+        text: json['text'] as String?,
+        jumpUrl: json['jump_url'] as String?,
+      );
+}
+
 class CoreSpaceTab2 {
   String? name;
   String? uri;
@@ -989,13 +1264,43 @@ class CoreSpaceTab2 {
 class CoreReservationCardItem {
   int? rid;
   String? title;
+  int? sid;
+  String? name;
+  int? total;
+  bool? isFollow;
+  String? descText1;
+  String? dynamicId;
+  CoreLotteryPrizeInfo? lotteryPrizeInfo;
 
-  CoreReservationCardItem({this.rid, this.title});
+  CoreReservationCardItem({
+    this.rid,
+    this.title,
+    this.sid,
+    this.name,
+    this.total,
+    this.isFollow,
+    this.descText1,
+    this.dynamicId,
+    this.lotteryPrizeInfo,
+  });
 
   factory CoreReservationCardItem.fromJson(Map<String, dynamic> json) =>
       CoreReservationCardItem(
         rid: json['rid'] as int?,
         title: json['title'] as String?,
+        sid: json['sid'] as int?,
+        name: json['name'] as String?,
+        total: json['total'] as int?,
+        isFollow: json['is_follow'] == 1,
+        descText1: json['desc_text_1'] == null
+            ? null
+            : (json['desc_text_1'] as Map<String, dynamic>)['text'] as String?,
+        dynamicId: json['dynamic_id'] as String?,
+        lotteryPrizeInfo: json['lottery_prize_info'] == null
+            ? null
+            : CoreLotteryPrizeInfo.fromJson(
+                json['lottery_prize_info'] as Map<String, dynamic>,
+              ),
       );
 }
 
@@ -1094,13 +1399,15 @@ class CoreMemberStat {
 class CoreBaseOfficialVerify {
   int? type;
   String? coreDesc;
+  String? spliceTitle;
 
-  CoreBaseOfficialVerify({this.type, this.coreDesc});
+  CoreBaseOfficialVerify({this.type, this.coreDesc, this.spliceTitle});
 
   factory CoreBaseOfficialVerify.fromJson(Map<String, dynamic> json) =>
       CoreBaseOfficialVerify(
         type: json['type'] as int?,
         coreDesc: json['CoreDesc'] as String?,
+        spliceTitle: json['splice_title'] as String?,
       );
 }
 
@@ -1109,14 +1416,28 @@ class CoreVip {
   int? status;
   int? vipType;
   int? vipStatus;
+  CoreVipLabel? label;
 
-  CoreVip({this.type, this.status, this.vipType, this.vipStatus});
+  CoreVip({this.type, this.status, this.vipType, this.vipStatus, this.label});
 
   factory CoreVip.fromJson(Map<String, dynamic> json) => CoreVip(
         type: json['type'] as int?,
         status: json['status'] as int?,
         vipType: json['vipType'] as int?,
         vipStatus: json['vipStatus'] as int?,
+        label: json['label'] == null
+            ? null
+            : CoreVipLabel.fromJson(json['label'] as Map<String, dynamic>),
+      );
+}
+
+class CoreVipLabel {
+  String? text;
+
+  CoreVipLabel({this.text});
+
+  factory CoreVipLabel.fromJson(Map<String, dynamic> json) => CoreVipLabel(
+        text: json['text'] as String?,
       );
 }
 

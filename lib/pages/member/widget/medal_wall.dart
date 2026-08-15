@@ -1,18 +1,17 @@
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
-import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_widget.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/core/models/live_types.dart';
+import 'package:skf/pages/member/member_host.dart';
+import 'package:skf/pages/member/widget/medal_widget.dart';
 import 'package:skf/utils/extension/num_ext.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MedalWall extends StatelessWidget {
   const MedalWall({super.key, required this.response});
 
-  final MedalWallData response;
+  final CoreMedalWallData response;
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +72,12 @@ class MedalWall extends StatelessWidget {
               return ListTile(
                 onTap: () {
                   if (isLiving) {
-                    PiliScheme.routePushFromUrl(item.link!);
+                    MemberHost.of().pushFromUri(item.link!);
                   } else {
-                    PageUtils.toDupNamed('/member?mid=${uinfoMedal.ruid}');
+                    Get.toNamed(
+                      '/member?mid=${uinfoMedal.ruid}',
+                      preventDuplicates: false,
+                    );
                   }
                 },
                 visualDensity: .comfortable,
@@ -88,8 +90,9 @@ class MedalWall extends StatelessWidget {
                     _ => null,
                   },
                   onTap: isLiving
-                      ? () => PageUtils.toDupNamed(
+                      ? () => Get.toNamed(
                           '/member?mid=${uinfoMedal.ruid}',
+                          preventDuplicates: false,
                         )
                       : null,
                 ),
@@ -115,7 +118,12 @@ class MedalWall extends StatelessWidget {
                       ),
                     Padding(
                       padding: const .only(left: 8),
-                      child: MedalWidget.fromMedalInfo(medal: uinfoMedal),
+                      child: MedalWidget.fromMedal(
+                        medalName: uinfoMedal.name!,
+                        level: uinfoMedal.level!,
+                        colorStart: uinfoMedal.v2MedalColorStart!,
+                        colorText: uinfoMedal.v2MedalColorText!,
+                      ),
                     ),
                   ],
                 ),
@@ -124,7 +132,9 @@ class MedalWall extends StatelessWidget {
                         padding: const .symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
                           borderRadius: const .all(.circular(3)),
-                          color: colorScheme.btnColor,
+                          color: colorScheme.brightness == Brightness.light
+                              ? const Color(0xFFFF6699)
+                              : const Color(0xFF8F0030),
                         ),
                         child: const Text(
                           '佩戴中',

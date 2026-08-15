@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:skf/adapters/bilibili/pages/member/controller.dart';
+import 'package:skf/pages/member/controller.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

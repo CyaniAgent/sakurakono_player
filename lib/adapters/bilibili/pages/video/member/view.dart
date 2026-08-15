@@ -8,7 +8,7 @@ import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/models/common/member/user_info_type.dart';
+import 'package:skf/pages/member/widget/user_info_type.dart';
 
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/episode.dart';

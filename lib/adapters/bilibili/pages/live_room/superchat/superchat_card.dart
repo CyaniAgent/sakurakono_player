@@ -3,8 +3,7 @@ import 'dart:async' show Timer;
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/uinfo_medal.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_widget.dart';
+import 'package:skf/pages/member/widget/medal_widget.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/image_utils.dart';
@@ -152,15 +151,16 @@ class _SuperChatCardState extends State<SuperChatCard> {
     );
     if (item.medalInfo case final coreMedal?) {
       try {
-        final medal = UinfoMedal.fromJson(coreMedal.toJson());
         name = Row(
           spacing: 5,
           children: [
-            MedalWidget.fromMedalInfo(
-              medal: medal,
+            MedalWidget.fromMedal(
+              medalName: coreMedal.name!,
+              level: coreMedal.level!,
+              colorStart: coreMedal.v2MedalColorStart!,
+              colorText: coreMedal.v2MedalColorText!,
               padding: MedalWidget.mediumPadding,
             ),
-            Flexible(child: name),
           ],
         );
       } catch (e, s) {

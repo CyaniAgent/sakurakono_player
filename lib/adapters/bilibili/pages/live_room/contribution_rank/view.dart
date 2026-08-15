@@ -8,8 +8,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/contribution_rank/controller.dart';
-import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/uinfo_medal.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_widget.dart';
+import 'package:skf/pages/member/widget/medal_widget.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/utils.dart';
@@ -202,8 +201,11 @@ class _Item extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             child,
-            MedalWidget.fromMedalInfo(
-              medal: UinfoMedal.fromJson(uinfoMedal.toJson()),
+            MedalWidget.fromMedal(
+              medalName: uinfoMedal.name!,
+              level: uinfoMedal.level!,
+              colorStart: uinfoMedal.v2MedalColorStart!,
+              colorText: uinfoMedal.v2MedalColorText!,
               padding: MedalWidget.mediumPadding,
             ),
           ],

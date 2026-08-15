@@ -1,5 +1,4 @@
 import 'package:skf/common/style.dart';
-import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/uinfo_medal.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -19,16 +18,17 @@ class MedalWidget extends StatelessWidget {
     this.padding = _kPadding,
   });
 
-  MedalWidget.fromMedalInfo({
+  MedalWidget.fromMedal({
     super.key,
-    required UinfoMedal medal,
+    required this.medalName,
+    required this.level,
+    required String colorStart,
+    required String colorText,
     this.fontSize = _kFontSize,
     this.strutStyle = _kStrutStyle,
     this.padding = _kPadding,
-  }) : medalName = medal.name!,
-       level = medal.level!,
-       backgroundColor = ColourUtils.parseMedalColor(medal.v2MedalColorStart!),
-       nameColor = ColourUtils.parseColor(medal.v2MedalColorText!);
+  }) : backgroundColor = ColourUtils.parseMedalColor(colorStart),
+       nameColor = ColourUtils.parseColor(colorText);
 
   final String medalName;
   final int level;

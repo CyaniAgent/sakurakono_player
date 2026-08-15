@@ -1,17 +1,14 @@
 import 'dart:math';
 
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/member/tab_type.dart';
 import 'package:skf/pages/common/common_data_controller.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/utils/extension/nested_scroll_ext.dart';
-import 'package:skf/adapters/bilibili/utils/request_utils.dart';
-import 'package:skf/utils/share_utils.dart';
-import 'package:skf/utils/storage_pref.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     show ExtendedNestedScrollViewState;
 import 'package:flutter/material.dart';
@@ -25,7 +22,9 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   String? username;
   String? userAvatar;
 
-  late final account = Accounts.main;
+  int get currentUserId => MemberHost.of().currentUserId;
+
+  bool get isLogin => Get.find<AccountProvider>().isLogin;
 
   CoreLive? live;
   int? silence;
@@ -106,7 +105,9 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
         data.series?.item?.isNotEmpty == true) {
       hasSeasonOrSeries = true;
     }
-    tab2?.retainWhere((item) => MemberTabType.contains(item.param!));
+    if (tab2 != null) {
+      tab2 = MemberHost.of().filterTabs(tab2!);
+    }
     if (tab2?.isNotEmpty == true) {
       if (data.hasItem != true && tab2!.first.param == 'home') {
         // remove empty home tab
@@ -114,10 +115,10 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
       }
       if (tab2!.isNotEmpty) {
         int initialIndex = -1;
-        MemberTabType memberTab = MemberTabType.values[Pref.memberTab];
-        if (memberTab != MemberTabType.def) {
+        final preferredTabParam = MemberHost.of().preferredTabParam;
+        if (preferredTabParam != null) {
           initialIndex = tab2!.indexWhere((item) {
-            return item.param == memberTab.name;
+            return item.param == preferredTabParam;
           });
         }
         if (initialIndex == -1) {
@@ -137,7 +138,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
         );
       }
     }
-    if (mid == account.mid) {
+    if (mid == currentUserId) {
       spaceSetting = data.setting;
     }
     loadingState.value = response;
@@ -181,7 +182,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   }
 
   void blockUser(BuildContext context) {
-    if (!account.isLogin) {
+    if (!isLogin) {
       SmartDialog.showToast('账号未登录');
       return;
     }
@@ -211,7 +212,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   }
 
   void shareUser() {
-    ShareUtils.shareText('https://space.bilibili.com/$mid');
+    MemberHost.of().shareUser(mid);
   }
 
   Future<void> _onBlock() async {
@@ -227,17 +228,17 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   }
 
   void onFollow(BuildContext context) {
-    if (mid == account.mid) {
+    if (mid == currentUserId) {
       Get.toNamed('/editProfile');
     } else if (relation.value == 128) {
       _onBlock();
     } else {
-      if (!account.isLogin) {
+      if (!isLogin) {
         SmartDialog.showToast('账号未登录');
         return;
       }
-      RequestUtils.actionRelationMod(
-        context: context,
+      MemberHost.of().actionRelationMod(
+        context,
         mid: mid,
         isFollow: isFollow,
         afterMod: (attribute) => relation.value = attribute,

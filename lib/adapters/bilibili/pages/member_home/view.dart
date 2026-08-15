@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space/tab2.dart';
-import 'package:skf/adapters/bilibili/pages/member/controller.dart';
+import 'package:skf/pages/member/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_article/widget/item.dart';
 import 'package:skf/adapters/bilibili/pages/member_audio/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/member_coin_arc/view.dart';

@@ -51,7 +51,9 @@ import 'package:skf/adapters/bilibili/pages/live_room/view.dart';
 import 'package:skf/adapters/bilibili/pages/login/view.dart';
 import 'package:skf/adapters/bilibili/pages/main_reply/view.dart';
 import 'package:skf/adapters/bilibili/pages/match_info/view.dart';
-import 'package:skf/adapters/bilibili/pages/member/view.dart';
+import 'package:skf/adapters/bilibili/common/member_host.dart';
+import 'package:skf/pages/member/member_host.dart';
+import 'package:skf/pages/member/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_guard/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_profile/view.dart';
@@ -204,7 +206,9 @@ class BiliBridge {
       ..lazyPut<MainBarState>(() => Get.find<MainController>())
       ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
       // Dynamics page host (tab pages, deep dialogs, URL routing)
-      ..lazyPut<DynamicsHost>(BiliDynamicsHost.new);
+      ..lazyPut<DynamicsHost>(BiliDynamicsHost.new)
+      // Member page host (sub-page tabs, deep dialogs, URL routing)
+      ..lazyPut<MemberHost>(BiliMemberHost.new);
     setupServiceLocator();
     _initHttp();
   }

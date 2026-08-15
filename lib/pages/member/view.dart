@@ -1,50 +1,25 @@
-import 'dart:io' show Platform;
 import 'dart:math' as math;
 
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
-import 'package:skf/adapters/bilibili/common/widgets/dialog/report_member.dart';
 import 'package:skf/common/widgets/dynamic_sliver_app_bar/dynamic_sliver_app_bar.dart';
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
+import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space/reservation_card_list.dart';
-import 'package:skf/adapters/bilibili/pages/coin_log/controller.dart';
-import 'package:skf/adapters/bilibili/pages/exp_log/controller.dart';
-import 'package:skf/adapters/bilibili/pages/log_table/view.dart';
-import 'package:skf/adapters/bilibili/pages/login_devices/view.dart' show CoreLoginDevicesPage;
-import 'package:skf/adapters/bilibili/pages/login_log/controller.dart';
-import 'package:skf/adapters/bilibili/pages/member/controller.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/medal_wall.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/reserve_button.dart';
-import 'package:skf/adapters/bilibili/pages/member/widget/user_info_card.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/pages/member_cheese/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_contribute/controller.dart';
-import 'package:skf/adapters/bilibili/pages/member_contribute/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_dynamics/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_favorite/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_home/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_pgc/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_shop/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_video_web/archive/view.dart';
-import 'package:skf/adapters/bilibili/pages/member_video_web/season_series/view.dart';
-import 'package:skf/utils/android/android_helper.dart';
-import 'package:skf/utils/cache_manager.dart';
+import 'package:skf/pages/member/controller.dart';
+import 'package:skf/pages/member/member_host.dart';
+import 'package:skf/pages/member/widget/reserve_button.dart';
+import 'package:skf/pages/member/widget/user_info_card.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
-import 'package:skf/utils/extension/string_ext.dart';
 import 'package:skf/utils/num_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -78,8 +53,6 @@ class _MemberPageState extends State<MemberPage> {
   void dispose() {
     _headerController?.dispose();
     _headerController = null;
-    _cacheFollowTime = null;
-    _cacheMedalData = null;
     super.dispose();
   }
 
@@ -106,12 +79,12 @@ class _MemberPageState extends State<MemberPage> {
                     flexibleSpace: Obx(
                       () => UserInfoCard(
                         isOwner:
-                            _userController.mid == _userController.account.mid,
+                            _userController.mid == _userController.currentUserId,
                         relation: _userController.relation.value,
-                        card: ModelConverters.spaceCard(response.coreCard!)!,
-                        images: ModelConverters.spaceImages(response.images!)!,
+                        card: response.coreCard!,
+                        images: response.images!,
                         onFollow: () => _userController.onFollow(context),
-                        live: ModelConverters.live(_userController.live),
+                        live: _userController.live,
                         silence: _userController.silence,
                         headerControllerBuilder: getHeaderController,
                         showLiveMedalWall: _showLiveMedalWall,
@@ -168,7 +141,7 @@ class _MemberPageState extends State<MemberPage> {
     );
   }
 
-  Widget _reserveBtn(List<ReservationCardItem> list, ColorScheme theme) {
+  Widget _reserveBtn(List<CoreReservationCardItem> list, ColorScheme theme) {
     return IconButton(
       tooltip: '预约',
       onPressed: () => _showReserveList(list),
@@ -180,7 +153,7 @@ class _MemberPageState extends State<MemberPage> {
     );
   }
 
-  void _showReserveList(List<ReservationCardItem> list) {
+  void _showReserveList(List<CoreReservationCardItem> list) {
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -217,14 +190,14 @@ class _MemberPageState extends State<MemberPage> {
                   builder: (context) {
                     Widget trailing = FilledButton.tonal(
                       onPressed: () async {
-                        final isFollow = e.isFollow;
+                        final isFollow = e.isFollow ?? false;
                         final res = await Get.find<UserRepository>().spaceReserve(
                           sid: e.sid!.toString(),
                           isFollow: isFollow,
                         );
                         if (res.isSuccess) {
                           e
-                            ..total += isFollow ? -1 : 1
+                            ..total = (e.total ?? 0) + (isFollow ? -1 : 1)
                             ..isFollow = !isFollow;
                           if (!context.mounted) return;
                           (context as Element).markNeedsBuild();
@@ -233,10 +206,10 @@ class _MemberPageState extends State<MemberPage> {
                         }
                       },
                       style: FilledButton.styleFrom(
-                        backgroundColor: e.isFollow
+                        backgroundColor: e.isFollow == true
                             ? scheme.onInverseSurface
                             : null,
-                        foregroundColor: e.isFollow ? scheme.outline : null,
+                        foregroundColor: e.isFollow == true ? scheme.outline : null,
                         tapTargetSize: .shrinkWrap,
                         minimumSize: const Size(68, 40),
                         padding: const .symmetric(horizontal: 10),
@@ -246,8 +219,7 @@ class _MemberPageState extends State<MemberPage> {
                         ),
                       ),
                       child: Text(
-                        '${e.isFollow ? '已' : ''}预约',
-                        style: const TextStyle(fontSize: 13),
+                        '${e.isFollow == true ? '已' : ''}预约',
                       ),
                     );
                     if (e.dynamicId?.isNotEmpty ?? false) {
@@ -261,8 +233,8 @@ class _MemberPageState extends State<MemberPage> {
                             iconSize: 20,
                             iconColor: scheme.outline,
                             icon: const Icon(Icons.open_in_browser),
-                            onPressed: () => PageUtils.pushDynFromId(
-                              id: e.dynamicId,
+                            onPressed: () => MemberHost.of().pushDynFromId(
+                              e.dynamicId,
                             ),
                           ),
                           trailing,
@@ -331,10 +303,8 @@ class _MemberPageState extends State<MemberPage> {
   }
 
   List<Widget> _actions(ColorScheme theme) => [
-    if (_userController.reserves?.isNotEmpty ?? false)
       _reserveBtn(
-        ModelConverters.reservationCardList(_userController.reserves) ??
-            <ReservationCardItem>[],
+        _userController.reserves ?? <CoreReservationCardItem>[],
         theme,
       ),
     IconButton(
@@ -347,8 +317,8 @@ class _MemberPageState extends State<MemberPage> {
     PopupMenuButton(
       icon: const Icon(Icons.more_vert),
       itemBuilder: (_) => <PopupMenuEntry>[
-        if (_userController.account.isLogin &&
-            _userController.account.mid != _mid) ...[
+        if (_userController.isLogin &&
+            _userController.currentUserId != _mid) ...[
           PopupMenuItem(
             onTap: () => _userController.blockUser(context),
             child: Row(
@@ -383,14 +353,18 @@ class _MemberPageState extends State<MemberPage> {
               const Icon(Icons.share_outlined, size: 19),
               const SizedBox(width: 10),
               Text(
-                _userController.account.mid != _mid ? '分享UP主' : '分享我的主页',
+                _userController.currentUserId != _mid ? '分享UP主' : '分享我的主页',
               ),
             ],
           ),
         ),
         if (PlatformUtils.isMobile)
           PopupMenuItem(
-            onTap: _createShortcut,
+            onTap: () => MemberHost.of().createShortcut(
+              mid: _mid,
+              name: _userController.username ?? '',
+              avatar: _userController.userAvatar ?? '',
+            ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -432,9 +406,13 @@ class _MemberPageState extends State<MemberPage> {
         //       ],
         //     ),
         //   ),
-        if (Get.isRegistered<MemberContributeCtr>(tag: _heroTag))
+        if (MemberHost.of().canToWebArchive(_heroTag))
           PopupMenuItem(
-            onTap: _toWebArchive,
+            onTap: () => MemberHost.of().toWebArchive(
+              heroTag: _heroTag,
+              mid: _mid,
+              username: _userController.username ?? '',
+            ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -444,8 +422,8 @@ class _MemberPageState extends State<MemberPage> {
               ],
             ),
           ),
-        if (_userController.account.isLogin)
-          if (_userController.mid == _userController.account.mid) ...[
+        if (_userController.isLogin)
+          if (_userController.mid == _userController.currentUserId) ...[
             if ((_userController.loadingState.value.dataOrNull?.coreCard?.vip
                     ?.status ??
                 0) >
@@ -462,7 +440,7 @@ class _MemberPageState extends State<MemberPage> {
                 ),
               ),
             PopupMenuItem(
-              onTap: () => Get.to(const CoreLoginDevicesPage()),
+              onTap: () => MemberHost.of().openLoginDevices(),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -473,10 +451,7 @@ class _MemberPageState extends State<MemberPage> {
               ),
             ),
             PopupMenuItem(
-              onTap: () => Get.to(
-                const LogPage(),
-                arguments: LoginLogController(),
-              ),
+              onTap: () => MemberHost.of().openLoginLog(),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -487,10 +462,7 @@ class _MemberPageState extends State<MemberPage> {
               ),
             ),
             PopupMenuItem(
-              onTap: () => Get.to(
-                const LogPage(),
-                arguments: CoinLogController(),
-              ),
+              onTap: () => MemberHost.of().openCoinLog(),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -501,10 +473,7 @@ class _MemberPageState extends State<MemberPage> {
               ),
             ),
             PopupMenuItem(
-              onTap: () => Get.to(
-                const LogPage(),
-                arguments: ExpLogController(),
-              ),
+              onTap: () => MemberHost.of().openExpLog(),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -540,7 +509,7 @@ class _MemberPageState extends State<MemberPage> {
               ),
             const PopupMenuDivider(),
             PopupMenuItem(
-              onTap: () => showMemberReportDialog(
+              onTap: () => MemberHost.of().showReportDialog(
                 context,
                 name: _userController.username,
                 mid: _mid,
@@ -570,34 +539,13 @@ class _MemberPageState extends State<MemberPage> {
   Widget get _buildBody => tabBarView(
     controller: _userController.tabController,
     children: _userController.tab2!.map((item) {
-      return switch (item.param!) {
-        'home' => MemberHome(heroTag: _heroTag),
-        'dynamic' => MemberDynamicsPage(mid: _mid),
-        'contribute' => Obx(
-          () => MemberContribute(
-            heroTag: _heroTag,
-            initialIndex: _userController.contributeInitialIndex.value,
-            mid: _mid,
-          ),
-        ),
-        'bangumi' => MemberBangumi(
-          heroTag: _heroTag,
-          mid: _mid,
-        ),
-        'favorite' => MemberFavorite(
-          heroTag: _heroTag,
-          mid: _mid,
-        ),
-        'cheese' => MemberCheese(
-          heroTag: _heroTag,
-          mid: _mid,
-        ),
-        'shop' => MemberShop(
-          heroTag: _heroTag,
-          mid: _mid,
-        ),
-        _ => Center(child: Text(item.title ?? '')),
-      };
+      return MemberHost.of().buildTab(
+        param: item.param!,
+        title: item.title,
+        heroTag: _heroTag,
+        mid: _mid,
+        contributeInitialIndex: _userController.contributeInitialIndex,
+      );
     }).toList(),
   );
 
@@ -640,81 +588,10 @@ class _MemberPageState extends State<MemberPage> {
     }
   }
 
-  MedalWallData? _cacheMedalData;
-  Future<void> _showLiveMedalWall() async {
-    void onShow() {
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (context) => MedalWall(response: _cacheMedalData!),
-      );
-    }
+  Future<void> _showLiveMedalWall() =>
+      MemberHost.of().showLiveMedalWall(_mid);
 
-    if (_cacheMedalData != null) {
-      onShow();
-      return;
-    }
-    SmartDialog.showLoading();
-    final res = await Get.find<LiveRepository>().liveMedalWall(mid: _mid);
-    SmartDialog.dismiss();
-    if (res case Success(:final response)) {
-      _cacheMedalData = ModelConverters.medalWallDataConverter(response);
-      onShow();
-    } else {
-      res.toast();
-    }
-  }
 
-  void _toWebArchive() {
-    try {
-      final ctr = Get.find<MemberContributeCtr>(tag: _heroTag);
-      final item = ctr.items?[ctr.tabController?.index ?? 0];
-      if (item != null) {
-        final id = item.seasonId ?? item.seriesId;
-        if (id != null) {
-          MemberSSWeb.toMemberSSWeb(
-            type: item.seasonId != null ? .season : .series,
-            id: id,
-            mid: _mid,
-            name: _userController.username ?? '',
-          );
-          return;
-        }
-      }
-      MemberVideoWeb.toMemberVideoWeb(
-        mid: _mid,
-        name: _userController.username ?? '',
-      );
-    } catch (e) {
-      SmartDialog.showToast(e.toString());
-    }
-  }
 
-  void _createShortcut() {
-    if (Platform.isIOS) {
-      PageUtils.launchURL(
-        'https://www.bilibili.com/blackboard/disablelink/go-to-up-space.html?mid=$_mid',
-      );
-    } else if (Platform.isAndroid) {
-      _createShortcutAndroid();
-    }
-  }
 
-  Future<void> _createShortcutAndroid() async {
-    try {
-      SmartDialog.showLoading();
-      final file = (await CacheManager.manager.getSingleFile(
-        '${_userController.userAvatar!}@200w_200h.webp'.http2https,
-      ));
-      SmartDialog.dismiss();
-      PiliAndroidHelper.createShortcut(
-        _userController.mid.toString(),
-        'bilibili://space/${_userController.mid}',
-        _userController.username!,
-        file.path,
-      );
-    } catch (e) {
-      SmartDialog.showToast(e.toString());
-    }
-  }
 }
