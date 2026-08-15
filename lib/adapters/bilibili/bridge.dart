@@ -230,7 +230,7 @@ class BiliBridge {
     // 搜索页面
     GetPage(name: '/search', page: () => const SearchPage()),
     // 搜索结果
-    GetPage(name: '/searchResult', page: () => SearchResultPage(panelBuilder: biliSearchPanelBuilder)),
+    GetPage(name: '/searchResult', page: () => const SearchResultPage(panelBuilder: biliSearchPanelBuilder)),
     // 动态
     GetPage(name: '/dynamics', page: () => const DynamicsPage()),
     // 动态详情

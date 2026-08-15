@@ -1,19 +1,26 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
-import 'package:skf/adapters/bilibili/models/common/search/search_type.dart';
 import 'package:skf/core/models/search_types.dart';
-import 'package:skf/adapters/bilibili/pages/search/controller.dart';
-import 'package:skf/adapters/bilibili/pages/search_panel/article/view.dart';
-import 'package:skf/adapters/bilibili/pages/search_panel/live/view.dart';
-import 'package:skf/adapters/bilibili/pages/search_panel/pgc/view.dart';
-import 'package:skf/adapters/bilibili/pages/search_panel/user/view.dart';
-import 'package:skf/adapters/bilibili/pages/search_panel/video/view.dart';
-import 'package:skf/adapters/bilibili/pages/search_result/controller.dart';
+import 'package:skf/pages/search/controller.dart';
+import 'package:skf/pages/search_result/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// 搜索结果面板构造器。
+///
+/// 通用搜索结果页不直接依赖具体适配器的面板实现：适配器（B站 等）通过
+/// [SearchResultPage.panelBuilder] 注入自己的面板；未注入时渲染占位。
+typedef SearchPanelBuilder =
+    Widget Function(
+      CoreSearchType type, {
+      required String tag,
+      required String keyword,
+    });
+
 class SearchResultPage extends StatefulWidget {
-  const SearchResultPage({super.key});
+  const SearchResultPage({super.key, this.panelBuilder});
+
+  final SearchPanelBuilder? panelBuilder;
 
   @override
   State<SearchResultPage> createState() => _SearchResultPageState();
@@ -38,7 +45,7 @@ class _SearchResultPageState extends State<SearchResultPage>
     _tabController = TabController(
       vsync: this,
       initialIndex: Get.arguments?['initIndex'] ?? 0,
-      length: SearchType.values.length,
+      length: CoreSearchType.values.length,
     );
 
     if (_isFromSearch) {
@@ -53,6 +60,18 @@ class _SearchResultPageState extends State<SearchResultPage>
 
   void listener() {
     sSearchController?.initIndex = _tabController.index;
+  }
+
+  Widget _buildPanel(CoreSearchType type) {
+    final builder = widget.panelBuilder;
+    if (builder == null) {
+      return _SearchResultPlaceholder(keyword: _searchResultController.keyword);
+    }
+    return builder(
+      type,
+      tag: _tag,
+      keyword: _searchResultController.keyword,
+    );
   }
 
   @override
@@ -106,7 +125,7 @@ class _SearchResultPageState extends State<SearchResultPage>
               splashFactory: NoSplash.splashFactory,
               padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
               controller: _tabController,
-              tabs: SearchType.values
+              tabs: CoreSearchType.values
                   .map(
                     (item) => Obx(
                       () {
@@ -153,46 +172,29 @@ class _SearchResultPageState extends State<SearchResultPage>
             Expanded(
               child: tabBarView(
                 controller: _tabController,
-                children: SearchType.values
-                    .map(
-                      (item) => switch (item) {
-                        // SearchType.all => SearchAllPanel(
-                        //   tag: _tag,
-                        //   searchType: CoreSearchType.values[item.index],
-                        //   keyword: _searchResultController.keyword,
-                        // ),
-                        SearchType.video => SearchVideoPanel(
-                          tag: _tag,
-                          searchType: CoreSearchType.values[item.index],
-                          keyword: _searchResultController.keyword,
-                        ),
-                        SearchType.media_bangumi ||
-                        SearchType.media_ft => SearchPgcPanel(
-                          tag: _tag,
-                          searchType: CoreSearchType.values[item.index],
-                          keyword: _searchResultController.keyword,
-                        ),
-                        SearchType.live_room => SearchLivePanel(
-                          tag: _tag,
-                          searchType: CoreSearchType.values[item.index],
-                          keyword: _searchResultController.keyword,
-                        ),
-                        SearchType.bili_user => SearchUserPanel(
-                          tag: _tag,
-                          searchType: CoreSearchType.values[item.index],
-                          keyword: _searchResultController.keyword,
-                        ),
-                        SearchType.article => SearchArticlePanel(
-                          tag: _tag,
-                          searchType: CoreSearchType.values[item.index],
-                          keyword: _searchResultController.keyword,
-                        ),
-                      },
-                    )
-                    .toList(),
+                children: CoreSearchType.values.map(_buildPanel).toList(),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchResultPlaceholder extends StatelessWidget {
+  const _SearchResultPlaceholder({required this.keyword});
+
+  final String keyword;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Text(
+        keyword,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.outline,
         ),
       ),
     );

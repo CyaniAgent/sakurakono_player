@@ -8,7 +8,7 @@ import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/adapters/bilibili/pages/live_area/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_area_detail/view.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/sortable_wrap.dart';

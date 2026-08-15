@@ -8,11 +8,13 @@ import 'package:get/get.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
-import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_transform/stream_transform.dart';
+
+// 纯数字匹配（uid 判断）——原 IdUtils.digitOnlyRegExp 的等价纯函数
+final _digitOnlyRegExp = RegExp(r'^\d+$');
 
 mixin DebounceStreamMixin<T> {
   final Duration duration = const Duration(milliseconds: 200);
@@ -139,7 +141,7 @@ class SSearchController extends GetxController
   }
 
   void validateUid() {
-    showUidBtn.value = IdUtils.digitOnlyRegExp.hasMatch(controller.text);
+    showUidBtn.value = _digitOnlyRegExp.hasMatch(controller.text);
   }
 
   void onChange(String value) {

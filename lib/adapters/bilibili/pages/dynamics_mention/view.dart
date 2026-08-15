@@ -9,7 +9,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_mention/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_mention/widgets/item.dart';
-import 'package:skf/adapters/bilibili/pages/search/controller.dart' show DebounceStreamState;
+import 'package:skf/pages/search/controller.dart' show DebounceStreamState;
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';

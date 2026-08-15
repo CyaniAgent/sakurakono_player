@@ -20,7 +20,7 @@ import 'package:skf/adapters/bilibili/models_new/video/video_detail/staff.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/stat.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/action_item.dart';

@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/adapters/bilibili/models/common/live/live_dm_silent_type.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_dm_block/shield_user_list.dart';
 import 'package:skf/adapters/bilibili/pages/live_dm_block/controller.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:collection/collection.dart';

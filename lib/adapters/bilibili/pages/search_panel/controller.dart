@@ -10,7 +10,7 @@ import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dar
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/repository/bili_search_repository.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
-import 'package:skf/adapters/bilibili/pages/search_result/controller.dart';
+import 'package:skf/pages/search_result/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 

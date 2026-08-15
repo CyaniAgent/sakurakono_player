@@ -6,7 +6,7 @@ import 'package:skf/adapters/bilibili/models_new/member/search_archive/vlist.dar
 import 'package:skf/adapters/bilibili/pages/member_video_web/archive/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/view.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

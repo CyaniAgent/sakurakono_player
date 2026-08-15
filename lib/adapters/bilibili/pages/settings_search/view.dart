@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
-import 'package:skf/adapters/bilibili/pages/search/controller.dart' show DebounceStreamState;
+import 'package:skf/pages/search/controller.dart' show DebounceStreamState;
 import 'package:skf/adapters/bilibili/pages/setting/models/extra_settings.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart';

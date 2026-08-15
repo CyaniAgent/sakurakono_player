@@ -4,7 +4,7 @@ import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/date_utils.dart';

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:skf/adapters/bilibili/models/common/search/article_search_type.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';

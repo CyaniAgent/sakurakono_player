@@ -30,7 +30,7 @@ import 'package:skf/adapters/bilibili/models_new/video/video_play_info/subtitle.
 import 'package:skf/adapters/bilibili/models_new/video/video_stein_edgeinfo/data.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/sponsor_block/block_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/video/download_panel/view.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/pgc/controller.dart';

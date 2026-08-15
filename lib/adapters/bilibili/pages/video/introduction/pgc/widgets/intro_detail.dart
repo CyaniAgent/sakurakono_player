@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/result.dart'
 import 'package:skf/adapters/bilibili/models_new/video/video_tag/data.dart';
 import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/view.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide TabBarView;

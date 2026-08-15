@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dart';
 import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/view.dart';
 import 'package:skf/utils/grid.dart';

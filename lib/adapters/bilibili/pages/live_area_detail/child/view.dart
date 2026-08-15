@@ -7,7 +7,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/adapters/bilibili/pages/live/widgets/live_item_app.dart';
 import 'package:skf/adapters/bilibili/pages/live_area_detail/child/controller.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

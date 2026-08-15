@@ -9,7 +9,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
 import 'package:skf/adapters/bilibili/models/horizontal_video_model.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

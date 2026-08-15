@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/pages/live/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live/widgets/live_item_app.dart';
 import 'package:skf/adapters/bilibili/pages/live_area/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_follow/view.dart';
-import 'package:skf/adapters/bilibili/pages/search/widgets/search_text.dart';
+import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';

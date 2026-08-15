@@ -1,7 +1,7 @@
 import 'package:skf/adapters/bilibili/models/common/super_chat_type.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
-import 'package:skf/adapters/bilibili/pages/search/controller.dart';
+import 'package:skf/pages/search/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
