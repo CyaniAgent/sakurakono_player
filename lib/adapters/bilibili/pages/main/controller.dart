@@ -8,7 +8,7 @@ import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
-import 'package:skf/adapters/bilibili/pages/mine/view.dart';
+import 'package:skf/pages/mine/view.dart';
 import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';

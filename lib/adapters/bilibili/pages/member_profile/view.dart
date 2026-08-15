@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/member/profile_type.dart';
 import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
-import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
+import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_sign.dart';

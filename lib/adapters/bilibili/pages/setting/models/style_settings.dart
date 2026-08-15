@@ -10,7 +10,7 @@ import 'package:skf/common/widgets/stateful_builder.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
+import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/model.dart';
 import 'package:skf/adapters/bilibili/pages/setting/slide_color_picker.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/dual_slider_dialog.dart';

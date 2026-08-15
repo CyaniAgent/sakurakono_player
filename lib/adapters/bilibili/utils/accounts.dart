@@ -1,6 +1,6 @@
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
-import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
+import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 import 'package:skf/adapters/bilibili/utils/login_utils.dart';
 import 'package:hive_ce/hive.dart';

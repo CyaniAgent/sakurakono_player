@@ -24,7 +24,7 @@ import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.d
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
 import 'package:skf/adapters/bilibili/models/common/super_chat_type.dart';
 import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
-import 'package:skf/adapters/bilibili/models/common/theme/theme_type.dart';
+import 'package:skf/pages/mine/theme_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
 import 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';
@@ -53,7 +53,7 @@ export 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_type.d
 export 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart';
 export 'package:skf/adapters/bilibili/models/common/super_chat_type.dart';
 export 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
-export 'package:skf/adapters/bilibili/models/common/theme/theme_type.dart';
+export 'package:skf/pages/mine/theme_type.dart';
 export 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
 export 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
 export 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';

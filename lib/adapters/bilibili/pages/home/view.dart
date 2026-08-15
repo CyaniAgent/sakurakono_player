@@ -7,7 +7,7 @@ import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/common/home_tab_helper.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
+import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/feed_back.dart';

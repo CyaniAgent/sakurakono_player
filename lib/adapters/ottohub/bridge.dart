@@ -31,6 +31,7 @@ import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
@@ -62,6 +63,7 @@ import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/repository/validate_repository.dart';
 import 'package:skf/core/repository/space_repository.dart';
+import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 
 /// OttoHub adapter implementation of [AppAdapter].
@@ -120,6 +122,8 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<AppRepository>(OttoAppRepository.new)
       // Dynamics page host (crash-prevention stub)
       ..lazyPut<DynamicsHost>(OttoDynamicsHost.new)
+      // Mine page host (navigation via shared routes; account ops stub)
+      ..lazyPut<MineActions>(OttoMineActions.new)
       // Member page host (crash-prevention stub)
       ..lazyPut<MemberHost>(OttoMemberHost.new);
   }

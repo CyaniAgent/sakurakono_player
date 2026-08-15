@@ -9,7 +9,7 @@ import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/dialog/export_import.dart';
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/flutter/list_tile.dart';
-import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
+import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/adapters/bilibili/services/logger.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';

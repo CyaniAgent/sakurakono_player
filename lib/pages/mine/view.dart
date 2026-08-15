@@ -5,19 +5,15 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/common/widgets/svg/level_icon.dart';
+import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
-import 'package:skf/adapters/bilibili/models_new/fav/fav_folder/list.dart';
 import 'package:skf/pages/common/common_page.dart';
-import 'package:skf/adapters/bilibili/pages/home/view.dart';
-import 'package:skf/adapters/bilibili/pages/login/controller.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/pages/mine/controller.dart';
-import 'package:skf/adapters/bilibili/pages/mine/widgets/item.dart';
-import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
+import 'package:skf/pages/mine/controller.dart';
+import 'package:skf/pages/mine/mine_actions.dart';
+import 'package:skf/pages/mine/widgets/item.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/utils.dart';
@@ -38,14 +34,11 @@ class MinePage extends StatefulWidget {
 class _MediaPageState extends CommonPageState<MinePage>
     with AutomaticKeepAliveClientMixin {
   final MineController controller = Get.putOrFind(MineController.new);
-  late final MainController _mainController = Get.find<MainController>();
 
   @override
   bool get wantKeepAlive => true;
 
-  bool get checkPage =>
-      _mainController.navigationBars[0] != NavigationBarType.mine &&
-      _mainController.selectedIndex.value == 0;
+  bool get checkPage => MineActions.of().isMainMineTab;
 
   @override
   bool onNotificationType1(UserScrollNotification notification) {
@@ -108,7 +101,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           .map(
             (e) => Flexible(
               child: InkWell(
-                onTap: e.onTap,
+                onTap: () => controller.onMenuItemTap(e),
                 borderRadius: Style.mdRadius,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 80),
@@ -139,6 +132,7 @@ class _MediaPageState extends CommonPageState<MinePage>
     const iconSize = 22.0;
     const padding = EdgeInsets.all(8);
     const style = ButtonStyle(tapTargetSize: .shrinkWrap);
+    final actions = MineActions.of();
     return Row(
       spacing: 5,
       mainAxisAlignment: .end,
@@ -153,16 +147,16 @@ class _MediaPageState extends CommonPageState<MinePage>
               ),
             ),
           ),
-        if (!_mainController.hasHome) ...[
+        if (!actions.hasHome) ...[
           IconButton(
             iconSize: iconSize,
             padding: padding,
             style: style,
             tooltip: '搜索',
-            onPressed: () => Get.toNamed('/search'),
+            onPressed: actions.openSearch,
             icon: const Icon(Icons.search),
           ),
-          msgBadge(_mainController),
+          ?actions.buildMsgBadge(),
         ],
         if (GStorage.reply != null)
           IconButton(
@@ -170,7 +164,7 @@ class _MediaPageState extends CommonPageState<MinePage>
             padding: padding,
             style: style,
             tooltip: '评论记录',
-            onPressed: () => Get.toNamed('/myReply'),
+            onPressed: actions.openReply,
             icon: const Icon(Icons.message_outlined),
           ),
         Obx(
@@ -193,7 +187,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           padding: padding,
           style: style,
           tooltip: '切换账号',
-          onPressed: () => LoginPageController.switchAccountDialog(context),
+          onPressed: () => actions.switchAccountDialog(context),
           icon: const Icon(Icons.switch_account_outlined),
         ),
         Obx(
@@ -213,7 +207,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           padding: padding,
           style: style,
           tooltip: '设置',
-          onPressed: () => Get.toNamed('/setting', preventDuplicates: false),
+          onPressed: actions.openSetting,
           icon: const Icon(Icons.settings_outlined),
         ),
         const SizedBox(width: 16),
@@ -308,16 +302,16 @@ class _MediaPageState extends CommonPageState<MinePage>
                               style: theme.textTheme.titleMedium!.copyWith(
                                 height: 1,
                                 color: isVip && userInfo.vipType == 2
-                                    ? theme.colorScheme.vipColor
+                                    ? MineActions.of().vipNameColor(theme)
                                     : null,
                               ),
                               maxLines: 1,
                               overflow: .ellipsis,
                             ),
                           ),
-                          BiliUtils.levelPicture(
+                          UserLevel(
                             levelInfo?.currentLevel ?? 0,
-                            isSeniorMember: userInfo.isSeniorMember == 1,
+                            flash: userInfo.isSeniorMember == 1,
                             height: 10,
                           ),
                         ],
@@ -452,7 +446,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           color: theme.dividerColor.withValues(alpha: 0.1),
         ),
         ListTile(
-          onTap: () => Get.toNamed('/fav')?.whenComplete(_autoRefresh),
+          onTap: () => MineActions.of().openFav()?.whenComplete(_autoRefresh),
           dense: true,
           title: Padding(
             padding: const EdgeInsets.only(left: 10),
@@ -505,7 +499,7 @@ class _MediaPageState extends CommonPageState<MinePage>
       Loading() => const SizedBox.shrink(),
       Success(:final response) => Builder(
         builder: (context) {
-          List<FavFolderInfo>? favFolderList = response.list;
+          List<CoreFavFolderInfo>? favFolderList = response.list;
           if (favFolderList == null || favFolderList.isEmpty) {
             return const SizedBox.shrink();
           }
@@ -532,7 +526,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                           ),
                         ),
                         onPressed: () =>
-                            Get.toNamed('/fav')?.whenComplete(_autoRefresh),
+                            MineActions.of().openFav()?.whenComplete(_autoRefresh),
                         icon: Icon(
                           Icons.arrow_forward_ios,
                           size: 18,

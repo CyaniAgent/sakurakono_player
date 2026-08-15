@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+/// 主题类型枚举（纯枚举副本，迁移自 adapter 旧 models/common/theme/theme_type.dart）。
 enum ThemeType {
   light('浅色'),
   dark('深色'),

@@ -1,8 +1,7 @@
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/adapters/bilibili/models_new/fav/fav_folder/list.dart';
-import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
+import 'package:skf/core/models/fav_types.dart';
+import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FavFolderItem extends StatelessWidget {
   const FavFolderItem({
@@ -12,7 +11,7 @@ class FavFolderItem extends StatelessWidget {
     required this.heroTag,
   });
 
-  final FavFolderInfo item;
+  final CoreFavFolderInfo item;
   final VoidCallback onPop;
   final String heroTag;
 
@@ -20,16 +19,7 @@ class FavFolderItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(
-          '/favDetail',
-          arguments: item,
-          parameters: {
-            'mediaId': item.id.toString(),
-            'heroTag': heroTag,
-          },
-        )?.whenComplete(onPop);
-      },
+      onTap: () => MineActions.of().openFavDetail(item, heroTag, onPop),
       behavior: HitTestBehavior.opaque,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +54,7 @@ class FavFolderItem extends StatelessWidget {
             maxLines: 1,
           ),
           Text(
-            ' 共${item.mediaCount}条视频 · ${BiliUtils.isPublicFavText(item.attr)}',
+            ' 共${item.mediaCount}条视频 · ${isPublicFavText(item.attr)}',
             style: theme.textTheme.labelSmall!.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -73,4 +63,12 @@ class FavFolderItem extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 收藏夹公开性文案（迁移自 adapter utils/bili_utils.dart，纯逻辑副本）。
+String isPublicFavText(int? attr) {
+  if (attr == null) {
+    return '';
+  }
+  return (attr & 1) == 0 ? '公开' : '私密';
 }
