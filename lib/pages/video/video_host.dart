@@ -172,6 +172,7 @@ abstract class VideoHost {
   /// 构建播放器整机（B站: PLVideoPlayer + HeaderControl + PlDanmaku 装配，
   /// 含 showEpisodes/showViewPoints 槽位）。
   Widget buildPlayer({
+    required String heroTag,
     required double width,
     required double height,
     bool isPipMode = false,
@@ -241,6 +242,7 @@ abstract class VideoHost {
 
   /// 发送弹幕面板（B站: PublishRoute + SendDanmakuPanel）。
   Future<void> showShootDanmakuSheet({
+    required String heroTag,
     required String bvid,
     required int cid,
     required int progress,

@@ -1142,6 +1142,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
               plPlayerController?.videoController == null
           ? const SizedBox.shrink()
           : host.buildPlayer(
+              heroTag: heroTag,
               width: width,
               height: height,
               isPipMode: isPipMode,

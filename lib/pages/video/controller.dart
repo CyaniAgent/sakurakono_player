@@ -468,6 +468,7 @@ class VideoDetailController extends GetxController
       await plPlayerController.pause();
     }
     await VideoHost.of().showShootDanmakuSheet(
+      heroTag: heroTag,
       bvid: bvid,
       cid: cid.value,
       progress: plPlayerController.positionInMilliseconds,

@@ -563,13 +563,13 @@ class BiliVideoHost implements VideoHost {
 
   @override
   Widget buildPlayer({
+    required String heroTag,
     required double width,
     required double height,
     bool isPipMode = false,
     required bool isPortrait,
   }) {
-    final ctr = Get.find<VideoDetailController>();
-    final heroTag = ctr.heroTag;
+    final ctr = Get.find<VideoDetailController>(tag: heroTag);
     _ensureIntroController(heroTag);
     final player = ctr.plPlayerController as PlPlayerController;
     final introCtr = _introController(heroTag);
@@ -935,6 +935,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   Future<void> showShootDanmakuSheet({
+    required String heroTag,
     required String bvid,
     required int cid,
     required int progress,
@@ -943,7 +944,7 @@ class BiliVideoHost implements VideoHost {
     ({int? mode, int? fontSize, Color? color})? dmConfig,
     ValueChanged<({int mode, int fontSize, Color color})>? onSaveDmConfig,
   }) async {
-    final ctr = Get.find<VideoDetailController>();
+    final ctr = Get.find<VideoDetailController>(tag: heroTag);
     final player = ctr.plPlayerController as PlPlayerController;
     await Get.key.currentState!.push(
       PublishRoute(
