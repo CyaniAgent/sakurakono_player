@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';

@@ -12,8 +12,8 @@ import 'package:skf/adapters/bilibili/models/common/member/user_info_type.dart';
 
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/episode.dart';
-import 'package:skf/adapters/bilibili/pages/fan/view.dart';
-import 'package:skf/adapters/bilibili/pages/follow/view.dart';
+import 'package:skf/pages/fan/view.dart';
+import 'package:skf/pages/follow/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/widgets/video_card_h_member_video.dart';
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/controller.dart';

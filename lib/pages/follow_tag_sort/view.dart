@@ -1,10 +1,9 @@
 import 'package:skf/common/widgets/reorder_mixin.dart';
+import 'package:skf/core/models/member_types.dart' show CoreMemberTagItemModel;
 import 'package:skf/core/repository/follow_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/member/tags.dart';
-import 'package:skf/adapters/bilibili/pages/follow/controller.dart';
-import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
+import 'package:skf/pages/follow/controller.dart';
+import 'package:skf/pages/follow/follow_models.dart' show isCustomFollowTag;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -20,17 +19,17 @@ class FollowTagSortPage extends StatefulWidget {
 
 class _FollowTagSortPageState extends State<FollowTagSortPage>
     with ReorderMixin {
-  final List<MemberTagItemModel> _defTags = <MemberTagItemModel>[];
-  final List<MemberTagItemModel> _customTags = <MemberTagItemModel>[];
+  final List<CoreMemberTagItemModel> _defTags = <CoreMemberTagItemModel>[];
+  final List<CoreMemberTagItemModel> _customTags = <CoreMemberTagItemModel>[];
 
   @override
   void initState() {
     super.initState();
     for (final e in widget.controller.tabs) {
-      if (BiliUtils.isCustomFollowTag(e.tagid)) {
-        _customTags.add(ModelConverters.memberTagItemConverter(e));
+      if (isCustomFollowTag(e.tagid)) {
+        _customTags.add(e);
       } else {
-        _defTags.add(ModelConverters.memberTagItemConverter(e));
+        _defTags.add(e);
       }
     }
   }
@@ -52,7 +51,7 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
                       SmartDialog.showToast('排序完成');
                       final tabs = _defTags + _customTags;
                       widget.controller
-                        ..tabs.value = tabs.map(ModelConverters.memberTagItemToCore).toList()
+                        ..tabs.value = tabs
                         ..onInitTab()
                         ..followState.value = Success(tabs.hashCode);
                       if (mounted) {
@@ -96,7 +95,7 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
   }
 
   Widget _buildItem(
-    MemberTagItemModel item, {
+    CoreMemberTagItemModel item, {
     bool enabled = true,
   }) {
     return ListTile(

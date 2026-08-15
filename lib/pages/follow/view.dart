@@ -5,14 +5,14 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/models/member_types.dart' show CoreMemberTagItemModel;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/pages/follow/child/child_controller.dart';
-import 'package:skf/adapters/bilibili/pages/follow/child/child_view.dart';
-import 'package:skf/adapters/bilibili/pages/follow/controller.dart';
-import 'package:skf/adapters/bilibili/pages/follow_tag_sort/view.dart';
-import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
+import 'package:skf/pages/follow/child/child_controller.dart';
+import 'package:skf/pages/follow/child/child_view.dart';
+import 'package:skf/pages/follow/controller.dart';
+import 'package:skf/pages/follow/follow_actions.dart' show FollowActions;
+import 'package:skf/pages/follow/follow_models.dart' show isCustomFollowTag;
+import 'package:skf/pages/follow_tag_sort/view.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/platform_utils.dart';
-import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -68,7 +68,7 @@ class _FollowPageState extends State<FollowPage> {
     actions: _followController.isOwner
         ? [
             IconButton(
-              onPressed: () => RequestUtils.createFavTag(
+              onPressed: () => FollowActions.createFavTag(
                 context,
                 _followController.onCreateFavTag,
               ),
@@ -138,7 +138,7 @@ class _FollowPageState extends State<FollowPage> {
                 return Obx(() {
                   final item = _followController.tabs[index];
                   int? count = item.count;
-                  if (BiliUtils.isCustomFollowTag(item.tagid)) {
+                  if (isCustomFollowTag(item.tagid)) {
                     return GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onLongPress: () {

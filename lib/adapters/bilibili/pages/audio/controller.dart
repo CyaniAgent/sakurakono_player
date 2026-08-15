@@ -35,7 +35,7 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/connectivity_utils.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';

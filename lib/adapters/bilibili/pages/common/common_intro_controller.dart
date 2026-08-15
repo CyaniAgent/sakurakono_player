@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/models_new/video/video_detail/stat_detail.
 import 'package:skf/adapters/bilibili/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/triple_mixin.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/storage.dart';

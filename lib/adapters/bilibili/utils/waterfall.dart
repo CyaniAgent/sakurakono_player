@@ -1,6 +1,6 @@
 import 'package:skf/common/skeleton/dynamic_card.dart';
 import 'package:skf/common/style.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show SliverConstraints;

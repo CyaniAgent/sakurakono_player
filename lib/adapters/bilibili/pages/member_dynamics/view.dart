@@ -4,7 +4,7 @@ import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicItemModel;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/member_dynamics/controller.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';

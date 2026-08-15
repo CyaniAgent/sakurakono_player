@@ -22,7 +22,7 @@ import 'package:skf/adapters/bilibili/pages/video/reply/controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/utils/feed_back.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';

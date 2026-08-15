@@ -24,7 +24,7 @@ import 'package:skf/utils/connectivity_utils.dart';
 import 'package:skf/utils/danmaku_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage_pref.dart';

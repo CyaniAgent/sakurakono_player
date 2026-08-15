@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/utils/device_utils.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/login_utils.dart';
 import 'package:skf/adapters/bilibili/utils/bili_storage_key.dart';
 import 'package:skf/utils/storage.dart';

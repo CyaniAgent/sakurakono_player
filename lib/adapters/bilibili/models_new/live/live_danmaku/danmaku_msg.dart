@@ -2,7 +2,7 @@ import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_danmaku/live_emote.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/uinfo_medal.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 
 class DanmakuMsg {
   final String name;

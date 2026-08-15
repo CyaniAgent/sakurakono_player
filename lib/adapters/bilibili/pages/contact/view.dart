@@ -1,8 +1,8 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
-import 'package:skf/adapters/bilibili/pages/fan/view.dart';
-import 'package:skf/adapters/bilibili/pages/follow/child/child_view.dart';
+import 'package:skf/pages/fan/view.dart';
+import 'package:skf/pages/follow/child/child_view.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/view.dart';
-import 'package:skf/adapters/bilibili/pages/share/view.dart' show UserModel;
+import 'package:skf/pages/follow/follow_models.dart' show UserModel;
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

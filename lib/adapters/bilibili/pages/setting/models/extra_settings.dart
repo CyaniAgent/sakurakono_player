@@ -30,7 +30,7 @@ import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/filtering_text.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/platform_utils.dart';

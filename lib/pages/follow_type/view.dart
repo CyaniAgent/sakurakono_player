@@ -4,10 +4,8 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_item.dart';
-import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
-import 'package:skf/adapters/bilibili/pages/follow/widgets/follow_item.dart';
-import 'package:skf/adapters/bilibili/pages/follow_type/controller.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
+import 'package:skf/pages/follow/widgets/follow_item.dart';
+import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -64,7 +62,7 @@ abstract class FollowTypePageState<T extends StatefulWidget> extends State<T> {
                   if (index == response.length - 1) {
                     controller.onLoadMore();
                   }
-                  return buildItem(index, ModelConverters.followItem(response[index]));
+                  return buildItem(index, response[index]);
                 },
                 itemCount: response.length,
               )
@@ -76,5 +74,5 @@ abstract class FollowTypePageState<T extends StatefulWidget> extends State<T> {
     };
   }
 
-  Widget buildItem(int index, FollowItemModel item) => FollowItem(item: item);
+  Widget buildItem(int index, CoreFollowItemModel item) => FollowItem(item: item);
 }

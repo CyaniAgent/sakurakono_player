@@ -1,5 +1,5 @@
-import 'package:skf/adapters/bilibili/pages/follow_type/follow_same/controller.dart';
-import 'package:skf/adapters/bilibili/pages/follow_type/view.dart';
+import 'package:skf/pages/follow_type/follow_same/controller.dart';
+import 'package:skf/pages/follow_type/view.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/utils.dart';

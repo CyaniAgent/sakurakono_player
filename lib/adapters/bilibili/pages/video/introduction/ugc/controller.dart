@@ -35,7 +35,7 @@ import 'package:skf/utils/device_utils.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 import 'package:skf/utils/feed_back.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';

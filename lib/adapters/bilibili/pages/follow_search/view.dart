@@ -1,9 +1,8 @@
 import 'package:skf/core/models/follow_data.dart' show CoreFollowData;
 import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
 import 'package:skf/pages/common/search/common_search_page.dart';
-import 'package:skf/adapters/bilibili/pages/follow/widgets/follow_item.dart';
+import 'package:skf/pages/follow/widgets/follow_item.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/controller.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +45,7 @@ class _FollowSearchPageState
           controller.onLoadMore();
         }
         return FollowItem(
-          item: ModelConverters.followItem(list[index]),
+          item: list[index],
           onSelect: widget.mid != null && widget.isFromSelect
               ? (userModel) => Get.back(result: userModel)
               : null,

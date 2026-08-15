@@ -30,7 +30,7 @@ import 'package:skf/adapters/bilibili/models_new/video/video_shot/data.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_sign.dart';
 import 'package:skf/utils/extension/string_ext.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/recommend_filter.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';

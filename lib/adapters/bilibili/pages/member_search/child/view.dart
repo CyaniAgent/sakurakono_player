@@ -5,7 +5,7 @@ import 'package:skf/adapters/bilibili/models/common/member/search_type.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/child/widgets/search_archive_grpc.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:skf/adapters/bilibili/pages/video/pay_coins/view.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

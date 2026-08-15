@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
+import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +13,7 @@ class FollowTypeItem extends StatelessWidget {
     this.onSecondaryTap,
   });
 
-  final FollowItemModel item;
+  final CoreFollowItemModel item;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final VoidCallback? onSecondaryTap;

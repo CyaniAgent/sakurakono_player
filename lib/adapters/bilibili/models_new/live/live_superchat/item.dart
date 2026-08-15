@@ -1,6 +1,6 @@
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/uinfo_medal.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_superchat/user_info.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/parse_string.dart';
 import 'package:skf/utils/utils.dart';

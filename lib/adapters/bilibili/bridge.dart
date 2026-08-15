@@ -15,7 +15,7 @@ import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
-import 'package:skf/adapters/bilibili/pages/blacklist/view.dart';
+import 'package:skf/pages/blacklist/view.dart';
 import 'package:skf/adapters/bilibili/pages/bubble/view.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/dlna/view.dart';
@@ -25,15 +25,15 @@ import 'package:skf/adapters/bilibili/pages/dynamics_create_vote/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_detail/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic_rcmd/view.dart';
-import 'package:skf/adapters/bilibili/pages/fan/view.dart';
+import 'package:skf/pages/fan/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_create/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_search/view.dart';
-import 'package:skf/adapters/bilibili/pages/follow/view.dart';
+import 'package:skf/pages/follow/view.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/view.dart';
-import 'package:skf/adapters/bilibili/pages/follow_type/follow_same/view.dart';
-import 'package:skf/adapters/bilibili/pages/follow_type/followed/view.dart';
+import 'package:skf/pages/follow_type/follow_same/view.dart';
+import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/adapters/bilibili/pages/history/view.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
@@ -64,8 +64,9 @@ import 'package:skf/adapters/bilibili/pages/my_reply/view.dart';
 import 'package:skf/adapters/bilibili/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/popular_precious/view.dart';
 import 'package:skf/adapters/bilibili/pages/popular_series/view.dart';
-import 'package:skf/adapters/bilibili/pages/search/view.dart';
-import 'package:skf/adapters/bilibili/pages/search_result/view.dart';
+import 'package:skf/adapters/bilibili/pages/search_panel/builder.dart';
+import 'package:skf/pages/search/view.dart';
+import 'package:skf/pages/search_result/view.dart';
 import 'package:skf/adapters/bilibili/pages/search_trending/view.dart';
 import 'package:skf/adapters/bilibili/pages/setting/pages/bar_set.dart';
 import 'package:skf/adapters/bilibili/pages/setting/pages/color_select.dart';
@@ -229,7 +230,7 @@ class BiliBridge {
     // 搜索页面
     GetPage(name: '/search', page: () => const SearchPage()),
     // 搜索结果
-    GetPage(name: '/searchResult', page: () => const SearchResultPage()),
+    GetPage(name: '/searchResult', page: () => SearchResultPage(panelBuilder: biliSearchPanelBuilder)),
     // 动态
     GetPage(name: '/dynamics', page: () => const DynamicsPage()),
     // 动态详情

@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/pages/dynamics/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
 import 'package:skf/utils/extension/get_ext.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,9 +1,9 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
-import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
-import 'package:skf/adapters/bilibili/pages/fan/controller.dart';
-import 'package:skf/adapters/bilibili/pages/follow_type/view.dart';
-import 'package:skf/adapters/bilibili/pages/follow_type/widgets/item.dart';
-import 'package:skf/adapters/bilibili/pages/share/view.dart' show UserModel;
+import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
+import 'package:skf/pages/fan/controller.dart';
+import 'package:skf/pages/follow/follow_models.dart' show UserModel;
+import 'package:skf/pages/follow_type/view.dart';
+import 'package:skf/pages/follow_type/widgets/item.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
@@ -65,7 +65,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
       : null;
 
   @override
-  Widget buildItem(int index, FollowItemModel item) {
+  Widget buildItem(int index, CoreFollowItemModel item) {
     void onRemove() => showConfirmDialog(
       context: context,
       title: Text('确定移除 ${item.uname} ？'),

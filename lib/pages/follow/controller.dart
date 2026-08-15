@@ -2,7 +2,7 @@
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -20,7 +20,7 @@ class FollowController extends GetxController with GetTickerProviderStateMixin {
   void onInit() {
     super.onInit();
     final Map? args = Get.arguments;
-    final ownerMid = Accounts.main.mid;
+    final ownerMid = Pref.userInfoCache?.mid ?? 0;
     final int? mid = args?['mid'];
     this.mid = mid ?? ownerMid;
     isOwner = ownerMid == this.mid;

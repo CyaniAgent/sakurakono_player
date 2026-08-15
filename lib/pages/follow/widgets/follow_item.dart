@@ -1,13 +1,13 @@
 import 'package:skf/common/widgets/pendant_avatar.dart';
-import 'package:skf/adapters/bilibili/models_new/follow/list.dart';
-import 'package:skf/adapters/bilibili/pages/share/view.dart' show UserModel;
+import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
+import 'package:skf/pages/follow/follow_actions.dart' show FollowActions;
+import 'package:skf/pages/follow/follow_models.dart' show UserModel, coreOfficialVerifyType;
 import 'package:skf/utils/feed_back.dart';
-import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FollowItem extends StatelessWidget {
-  final FollowItemModel item;
+  final CoreFollowItemModel item;
   final bool isOwner;
   final ValueChanged? afterMod;
   final ValueChanged<UserModel>? onSelect;
@@ -27,7 +27,7 @@ class FollowItem extends StatelessWidget {
     if (isOwner) {
       final isFollow = item.attribute != -1;
       followBtn = FilledButton.tonal(
-        onPressed: () => RequestUtils.actionRelationMod(
+        onPressed: () => FollowActions.actionRelationMod(
           context: context,
           mid: item.mid,
           isFollow: isFollow,
@@ -72,7 +72,7 @@ class FollowItem extends StatelessWidget {
                 size: 45,
                 badgeSize: 14,
                 item.face,
-                officialType: item.officialVerify?.type,
+                officialType: coreOfficialVerifyType(item.officialVerify),
               ),
               const SizedBox(width: 10),
               Expanded(

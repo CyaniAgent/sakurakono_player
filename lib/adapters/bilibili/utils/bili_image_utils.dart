@@ -3,7 +3,7 @@ import 'dart:io' show File, Platform;
 import 'dart:math' as math;
 
 import 'package:skf/adapters/bilibili/http/init.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/extension/file_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';

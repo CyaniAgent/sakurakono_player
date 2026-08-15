@@ -10,7 +10,7 @@ import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account_manager/account_mgr.dart';
-import 'package:skf/adapters/bilibili/utils/global_data.dart';
+import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/login_utils.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/utils.dart';
