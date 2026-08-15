@@ -7,7 +7,7 @@ import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
 import 'package:skf/pages/member/widget/medal_widget.dart';
-import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;

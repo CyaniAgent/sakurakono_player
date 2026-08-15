@@ -6,7 +6,7 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
+import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/adapters/bilibili/models/horizontal_video_model.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:skf/pages/search/widgets/search_text.dart';

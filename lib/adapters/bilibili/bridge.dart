@@ -91,7 +91,9 @@ import 'package:skf/adapters/bilibili/pages/space_setting/view.dart';
 import 'package:skf/adapters/bilibili/pages/sponsor_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/subscription/view.dart';
 import 'package:skf/adapters/bilibili/pages/subscription_detail/view.dart';
-import 'package:skf/adapters/bilibili/pages/video/view.dart';
+import 'package:skf/adapters/bilibili/common/video_host.dart';
+import 'package:skf/pages/video/video_host.dart';
+import 'package:skf/pages/video/view.dart';
 import 'package:skf/adapters/bilibili/pages/webview/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_detail/view.dart';
@@ -216,7 +218,9 @@ class BiliBridge {
       // Member page host (sub-page tabs, deep dialogs, URL routing)
       ..lazyPut<MemberHost>(BiliMemberHost.new)
       // Download page host (download service + local playback navigation)
-      ..lazyPut<DownloadActions>(BiliDownloadActions.new);
+      ..lazyPut<DownloadActions>(BiliDownloadActions.new)
+      // Video page host (player extras, danmaku, reply, intro panels, sheets)
+      ..lazyPut<VideoHost>(BiliVideoHost.new);
     setupServiceLocator();
     _initHttp();
   }

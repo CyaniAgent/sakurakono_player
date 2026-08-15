@@ -4,7 +4,7 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
-import 'package:skf/adapters/bilibili/pages/video/reply/widgets/reply_item_grpc.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply/widgets/reply_item_grpc.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';

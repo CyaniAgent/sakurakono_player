@@ -7,7 +7,7 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
 import 'package:skf/adapters/bilibili/grpc/bilibili/pagination.pb.dart' show FeedPaginationReply;
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
-import 'package:skf/adapters/bilibili/pages/video/reply_new/view.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply_new/view.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/reply_utils.dart';

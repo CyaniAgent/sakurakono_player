@@ -24,10 +24,10 @@ import 'package:skf/adapters/bilibili/pages/main_reply/view.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
     show kMaxVolume;
 import 'package:skf/adapters/bilibili/pages/sponsor_block/block_mixin.dart';
-import 'package:skf/adapters/bilibili/pages/video/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/triple_mixin.dart';
+import 'package:skf/pages/video/controller.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/triple_mixin.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
+import 'package:skf/player/models/play_repeat.dart';
 import 'package:skf/player/models/play_status.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart';

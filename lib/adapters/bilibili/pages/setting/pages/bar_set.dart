@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/common/widgets/reorder_mixin.dart';
-import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
+import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';

@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
+import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';

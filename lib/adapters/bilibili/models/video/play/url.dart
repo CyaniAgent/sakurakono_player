@@ -1,7 +1,6 @@
 import 'dart:math' show max, min;
 
-import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
+import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;

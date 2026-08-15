@@ -66,6 +66,8 @@ import 'package:skf/core/repository/validate_repository.dart';
 import 'package:skf/core/repository/space_repository.dart';
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
+import 'package:skf/pages/video/video_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 
 /// OttoHub adapter implementation of [AppAdapter].
@@ -129,7 +131,9 @@ class OttoAdapter implements AppAdapter {
       // Member page host (crash-prevention stub)
       ..lazyPut<MemberHost>(OttoMemberHost.new)
       // Download page host (empty-state stub, no download support)
-      ..lazyPut<DownloadActions>(OttoDownloadActions.new);
+      ..lazyPut<DownloadActions>(OttoDownloadActions.new)
+      // Video page host (crash-prevention stub)
+      ..lazyPut<VideoHost>(OttoVideoHost.new);
   }
 
   @override

@@ -9,8 +9,8 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/main_reply/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/reply/widgets/reply_item_grpc.dart';
-import 'package:skf/adapters/bilibili/pages/video/reply_reply/view.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply/widgets/reply_item_grpc.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply_reply/view.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/num_utils.dart';

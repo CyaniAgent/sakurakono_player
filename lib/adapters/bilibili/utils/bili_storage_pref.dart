@@ -25,12 +25,9 @@ import 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart
 import 'package:skf/adapters/bilibili/models/common/super_chat_type.dart';
 import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
 import 'package:skf/pages/mine/theme_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
+import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
 import 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';
-import 'package:skf/adapters/bilibili/models/common/video/subtitle_pref_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_decode_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
 import 'package:skf/adapters/bilibili/models/user/info.dart';
 import 'package:skf/adapters/bilibili/pages/setting/pages/fullscreen_sc_size.dart';
@@ -38,7 +35,7 @@ import 'package:skf/adapters/bilibili/plugin/pl_player/models/audio_output_type.
 import 'package:skf/player/models/bottom_progress_behavior.dart';
 import 'package:skf/player/models/fullscreen_mode.dart';
 import 'package:skf/player/models/hwdec_type.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
+import 'package:skf/player/models/play_repeat.dart';
 
 export 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
 export 'package:skf/adapters/bilibili/models/common/dynamic/dynamic_badge_mode.dart';
@@ -54,12 +51,9 @@ export 'package:skf/adapters/bilibili/models/common/sponsor_block/skip_type.dart
 export 'package:skf/adapters/bilibili/models/common/super_chat_type.dart';
 export 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
 export 'package:skf/pages/mine/theme_type.dart';
-export 'package:skf/adapters/bilibili/models/common/video/audio_quality.dart';
+export 'package:skf/pages/video/video_models.dart';
 export 'package:skf/adapters/bilibili/models/common/video/cdn_type.dart';
 export 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';
-export 'package:skf/adapters/bilibili/models/common/video/subtitle_pref_type.dart';
-export 'package:skf/adapters/bilibili/models/common/video/video_decode_type.dart';
-export 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 export 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
 export 'package:skf/adapters/bilibili/models/user/info.dart';
 export 'package:skf/adapters/bilibili/pages/setting/pages/fullscreen_sc_size.dart';
@@ -67,7 +61,7 @@ export 'package:skf/adapters/bilibili/plugin/pl_player/models/audio_output_type.
 export 'package:skf/player/models/bottom_progress_behavior.dart';
 export 'package:skf/player/models/fullscreen_mode.dart';
 export 'package:skf/player/models/hwdec_type.dart';
-export 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
+export 'package:skf/player/models/play_repeat.dart';
 
 abstract final class BiliPref {
   static final Box _setting = GStorage.setting;

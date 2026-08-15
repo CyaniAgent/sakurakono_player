@@ -27,7 +27,7 @@ import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_panel.
 import 'package:skf/adapters/bilibili/pages/live_room/widgets/bottom_control.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/widgets/chat_panel.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/widgets/header_control.dart';
-import 'package:skf/adapters/bilibili/pages/video/widgets/player_focus.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/player_focus.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/utils/danmaku_options.dart';

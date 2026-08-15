@@ -16,7 +16,7 @@ import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/adapters/bilibili/pages/live/view.dart';
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';
 import 'package:skf/adapters/bilibili/pages/subscription_detail/view.dart';
-import 'package:skf/adapters/bilibili/pages/video/reply_reply/view.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply_reply/view.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';

@@ -1,5 +1,5 @@
 import 'package:skf/common/style.dart';
-import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
+import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/normal_item.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/popup_item.dart';
 import 'package:skf/adapters/bilibili/pages/setting/widgets/select_dialog.dart';

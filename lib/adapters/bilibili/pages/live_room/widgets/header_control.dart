@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/models/common/video/live_quality.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
     show showPlayerVolumeDialog;
-import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/player/widgets/common_btn.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart'

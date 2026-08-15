@@ -13,7 +13,7 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/send_danmaku/view.dart';
-import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/player/models/data_source.dart';
 import 'package:skf/player/utils/danmaku_options.dart';

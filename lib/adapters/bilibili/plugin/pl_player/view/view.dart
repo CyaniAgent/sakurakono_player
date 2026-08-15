@@ -2,8 +2,6 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:skf/adapters/bilibili/common/constants.dart';
-import 'package:skf/adapters/bilibili/models/common/super_resolution_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
 import 'package:skf/adapters/bilibili/models/video/play/url.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/episode.dart'
     as ugc;
@@ -12,11 +10,11 @@ import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart'
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/widgets/bottom_control.dart'
     as live_bottom;
-import 'package:skf/adapters/bilibili/pages/video/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/introduction/pgc/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/post_panel/popup_menu_text.dart';
-import 'package:skf/adapters/bilibili/pages/video/post_panel/view.dart';
-import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart';
+import 'package:skf/pages/video/controller.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/introduction/pgc/controller.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/post_panel/popup_menu_text.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/post_panel/view.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/widgets/mpv_convert_webp.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/widgets/play_pause_btn.dart';
@@ -32,6 +30,8 @@ import 'package:skf/player/models/bottom_control_type.dart';
 import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/models/video_fit_type.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:skf/adapters/bilibili/common/video_host.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:flutter/services.dart';
 import 'package:skf/player/models/player_overlay_source.dart';
 import 'package:skf/player/models/player_view_contracts.dart';
@@ -601,7 +601,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
           if (currentVideoQa == null) {
             return const SizedBox.shrink();
           }
-          final PlayUrlModel videoInfo = videoDetailController.data;
+          final PlayUrlModel videoInfo = playUrlModelFromCore(videoDetailController.data);
           if (videoInfo.dash == null) {
             return const SizedBox.shrink();
           }
@@ -728,9 +728,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
   }
 
   Future<void> screenshotWebp() async {
-    final videoInfo = videoDetailController.data;
+    final PlayUrlModel videoInfo = playUrlModelFromCore(videoDetailController.data);
     final ids = videoInfo.dash!.video!.map((i) => i.id!).toSet();
-    final video = videoDetailController.findVideoByQa(ids.min);
+    final video = _findVideoByQa(videoInfo, ids.min);
 
     VideoQuality qa = video.quality;
     String? url = video.baseUrl;
@@ -769,7 +769,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
                   title: '选择画质',
                   value: () => qa.code,
                   onSelected: (value) {
-                    final video = videoDetailController.findVideoByQa(value);
+                    final video = _findVideoByQa(videoInfo, value);
                     url = video.baseUrl;
                     qa = video.quality;
                     return false;
@@ -1197,7 +1197,7 @@ class _VideoOverlaySource implements PlayerOverlaySource {
   final VideoDetailController _controller;
 
   @override
-  bool get enableBlock => _controller.plPlayerController.enableBlock;
+  bool get enableBlock => (_controller.plPlayerController as PlPlayerController).enableBlock;
 
   @override
   List<Segment> get segmentProgressList => _controller.segmentProgressList;
@@ -1213,4 +1213,26 @@ class _VideoOverlaySource implements PlayerOverlaySource {
 
   @override
   List<double>? get dmTrend => _controller.dmTrend.value?.dataOrNull;
+}
+
+/// 按画质码选择视频流（优先预设解码格式；原 VideoDetailController.findVideoByQa）。
+VideoItem _findVideoByQa(PlayUrlModel data, int qa) {
+  final videoList = data.dash!.video!.where((i) => i.id == qa).toList();
+  if (videoList.isEmpty) {
+    return data.dash!.video!.first;
+  }
+  final preferCodecs = BiliPref.preferCodecs;
+  VideoItem? bestVideo;
+  int bestIndex = preferCodecs.length;
+  for (final video in videoList) {
+    final c = video.codecs!;
+    for (int i = 0; i < bestIndex; i++) {
+      if (preferCodecs[i].codes.any(c.startsWith)) {
+        bestIndex = i;
+        bestVideo = video;
+        break;
+      }
+    }
+  }
+  return bestVideo ?? videoList.first;
 }

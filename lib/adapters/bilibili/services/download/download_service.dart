@@ -6,7 +6,7 @@ import 'package:skf/adapters/bilibili/grpc/dm.dart';
 import 'package:skf/adapters/bilibili/http/download.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
+import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_media_file_info.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart' as pgc;

@@ -1,6 +1,6 @@
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/widgets/header_mixin.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_mixin.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/player/models/video_fit_type.dart';
 import 'package:skf/player/widgets/common_btn.dart';

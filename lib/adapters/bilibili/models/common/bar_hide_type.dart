@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
+import 'package:skf/player/models/enum_with_label.dart';
 
 enum BarHideType with EnumWithLabel {
   instant('即时'),

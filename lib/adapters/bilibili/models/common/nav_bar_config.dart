@@ -1,5 +1,5 @@
 import 'package:skf/common/widgets/custom_icon.dart';
-import 'package:skf/adapters/bilibili/models/common/enum_with_label.dart';
+import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
 import 'package:skf/pages/mine/view.dart';

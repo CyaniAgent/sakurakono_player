@@ -20,9 +20,9 @@ import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/episode.dart' as ugc;
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/page.dart';
 import 'package:skf/pages/common/slide/common_slide_page.dart';
-import 'package:skf/adapters/bilibili/pages/video/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/page.dart';
+import 'package:skf/pages/video/controller.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/controller.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/page.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';

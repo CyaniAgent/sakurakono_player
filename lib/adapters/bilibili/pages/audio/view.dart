@@ -17,10 +17,10 @@ import 'package:skf/adapters/bilibili/pages/audio/controller.dart';
 import 'package:skf/adapters/bilibili/pages/audio/volume_button.dart';
 import 'package:skf/adapters/bilibili/pages/setting/models/play_settings.dart'
     show showPlayerVolumeDialog;
-import 'package:skf/adapters/bilibili/pages/video/introduction/ugc/widgets/action_item.dart';
-import 'package:skf/adapters/bilibili/pages/video/widgets/header_control.dart'
+import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/action_item.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.dart'
     show HeaderControlState;
-import 'package:skf/adapters/bilibili/plugin/pl_player/models/play_repeat.dart';
+import 'package:skf/player/models/play_repeat.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';

@@ -10,7 +10,7 @@ import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/pages/common/fab_mixin.dart'
     show NoBottomPaddingFabLocation;
 import 'package:skf/adapters/bilibili/pages/match_info/controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/reply_reply/view.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply_reply/view.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/widget_ext.dart';

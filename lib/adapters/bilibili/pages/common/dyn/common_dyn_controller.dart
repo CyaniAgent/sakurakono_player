@@ -4,7 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
-import 'package:skf/adapters/bilibili/pages/video/reply/vote/reply_vote_mixin.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply/vote/reply_vote_mixin.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:get/get.dart';
 
