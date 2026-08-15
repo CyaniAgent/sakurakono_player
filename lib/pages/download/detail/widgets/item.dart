@@ -7,17 +7,14 @@ import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/progress_bar/video_progress_indicator.dart';
 import 'package:skf/common/widgets/select_mask.dart';
+import 'package:skf/core/models/download_types.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/video_quality.dart';
-import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
-import 'package:skf/adapters/bilibili/pages/download/downloading/view.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/pages/download/downloading/view.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
@@ -26,12 +23,69 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 
+/// 条目右上角更多按钮（详情页/详情列表通用；导航动作由 [actions] 注入）。
+Widget entryMoreBtn({
+  required CoreDownloadEntryInfo entry,
+  required ColorScheme colorScheme,
+  required DownloadActions actions,
+}) => SizedBox(
+  width: 29,
+  height: 29,
+  child: PopupMenuButton(
+    padding: EdgeInsets.zero,
+    position: PopupMenuPosition.under,
+    icon: Icon(
+      Icons.more_vert_outlined,
+      color: colorScheme.outline,
+      size: 18,
+    ),
+    itemBuilder: (_) => [
+      PopupMenuItem(
+        height: 38,
+        child: const Text('查看详情页', style: TextStyle(fontSize: 13)),
+        onTap: () => actions.viewDetail(entry),
+      ),
+      if (PlatformUtils.isDesktop)
+        PopupMenuItem(
+          height: 38,
+          child: const Text('打开本地文件夹', style: TextStyle(fontSize: 13)),
+          onTap: () async {
+            try {
+              final String executable;
+              if (Platform.isWindows) {
+                executable = 'explorer';
+              } else if (Platform.isMacOS) {
+                executable = 'open';
+              } else if (Platform.isLinux) {
+                executable = 'xdg-open';
+              } else {
+                throw UnimplementedError();
+              }
+              await Process.run(executable, [entry.entryDirPath]);
+            } catch (e) {
+              SmartDialog.showToast(e.toString());
+            }
+          },
+        ),
+      if (entry.ownerId case final mid?)
+        PopupMenuItem(
+          height: 38,
+          child: Text(
+            '访问${entry.ownerName != null ? '：${entry.ownerName}' : '用户主页'}',
+            style: const TextStyle(fontSize: 13),
+          ),
+          onTap: () => Get.toNamed('/member?mid=$mid'),
+        ),
+    ],
+  ),
+);
+
 class DetailItem extends StatelessWidget {
   const DetailItem({
     super.key,
     required this.entry,
     this.progress,
-    required this.downloadService,
+    required this.actions,
     this.onDelete,
     required this.showTitle,
     this.isCurr = false,
@@ -41,16 +95,16 @@ class DetailItem extends StatelessWidget {
     this.onSelect,
   });
 
-  final BiliDownloadEntryInfo entry;
+  final CoreDownloadEntryInfo entry;
   final ChangeNotifier? progress;
-  final DownloadService downloadService;
+  final DownloadActions actions;
   final VoidCallback? onDelete;
   final bool showTitle;
   final bool isCurr;
   //
   final MultiSelectBase controller;
   final bool? checked;
-  final ValueChanged<BiliDownloadEntryInfo>? onSelect;
+  final ValueChanged<CoreDownloadEntryInfo>? onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +134,7 @@ class DetailItem extends StatelessWidget {
                 DialogOption(
                   onPressed: () async {
                     Get.back();
-                    final res = await downloadService.downloadDanmaku(
+                    final res = await actions.downloadDanmaku(
                       entry: entry,
                       isUpdate: true,
                     );
@@ -110,18 +164,7 @@ class DetailItem extends StatelessWidget {
             return;
           }
           if (entry.isCompleted) {
-            await PageUtils.toVideoPage(
-              aid: entry.avid,
-              cid: cid!,
-              cover: entry.cover,
-              title: entry.showTitle,
-              isVertical: entry.pageData?.isVertical ?? false,
-              extraArguments: {
-                'sourceType': SourceType.file,
-                'entry': entry,
-                'dirPath': entry.entryDirPath,
-              },
-            );
+            await actions.playLocal(entry);
             if (context.mounted) {
               Future.delayed(const Duration(milliseconds: 400), () {
                 if (context.mounted) {
@@ -131,16 +174,16 @@ class DetailItem extends StatelessWidget {
               });
             }
           } else {
-            final curDownload = downloadService.curDownload.value;
+            final curDownload = actions.curDownload.value;
             if (curDownload != null &&
                 curDownload.cid == cid &&
                 curDownload.status.isDownloading) {
-              downloadService.cancelDownload(
+              actions.cancelDownload(
                 isDelete: false,
                 downloadNext: false,
               );
             } else {
-              downloadService.startDownload(entry);
+              actions.startDownload(entry);
             }
           }
         },
@@ -199,9 +242,10 @@ class DetailItem extends StatelessWidget {
                       },
                     ),
                   ),
-                  if (entry.videoQuality case final videoQuality?)
+                  if (actions.qualityShortDesc(entry.videoQuality)
+                      case final qualityDesc?)
                     PBadge(
-                      text: VideoQuality.fromCode(videoQuality).shortDesc,
+                      text: qualityDesc,
                       right: 6.0,
                       top: 6.0,
                       type: CorePBadgeType.gray,
@@ -335,7 +379,11 @@ class DetailItem extends StatelessWidget {
                       Positioned(
                         right: 0,
                         bottom: 0,
-                        child: entry.moreBtn(theme.colorScheme),
+                        child: entryMoreBtn(
+                          entry: entry,
+                          colorScheme: theme.colorScheme,
+                          actions: actions,
+                        ),
                       ),
                     ] else
                       Positioned(
@@ -347,20 +395,20 @@ class DetailItem extends StatelessWidget {
                                 child: Obx(
                                   () {
                                     final curDownload =
-                                        downloadService.curDownload.value;
+                                        actions.curDownload.value;
                                     if (curDownload != null) {
                                       final status = curDownload.status;
                                       final color =
-                                          status != DownloadStatus.pause
+                                          status != CoreDownloadStatus.pause
                                           ? theme.colorScheme.primary
                                           : theme.colorScheme.outline;
                                       return progressWidget(
                                         statusMsg: status.message,
                                         progressStr:
                                             status ==
-                                                    DownloadStatus
+                                                    CoreDownloadStatus
                                                         .downloading ||
-                                                status == DownloadStatus.pause
+                                                status == CoreDownloadStatus.pause
                                             ? '${CacheManager.formatSize(curDownload.downloadedBytes)}/${CacheManager.formatSize(curDownload.totalBytes)}'
                                             : '',
                                         progress: curDownload.totalBytes == 0

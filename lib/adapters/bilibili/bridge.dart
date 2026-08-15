@@ -19,7 +19,9 @@ import 'package:skf/pages/blacklist/view.dart';
 import 'package:skf/adapters/bilibili/pages/bubble/view.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/dlna/view.dart';
-import 'package:skf/adapters/bilibili/pages/download/view.dart';
+import 'package:skf/adapters/bilibili/common/download_actions.dart';
+import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/pages/download/view.dart';
 import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_vote/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_detail/view.dart';
@@ -212,7 +214,9 @@ class BiliBridge {
       // Mine page host (menu items, account ops, header actions)
       ..lazyPut<MineActions>(BiliMineActions.new)
       // Member page host (sub-page tabs, deep dialogs, URL routing)
-      ..lazyPut<MemberHost>(BiliMemberHost.new);
+      ..lazyPut<MemberHost>(BiliMemberHost.new)
+      // Download page host (download service + local playback navigation)
+      ..lazyPut<DownloadActions>(BiliDownloadActions.new);
     setupServiceLocator();
     _initHttp();
   }

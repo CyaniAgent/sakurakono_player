@@ -30,6 +30,7 @@ import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/core/account/account_provider.dart';
@@ -63,6 +64,7 @@ import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/repository/validate_repository.dart';
 import 'package:skf/core/repository/space_repository.dart';
+import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 
@@ -125,7 +127,9 @@ class OttoAdapter implements AppAdapter {
       // Mine page host (navigation via shared routes; account ops stub)
       ..lazyPut<MineActions>(OttoMineActions.new)
       // Member page host (crash-prevention stub)
-      ..lazyPut<MemberHost>(OttoMemberHost.new);
+      ..lazyPut<MemberHost>(OttoMemberHost.new)
+      // Download page host (empty-state stub, no download support)
+      ..lazyPut<DownloadActions>(OttoDownloadActions.new);
   }
 
   @override

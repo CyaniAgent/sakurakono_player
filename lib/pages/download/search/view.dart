@@ -1,10 +1,10 @@
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/core/models/download_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/pages/common/search/common_search_page.dart';
-import 'package:skf/adapters/bilibili/pages/download/detail/widgets/item.dart';
-import 'package:skf/adapters/bilibili/pages/download/search/controller.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/detail/widgets/item.dart';
+import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/pages/download/search/controller.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -27,13 +27,13 @@ class _DownloadSearchPageState
     extends
         CommonSearchPageState<
           DownloadSearchPage,
-          List<BiliDownloadEntryInfo>,
-          BiliDownloadEntryInfo
+          List<CoreDownloadEntryInfo>,
+          CoreDownloadEntryInfo
         >
     with GridMixin {
   @override
   DownloadSearchController controller = Get.put(DownloadSearchController());
-  final _downloadService = Get.find<DownloadService>();
+  final _downloadActions = DownloadActions.of();
 
   @override
   List<Widget>? get extraActions => [
@@ -60,7 +60,7 @@ class _DownloadSearchPageState
       onPressed: () async {
         final future = controller.allChecked
             .map(
-              (e) => _downloadService.downloadDanmaku(
+              (e) => _downloadActions.downloadDanmaku(
                 entry: e,
                 isUpdate: true,
               ),
@@ -82,7 +82,7 @@ class _DownloadSearchPageState
   ];
 
   @override
-  Widget buildList(List<BiliDownloadEntryInfo> list) {
+  Widget buildList(List<CoreDownloadEntryInfo> list) {
     if (list.isNotEmpty) {
       return SliverGrid.builder(
         gridDelegate: gridDelegate,
@@ -91,7 +91,7 @@ class _DownloadSearchPageState
           return DetailItem(
             entry: entry,
             progress: widget.progress,
-            downloadService: _downloadService,
+            actions: _downloadActions,
             showTitle: true,
             onDelete: () => controller.onRemoveSingle(index, entry),
             controller: controller,

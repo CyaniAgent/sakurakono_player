@@ -10,12 +10,12 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/adapters/bilibili/models_new/download/download_info.dart';
-import 'package:skf/adapters/bilibili/pages/download/controller.dart';
-import 'package:skf/adapters/bilibili/pages/download/detail/view.dart';
-import 'package:skf/adapters/bilibili/pages/download/detail/widgets/item.dart';
-import 'package:skf/adapters/bilibili/pages/download/search/view.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/controller.dart';
+import 'package:skf/pages/download/detail/view.dart';
+import 'package:skf/pages/download/detail/widgets/item.dart';
+import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/pages/download/download_page_info.dart';
+import 'package:skf/pages/download/search/view.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/platform_utils.dart';
@@ -34,7 +34,7 @@ class DownloadPage extends StatefulWidget {
 }
 
 class _DownloadPageState extends State<DownloadPage> with GridMixin {
-  final _downloadService = Get.find<DownloadService>();
+  final _downloadActions = DownloadActions.of();
   final _controller = Get.put(DownloadPageController());
   final _progress = ChangeNotifier();
 
@@ -70,7 +70,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                   final future = [
                     for (final page in _controller.allChecked)
                       for (final e in page.entries)
-                        _downloadService.downloadDanmaku(
+                        _downloadActions.downloadDanmaku(
                           entry: e,
                           isUpdate: true,
                         ),
@@ -95,7 +95,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                 IconButton(
                   tooltip: '搜索',
                   onPressed: () async {
-                    await _downloadService.waitForInitialization;
+                    await _downloadActions.waitForInitialization;
                     if (!mounted) return;
                     Get.to(DownloadSearchPage(progress: _progress));
                   },
@@ -122,10 +122,10 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
               slivers: [
                 Obx(() {
                   final entry =
-                      _downloadService.waitDownloadQueue.firstWhereOrNull(
-                        (e) => e.cid == _downloadService.curCid,
+                      _downloadActions.waitDownloadQueue.firstWhereOrNull(
+                        (e) => e.cid == _downloadActions.curCid,
                       ) ??
-                      _downloadService.waitDownloadQueue.firstOrNull;
+                      _downloadActions.waitDownloadQueue.firstOrNull;
                   if (entry != null) {
                     return SliverMainAxisGroup(
                       slivers: [
@@ -133,7 +133,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                           padding: const EdgeInsets.only(left: 12, bottom: 7),
                           sliver: SliverToBoxAdapter(
                             child: Text(
-                              '正在缓存 (${_downloadService.waitDownloadQueue.length})',
+                              '正在缓存 (${_downloadActions.waitDownloadQueue.length})',
                             ),
                           ),
                         ),
@@ -143,7 +143,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                             child: DetailItem(
                               entry: entry,
                               progress: _progress,
-                              downloadService: _downloadService,
+                              actions: _downloadActions,
                               showTitle: true,
                               isCurr: true,
                               controller: _controller,
@@ -163,7 +163,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                           padding: EdgeInsets.only(
                             left: 12,
                             bottom: 7,
-                            top: _downloadService.waitDownloadQueue.isEmpty
+                            top: _downloadActions.waitDownloadQueue.isEmpty
                                 ? 0
                                 : 7,
                           ),
@@ -180,10 +180,10 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                               return DetailItem(
                                 entry: entry,
                                 progress: _progress,
-                                downloadService: _downloadService,
+                                actions: _downloadActions,
                                 showTitle: true,
                                 onDelete: () {
-                                  _downloadService.deleteDownload(
+                                  _downloadActions.deleteDownload(
                                     entry: entry,
                                     removeList: true,
                                   );
@@ -203,7 +203,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                       ],
                     );
                   }
-                  if (_downloadService.waitDownloadQueue.isNotEmpty) {
+                  if (_downloadActions.waitDownloadQueue.isNotEmpty) {
                     return const SliverToBoxAdapter();
                   }
                   return const HttpError();
@@ -242,7 +242,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                         await GStorage.watchProgress.deleteAll(
                           pageInfo.entries.map((e) => e.cid.toString()),
                         );
-                        _downloadService.deletePage(
+                        _downloadActions.deletePage(
                           pageDirPath: pageInfo.dirPath,
                         );
                       },
@@ -255,7 +255,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                     Get.back();
                     final res = await Future.wait(
                       pageInfo.entries.map(
-                        (e) => _downloadService.downloadDanmaku(
+                        (e) => _downloadActions.downloadDanmaku(
                           entry: e,
                           isUpdate: true,
                         ),
@@ -369,7 +369,11 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                             color: theme.colorScheme.outline,
                           ),
                         ),
-                        pageInfo.entries.first.moreBtn(theme.colorScheme),
+                        entryMoreBtn(
+                          entry: pageInfo.entries.first,
+                          colorScheme: theme.colorScheme,
+                          actions: _downloadActions,
+                        ),
                       ],
                     ),
                   ],

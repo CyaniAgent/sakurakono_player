@@ -3,11 +3,11 @@ import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
-import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
+import 'package:skf/core/models/download_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
-import 'package:skf/adapters/bilibili/pages/download/detail/widgets/item.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/detail/widgets/item.dart';
+import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -22,13 +22,13 @@ class DownloadingPage extends StatefulWidget {
 }
 
 class _DownloadingPageState extends State<DownloadingPage>
-    with BaseMultiSelectMixin<BiliDownloadEntryInfo>, GridMixin {
-  final _downloadService = Get.find<DownloadService>();
-  late final _waitDownloadQueue = _downloadService.waitDownloadQueue;
+    with BaseMultiSelectMixin<CoreDownloadEntryInfo>, GridMixin {
+  final _downloadActions = DownloadActions.of();
+  late final _waitDownloadQueue = _downloadActions.waitDownloadQueue;
   @override
-  RxList<BiliDownloadEntryInfo> get list => _waitDownloadQueue;
+  RxList<CoreDownloadEntryInfo> get list => _waitDownloadQueue;
   @override
-  RxList<BiliDownloadEntryInfo> get state => _waitDownloadQueue;
+  RxList<CoreDownloadEntryInfo> get state => _waitDownloadQueue;
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +73,18 @@ class _DownloadingPageState extends State<DownloadingPage>
                       itemCount: _waitDownloadQueue.length,
                       itemBuilder: (context, index) {
                         final entry = _waitDownloadQueue[index];
-                        final isCurr = entry.cid == _downloadService.curCid;
+                        final isCurr = entry.cid == _downloadActions.curCid;
                         return DetailItem(
                           entry: entry,
-                          downloadService: _downloadService,
+                          actions: _downloadActions,
                           showTitle: true,
                           isCurr: isCurr,
-                          onDelete: () => _downloadService.deleteDownload(
+                          onDelete: () => _downloadActions.deleteDownload(
                             entry: entry,
                             removeQueue: true,
                             downloadNext:
                                 isCurr &&
-                                entry.status == DownloadStatus.downloading,
+                                entry.status == CoreDownloadStatus.downloading,
                           ),
                           controller: this,
                         );
@@ -110,18 +110,18 @@ class _DownloadingPageState extends State<DownloadingPage>
         SmartDialog.showLoading();
         final allChecked = this.allChecked.toSet();
         final isDownloading =
-            _downloadService.curDownload.value?.status ==
-            DownloadStatus.downloading;
+            _downloadActions.curDownload.value?.status ==
+            CoreDownloadStatus.downloading;
         for (final entry in allChecked) {
-          await _downloadService.deleteDownload(
+          await _downloadActions.deleteDownload(
             entry: entry,
             refresh: false,
             downloadNext: false,
           );
         }
-        _downloadService.waitDownloadQueue.removeWhere(allChecked.contains);
-        if (isDownloading && _downloadService.curDownload.value == null) {
-          _downloadService.nextDownload();
+        _downloadActions.removeFromQueue(allChecked);
+        if (isDownloading && _downloadActions.curDownload.value == null) {
+          _downloadActions.nextDownload();
         }
         if (enableMultiSelect.value) {
           rxCount.value = 0;

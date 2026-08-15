@@ -115,9 +115,11 @@ import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.da
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_feed_index/watched_show.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_medal_wall/data.dart';
+import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/adapters/bilibili/models_new/live/live_superchat/item.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
+import 'package:skf/core/models/download_types.dart';
 
 /// Static converters from Core* models to adapter models.
 ///
@@ -1530,4 +1532,25 @@ abstract final class ModelConverters {
       PgcReviewType.short => CorePgcReviewType.short,
     };
   }
+
+  // ---------------------------------------------------------------------------
+  // Download entry conversions (fields 1:1, JSON round-trip)
+  // ---------------------------------------------------------------------------
+
+  /// [CoreDownloadEntryInfo] → [BiliDownloadEntryInfo].
+  ///
+  /// status/路径字段不在 JSON 中，需手动拷贝（DownloadService 内部以
+  /// adapter 对象持有队列/列表，页面侧统一走 core 模型）。
+  static BiliDownloadEntryInfo toBiliDownloadEntry(CoreDownloadEntryInfo core) =>
+      BiliDownloadEntryInfo.fromJson(core.toJson())
+        ..status = DownloadStatus.values.byName(core.status.name)
+        ..pageDirPath = core.pageDirPath
+        ..entryDirPath = core.entryDirPath;
+
+  /// [BiliDownloadEntryInfo] → [CoreDownloadEntryInfo].
+  static CoreDownloadEntryInfo toCoreDownloadEntry(BiliDownloadEntryInfo m) =>
+      CoreDownloadEntryInfo.fromJson(m.toJson())
+        ..status = CoreDownloadStatus.values.byName(m.status.name)
+        ..pageDirPath = m.pageDirPath
+        ..entryDirPath = m.entryDirPath;
 }

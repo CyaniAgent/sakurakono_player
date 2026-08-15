@@ -1,7 +1,7 @@
-import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
-import 'package:skf/pages/common/multi_select/base.dart'
-    show MultiSelectData;
+import 'package:skf/core/models/download_types.dart';
+import 'package:skf/core/models/ui/multi_select_data.dart';
 
+/// 下载页分页聚合模型：按 pageId 聚合的已缓存条目组。
 class DownloadPageInfo with MultiSelectData {
   final String pageId;
   final String dirPath;
@@ -9,7 +9,7 @@ class DownloadPageInfo with MultiSelectData {
   String cover;
   int sortKey;
   final int? seasonType;
-  final List<BiliDownloadEntryInfo> entries;
+  final List<CoreDownloadEntryInfo> entries;
 
   DownloadPageInfo({
     required this.pageId,

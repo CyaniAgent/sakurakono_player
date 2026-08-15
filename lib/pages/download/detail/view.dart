@@ -5,12 +5,12 @@ import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
-import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
+import 'package:skf/core/models/download_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
-import 'package:skf/adapters/bilibili/pages/download/controller.dart';
-import 'package:skf/adapters/bilibili/pages/download/detail/widgets/item.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/controller.dart';
+import 'package:skf/pages/download/detail/widgets/item.dart';
+import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:collection/collection.dart';
@@ -36,15 +36,15 @@ class DownloadDetailPage extends StatefulWidget {
 }
 
 class _DownloadDetailPageState extends State<DownloadDetailPage>
-    with BaseMultiSelectMixin<BiliDownloadEntryInfo>, GridMixin {
+    with BaseMultiSelectMixin<CoreDownloadEntryInfo>, GridMixin {
   StreamSubscription? _sub;
-  final _downloadItems = RxList<BiliDownloadEntryInfo>();
+  final _downloadItems = RxList<CoreDownloadEntryInfo>();
   final _controller = Get.find<DownloadPageController>();
-  final _downloadService = Get.find<DownloadService>();
+  final _downloadActions = DownloadActions.of();
   @override
-  RxList<BiliDownloadEntryInfo> get list => _downloadItems;
+  RxList<CoreDownloadEntryInfo> get list => _downloadItems;
   @override
-  RxList<BiliDownloadEntryInfo> get state => _downloadItems;
+  RxList<CoreDownloadEntryInfo> get state => _downloadItems;
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                 onPressed: () async {
                   final futures = allChecked
                       .map(
-                        (e) => _downloadService.downloadDanmaku(
+                        (e) => _downloadActions.downloadDanmaku(
                           entry: e,
                           isUpdate: true,
                         ),
@@ -155,19 +155,19 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                         return DetailItem(
                           entry: entry,
                           progress: widget.progress,
-                          downloadService: _downloadService,
+                          actions: _downloadActions,
                           showTitle: false,
                           onDelete: () async {
                             if (_downloadItems.length == 1) {
                               await _closeSub();
-                              await _downloadService.deletePage(
+                              await _downloadActions.deletePage(
                                 pageDirPath: entry.pageDirPath,
                               );
                               if (mounted) {
                                 Get.back();
                               }
                             } else {
-                              _downloadService.deleteDownload(
+                              _downloadActions.deleteDownload(
                                 entry: entry,
                                 removeList: true,
                               );
@@ -205,13 +205,13 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
             allChecked.map((e) => e.cid.toString()),
           ),
           for (final entry in allChecked)
-            _downloadService.deleteDownload(
+            _downloadActions.deleteDownload(
               entry: entry,
               removeList: true,
               refresh: false,
             ),
         ]);
-        _downloadService.flagNotifier.refresh();
+        _downloadActions.refreshFlagListeners();
         if (isDeleteAll) {
           SmartDialog.dismiss();
           if (mounted) {

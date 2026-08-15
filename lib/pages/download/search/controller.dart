@@ -1,10 +1,10 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
+import 'package:skf/core/models/download_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
 import 'package:skf/pages/common/search/common_search_controller.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -13,22 +13,22 @@ import 'package:get/get.dart';
 class DownloadSearchController
     extends
         CommonSearchController<
-          List<BiliDownloadEntryInfo>,
-          BiliDownloadEntryInfo
+          List<CoreDownloadEntryInfo>,
+          CoreDownloadEntryInfo
         >
-    with BaseMultiSelectMixin<BiliDownloadEntryInfo> {
-  final _downloadService = Get.find<DownloadService>();
+    with BaseMultiSelectMixin<CoreDownloadEntryInfo> {
+  final _downloadActions = DownloadActions.of();
 
   @override
-  List<BiliDownloadEntryInfo> get list => loadingState.value.data!;
+  List<CoreDownloadEntryInfo> get list => loadingState.value.data!;
   @override
-  Rx<LoadingState<List<BiliDownloadEntryInfo>?>> get state => loadingState;
+  Rx<LoadingState<List<CoreDownloadEntryInfo>?>> get state => loadingState;
 
   @override
-  Future<LoadingState<List<BiliDownloadEntryInfo>>> customGetData() async {
+  Future<LoadingState<List<CoreDownloadEntryInfo>>> customGetData() async {
     final text = editController.text.toLowerCase();
     return Success(
-      _downloadService.downloadList
+      _downloadActions.downloadList
           .where(
             (e) =>
                 e.title.toLowerCase().contains(text) ||
@@ -38,11 +38,11 @@ class DownloadSearchController
     );
   }
 
-  void onRemoveSingle(int index, BiliDownloadEntryInfo entry) {
+  void onRemoveSingle(int index, CoreDownloadEntryInfo entry) {
     loadingState
       ..value.data!.removeAt(index)
       ..refresh();
-    _downloadService.deleteDownload(
+    _downloadActions.deleteDownload(
       entry: entry,
       removeList: true,
     );
@@ -59,7 +59,7 @@ class DownloadSearchController
         final allChecked = this.allChecked.toSet();
         for (final entry in allChecked) {
           await GStorage.watchProgress.delete(entry.cid.toString());
-          await _downloadService.deleteDownload(
+          await _downloadActions.deleteDownload(
             entry: entry,
             removeList: true,
             refresh: false,
@@ -68,7 +68,7 @@ class DownloadSearchController
         loadingState
           ..value.data!.removeWhere(allChecked.contains)
           ..refresh();
-        _downloadService.flagNotifier.refresh();
+        _downloadActions.refreshFlagListeners();
         if (enableMultiSelect.value) {
           rxCount.value = 0;
           enableMultiSelect.value = false;

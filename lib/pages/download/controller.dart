@@ -1,10 +1,8 @@
-import 'dart:async';
-
 import 'package:skf/common/widgets/dialog/dialog.dart';
-import 'package:skf/adapters/bilibili/models_new/download/download_info.dart'; // ignore: adapter import (no core equivalent for DownloadPageInfo)
 import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/pages/download/download_page_info.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' show Text;
@@ -13,7 +11,7 @@ import 'package:get/get.dart';
 
 class DownloadPageController extends GetxController
     with BaseMultiSelectMixin<DownloadPageInfo> {
-  final _downloadService = Get.find<DownloadService>();
+  final _downloadActions = DownloadActions.of();
   final pages = RxList<DownloadPageInfo>();
   final flag = RxInt(0);
 
@@ -26,24 +24,24 @@ class DownloadPageController extends GetxController
   void onInit() {
     super.onInit();
     _loadList();
-    _downloadService.flagNotifier.add(_loadList);
+    _downloadActions.addFlagListener(_loadList);
   }
 
   @override
   void onClose() {
-    _downloadService.flagNotifier.remove(_loadList);
+    _downloadActions.removeFlagListener(_loadList);
     super.onClose();
   }
 
   Future<void> _loadList() async {
-    await _downloadService.waitForInitialization;
+    await _downloadActions.waitForInitialization;
     if (isClosed) return;
-    if (_downloadService.downloadList.isEmpty) {
+    if (_downloadActions.downloadList.isEmpty) {
       pages.clear();
       return;
     }
     final list = <DownloadPageInfo>[];
-    for (final entry in _downloadService.downloadList) {
+    for (final entry in _downloadActions.downloadList) {
       final pageId = entry.pageId;
       final page = list.firstWhereOrNull((e) => e.pageId == pageId);
       if (page != null) {
@@ -85,12 +83,12 @@ class DownloadPageController extends GetxController
           await watchProgress.deleteAll(
             page.entries.map((e) => e.cid.toString()),
           );
-          await _downloadService.deletePage(
+          await _downloadActions.deletePage(
             pageDirPath: page.dirPath,
             refresh: false,
           );
         }
-        _downloadService.flagNotifier.refresh();
+        _downloadActions.refreshFlagListeners();
         if (enableMultiSelect.value) {
           rxCount.value = 0;
           enableMultiSelect.value = false;
