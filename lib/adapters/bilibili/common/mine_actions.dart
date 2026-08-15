@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
-import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
-import 'package:skf/adapters/bilibili/pages/home/view.dart' show msgBadge;
+import 'package:skf/pages/home/view.dart' show msgBadge;
 import 'package:skf/adapters/bilibili/pages/login/controller.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/pages/main/main_host.dart';
+import 'package:skf/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -47,7 +47,7 @@ class BiliMineActions implements MineActions {
   @override
   bool get isMainMineTab {
     final mainController = Get.find<MainController>();
-    return mainController.navigationBars[0] != NavigationBarType.mine &&
+    return mainController.navigationBars.first.id != MainTabIds.mine &&
         mainController.selectedIndex.value == 0;
   }
 

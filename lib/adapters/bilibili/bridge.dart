@@ -42,8 +42,8 @@ import 'package:skf/pages/follow_type/follow_same/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/pages/history/view.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
-import 'package:skf/adapters/bilibili/pages/home/view.dart';
-import 'package:skf/adapters/bilibili/pages/home/controller.dart';
+import 'package:skf/pages/home/view.dart';
+import 'package:skf/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/utils/fav_actions.dart';
 import 'package:skf/adapters/bilibili/utils/history_actions.dart';
@@ -72,7 +72,9 @@ import 'package:skf/pages/msg_feed_top/reply_me/view.dart';
 import 'package:skf/adapters/bilibili/pages/msg_feed_top/sys_msg/view.dart';
 import 'package:skf/adapters/bilibili/pages/music/view.dart';
 import 'package:skf/adapters/bilibili/pages/my_reply/view.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/adapters/bilibili/common/main_host.dart';
+import 'package:skf/pages/main/main_host.dart';
+import 'package:skf/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/popular_precious/view.dart';
 import 'package:skf/adapters/bilibili/pages/popular_series/view.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/builder.dart';
@@ -211,6 +213,8 @@ class BiliBridge {
       // Generic page bar-state bridges: interface -> adapter controller
       ..lazyPut<MainBarState>(() => Get.find<MainController>())
       ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
+      // Main shell host (tabs, home subtabs, dyn badge, scheme, update)
+      ..lazyPut<MainHost>(BiliMainHost.new)
       // Dynamics page host (tab pages, deep dialogs, URL routing)
       ..lazyPut<DynamicsHost>(BiliDynamicsHost.new)
       // Mine page host (menu items, account ops, header actions)

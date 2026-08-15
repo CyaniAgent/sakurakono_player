@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/pages/main/view.dart' show MainApp;
+import 'package:skf/pages/main/view.dart' show MainApp;
 import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:get/get.dart';
 

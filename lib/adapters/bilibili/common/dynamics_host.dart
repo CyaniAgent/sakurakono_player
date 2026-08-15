@@ -5,7 +5,7 @@ import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/adapters/bilibili/http/reply.dart';
 import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/adapters/bilibili/http/video.dart';
-import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
+import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/adapters/bilibili/pages/article/widgets/opus_content.dart'
     show moduleBlockedItem;
 import 'package:skf/adapters/bilibili/pages/dynamics_create/view.dart';
@@ -13,7 +13,7 @@ import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_follow/view.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/save_panel/view.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
@@ -49,7 +49,7 @@ class BiliDynamicsHost implements DynamicsHost {
   @override
   bool get isMainDynamicsTab {
     final mainController = Get.find<MainController>();
-    return mainController.navigationBars[0] != NavigationBarType.dynamics &&
+    return mainController.navigationBars.first.id != MainTabIds.dynamics &&
         mainController.selectedIndex.value == 0;
   }
 

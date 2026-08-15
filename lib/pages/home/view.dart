@@ -2,11 +2,11 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_height_widget.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
-import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
+import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/pages/common/common_page.dart';
-import 'package:skf/adapters/bilibili/pages/common/home_tab_helper.dart';
-import 'package:skf/adapters/bilibili/pages/home/controller.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/pages/home/controller.dart';
+import 'package:skf/pages/main/controller.dart';
+import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
@@ -26,6 +26,7 @@ class _HomePageState extends CommonPageState<HomePage>
     with AutomaticKeepAliveClientMixin {
   final _homeController = Get.putOrFind(HomeController.new);
   final _mainController = Get.find<MainController>();
+  late final _host = MainHost.of();
 
   @override
   bool get needsCorrection => _homeController.hideTopBar;
@@ -81,7 +82,7 @@ class _HomePageState extends CommonPageState<HomePage>
           child: onBuild(
             tabBarView(
               controller: _homeController.tabController,
-              children: _homeController.tabs.map(homeTabPageFor).toList(),
+              children: _homeController.tabs.map(_host.homeTabPageFor).toList(),
             ),
           ),
         ),

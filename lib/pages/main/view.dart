@@ -8,16 +8,14 @@ import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/flutter/tabs.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/route_aware_mixin.dart';
-import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
-import 'package:skf/adapters/bilibili/pages/home/view.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
-import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
+import 'package:skf/pages/home/view.dart';
+import 'package:skf/pages/main/controller.dart';
+import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/player/models/play_status.dart';
+import 'package:skf/player/player_controller.dart';
 import 'package:skf/utils/android/android_helper.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
-import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/mobile_observer.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
@@ -44,6 +42,7 @@ class _MainAppState extends PopScopeState<MainApp>
         WindowListener,
         TrayListener {
   final _mainController = Get.put(MainController());
+  late final _host = MainHost.of();
   late final _setting = GStorage.setting;
   late EdgeInsets _padding;
   late ThemeData theme;
@@ -66,7 +65,7 @@ class _MainAppState extends PopScopeState<MainApp>
       }
     } else {
       // FlutterSmartDialog throws
-      PiliScheme.init();
+      _host.initScheme();
     }
   }
 
@@ -77,7 +76,7 @@ class _MainAppState extends PopScopeState<MainApp>
     theme = Theme.of(context);
     final brightness = theme.brightness;
     NetworkImgLayer.reduce =
-        NetworkImgLayer.reduceLuxColor != null && brightness.isDark;
+        NetworkImgLayer.reduceLuxColor != null && brightness == Brightness.dark;
     if (PlatformUtils.isDesktop) {
       if (_brightness != brightness) {
         _brightness = brightness;
@@ -122,7 +121,7 @@ class _MainAppState extends PopScopeState<MainApp>
       windowManager.removeListener(this);
     }
     removeObserverMobile(this);
-    PiliScheme.listener?.cancel();
+    _host.disposeScheme();
     GStorage.close();
     super.dispose();
   }
@@ -139,7 +138,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   Future<void> onWindowMoved() async {
-    if (PlPlayerController.instance?.isDesktopPip ?? false) {
+    if (PlayerController.currentInstance?.isDesktopPip ?? false) {
       return;
     }
     final Offset offset = await windowManager.getPosition();
@@ -148,7 +147,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   Future<void> onWindowResized() async {
-    if (PlPlayerController.instance?.isDesktopPip ?? false) {
+    if (PlayerController.currentInstance?.isDesktopPip ?? false) {
       return;
     }
     final Rect bounds = await windowManager.getBounds();
@@ -195,7 +194,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   void _onHideWindow() {
     if (_mainController.pauseOnMinimize) {
-      if (PlPlayerController.instance case final player?) {
+      if (PlayerController.currentInstance case final player?) {
         if (_mainController.isPlaying = player.playerStatus.isPlaying) {
           player.pause();
         }
@@ -207,7 +206,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   void _onShowWindow() {
     if (_mainController.pauseOnMinimize && _mainController.isPlaying) {
-      PlPlayerController.instance?.play();
+      PlayerController.currentInstance?.play();
     }
   }
 
@@ -294,8 +293,8 @@ class _MainAppState extends PopScopeState<MainApp>
                 .map(
                   (e) => FloatingNavigationDestination(
                     label: e.label,
-                    icon: _buildIcon(type: e),
-                    selectedIcon: _buildIcon(type: e, selected: true),
+                    icon: _buildIcon(tab: e),
+                    selectedIcon: _buildIcon(tab: e, selected: true),
                   ),
                 )
                 .toList(),
@@ -311,8 +310,8 @@ class _MainAppState extends PopScopeState<MainApp>
                 .map(
                   (e) => NavigationDestination(
                     label: e.label,
-                    icon: _buildIcon(type: e),
-                    selectedIcon: _buildIcon(type: e, selected: true),
+                    icon: _buildIcon(tab: e),
+                    selectedIcon: _buildIcon(tab: e, selected: true),
                   ),
                 )
                 .toList(),
@@ -331,8 +330,8 @@ class _MainAppState extends PopScopeState<MainApp>
                 .map(
                   (e) => BottomNavigationBarItem(
                     label: e.label,
-                    icon: _buildIcon(type: e),
-                    activeIcon: _buildIcon(type: e, selected: true),
+                    icon: _buildIcon(tab: e),
+                    activeIcon: _buildIcon(tab: e, selected: true),
                   ),
                 )
                 .toList(),
@@ -396,9 +395,9 @@ class _MainAppState extends PopScopeState<MainApp>
                                 .map(
                                   (e) => NavigationDrawerDestination(
                                     label: Text(e.label),
-                                    icon: _buildIcon(type: e),
+                                    icon: _buildIcon(tab: e),
                                     selectedIcon: _buildIcon(
-                                      type: e,
+                                      tab: e,
                                       selected: true,
                                     ),
                                   ),
@@ -421,8 +420,8 @@ class _MainAppState extends PopScopeState<MainApp>
                         .map(
                           (e) => NavigationRailDestination(
                             label: Text(e.label),
-                            icon: _buildIcon(type: e),
-                            selectedIcon: _buildIcon(type: e, selected: true),
+                            icon: _buildIcon(tab: e),
+                            selectedIcon: _buildIcon(tab: e, selected: true),
                           ),
                         )
                         .toList(),
@@ -489,7 +488,9 @@ class _MainAppState extends PopScopeState<MainApp>
       child = AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: theme.brightness.reverse,
+          systemNavigationBarIconBrightness: theme.brightness == Brightness.light
+              ? Brightness.dark
+              : Brightness.light,
         ),
         child: child,
       );
@@ -498,9 +499,9 @@ class _MainAppState extends PopScopeState<MainApp>
     return child;
   }
 
-  Widget _buildIcon({required NavigationBarType type, bool selected = false}) {
-    final icon = selected ? type.selectIcon : type.icon;
-    return type == .dynamics
+  Widget _buildIcon({required MainTab tab, bool selected = false}) {
+    final icon = selected ? tab.selectedIcon : tab.icon;
+    return tab.id == MainTabIds.dynamics
         ? Obx(
             () {
               final dynCount = _mainController.dynCount.value;

@@ -1,7 +1,7 @@
 import 'package:skf/common/widgets/flutter/vertical_tabs.dart';
-import 'package:skf/adapters/bilibili/models/common/bar_hide_type.dart';
+import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/adapters/bilibili/models/common/rank_type.dart';
-import 'package:skf/adapters/bilibili/pages/main/controller.dart';
+import 'package:skf/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/zone/view.dart';
 import 'package:flutter/material.dart';

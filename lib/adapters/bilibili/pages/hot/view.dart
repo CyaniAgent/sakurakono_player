@@ -7,7 +7,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/pages/home/controller.dart';
+import 'package:skf/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';
 import 'package:skf/utils/grid.dart';
@@ -79,8 +79,8 @@ class _HotPageState extends State<HotPage>
                       onTap: () {
                         try {
                           final homeController = Get.find<HomeController>();
-                          final index = homeController.tabs.indexOf(
-                            HomeTabType.rank,
+                          final index = homeController.tabs.indexWhere(
+                            (t) => t.id == HomeTabType.rank.name,
                           );
                           if (index != -1) {
                             homeController.tabController.animateTo(index);

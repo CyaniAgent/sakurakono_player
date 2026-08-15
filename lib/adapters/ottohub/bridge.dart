@@ -33,6 +33,7 @@ import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
+import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
@@ -64,7 +65,11 @@ import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/repository/validate_repository.dart';
 import 'package:skf/core/repository/space_repository.dart';
+import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/pages/home/controller.dart';
+import 'package:skf/pages/main/controller.dart';
+import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/video/video_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
@@ -124,6 +129,11 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<DownloadService>(_StubDownloadService.new)
       ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
       ..lazyPut<AppRepository>(OttoAppRepository.new)
+      // Generic page bar-state bridges: interface -> generic shell controllers
+      ..lazyPut<MainBarState>(() => Get.find<MainController>())
+      ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
+      // Main shell host (OttoHub 自定 tab 集)
+      ..lazyPut<MainHost>(OttoMainHost.new)
       // Dynamics page host (crash-prevention stub)
       ..lazyPut<DynamicsHost>(OttoDynamicsHost.new)
       // Mine page host (navigation via shared routes; account ops stub)
