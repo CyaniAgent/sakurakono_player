@@ -8,19 +8,22 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/pages/history/base_controller.dart';
-import 'package:skf/adapters/bilibili/pages/history/controller.dart';
-import 'package:skf/adapters/bilibili/pages/history/widgets/item.dart';
+import 'package:skf/pages/history/base_controller.dart';
+import 'package:skf/pages/history/controller.dart';
+import 'package:skf/pages/history/history_actions.dart';
+import 'package:skf/pages/history/widgets/item.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:get/get.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({super.key, this.type});
+  const HistoryPage({super.key, this.type, this.actions});
 
   final String? type;
+
+  /// 通用页面的视频/PGC 导航契约，由适配器注入（见 bilibili bridge）。
+  final HistoryActions? actions;
 
   @override
   State<HistoryPage> createState() => _HistoryPageState();
@@ -143,7 +146,10 @@ class _HistoryPageState extends State<HistoryPage>
                             CustomHorizontalDragGestureRecognizer.new,
                         children: [
                           KeepAliveWrapper(child: child),
-                          ...tabs.map((item) => HistoryPage(type: item.type)),
+                          ...tabs.map((item) => HistoryPage(
+                            type: item.type,
+                            actions: widget.actions,
+                          )),
                         ],
                       ),
                     ),
@@ -219,7 +225,8 @@ class _HistoryPageState extends State<HistoryPage>
                   }
                   final item = response[index];
                   return HistoryItem(
-                    item: ModelConverters.historyItem(item),
+                    item: item,
+                    actions: widget.actions,
                     ctr: _historyController,
                     onDelete: (kid, business) =>
                         _historyController.delHistory(item),

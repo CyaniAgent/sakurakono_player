@@ -3,18 +3,16 @@ import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/adapters/bilibili/models/common/later_view_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
+import 'package:skf/pages/later/later_view_type.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart'
     show CommonListController;
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
-import 'package:skf/adapters/bilibili/pages/later/base_controller.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
+import 'package:skf/pages/later/base_controller.dart';
+import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -86,10 +84,14 @@ mixin BaseLaterController
 
 class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItemModel>
     with BaseLaterController {
-  LaterController(this.laterViewType);
+  LaterController(this.laterViewType, {this.actions});
   final LaterViewType laterViewType;
 
-  late final mid = Accounts.main.mid;
+  /// 导航契约（适配器注入），null 时对应导航动作禁用。
+  final LaterActions? actions;
+
+  // 登录态 mid：core 通用路径（BiliAccountProvider.userId 未实现，改用缓存）。
+  late final int mid = Pref.userInfoCache?.mid ?? 0;
 
   final RxBool asc = false.obs;
 
@@ -173,19 +175,21 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
         if (item.cid == null || item.pgcLabel?.isNotEmpty == true) {
           continue;
         } else {
-          PageUtils.toVideoPage(
-            bvid: item.bvid,
-            cid: item.cid!,
-            cover: item.pic,
-            title: item.title,
-            dimension: ModelConverters.dimensionUser(item.dimension),
-            extraArguments: {
-              'sourceType': SourceType.watchLater,
-              'count': baseCtr.counts[LaterViewType.all.index],
-              'favTitle': '稍后再看',
-              'mediaId': mid,
-              'desc': asc.value,
-            },
+          actions?.onViewVideo?.call(
+            LaterVideoRequest(
+              bvid: item.bvid,
+              cid: item.cid!,
+              cover: item.pic,
+              title: item.title,
+              dimension: item.dimension,
+              isWatchLaterPlaylist: true,
+              watchLaterExtra: {
+                'count': baseCtr.counts[LaterViewType.all.index],
+                'favTitle': '稍后再看',
+                'mediaId': mid,
+                'desc': asc.value,
+              },
+            ),
           );
           break;
         }

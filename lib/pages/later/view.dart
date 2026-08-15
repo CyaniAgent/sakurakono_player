@@ -4,22 +4,25 @@ import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
-import 'package:skf/adapters/bilibili/models/common/later_view_type.dart';
-import 'package:skf/core/models/user_types.dart' show CoreLaterItemModel;
+import 'package:skf/pages/later/later_view_type.dart';
 import 'package:skf/pages/common/fab_mixin.dart'
     show NoRightMarginFabLocation;
-import 'package:skf/adapters/bilibili/pages/later/base_controller.dart';
-import 'package:skf/adapters/bilibili/pages/later/controller.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
+import 'package:skf/pages/later/base_controller.dart';
+import 'package:skf/pages/later/child_view.dart';
+import 'package:skf/pages/later/controller.dart';
+import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:skf/adapters/bilibili/utils/request_utils.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LaterPage extends StatefulWidget {
-  const LaterPage({super.key});
+  const LaterPage({super.key, this.actions});
+
+  /// 导航契约（适配器注入），null 时对应导航动作禁用。
+  final LaterActions? actions;
 
   @override
   State<LaterPage> createState() => _LaterPageState();
@@ -33,7 +36,7 @@ class _LaterPageState extends State<LaterPage>
   LaterController currCtr([int? index]) {
     final type = LaterViewType.values[index ?? _tabController.index];
     return Get.putOrFind(
-      () => LaterController(type),
+      () => LaterController(type, actions: widget.actions),
       tag: type.type.toString(),
     );
   }
@@ -139,7 +142,12 @@ class _LaterPageState extends State<LaterPage>
                       horizontalDragGestureRecognizer:
                           CustomHorizontalDragGestureRecognizer.new,
                       children: LaterViewType.values
-                          .map((item) => item.page)
+                          .map(
+                            (item) => LaterViewChildPage(
+                              laterViewType: item,
+                              actions: widget.actions,
+                            ),
+                          )
                           .toList(),
                     ),
                   ),
@@ -165,12 +173,11 @@ class _LaterPageState extends State<LaterPage>
           style: btnStyle,
           onPressed: () {
             final ctr = currCtr();
-            RequestUtils.onCopyOrMove<CoreLaterItemModel>(
-              context: context,
-              isCopy: true,
-              ctr: ctr,
-              mediaId: null,
-              mid: ctr.mid,
+            widget.actions?.onCopyOrMove?.call(
+              context,
+              ctr,
+              true,
+              ctr.mid,
             );
           },
           child: Text('复制', style: textStyle),
@@ -179,12 +186,11 @@ class _LaterPageState extends State<LaterPage>
           style: btnStyle,
           onPressed: () {
             final ctr = currCtr();
-            RequestUtils.onCopyOrMove<CoreLaterItemModel>(
-              context: context,
-              isCopy: false,
-              ctr: ctr,
-              mediaId: null,
-              mid: ctr.mid,
+            widget.actions?.onCopyOrMove?.call(
+              context,
+              ctr,
+              false,
+              ctr.mid,
             );
           },
           child: Text('移动', style: textStyle),
@@ -196,7 +202,7 @@ class _LaterPageState extends State<LaterPage>
           IconButton(
             tooltip: '搜索',
             onPressed: () {
-              final mid = Accounts.main.mid;
+              final mid = Pref.userInfoCache?.mid ?? 0;
               Get.toNamed(
                 '/laterSearch',
                 arguments: {

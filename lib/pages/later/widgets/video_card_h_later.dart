@@ -9,9 +9,9 @@ import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/core/models/user_types.dart' show CoreLaterItemModel;
-import 'package:skf/adapters/bilibili/pages/later/controller.dart';
+import 'package:skf/pages/later/controller.dart';
+import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/utils/duration_utils.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -25,12 +25,15 @@ class VideoCardHLater extends StatelessWidget {
     required this.index,
     required this.videoItem,
     required this.onViewLater,
+    this.actions,
   });
   final int index;
   final BaseLaterController ctr;
   final CoreLaterItemModel videoItem;
   final ValueChanged<int> onViewLater;
 
+  /// 导航契约（适配器注入），null 时对应导航动作禁用。
+  final LaterActions? actions;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -51,14 +54,16 @@ class VideoCardHLater extends StatelessWidget {
             ? () => ctr.onSelect(videoItem)
             : () async {
                 if (videoItem.isPugv ?? false) {
-                  PageUtils.viewPugv(seasonId: videoItem.aid);
+                  actions?.onViewPugv?.call(videoItem.aid);
                   return;
                 }
                 if (videoItem.isPgc ?? false) {
                   if (videoItem.bangumi?.epId != null) {
-                    PageUtils.viewPgc(epId: videoItem.bangumi!.epId);
+                    actions?.onViewPgc?.call(videoItem.bangumi!.epId);
                   } else if (videoItem.redirectUrl?.isNotEmpty == true) {
-                    PageUtils.viewPgcFromUri(videoItem.redirectUrl!);
+                    actions?.onViewPgcFromUri?.call(
+                      videoItem.redirectUrl!,
+                    );
                   }
                   return;
                 }

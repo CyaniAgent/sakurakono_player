@@ -5,15 +5,13 @@ import 'package:skf/common/widgets/progress_bar/video_progress_indicator.dart';
 import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
+import 'package:skf/core/models/search_types.dart' show CoreDimension;
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/adapters/bilibili/models_new/history/list.dart';
-import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
+import 'package:skf/core/models/user_types.dart' show CoreHistoryItemModel;
 import 'package:skf/pages/common/multi_select/base.dart';
+import 'package:skf/pages/history/history_actions.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
-import 'package:skf/adapters/bilibili/utils/id_utils.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -21,23 +19,27 @@ import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HistoryItem extends StatelessWidget {
-  final HistoryItemModel item;
+  final CoreHistoryItemModel item;
   final MultiSelectBase ctr;
   final void Function(int kid, String business) onDelete;
+
+  /// 导航契约（适配器注入），null 时对应导航动作禁用。
+  final HistoryActions? actions;
 
   const HistoryItem({
     super.key,
     required this.item,
     required this.ctr,
     required this.onDelete,
+    this.actions,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final hasDuration = item.duration != null && item.duration != 0;
-    int aid = item.history.oid!;
-    String bvid = item.history.bvid ?? IdUtils.av2bv(aid);
+    final int aid = item.history.oid!;
+    final String? bvid = item.history.bvid;
     final business = item.history.business;
     final enableMultiSelect = ctr.enableMultiSelect.value;
 
@@ -54,7 +56,7 @@ class HistoryItem extends StatelessWidget {
             ? () => ctr.onSelect(item)
             : () async {
                 if (business?.contains('article') == true) {
-                  PageUtils.toDupNamed(
+                  Get.toNamed(
                     '/articlePage',
                     parameters: {
                       'id': business == 'article-list'
@@ -62,18 +64,26 @@ class HistoryItem extends StatelessWidget {
                           : '${item.history.oid}',
                       'type': 'read',
                     },
+                    preventDuplicates: false,
                   );
                 } else if (business == 'live') {
                   if (item.liveStatus == 1) {
-                    PageUtils.toLiveRoom(item.history.oid);
+                    final roomId = item.history.oid;
+                    if (roomId != null) {
+                      Get.toNamed(
+                        '/liveRoom',
+                        arguments: roomId,
+                        preventDuplicates: false,
+                      );
+                    }
                   } else {
                     SmartDialog.showToast('直播未开播');
                   }
                 } else if (business == 'pgc') {
-                  PageUtils.viewPgc(epId: item.history.epid);
+                  actions?.onViewPgc?.call(item.history.epid);
                 } else if (business == 'cheese') {
                   if (item.uri?.isNotEmpty == true) {
-                    PageUtils.viewPgcFromUri(
+                    actions?.onViewPgcFromUri?.call(
                       item.uri!,
                       isPgc: false,
                       aid: item.history.oid,
@@ -81,7 +91,7 @@ class HistoryItem extends StatelessWidget {
                   }
                 } else {
                   int? cid = item.history.cid;
-                  Dimension? dimension;
+                  CoreDimension? dimension;
                   if (cid == null) {
                     if (await Get.find<SearchRepository>().ab2cWithDimension(
                           aid: aid,
@@ -90,12 +100,11 @@ class HistoryItem extends StatelessWidget {
                         )
                         case final res?) {
                       cid = res.cid;
-                      dimension = ModelConverters.dimension(res.dimension);
+                      dimension = res.dimension;
                     }
                   }
                   if (cid != null) {
-                    // TODO: dimension
-                    PageUtils.toVideoPage(
+                    actions?.onViewVideo?.call(
                       aid: aid,
                       bvid: bvid,
                       cid: cid,

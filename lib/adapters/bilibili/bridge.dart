@@ -34,12 +34,14 @@ import 'package:skf/pages/follow/view.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/view.dart';
 import 'package:skf/pages/follow_type/follow_same/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';
-import 'package:skf/adapters/bilibili/pages/history/view.dart';
+import 'package:skf/pages/history/view.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/view.dart';
 import 'package:skf/adapters/bilibili/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
-import 'package:skf/adapters/bilibili/pages/later/view.dart';
+import 'package:skf/adapters/bilibili/utils/history_actions.dart';
+import 'package:skf/adapters/bilibili/utils/later_actions.dart';
+import 'package:skf/pages/later/view.dart';
 import 'package:skf/adapters/bilibili/pages/later_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_dm_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/view.dart';
@@ -54,10 +56,10 @@ import 'package:skf/adapters/bilibili/pages/member_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_upower_rank/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/archive/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/season_series/view.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/at_me/view.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/like_detail/view.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/like_me/view.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/reply_me/view.dart';
+import 'package:skf/pages/msg_feed_top/at_me/view.dart';
+import 'package:skf/pages/msg_feed_top/like_detail/view.dart';
+import 'package:skf/pages/msg_feed_top/like_me/view.dart';
+import 'package:skf/pages/msg_feed_top/reply_me/view.dart';
 import 'package:skf/adapters/bilibili/pages/msg_feed_top/sys_msg/view.dart';
 import 'package:skf/adapters/bilibili/pages/music/view.dart';
 import 'package:skf/adapters/bilibili/pages/my_reply/view.dart';
@@ -84,6 +86,7 @@ import 'package:skf/adapters/bilibili/pages/video/view.dart';
 import 'package:skf/adapters/bilibili/pages/webview/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_detail/view.dart';
+import 'package:skf/adapters/bilibili/pages/whisper_settings/view.dart';
 import 'package:skf/adapters/bilibili/repository/bili_app_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_audio_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_auth_repository.dart';
@@ -223,10 +226,14 @@ class BiliBridge {
     GetPage(name: '/fav', page: () => const FavPage()),
     //
     GetPage(name: '/favDetail', page: () => const FavDetailPage()),
-    // 稍后再看
-    GetPage(name: '/later', page: () => const LaterPage()),
-    // 历史记录
-    GetPage(name: '/history', page: () => const HistoryPage()),
+    GetPage(
+      name: '/later',
+      page: () => LaterPage(actions: biliLaterActions),
+    ),
+    GetPage(
+      name: '/history',
+      page: () => HistoryPage(actions: biliHistoryActions),
+    ),
     // 搜索页面
     GetPage(name: '/search', page: () => const SearchPage()),
     // 搜索结果
@@ -272,6 +279,8 @@ class BiliBridge {
     GetPage(name: '/likeMe', page: () => const LikeMePage()),
     // 系统消息
     GetPage(name: '/sysMsg', page: () => const SysMsgPage()),
+    // 消息设置（从通用消息页经路由进入，参数 ['type'] 为 CoreImSettingType）
+    GetPage(name: '/whisperSettings', page: () => const WhisperSettingsPage()),
     // 登录页面
     GetPage(name: '/loginPage', page: () => const LoginPage()),
     // 用户动态

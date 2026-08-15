@@ -1,16 +1,14 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/common/later_view_type.dart';
-import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
+import 'package:skf/pages/later/later_view_type.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/adapters/bilibili/pages/later/base_controller.dart';
-import 'package:skf/adapters/bilibili/pages/later/controller.dart';
-import 'package:skf/adapters/bilibili/pages/later/widgets/video_card_h_later.dart';
+import 'package:skf/pages/later/base_controller.dart';
+import 'package:skf/pages/later/controller.dart';
+import 'package:skf/pages/later/later_actions.dart';
+import 'package:skf/pages/later/widgets/video_card_h_later.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,9 +16,13 @@ class LaterViewChildPage extends StatefulWidget {
   const LaterViewChildPage({
     super.key,
     required this.laterViewType,
+    this.actions,
   });
 
   final LaterViewType laterViewType;
+
+  /// 导航契约（适配器注入），null 时对应导航动作禁用。
+  final LaterActions? actions;
 
   @override
   State<LaterViewChildPage> createState() => _LaterViewChildPageState();
@@ -35,7 +37,10 @@ class _LaterViewChildPageState extends State<LaterViewChildPage>
   void initState() {
     super.initState();
     _laterController = Get.put(
-      LaterController(widget.laterViewType),
+      LaterController(
+        widget.laterViewType,
+        actions: widget.actions,
+      ),
       tag: widget.laterViewType.type.toString(),
     );
   }
@@ -79,26 +84,28 @@ class _LaterViewChildPageState extends State<LaterViewChildPage>
                     index: index,
                     videoItem: videoItem,
                     ctr: _laterController,
+                    actions: widget.actions,
                     onViewLater: (cid) {
-                      PageUtils.toVideoPage(
-                        bvid: videoItem.bvid,
-                        cid: cid,
-                        cover: videoItem.pic,
-                        title: videoItem.title,
-                        dimension: ModelConverters.dimensionUser(videoItem.dimension),
-                        extraArguments: _baseCtr.isPlayAll.value
-                            ? {
-                                'oid': videoItem.aid,
-                                'sourceType': SourceType.watchLater,
-                                'count': _laterController
-                                    .baseCtr
-                                    .counts[LaterViewType.all.index],
-                                'favTitle': '稍后再看',
-                                'mediaId': _laterController.mid,
-                                'desc': _laterController.asc.value,
-                                'isContinuePlaying': index != 0,
-                              }
-                            : null,
+                      widget.actions?.onViewVideo?.call(
+                        LaterVideoRequest(
+                          bvid: videoItem.bvid,
+                          cid: cid,
+                          cover: videoItem.pic,
+                          title: videoItem.title,
+                          dimension: videoItem.dimension,
+                          isWatchLaterPlaylist:
+                              _baseCtr.isPlayAll.value,
+                          watchLaterExtra: {
+                            'oid': videoItem.aid,
+                            'count': _laterController
+                                .baseCtr
+                                .counts[LaterViewType.all.index],
+                            'favTitle': '稍后再看',
+                            'mediaId': _laterController.mid,
+                            'desc': _laterController.asc.value,
+                            'isContinuePlaying': index != 0,
+                          },
+                        ),
                       );
                     },
                   );

@@ -1,5 +1,4 @@
 import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,9 @@ class HistoryBaseController extends GetxController {
   RxBool enableMultiSelect = false.obs;
   RxInt checkedCount = 0.obs;
 
-  final account = Accounts.history;
+  // 历史接口的 account 参数：core 仓库接受 Object?；B站 http 层在 account 为 null
+  // 时内部回退到 Accounts.history（心跳/主账号），因此通用页面直接传 null。
+  final Object? account = null;
 
   // 清空观看历史
   void onClearHistory(BuildContext context, VoidCallback onSuccess) {

@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/models/common/later_view_type.dart';
+import 'package:skf/pages/later/later_view_type.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';

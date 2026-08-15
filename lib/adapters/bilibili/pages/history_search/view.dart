@@ -1,8 +1,8 @@
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 
 import 'package:skf/pages/common/search/common_search_page.dart';
-import 'package:skf/adapters/bilibili/pages/history/widgets/item.dart';
+import 'package:skf/adapters/bilibili/utils/history_actions.dart';
+import 'package:skf/pages/history/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/controller.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/utils.dart';
@@ -36,7 +36,8 @@ class _HistorySearchPageState
         }
         final item = list[index];
         return HistoryItem(
-          item: ModelConverters.historyItem(item),
+          item: item,
+          actions: biliHistoryActions,
           ctr: controller,
           onDelete: (kid, business) =>
               controller.onDelHistory(index, kid, business),

@@ -1,12 +1,11 @@
-import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/core/models/user_types.dart';
 
 import 'package:skf/pages/common/search/common_search_page.dart';
-import 'package:skf/adapters/bilibili/pages/later/widgets/video_card_h_later.dart';
+import 'package:skf/adapters/bilibili/utils/later_actions.dart';
+import 'package:skf/pages/later/later_actions.dart';
+import 'package:skf/pages/later/widgets/video_card_h_later.dart';
 import 'package:skf/adapters/bilibili/pages/later_search/controller.dart';
 import 'package:skf/utils/grid.dart';
-import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -73,22 +72,25 @@ class _LaterSearchPageState
           index: index,
           videoItem: item,
           ctr: controller,
+          actions: biliLaterActions,
           onViewLater: (cid) {
-            PageUtils.toVideoPage(
-              bvid: item.bvid,
-              cid: cid,
-              cover: item.pic,
-              title: item.title,
-              dimension: ModelConverters.dimensionUser(item.dimension),
-              extraArguments: {
-                'oid': item.aid,
-                'sourceType': SourceType.watchLater,
-                'count': controller.count,
-                'favTitle': '稍后再看',
-                'mediaId': controller.mid,
-                'desc': false,
-                'isContinuePlaying': index != 0,
-              },
+            biliLaterActions.onViewVideo?.call(
+              LaterVideoRequest(
+                bvid: item.bvid,
+                cid: cid,
+                cover: item.pic,
+                title: item.title,
+                dimension: item.dimension,
+                isWatchLaterPlaylist: true,
+                watchLaterExtra: {
+                  'oid': item.aid,
+                  'count': controller.count,
+                  'favTitle': '稍后再看',
+                  'mediaId': controller.mid,
+                  'desc': false,
+                  'isContinuePlaying': index != 0,
+                },
+              ),
             );
           },
         );

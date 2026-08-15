@@ -4,8 +4,7 @@ import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
-import 'package:skf/adapters/bilibili/pages/history/base_controller.dart';
-import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
+import 'package:skf/pages/history/base_controller.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage.dart';
@@ -21,7 +20,7 @@ class HistoryController
 
   late final baseCtr = Get.put(HistoryBaseController());
 
-  Account get account => baseCtr.account;
+  Object? get account => baseCtr.account;
 
   final String? type;
   TabController? tabController;
