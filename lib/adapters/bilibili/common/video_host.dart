@@ -460,6 +460,10 @@ class BiliVideoHost implements VideoHost {
     }
 
     final supportFormats = playUrl.supportFormats!;
+    // 决策（不修）：decodeFormat 源自 supportFormats（质量元数据）的 codecs 字符串，
+    // 而实际流的 dash.video[].codecs 前缀可能与它不完全一致（B站 元数据/流偶发分歧）。
+    // 该字段仅用于 UI 显示（header_control 当前解码格式文本 + 切换面板高亮），
+    // media_kit 按实际 URL 流自动解码，不依赖此字段——分歧仅影响显示文案，属 minor，记录不修。
     VideoDecodeFormatType decodeFormat = VideoUtils.selectCodec(
       supportFormats
           .firstWhere(
@@ -956,6 +960,8 @@ class BiliVideoHost implements VideoHost {
             initialValue: initialValue,
             onSave: onSave,
             onSuccess: (danmakuModel) {
+              // 发送成功后清空草稿（旧 controller 行为：savedDanmaku = null）。
+              ctr.savedDanmaku = null;
               player.danmakuController?.addDanmaku(danmakuModel);
             },
             dmConfig: dmConfig,

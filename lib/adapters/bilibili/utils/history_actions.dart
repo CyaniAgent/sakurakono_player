@@ -1,4 +1,5 @@
 import 'package:skf/pages/history/history_actions.dart';
+import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 
@@ -17,7 +18,8 @@ final HistoryActions biliHistoryActions = HistoryActions(
   }) =>
       PageUtils.toVideoPage(
         aid: aid,
-        bvid: bvid,
+        // 旧历史记录可能无 bvid：回退由 aid 生成（lib/pages/ 禁止 adapter import，故在 actions 层处理）。
+        bvid: bvid ?? (aid != null ? IdUtils.av2bv(aid) : null),
         cid: cid,
         cover: cover,
         title: title,
