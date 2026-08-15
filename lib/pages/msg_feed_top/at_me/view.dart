@@ -4,14 +4,12 @@ import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
-import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pbenum.dart'
-    show IMSettingType;
-import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
+import 'package:skf/core/models/im_types.dart' show CoreImSettingType;
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/at_me/controller.dart';
-import 'package:skf/adapters/bilibili/pages/whisper_settings/view.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/pages/msg_feed_top/at_me/controller.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
@@ -36,10 +34,9 @@ class _AtMePageState extends State<AtMePage> {
         title: const Text('@我的'),
         actions: [
           IconButton(
-            onPressed: () => Get.to(
-              const WhisperSettingsPage(
-                imSettingType: IMSettingType.SETTING_TYPE_OLD_AT_ME,
-              ),
+            onPressed: () => Get.toNamed(
+              '/whisperSettings',
+              arguments: {'type': CoreImSettingType.atMe},
             ),
             icon: Icon(
               size: 20,
@@ -107,7 +104,7 @@ class _AtMePageState extends State<AtMePage> {
                           nativeUri.startsWith('?')) {
                         return;
                       }
-                      PiliScheme.routePushFromUrl(nativeUri);
+                      AdapterRegistry.active.openUrl(nativeUri);
                     },
                     onLongPress: onLongPress,
                     onSecondaryTap: PlatformUtils.isMobile ? null : onLongPress,

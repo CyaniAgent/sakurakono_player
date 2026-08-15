@@ -130,6 +130,12 @@ class OttoAdapter implements AppAdapter {
     // OttoHub has no web share-link concept — pure-numeric IDs only.
     return null;
   }
+
+  @override
+  Future<bool> openUrl(String url, {int? businessId, int? oid}) {
+    // OttoHub has no deep-link scheme; URLs are unhandled.
+    return Future.syncValue(false);
+  }
 }
 
 /// Stub [DownloadService] — prevents crashes when Bilibili download pages

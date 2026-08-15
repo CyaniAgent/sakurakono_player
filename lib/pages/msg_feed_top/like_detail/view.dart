@@ -2,11 +2,11 @@ import 'package:skf/common/skeleton/msg_feed_top.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
-import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/like_detail/controller.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/pages/msg_feed_top/like_detail/controller.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class _LikeDetailPageState extends State<LikeDetailPage> {
       child: ListTile(
         onTap: () {
           if (_controller.uri != null) {
-            PiliScheme.routePushFromUrl(_controller.uri!);
+            AdapterRegistry.active.openUrl(_controller.uri!);
           }
         },
         title: Text('${card.business}: ${card.title}'),

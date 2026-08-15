@@ -4,14 +4,12 @@ import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
-import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pbenum.dart'
-    show IMSettingType;
-import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
+import 'package:skf/core/models/im_types.dart' show CoreImSettingType;
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/pages/msg_feed_top/reply_me/controller.dart';
-import 'package:skf/adapters/bilibili/pages/whisper_settings/view.dart';
-import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/pages/msg_feed_top/reply_me/controller.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
@@ -36,10 +34,9 @@ class _ReplyMePageState extends State<ReplyMePage> {
         title: const Text('回复我的'),
         actions: [
           IconButton(
-            onPressed: () => Get.to(
-              const WhisperSettingsPage(
-                imSettingType: IMSettingType.SETTING_TYPE_OLD_REPLY_ME,
-              ),
+            onPressed: () => Get.toNamed(
+              '/whisperSettings',
+              arguments: {'type': CoreImSettingType.replyMe},
             ),
             icon: Icon(
               size: 20,
@@ -111,7 +108,7 @@ class _ReplyMePageState extends State<ReplyMePage> {
                           nativeUri.startsWith('?')) {
                         return;
                       }
-                      PiliScheme.routePushFromUrl(
+                      AdapterRegistry.active.openUrl(
                         nativeUri,
                         businessId: item.item?.businessId,
                         oid: item.item?.subjectId,

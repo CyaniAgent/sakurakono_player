@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
+import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
 import 'package:skf/utils/image_utils.dart';
@@ -32,5 +33,14 @@ class BiliAdapter implements AppAdapter {
       // No share-link concept for cids, generic numeric IDs or local files.
       _ => null,
     };
+  }
+
+  @override
+  Future<bool> openUrl(String url, {int? businessId, int? oid}) {
+    return PiliScheme.routePushFromUrl(
+      url,
+      businessId: businessId,
+      oid: oid,
+    );
   }
 }

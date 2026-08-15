@@ -48,6 +48,7 @@ enum CoreImSessionPageType {
 enum CoreImSettingType {
   needAll,
   replyMe,
+  atMe,
   newFans,
   receiveLike,
   msgRemind,

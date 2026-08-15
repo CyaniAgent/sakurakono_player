@@ -2,6 +2,7 @@ import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pb.dart'
     show IMSettingType, Setting;
+import 'package:skf/core/models/im_types.dart' show CoreImSettingType;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_settings/controller.dart';
@@ -14,11 +15,13 @@ import 'package:protobuf/protobuf.dart' show PbMap;
 class WhisperSettingsPage extends StatefulWidget {
   const WhisperSettingsPage({
     super.key,
-    required this.imSettingType,
+    this.imSettingType,
     this.onUpdate,
   });
 
-  final IMSettingType imSettingType;
+  /// gRPC setting type for direct construction. When null, the page
+  /// resolves a [CoreImSettingType] from route arguments (['type']).
+  final IMSettingType? imSettingType;
   final ValueChanged<Map<int, Setting>>? onUpdate;
 
   @override
@@ -30,9 +33,11 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
   @override
   void initState() {
     super.initState();
+    final type =
+        widget.imSettingType ?? _feedSettingTypeFromArgs(Get.arguments);
     _controller = Get.put(
-      WhisperSettingsController(imSettingType: widget.imSettingType),
-      tag: widget.imSettingType.name,
+      WhisperSettingsController(imSettingType: type),
+      tag: type.name,
     );
   }
 
@@ -186,4 +191,17 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
       ),
     };
   }
+}
+
+/// Maps a core feed setting type (route argument) to the legacy gRPC enum
+/// values used by the message-feed settings pages (OLD_* variants).
+IMSettingType _feedSettingTypeFromArgs(dynamic args) {
+  if (args is! Map) return IMSettingType.SETTING_TYPE_NEED_ALL;
+  return switch (args['type']) {
+    CoreImSettingType.replyMe => IMSettingType.SETTING_TYPE_OLD_REPLY_ME,
+    CoreImSettingType.atMe => IMSettingType.SETTING_TYPE_OLD_AT_ME,
+    CoreImSettingType.receiveLike =>
+        IMSettingType.SETTING_TYPE_OLD_RECEIVE_LIKE,
+    _ => IMSettingType.SETTING_TYPE_NEED_ALL,
+  };
 }

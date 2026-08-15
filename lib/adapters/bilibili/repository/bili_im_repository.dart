@@ -253,6 +253,8 @@ IMSettingType _imSettingTypeToGrpc(CoreImSettingType? type) {
   return switch (type) {
     CoreImSettingType.needAll => IMSettingType.SETTING_TYPE_NEED_ALL,
     CoreImSettingType.replyMe => IMSettingType.SETTING_TYPE_REPLY_ME,
+    // Only the legacy OLD_AT_ME value exists in the gRPC enum.
+    CoreImSettingType.atMe => IMSettingType.SETTING_TYPE_OLD_AT_ME,
     CoreImSettingType.newFans => IMSettingType.SETTING_TYPE_NEW_FANS,
     CoreImSettingType.receiveLike => IMSettingType.SETTING_TYPE_RECEIVE_LIKE,
     CoreImSettingType.msgRemind => IMSettingType.SETTING_TYPE_MSG_REMIND,
