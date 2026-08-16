@@ -309,9 +309,8 @@ class AuthorPanel extends StatelessWidget {
                 leading: const Icon(Icons.share_outlined, size: 19),
                 onTap: () {
                   Get.back();
-                  ShareUtils.shareText(
-                    'https://t.bilibili.com/${item.idStr}',
-                  );
+                  final url = host.buildDynamicsShareUrl(item.idStr);
+                  if (url != null) ShareUtils.shareText(url);
                 },
                 minLeadingWidth: 0,
               ),

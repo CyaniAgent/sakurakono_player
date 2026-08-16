@@ -115,12 +115,26 @@ class BiliDynamicsHost implements DynamicsHost {
       PageUtils.handleWebview(url, off: off, inApp: inApp, parameters: parameters);
 
   @override
+  void openLotteryResult(String businessId) {
+    Get.toNamed(
+      '/webview',
+      parameters: {
+        'url':
+            'https://www.bilibili.com/h5/lottery/result?business_id=$businessId',
+      },
+    );
+  }
+
+  @override
   void showSavePanel({dynamic upMid, dynamic item}) =>
       SavePanel.toSavePanel(upMid: upMid, item: item);
 
   @override
   void pmShare(BuildContext context, {required Map content}) =>
       PageUtils.pmShare(context, content: content);
+
+  @override
+  String? buildDynamicsShareUrl(String dynId) => 'https://t.bilibili.com/$dynId';
 
   @override
   void checkCreatedDyn({dynamic id, bool isManual = false}) =>

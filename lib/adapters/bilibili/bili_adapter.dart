@@ -3,6 +3,7 @@ import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
+import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
 import 'package:skf/adapters/bilibili/utils/bili_image_utils.dart';
 
@@ -54,5 +55,29 @@ class BiliAdapter implements AppAdapter {
       businessId: businessId,
       oid: oid,
     );
+  }
+
+  @override
+  PlayInputKind classifyPlayInput(String input) {
+    final value = input.trim();
+    if (value.isEmpty) return PlayInputKind.unknown;
+
+    final lower = value.toLowerCase();
+    if (lower.contains('bilibili.com') ||
+        lower.contains('b23.tv') ||
+        lower.startsWith('bilibili://')) {
+      return PlayInputKind.videoUrl;
+    }
+    if (RegExp(r'^bv1[0-9a-zA-Z]{9}$', caseSensitive: false)
+        .hasMatch(lower)) {
+      return PlayInputKind.videoUrl;
+    }
+    if (RegExp(r'^av\d+$', caseSensitive: false).hasMatch(lower)) {
+      return PlayInputKind.videoUrl;
+    }
+    if (RegExp(r'^\d+$').hasMatch(lower)) {
+      return PlayInputKind.numericId;
+    }
+    return PlayInputKind.unknown;
   }
 }

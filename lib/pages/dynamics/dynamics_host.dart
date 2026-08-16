@@ -88,6 +88,9 @@ abstract class DynamicsHost {
     Map? parameters,
   });
 
+  /// Open the lottery result page for a dynamic (Bilibili: h5 webview page).
+  void openLotteryResult(String businessId);
+
   // ---- deep actions (author panel) ----
 
   /// Show the save panel for a dynamic item (Bilibili: `SavePanel.toSavePanel`).
@@ -95,6 +98,10 @@ abstract class DynamicsHost {
 
   /// Share content to a message (Bilibili: `PageUtils.pmShare`).
   void pmShare(BuildContext context, {required Map content});
+
+  /// Build the shareable web link for a dynamic, or null if the adapter has
+  /// no web share-link concept (Bilibili: dynamic share link).
+  String? buildDynamicsShareUrl(String dynId);
 
   /// Anti-fraud check for a created dynamic (Bilibili: `RequestUtils.checkCreatedDyn`).
   void checkCreatedDyn({dynamic id, bool isManual = false});

@@ -1,4 +1,5 @@
 import 'package:get/get.dart' show GetPage;
+import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
 
 /// Abstract interface for a platform adapter (Bilibili, OttoHub, etc.).
@@ -34,4 +35,10 @@ abstract class AppAdapter {
   /// a scheme concept return false (unhandled).
   Future<bool> openUrl(String url, {int? businessId, int? oid}) =>
       Future.syncValue(false);
+
+  /// Classify a trimmed playback input string (设置页「播放链接」).
+  /// Adapters return [PlayInputKind.videoUrl] for URLs/IDs they can route
+  /// via [openUrl], [PlayInputKind.numericId] for pure-numeric video IDs,
+  /// otherwise [PlayInputKind.unknown]. Default: unknown.
+  PlayInputKind classifyPlayInput(String input) => PlayInputKind.unknown;
 }

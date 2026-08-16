@@ -69,10 +69,17 @@ class OttoDynamicsHost implements DynamicsHost {
   }
 
   @override
+  void openLotteryResult(String businessId) {}
+
+  @override
   void showSavePanel({dynamic upMid, dynamic item}) {}
+
 
   @override
   void pmShare(BuildContext context, {required Map content}) {}
+
+  @override
+  String? buildDynamicsShareUrl(String dynId) => null;
 
   @override
   void checkCreatedDyn({dynamic id, bool isManual = false}) {}

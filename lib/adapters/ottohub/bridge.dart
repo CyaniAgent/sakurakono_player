@@ -36,6 +36,7 @@ import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_setting_host.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
+import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
 import 'package:skf/core/repository/app_repository.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
@@ -179,6 +180,16 @@ class OttoAdapter implements AppAdapter {
   Future<bool> openUrl(String url, {int? businessId, int? oid}) {
     // OttoHub has no deep-link scheme; URLs are unhandled.
     return Future.syncValue(false);
+  }
+
+  @override
+  PlayInputKind classifyPlayInput(String input) {
+    // OttoHub videos are pure-numeric IDs; everything else is unknown
+    // (bilibili URLs included — they reach the toast just as before).
+    final value = input.trim();
+    if (value.isEmpty) return PlayInputKind.unknown;
+    if (RegExp(r'^\d+$').hasMatch(value)) return PlayInputKind.numericId;
+    return PlayInputKind.unknown;
   }
 }
 

@@ -190,13 +190,7 @@ TextSpan? richNode(
                   text: '${i.origText} ',
                   style: style,
                   recognizer: NoDeadlineTapGestureRecognizer()
-                    ..onTap = () => Get.toNamed(
-                      '/webview',
-                      parameters: {
-                        'url':
-                            'https://www.bilibili.com/h5/lottery/result?business_id=${item.idStr}',
-                      },
-                    ),
+                    ..onTap = () => DynamicsHost.of().openLotteryResult(item.idStr),
                 ),
               );
             break;
