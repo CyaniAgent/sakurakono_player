@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:skf/utils/path_utils.dart';
@@ -8,14 +9,14 @@ import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as path;
 
 abstract final class GStorage {
-  static late final Box<dynamic> userInfo;
-  static late final Box _accountBox;
-  static late final Box<dynamic> historyWord;
-  static late final Box<dynamic> localCache;
-  static late final Box<dynamic> setting;
-  static late final Box<dynamic> video;
-  static late final Box<int> watchProgress;
-  static late final Box<Uint8List>? reply;
+  static late Box<dynamic> userInfo;
+  static late Box _accountBox;
+  static late Box<dynamic> historyWord;
+  static late Box<dynamic> localCache;
+  static late Box<dynamic> setting;
+  static late Box<dynamic> video;
+  static late Box<int> watchProgress;
+  static late Box<Uint8List>? reply;
 
   static Future<void> init() async {
     Hive.init(path.join(appSupportDirPath, 'hive'));
@@ -75,6 +76,47 @@ abstract final class GStorage {
     }
   }
 
+  /// 防御性恢复：init() 失败时把受损 Hive 数据目录隔离（重命名备份）后重试。
+  /// 诊断信息同时输出到 stderr 并追加写入 storage_init_error.log（release 下可见）。
+  /// 返回 true 表示恢复成功（应用可继续正常启动），false 表示重试仍失败。
+  static Future<bool> recoverInit(Object error) async {
+    final hiveDir = path.join(appSupportDirPath, 'hive');
+    final backupDir =
+        '$hiveDir.bak-${DateTime.now().millisecondsSinceEpoch}';
+    void report(String message) {
+      stderr.writeln('[SKF] $message');
+      try {
+        File(path.join(appSupportDirPath, 'storage_init_error.log'))
+            .writeAsStringSync(
+          '${DateTime.now()}: $message\n',
+          mode: FileMode.append,
+        );
+      } catch (_) {
+        // 日志写入失败不影响恢复流程
+      }
+    }
+
+    report('GStorage init failed: $error');
+    try {
+      await Hive.close(); // 释放已打开 box 的文件锁，否则 Windows 上无法重命名目录
+      final dir = Directory(hiveDir);
+      if (dir.existsSync()) {
+        await dir.rename(backupDir);
+        report('isolated corrupted Hive data to: $backupDir');
+      }
+    } catch (isolateError) {
+      report('failed to isolate Hive data: $isolateError');
+    }
+    try {
+      await init();
+      report('GStorage recovered after isolating corrupted Hive data');
+      return true;
+    } catch (retryError) {
+      report('GStorage init failed again after isolation: $retryError');
+      return false;
+    }
+  }
+
   static String exportAllSettings() {
     return Utils.jsonEncoder.convert({
       setting.name: setting.toMap(),
@@ -95,7 +137,10 @@ abstract final class GStorage {
   }
 
   static void regAdapter() {
-    Hive.registerAdapter(SetIntAdapter());
+    // 幂等：数据隔离后重试 init() 时 adapter 已注册，跳过避免重复注册异常
+    if (!Hive.isAdapterRegistered(SetIntAdapter().typeId)) {
+      Hive.registerAdapter(SetIntAdapter());
+    }
   }
 
   static Future<List<void>> compact() {

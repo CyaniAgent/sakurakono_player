@@ -25,7 +25,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/theme_color_type.dart';
 import 'package:skf/utils/theme_ext.dart';
 import 'package:skf/utils/theme_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -102,9 +101,21 @@ void main() async {
   try {
     await GStorage.init();
   } catch (e) {
-    await Utils.copyText(e.toString());
-    if (kDebugMode) debugPrint('GStorage init error: $e');
-    exit(0);
+    // 防御性启动：旧/损坏的 Hive 数据不可信 —— 隔离（备份）受损数据目录后重试；
+    // 重试仍失败则输出诊断信息并以非零码退出，绝不静默退出。
+    final recovered = await GStorage.recoverInit(e);
+    if (!recovered) {
+      // Windows 上启动早期 exit() 可能因插件 DLL 的 DllMain loader lock 挂死（实测，
+      // taskkill 也无法终止）；兜底由 wmic 强杀自身（TerminateProcess 不触发 DllMain，
+      // 可确保进程退出）。非 Windows 平台 exit(1) 行为正常。
+      if (Platform.isWindows) {
+        Process.start(
+          'wmic',
+          ['process', 'where', 'processid=$pid', 'call', 'terminate'],
+        ).ignore();
+      }
+      exit(1);
+    }
   }
   // Adapter-specific post-storage startup (account bootstrap etc.).
   await adapter.onAppStart();
