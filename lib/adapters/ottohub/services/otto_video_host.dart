@@ -31,6 +31,9 @@ class _OttoPlayerHost implements VideoPlayerHost {
   PlayerController get player => _player ??= PlayerController();
 
   @override
+  PlayerController acquirePlayer() => player;
+
+  @override
   bool get tryLook => false;
 
   @override

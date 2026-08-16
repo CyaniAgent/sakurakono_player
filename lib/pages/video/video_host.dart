@@ -37,7 +37,11 @@ import 'package:skf/pages/video/video_models.dart';
 
 /// 播放器宿主：暴露 B站 扩展播放器（PlPlayerController）上的页面所需成员。
 abstract class VideoPlayerHost {
-  /// B站: `PlPlayerController.getInstance()`。
+  /// 获取当前播放器实例（语义 = 每页访问一次；实例已销毁则自动重建，
+  /// B站: `PlPlayerController.getInstance()`）。
+  PlayerController acquirePlayer();
+
+  /// 当前播放器实例（B站: `PlPlayerController.instance`）。
   PlayerController get player;
 
   /// B站: `tryLook`（未登录时的试看画质开关）。
@@ -109,7 +113,8 @@ abstract class VideoPlayerHost {
   /// 注册播放回调（B站: `PlPlayerController.setPlayCallBack`）。
   void setPlayCallBack(PlayCallback? playCallBack);
 
-  /// 播放计数（B站: `PlPlayerController.updatePlayCount`）。
+  /// 播放计数（B站: `PlPlayerController.updatePlayCount`；
+  /// 页面未持有播放器时使用）。
   void updatePlayCount();
 
   /// 弹幕是否被 UP 主关闭（B站: `dmState.contains(cid)`）。

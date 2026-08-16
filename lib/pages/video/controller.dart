@@ -83,7 +83,7 @@ class VideoDetailController extends GetxController
 
   /// B站 扩展播放器（经 VideoHost 注入，实际为 PlPlayerController）。
   late final PlayerController plPlayerController =
-      VideoHost.of().playerHost.player;
+      VideoHost.of().playerHost.acquirePlayer();
   bool get setSystemBrightness => plPlayerController.setSystemBrightness;
   bool get removeSafeArea => plPlayerController.removeSafeArea;
   double get uiScale => plPlayerController.uiScale;

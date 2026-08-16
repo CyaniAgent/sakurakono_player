@@ -151,9 +151,17 @@ CoreVideoType coreVideoTypeOf(VideoType t) {
 
 /// B站 播放器宿主的实现（委托 [PlPlayerController] + [BlockConfigMixin]）。
 class BiliVideoPlayerHost implements VideoPlayerHost {
-  BiliVideoPlayerHost(this._player);
+  BiliVideoPlayerHost();
 
-  final PlPlayerController _player;
+  late PlPlayerController _player;
+
+  /// 每页访问获取播放器实例：getInstance 内部对已存在实例复用并计数 +1，
+  /// 已销毁（currentInstance == null）则重建——恢复每页一次生命周期语义。
+  @override
+  PlayerController acquirePlayer() {
+    _player = PlPlayerController.getInstance();
+    return _player;
+  }
 
   @override
   PlayerController get player => _player;
@@ -426,7 +434,7 @@ class BiliVideoBlock extends GetxController
 
 /// B站 视频页宿主实现。
 class BiliVideoHost implements VideoHost {
-  BiliVideoHost() : playerHost = BiliVideoPlayerHost(PlPlayerController.getInstance());
+  BiliVideoHost() : playerHost = BiliVideoPlayerHost();
 
   @override
   final VideoPlayerHost playerHost;

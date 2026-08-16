@@ -3,6 +3,8 @@ import 'package:skf/adapters/bilibili/plugin/pl_player/bili_player_mixin.dart';
 import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/player_controller.dart';
 
+import 'package:flutter/foundation.dart' show debugPrint;
+
 /// B站 播放器控制器：通用播放核心（[PlayerController]，lib/player/）
 /// + B站 扩展（[BiliPlayerMixin]，含弹幕/心跳/预览/超分辨率/PiP 等）。
 ///
@@ -33,7 +35,13 @@ class PlPlayerController extends PlayerController
   static bool instanceExists() => PlayerController.currentInstance != null;
 
   static void setPlayCallBack(PlayCallback? playCallBack) {
-    PlayerController.currentInstance?.registerPlayCallBack(playCallBack);
+    final player = PlayerController.currentInstance;
+    if (player == null) {
+      debugPrint('[PlPlayerController] setPlayCallBack skipped: '
+          'currentInstance is null, play callback dropped');
+      return;
+    }
+    player.registerPlayCallBack(playCallBack);
   }
 
   static Future<void>? playIfExists() {

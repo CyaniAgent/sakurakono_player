@@ -49,7 +49,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   final heroTag = Get.arguments['heroTag'];
 
   late final VideoDetailController videoDetailController;
-  PlayerController? plPlayerController;
+  late final PlayerController plPlayerController;
 
   final host = VideoHost.of();
 
@@ -81,6 +81,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   void initState() {
     super.initState();
 
+    // 每页访问获取播放器实例（已销毁则重建），必须先于 setPlayCallBack
+    plPlayerController = host.playerHost.acquirePlayer();
     host.playerHost.setPlayCallBack(playCallBack);
     videoDetailController = Get.put(VideoDetailController(), tag: heroTag);
 
@@ -97,8 +99,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   void videoSourceInit() {
     videoDetailController.queryVideoUrl(autoFullScreenFlag: true);
     if (videoDetailController.autoPlay) {
-      plPlayerController = videoDetailController.plPlayerController;
-      plPlayerController!
+      plPlayerController
         ..addStatusLister(playerListener)
         ..addPositionListener(positionListener);
     }
@@ -126,10 +127,10 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   Future<void>? playCallBack() {
     if (!isShowing) {
       plPlayerController
-        ?..addStatusLister(playerListener)
+        ..addStatusLister(playerListener)
         ..addPositionListener(positionListener);
     }
-    return plPlayerController?.play();
+    return plPlayerController.play();
   }
 
   // 播放器状态监听
@@ -176,7 +177,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         switch (host.playerHost.playerPlayRepeat) {
           case PlayRepeat.singleCycle:
             exitFlag = false;
-            plPlayerController!.play(repeat: true);
+            plPlayerController.play(repeat: true);
           case PlayRepeat.listOrder:
           case PlayRepeat.listCycle:
           case PlayRepeat.autoPlayRelated:
@@ -187,23 +188,22 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
       if (exitFlag) {
         if (autoExitFullscreen) {
-          plPlayerController!.triggerFullScreen(status: false);
-          if (plPlayerController!.controlsLock.value) {
-            plPlayerController!.onLockControl(false);
+          plPlayerController.triggerFullScreen(status: false);
+          if (plPlayerController.controlsLock.value) {
+            plPlayerController.onLockControl(false);
           }
         } else {
-          if (plPlayerController!.controlsLock.value &&
+          if (plPlayerController.controlsLock.value &&
               (!Platform.isAndroid || !AndroidHelper.isPipMode)) {
-            plPlayerController!.onLockControl(false);
+            plPlayerController.onLockControl(false);
           }
         }
       }
     }
   }
-
   // 继续播放或重新播放
   void continuePlay() {
-    plPlayerController!.play();
+    plPlayerController.play();
   }
 
   /// 未开启自动播放时触发播放
@@ -222,8 +222,6 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         return null;
       }
     }
-    final plPlayerController = this.plPlayerController =
-        videoDetailController.plPlayerController;
     videoDetailController.autoPlay = true;
     plPlayerController
       ..addStatusLister(playerListener)
@@ -244,7 +242,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   @override
   void dispose() {
     plPlayerController
-      ?..removeStatusLister(playerListener)
+      ..removeStatusLister(playerListener)
       ..removePositionListener(positionListener);
 
     host.disposeMemberPage(heroTag);
@@ -259,12 +257,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
     if (!videoDetailController.plPlayerController.isCloseAll) {
       host.onVideoDetailDispose(heroTag);
-      if (plPlayerController != null) {
-        videoDetailController.makeHeartBeat();
-        plPlayerController!.dispose();
-      } else {
-        host.playerHost.updatePlayCount();
-      }
+      videoDetailController.makeHeartBeat();
+      plPlayerController.dispose();
     }
     removeObserverMobile(this);
 
@@ -288,15 +282,13 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     videoDetailController
       ..videoState.value = false
       ..cancelBlockListener()
-      ..playerStatus = plPlayerController?.playerStatus.value
-      ..brightness = plPlayerController?.brightness.value;
-    if (plPlayerController != null) {
-      videoDetailController.makeHeartBeat();
-      plPlayerController!
-        ..removeStatusLister(playerListener)
-        ..removePositionListener(positionListener)
-        ..pause();
-    }
+      ..playerStatus = plPlayerController.playerStatus.value
+      ..brightness = plPlayerController.brightness.value;
+    videoDetailController.makeHeartBeat();
+    plPlayerController
+      ..removeStatusLister(playerListener)
+      ..removePositionListener(positionListener)
+      ..pause();
   }
 
   @override
@@ -312,7 +304,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
     addObserverMobile(this);
 
-    plPlayerController?.isLive = false;
+    plPlayerController.isLive = false;
     if (videoDetailController.plPlayerController.playerStatus.isPlaying &&
         videoDetailController.playerStatus != PlayerStatus.playing) {
       videoDetailController.plPlayerController.pause();
@@ -326,7 +318,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         Platform.isAndroid &&
         !videoDetailController.setSystemBrightness) {
       if (videoDetailController.brightness != null) {
-        plPlayerController?.brightness.value =
+        plPlayerController.brightness.value =
             videoDetailController.brightness!;
         if (videoDetailController.brightness != -1.0) {
           ScreenBrightnessPlatform.instance.setApplicationScreenBrightness(
@@ -341,7 +333,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     }
 
     plPlayerController
-      ?..addStatusLister(playerListener)
+      ..addStatusLister(playerListener)
       ..addPositionListener(positionListener);
     if (videoDetailController.autoPlay) {
       videoDetailController.playerInit(
@@ -442,7 +434,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                         videoDetailController.isCollapsing
                   ? videoDetailController.animHeight
                   : videoDetailController.isCollapsing ||
-                        (plPlayerController?.playerStatus.isPlaying ?? false)
+                        (plPlayerController.playerStatus.isPlaying)
                   ? videoDetailController.minVideoHeight
                   : kToolbarHeight;
               if (videoDetailController.isExpanding &&
@@ -525,7 +517,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     if (videoDetailController.playedTime == null) {
       icon = Icons.play_arrow_rounded;
       playStat = '立即';
-    } else if (plPlayerController!.isCompleted) {
+    } else if (plPlayerController.isCompleted) {
       icon = CustomIcons.replay_rounded;
       playStat = '重新';
     } else {
@@ -646,11 +638,10 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                   return;
                 }
               }
-              if (plPlayerController == null ||
-                  videoDetailController.playedTime == null) {
+              if (videoDetailController.playedTime == null) {
                 handlePlay();
               } else {
-                plPlayerController!.onDoubleTapCenter();
+                plPlayerController.onDoubleTapCenter();
               }
             },
             behavior: .opaque,
@@ -1139,7 +1130,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       () =>
           !videoDetailController.videoState.value ||
               !videoDetailController.autoPlay ||
-              plPlayerController?.videoController == null
+              plPlayerController.videoController == null
           ? const SizedBox.shrink()
           : host.buildPlayer(
               heroTag: heroTag,
