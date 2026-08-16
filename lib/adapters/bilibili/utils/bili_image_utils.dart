@@ -16,7 +16,7 @@ import 'package:live_photo_maker/live_photo_maker.dart';
 
 abstract final class BiliImageUtils {
   static final _thumbRegex = RegExp(
-    r'@(\d+[a-z]_?)*)(\..*)?$',
+    r'(@(\d+[a-z]_?)*)(\..*)?$',
     caseSensitive: false,
   );
 

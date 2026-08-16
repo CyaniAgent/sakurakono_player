@@ -35,8 +35,6 @@ class _FakeAccountProvider extends AccountProvider {
   @override
   Map<String, String> get authHeaders => const {};
   @override
-  Map<String, String> get grpcMetadata => const {};
-  @override
   Stream<bool> onAuthStateChanged() => const Stream<bool>.empty();
 }
 
