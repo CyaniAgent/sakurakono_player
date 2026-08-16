@@ -10,7 +10,6 @@ import 'package:skf/utils/extension/num_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// TODO refa
 class SeasonPanel extends StatefulWidget {
   const SeasonPanel({
     super.key,

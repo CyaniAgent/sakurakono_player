@@ -2,7 +2,8 @@ import 'package:skf/adapters/bilibili/http/api.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 
 abstract final class ApiType {
-  // TODO: grpc api type
+  // NOTE: HTTP-path → account-type map only; gRPC requests inject
+  // account.grpcHeaders separately (AccountManager), not via this map.
   static const Map<AccountType, Set<String>> apiTypeSet = {
     AccountType.heartbeat: {
       Api.videoIntro,

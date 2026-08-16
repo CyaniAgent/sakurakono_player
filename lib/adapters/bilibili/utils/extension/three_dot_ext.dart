@@ -86,7 +86,8 @@ extension ThreeDotItemTypeExt on ThreeDotItemType {
       case ThreeDotItemType.THREE_DOT_ITEM_TYPE_CONTACTS:
         Get.to(const ContactPage(isFromSelect: false));
       default:
-        SmartDialog.showToast('TODO: $name');
+        // Unhandled three-dot item — show a user-facing fallback toast.
+        SmartDialog.showToast('暂不支持：${item.title}');
     }
   }
 }

@@ -179,7 +179,8 @@ abstract final class SponsorBlock {
   ///   "votes": int,       // 绑定记录的投票数
   ///   "locked": int,      // 绑定记录是否锁定
   /// }
-  /// TODO: show port video info dialog
+  /// NOTE: the port-video confirm dialog is shown by the caller
+  /// (ugc/view.dart) once it resolves the ytbId.
   static Future<LoadingState<String>> getPortVideo({
     required String bvid,
     required int cid,

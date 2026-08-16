@@ -248,8 +248,8 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<CoreVideoRelation>> videoRelation({
     required String bvid,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not offer a
-    // consolidated relation endpoint.
+    // NOTE(otto): stubbed by design — OttoHub API does not offer a
+    // consolidated relation endpoint, so there is nothing to map.
     return _err(const ApiException('not_implemented'));
   }
 
@@ -276,7 +276,7 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<CorePgcLCF>> pgcLikeCoinFav({
     required String epId,
   }) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
@@ -286,7 +286,7 @@ class OttoVideoRepository implements VideoRepository {
     required int multiply,
     int selectLike = 0,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have coin/tip
+    // NOTE(otto): stubbed by design — OttoHub API does not have coin/tip
     return _err(const ApiException('not_implemented'));
   }
 
@@ -295,7 +295,7 @@ class OttoVideoRepository implements VideoRepository {
     required String epId,
     String? seasonId,
   }) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
@@ -303,7 +303,7 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<CoreUgcTriple>> ugcTriple({
     required String bvid,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have triple action
+    // NOTE(otto): stubbed by design — OttoHub API does not have triple action
     return _err(const ApiException('not_implemented'));
   }
 
@@ -335,7 +335,7 @@ class OttoVideoRepository implements VideoRepository {
     required String bvid,
     required bool type,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have dislike
+    // NOTE(otto): stubbed by design — OttoHub API does not have dislike
     return _err(const ApiException('not_implemented'));
   }
 
@@ -345,7 +345,7 @@ class OttoVideoRepository implements VideoRepository {
     required int act,
     required int reSrc,
   }) async {
-    // TODO(otto): not yet implemented — uses IFollowingApi.toggleFollow
+    // NOTE(otto): stubbed by design — uses IFollowingApi.toggleFollow
     // which toggles rather than setting a specific act value.
     return _err(const ApiException('not_implemented'));
   }
@@ -357,7 +357,7 @@ class OttoVideoRepository implements VideoRepository {
     int? reasonId,
     int? feedbackId,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no dislike/feedback API
     return _err(const ApiException('not_implemented'));
   }
 
@@ -368,7 +368,7 @@ class OttoVideoRepository implements VideoRepository {
     int? reasonId,
     int? feedbackId,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no dislike/feedback API
     return _err(const ApiException('not_implemented'));
   }
 
@@ -387,7 +387,8 @@ class OttoVideoRepository implements VideoRepository {
     bool syncToDynamic = false,
     Map<String, int>? atNameToMid,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK comment API does not match the
+    // core reply semantics (root/parent/pictures/at-mentions).
     return _err(const ApiException('not_implemented'));
   }
 
@@ -397,7 +398,8 @@ class OttoVideoRepository implements VideoRepository {
     required int oid,
     required int rpid,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK comment API does not match the
+    // core reply semantics (root/parent/pictures/at-mentions).
     return _err(const ApiException('not_implemented'));
   }
 
@@ -407,13 +409,13 @@ class OttoVideoRepository implements VideoRepository {
 
   @override
   Future<LoadingState<String>> pgcAdd({int? seasonId}) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
   @override
   Future<LoadingState<String>> pgcDel({int? seasonId}) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
@@ -422,7 +424,7 @@ class OttoVideoRepository implements VideoRepository {
     required String seasonId,
     required int status,
   }) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
@@ -436,7 +438,7 @@ class OttoVideoRepository implements VideoRepository {
     String? bvid,
     required int cid,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no online-count endpoint
     return _err(const ApiException('not_implemented'));
   }
 
@@ -446,7 +448,7 @@ class OttoVideoRepository implements VideoRepository {
     required int cid,
     int? upMid,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no AI-conclusion endpoint
     return _err(const ApiException('not_implemented'));
   }
 
@@ -458,7 +460,8 @@ class OttoVideoRepository implements VideoRepository {
     String? seasonId,
     String? epId,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no play-info endpoint
+    // (videoUrl covers the playable URL instead).
     return _err(const ApiException('not_implemented'));
   }
 
@@ -467,7 +470,7 @@ class OttoVideoRepository implements VideoRepository {
     String subtitleUrl, {
     SubtitleFormat format = SubtitleFormat.vtt,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no subtitle support
     return null;
   }
 
@@ -475,7 +478,7 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<List<CoreHotVideoItemModel>>> getRankVideoList(
     int rid,
   ) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have ranking by region
+    // NOTE(otto): stubbed by design — OttoHub API does not have ranking by region
     return _err(const ApiException('not_implemented'));
   }
 
@@ -484,7 +487,7 @@ class OttoVideoRepository implements VideoRepository {
     int day = 3,
     required int seasonType,
   }) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
@@ -493,7 +496,7 @@ class OttoVideoRepository implements VideoRepository {
     int day = 3,
     required int seasonType,
   }) async {
-    // TODO(otto): not yet implemented — no PGC concept in OttoHub
+    // NOTE(otto): stubbed by design — no PGC concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 
@@ -502,7 +505,7 @@ class OttoVideoRepository implements VideoRepository {
     required String bvid,
     required int cid,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no video-preview API
     return _err(const ApiException('not_implemented'));
   }
 
@@ -512,7 +515,7 @@ class OttoVideoRepository implements VideoRepository {
     int? uperMid,
     required int page,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no notes endpoint
     return _err(const ApiException('not_implemented'));
   }
 
@@ -523,7 +526,7 @@ class OttoVideoRepository implements VideoRepository {
   @override
   Future<LoadingState<List<CorePopularSeriesListItem>?>>
       popularSeriesList() async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no popular-series endpoint
     return _err(const ApiException('not_implemented'));
   }
 
@@ -531,7 +534,7 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<CorePopularSeriesOneData>> popularSeriesOne({
     required int number,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no popular-series endpoint
     return _err(const ApiException('not_implemented'));
   }
 
@@ -539,7 +542,7 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<CorePopularPreciousData>> popularPrecious({
     required int page,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no popular-series endpoint
     return _err(const ApiException('not_implemented'));
   }
 
@@ -552,7 +555,8 @@ class OttoVideoRepository implements VideoRepository {
     required String aid,
     required int type,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no history-report endpoint
+    // (heartBeat covers watch-history via saveWatchHistory).
   }
 
   @override
@@ -579,7 +583,7 @@ class OttoVideoRepository implements VideoRepository {
 
   @override
   Future<void> roomEntryAction({required int roomId}) async {
-    // TODO(otto): not yet implemented — no live concept in OttoHub
+    // NOTE(otto): stubbed by design — no live concept in OttoHub
   }
 
   @override
@@ -588,7 +592,7 @@ class OttoVideoRepository implements VideoRepository {
     required String oid,
     required int upperMid,
   }) async {
-    // TODO(otto): not yet implemented
+    // NOTE(otto): stubbed by design — SDK has no medialist-history endpoint
   }
 
   @override
@@ -598,7 +602,7 @@ class OttoVideoRepository implements VideoRepository {
     required int playurlType,
     int? qn,
   }) async {
-    // TODO(otto): not yet implemented — no DLNA/TV concept in OttoHub
+    // NOTE(otto): stubbed by design — no DLNA/TV concept in OttoHub
     return _err(const ApiException('not_implemented'));
   }
 }

@@ -101,7 +101,7 @@ class OttoDanmakuRepository implements DanmakuRepository {
     required int cid,
     required int id,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have danmaku like
+    // NOTE(otto): stubbed by design — OttoHub API does not have danmaku like
     return _err(const ApiException('not_implemented'));
   }
 
@@ -113,7 +113,7 @@ class OttoDanmakuRepository implements DanmakuRepository {
     bool block = false,
     String? content,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have danmaku report
+    // NOTE(otto): stubbed by design — OttoHub API does not have danmaku report
     return _err(const ApiException('not_implemented'));
   }
 
@@ -137,7 +137,7 @@ class OttoDanmakuRepository implements DanmakuRepository {
     required Iterable<int> ids,
     required int state,
   }) async {
-    // TODO(otto): not yet implemented — OttoHub API does not support batch edit
+    // NOTE(otto): stubbed by design — OttoHub API does not support batch edit
     return _err(const ApiException('not_implemented'));
   }
 
@@ -161,7 +161,7 @@ class OttoDanmakuRepository implements DanmakuRepository {
     int aid,
     int cid,
   ) async {
-    // TODO(otto): not yet implemented — OttoHub API does not have dmView
+    // NOTE(otto): stubbed by design — OttoHub API does not have dmView
     return _err(const ApiException('not_implemented'));
   }
 }

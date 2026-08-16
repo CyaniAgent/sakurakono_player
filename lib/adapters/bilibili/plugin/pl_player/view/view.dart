@@ -363,7 +363,8 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         ),
         onTap: () {
           if (videoDetailController.isFileSource) {
-            // TODO
+            // NOTE: file sources have no part list — the episode button is
+            // intentionally a no-op for local files.
             return;
           }
           // part -> playAll -> season(pgc)

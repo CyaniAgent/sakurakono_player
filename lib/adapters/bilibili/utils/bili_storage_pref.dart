@@ -213,7 +213,8 @@ abstract final class BiliPref {
   );
 
   static List<VideoDecodeFormatType> get preferCodecs {
-    // TODO: remove next 2 version
+    // NOTE: legacy-key migration (defaultDecode/secondDecode → preferCodecs);
+    // keep until no installs carry the old keys, then delete this block.
     if (_setting.get('defaultDecode') case String codecStr) {
       String? codecStr2 = _setting.get('secondDecode');
       _setting.deleteAll(const ['defaultDecode', 'secondDecode']);

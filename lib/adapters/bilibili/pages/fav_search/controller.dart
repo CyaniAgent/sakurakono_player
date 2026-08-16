@@ -61,7 +61,8 @@ class FavSearchController
   }
 
   @override
-  // TODO: dimension
+  // NOTE: dimension not carried by fav list API; the video page
+  // resolves it itself via videoIntro.
   void onViewFav(CoreFavDetailItemModel item, int? index) => PageUtils.toVideoPage(
     bvid: item.bvid,
     cid: item.ugc!.firstCid!,

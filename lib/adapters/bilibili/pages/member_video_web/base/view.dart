@@ -99,7 +99,7 @@ abstract class BaseVideoWebState<
                       if (index == response.length - 1) {
                         controller.onLoadMore();
                       }
-                      // TODO: dimension
+                      // NOTE: dimension resolved inside VideoCardH via ab2c.
                       return VideoCardH(videoItem: response[index]);
                     },
                   ),

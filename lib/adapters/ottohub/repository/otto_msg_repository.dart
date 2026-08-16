@@ -85,7 +85,8 @@ class OttoMsgRepository implements MsgRepository {
 
   @override
   Future<LoadingState<void>> msgSysUpdateCursor(int cursor) async {
-    // TODO(otto): SDK has no cursor-level mark-read, using readAll as best-available mapping
+    // NOTE(otto): SDK has no cursor-level mark-read; readAll is the best
+    // available mapping — keep in sync if the SDK adds per-cursor support.
     try {
       await _client.oldIm.readAllSystemMessage();
       return const Success(null);

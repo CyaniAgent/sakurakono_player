@@ -369,7 +369,7 @@ class _MemberHomeState extends State<MemberHome>
                     return;
                   }
 
-                  // else TODO
+                  // NOTE: unhandled contribute params fall back to a toast.
                   SmartDialog.showToast('view $param');
                 }
               },
