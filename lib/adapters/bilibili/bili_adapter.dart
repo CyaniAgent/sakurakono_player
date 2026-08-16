@@ -4,7 +4,7 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/models/media_id.dart';
-import 'package:skf/utils/image_utils.dart';
+import 'package:skf/adapters/bilibili/utils/bili_image_utils.dart';
 
 class BiliAdapter implements AppAdapter {
   @override
@@ -31,7 +31,7 @@ class BiliAdapter implements AppAdapter {
 
   @override
   String processImageUrl(String? originalUrl, {int quality = 1}) {
-    return ImageUtils.thumbnailUrl(originalUrl, quality);
+    return BiliImageUtils.thumbnailUrl(originalUrl, quality);
   }
 
   @override

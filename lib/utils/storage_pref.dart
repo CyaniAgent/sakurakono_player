@@ -373,10 +373,6 @@ abstract final class Pref {
   static bool get enableCommAntifraud =>
       _setting.get(SettingBoxKey.enableCommAntifraud, defaultValue: false);
 
-  static bool get biliSendCommAntifraud =>
-      Platform.isAndroid &&
-      _setting.get('biliSendCommAntifraud', defaultValue: false) as bool;
-
   static bool get enableCreateDynAntifraud =>
       _setting.get(SettingBoxKey.enableCreateDynAntifraud, defaultValue: false);
 

@@ -91,7 +91,5 @@ class OttoAccountProvider extends AccountProvider {
   @override
   Map<String, String> get authHeaders => {};
   @override
-  Map<String, String> get grpcMetadata => {};
-  @override
   Stream<bool> onAuthStateChanged() => rxIsLogin.stream;
 }

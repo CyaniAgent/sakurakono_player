@@ -37,7 +37,7 @@ abstract class ReplyController<R>
 
   // comment antifraud
   late final _enableCommAntifraud = Pref.enableCommAntifraud;
-  late final _biliSendCommAntifraud = Pref.biliSendCommAntifraud;
+  late final _biliSendCommAntifraud = BiliPref.biliSendCommAntifraud;
   bool get enableCommAntifraud =>
       _enableCommAntifraud || _biliSendCommAntifraud;
   dynamic get sourceId;

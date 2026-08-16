@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io' show File, Platform;
-import 'dart:math' as math;
 import 'dart:typed_data' show Uint8List;
 
 import 'package:skf/common/constants.dart';
+import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/device_utils.dart';
 import 'package:skf/utils/extension/string_ext.dart';
@@ -162,31 +162,10 @@ abstract final class ImageUtils {
     return src.http2https;
   }
 
-  static final _thumbRegex = RegExp(
-    r'(@(\d+[a-z]_?)*)(\..*)?$',
-    caseSensitive: false,
-  );
-  static String thumbnailUrl(String? src, [int maxQuality = 1]) {
-    if (src != null && maxQuality != 100) {
-      maxQuality = math.max(maxQuality, 0);
-      bool hasMatch = false;
-      src = src.splitMapJoin(
-        _thumbRegex,
-        onMatch: (match) {
-          hasMatch = true;
-          String suffix = match.group(3) ?? '.webp';
-          return '${match.group(1)}_${maxQuality}q$suffix';
-        },
-        onNonMatch: (String str) {
-          return str;
-        },
-      );
-      if (!hasMatch) {
-        return src.http2https;
-      }
-    }
-    return src.http2https;
-  }
+  /// Converts to an HTTPS URL, dispatching adapter-specific CDN processing
+  /// (e.g. quality suffix) to the active adapter's [processImageUrl].
+  static String thumbnailUrl(String? src, [int maxQuality = 1]) =>
+      AdapterRegistry.active.processImageUrl(src, quality: maxQuality).http2https;
 
   static Future<SaveResult?> saveByteImg({
     required Uint8List bytes,

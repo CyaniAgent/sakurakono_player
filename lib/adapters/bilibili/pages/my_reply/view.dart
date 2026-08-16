@@ -8,6 +8,7 @@ import 'package:skf/adapters/bilibili/pages/video_parts/reply/widgets/reply_item
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/reply_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -132,7 +133,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
     final oid = replyInfo.oid.toInt();
     ReplyUtils.onCheckReply(
       replyInfo: replyInfo,
-      biliSendCommAntifraud: Pref.biliSendCommAntifraud,
+      biliSendCommAntifraud: BiliPref.biliSendCommAntifraud,
       sourceId: switch (oid) {
         1 => IdUtils.av2bv(oid),
         _ => oid.toString(),

@@ -23,8 +23,6 @@ abstract class AccountProvider extends GetxService {
 
   /// Auth headers for API requests.
   Map<String, String> get authHeaders;
-  /// gRPC metadata for gRPC requests.
-  Map<String, String> get grpcMetadata;
   /// Stream of auth state changes.
   Stream<bool> onAuthStateChanged();
 }
