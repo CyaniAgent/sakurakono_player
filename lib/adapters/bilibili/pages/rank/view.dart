@@ -20,7 +20,7 @@ class RankPage extends ConsumerStatefulWidget {
 class _RankPageState extends ConsumerState<RankPage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final MainController _mainCtr = Get.find<MainController>();
+  final MainControllerNotifier _mainCtr = Get.find<MainControllerNotifier>();
 
   @override
   bool get wantKeepAlive => true;

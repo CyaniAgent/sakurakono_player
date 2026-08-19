@@ -78,7 +78,7 @@ class _HotPageState extends State<HotPage>
                       title: '排行榜',
                       onTap: () {
                         try {
-                          final homeController = Get.find<HomeController>();
+                          final homeController = Get.find<HomeControllerNotifier>();
                           final index = homeController.tabs.indexWhere(
                             (t) => t.id == HomeTabType.rank.name,
                           );

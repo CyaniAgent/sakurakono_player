@@ -23,7 +23,7 @@ class DynamicsTabController
 
   String? offset;
 
-  late final mainController = Get.find<MainController>();
+  late final mainController = Get.find<MainControllerNotifier>();
   final dynamicsController = Get.find<DynamicsController>();
 
   @override

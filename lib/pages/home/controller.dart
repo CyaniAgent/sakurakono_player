@@ -15,88 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class HomeController extends GetxController
-    with GetSingleTickerProviderStateMixin, ScrollOrRefreshMixin
-    implements HomeBarState {
-  late final MainHost _host = MainHost.of();
-
-
-  late List<HomeTabItem> tabs;
-  late TabController tabController;
-
-  @override
-  RxBool? showTopBar;
-  late final bool hideTopBar;
-
-  bool enableSearchWord = Pref.enableSearchWord;
-  late final RxString defaultSearch = ''.obs;
-  late int lateCheckSearchAt = 0;
-
-  ScrollOrRefreshMixin get controller =>
-      _host.homeTabCtrFor(tabs[tabController.index]);
-
-  @override
-  ScrollController get scrollController => controller.scrollController;
-
-  AccountProvider get accountService => Get.find<AccountProvider>();
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    hideTopBar = !Pref.useSideBar && Pref.hideTopBar;
-    if (hideTopBar) {
-      final mainCtr = Get.find<MainController>();
-      switch (mainCtr.barHideType) {
-        case BarHideType.instant:
-          showTopBar = RxBool(true);
-        case BarHideType.sync:
-          mainCtr.barOffset ??= RxDouble(0.0);
-      }
-    }
-
-    if (enableSearchWord) {
-      lateCheckSearchAt = DateTime.now().millisecondsSinceEpoch;
-      querySearchDefault();
-    }
-
-    setTabConfig();
-  }
-
-  @override
-  Future<void> onRefresh() {
-    return controller.onRefresh().catchError((e) {
-      if (kDebugMode) debugPrint(e.toString());
-    });
-  }
-
-  void setTabConfig() {
-    final tabs = GStorage.setting.get(SettingBoxKey.tabBarSort) as List?;
-    if (tabs != null) {
-      this.tabs = tabs.map((i) => _host.homeTabs[i]).toList();
-    } else {
-      this.tabs = _host.homeTabs;
-    }
-
-    tabController = TabController(
-      initialIndex: max(0, this.tabs.indexWhere((t) => t.id == _host.defaultHomeTabId)),
-      length: this.tabs.length,
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
-  }
-
-  Future<void> querySearchDefault() async {
-    try {
-      defaultSearch.value = await _host.fetchDefaultSearchWord();
-    } catch (_) {}
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Riverpod StateNotifier pattern
@@ -138,7 +56,8 @@ class HomeState {
 /// Mirrors the essential state from the GetX [HomeController] without
 /// any GetX dependency. TabController lifecycle is managed by the view
 /// (ConsumerStatefulWidget provides the TickerProvider).
-class HomeControllerNotifier extends StateNotifier<HomeState> {
+class HomeControllerNotifier extends StateNotifier<HomeState>
+    implements HomeBarState {
   HomeControllerNotifier() : super(const HomeState()) {
     _init();
   }
@@ -146,9 +65,27 @@ class HomeControllerNotifier extends StateNotifier<HomeState> {
   late final MainHost _host = MainHost.of();
   late int lateCheckSearchAt = 0;
 
+  // -- HomeBarState implementation --
+  @override
+  RxBool? showTopBar;
+
+  // -- Tab controller --
+  late TabController tabController;
+
+  // -- Config (mutable for settings pages) --
+  bool enableSearchWord = Pref.enableSearchWord;
+  late final RxString defaultSearch = ''.obs;
+  // -- Convenience getters for view compatibility --
+  List<HomeTabItem> get tabs => state.tabs;
+  bool get hideTopBar => state.hideTopBar;
+
+
+  // -- Account --
+  AccountProvider get accountService => Get.find<AccountProvider>();
+
   void _init() {
     final hideTopBar = !Pref.useSideBar && Pref.hideTopBar;
-    final enableSearchWord = Pref.enableSearchWord;
+    enableSearchWord = Pref.enableSearchWord;
 
     _loadTabs();
 
@@ -157,9 +94,21 @@ class HomeControllerNotifier extends StateNotifier<HomeState> {
       enableSearchWord: enableSearchWord,
     );
 
+    if (hideTopBar) {
+      try {
+        final mainCtr = Get.find<MainControllerNotifier>();
+        switch (mainCtr.barHideType) {
+          case BarHideType.instant:
+            showTopBar = RxBool(true);
+          case BarHideType.sync:
+            mainCtr.barOffset ??= RxDouble(0.0);
+        }
+      } catch (_) {}
+    }
+
     if (enableSearchWord) {
       lateCheckSearchAt = DateTime.now().millisecondsSinceEpoch;
-      _querySearchDefault();
+      querySearchDefault();
     }
   }
 
@@ -210,10 +159,11 @@ class HomeControllerNotifier extends StateNotifier<HomeState> {
     getControllerForTab(state.selectedTab).toTopOrRefresh();
   }
 
-  Future<void> _querySearchDefault() async {
+  Future<void> querySearchDefault() async {
     try {
-      final defaultSearch = await _host.fetchDefaultSearchWord();
-      state = state.copyWith(defaultSearch: defaultSearch);
+      final search = await _host.fetchDefaultSearchWord();
+      defaultSearch.value = search;
+      state = state.copyWith(defaultSearch: search);
     } catch (_) {}
   }
 }

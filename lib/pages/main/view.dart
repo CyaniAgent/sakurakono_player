@@ -42,7 +42,7 @@ class _MainAppState extends PopScopeState<MainApp>
         WidgetsBindingObserver,
         WindowListener,
         TrayListener {
-  final _mainController = Get.put(MainController());
+  final _mainController = Get.find<MainControllerNotifier>();
   late final _host = MainHost.of();
   late final _setting = GStorage.setting;
   late EdgeInsets _padding;

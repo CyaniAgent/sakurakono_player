@@ -213,9 +213,11 @@ class BiliBridge {
       ..lazyPut<ValidateRepository>(BiliValidateRepository.new)
       ..lazyPut<ProgressRepository>(BiliProgressRepository.new)
       ..lazyPut<AppRepository>(BiliAppRepository.new)
-      // Generic page bar-state bridges: interface -> adapter controller
-      ..lazyPut<MainBarState>(() => Get.find<MainController>())
-      ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
+      // Generic page bar-state bridges: interface -> Riverpod notifiers
+      ..lazyPut<MainControllerNotifier>(MainControllerNotifier.new)
+      ..lazyPut<HomeBarState>(() => Get.find<HomeControllerNotifier>())
+      ..lazyPut<HomeControllerNotifier>(HomeControllerNotifier.new)
+      ..lazyPut<MainBarState>(() => Get.find<MainControllerNotifier>())
       // Main shell host (tabs, home subtabs, dyn badge, scheme, update)
       ..lazyPut<MainHost>(BiliMainHost.new)
       // Dynamics page host (tab pages, deep dialogs, URL routing)

@@ -25,8 +25,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends CommonPageState<HomePage>
     with AutomaticKeepAliveClientMixin {
-  final _homeController = Get.putOrFind(HomeController.new);
-  final _mainController = Get.find<MainController>();
+  final _homeController = Get.find<HomeControllerNotifier>();
+  final _mainController = Get.find<MainControllerNotifier>();
   late final _host = MainHost.of();
 
   @override
@@ -192,7 +192,7 @@ class _HomePageState extends CommonPageState<HomePage>
 
 Widget userAvatar({
   required ThemeData theme,
-  required MainController mainController,
+  required MainControllerNotifier mainController,
 }) {
   return Semantics(
     label: "我的",
@@ -267,7 +267,7 @@ Widget userAvatar({
   );
 }
 
-Widget msgBadge(MainController mainController) {
+Widget msgBadge(MainControllerNotifier mainController) {
   return Obx(
     () {
       if (mainController.accountService.isLogin) {

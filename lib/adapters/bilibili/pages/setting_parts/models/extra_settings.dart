@@ -58,7 +58,7 @@ List<SettingsModel> get extraSettings => [
       defaultVal: true,
       onChanged: (value) {
         try {
-          Get.find<MainController>().minimizeOnExit = value;
+          Get.find<MainControllerNotifier>().minimizeOnExit = value;
         } catch (_) {}
       },
     ),
@@ -99,7 +99,7 @@ List<SettingsModel> get extraSettings => [
     switchModel: SwitchModel.split(
       defaultVal: true,
       setKey: SettingBoxKey.checkDynamic,
-      onChanged: (value) => Get.find<MainController>().checkDynamic = value,
+      onChanged: (value) => Get.find<MainControllerNotifier>().checkDynamic = value,
       onTap: _showDynDialog,
     ),
   ),
@@ -483,7 +483,7 @@ List<SettingsModel> get extraSettings => [
     defaultVal: false,
     onChanged: (val) {
       try {
-        final controller = Get.find<HomeController>()..enableSearchWord = val;
+        final controller = Get.find<HomeControllerNotifier>()..enableSearchWord = val;
         if (val) {
           controller.querySearchDefault();
         } else {
@@ -778,7 +778,7 @@ void _showDynDialog(BuildContext context) {
               final val = int.parse(dynamicPeriod);
               Get.back();
               GStorage.setting.put(SettingBoxKey.dynamicPeriod, val);
-              Get.find<MainController>().dynamicPeriod = val * 60 * 1000;
+              Get.find<MainControllerNotifier>().dynamicPeriod = val * 60 * 1000;
             } catch (e) {
               SmartDialog.showToast(e.toString());
             }

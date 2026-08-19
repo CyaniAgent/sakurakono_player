@@ -42,17 +42,17 @@ class BiliMineActions implements MineActions {
   ];
 
   @override
-  bool get hasHome => Get.find<MainController>().hasHome;
+  bool get hasHome => Get.find<MainControllerNotifier>().hasHome;
 
   @override
   bool get isMainMineTab {
-    final mainController = Get.find<MainController>();
+    final mainController = Get.find<MainControllerNotifier>();
     return mainController.navigationBars.first.id != MainTabIds.mine &&
         mainController.selectedIndex.value == 0;
   }
 
   @override
-  Widget? buildMsgBadge() => msgBadge(Get.find<MainController>());
+  Widget? buildMsgBadge() => msgBadge(Get.find<MainControllerNotifier>());
 
   @override
   void openSearch() => Get.toNamed('/search');

@@ -148,7 +148,7 @@ List<SettingsModel> get playSettings => [
       defaultVal: false,
       onChanged: (value) {
         try {
-          Get.find<MainController>().pauseOnMinimize = value;
+          Get.find<MainControllerNotifier>().pauseOnMinimize = value;
         } catch (_) {}
       },
     ),

@@ -83,9 +83,11 @@ class OttoAdapter implements AppAdapter {
     Get
       ..lazyPut<DownloadService>(_StubDownloadService.new)
       ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
-      // Generic page bar-state bridges: interface -> generic shell controllers
-      ..lazyPut<MainBarState>(() => Get.find<MainController>())
-      ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
+      // Generic page bar-state bridges: interface -> Riverpod notifiers
+      ..lazyPut<MainControllerNotifier>(MainControllerNotifier.new)
+      ..lazyPut<HomeBarState>(() => Get.find<HomeControllerNotifier>())
+      ..lazyPut<HomeControllerNotifier>(HomeControllerNotifier.new)
+      ..lazyPut<MainBarState>(() => Get.find<MainControllerNotifier>())
       // Main shell host (OttoHub 自定 tab 集)
       ..lazyPut<MainHost>(OttoMainHost.new)
       // Dynamics page host (crash-prevention stub)

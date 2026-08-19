@@ -364,7 +364,7 @@ List<SettingsModel> get styleSettings => [
     leading: const Icon(Icons.exit_to_app_outlined),
     setKey: SettingBoxKey.directExitOnBack,
     defaultVal: false,
-    onChanged: (value) => Get.find<MainController>().directExitOnBack = value,
+    onChanged: (value) => Get.find<MainControllerNotifier>().directExitOnBack = value,
   ),
   if (Platform.isAndroid)
     NormalModel(
@@ -722,7 +722,7 @@ Future<void> _showDynBadgeDialog(
     ),
   );
   if (res != null) {
-    final mainController = Get.find<MainController>()
+    final mainController = Get.find<MainControllerNotifier>()
       ..dynamicBadgeMode = DynamicBadgeMode.values[res.index];
     if (mainController.dynamicBadgeMode != DynamicBadgeMode.hidden) {
       mainController.getUnreadDynamic();
@@ -749,7 +749,7 @@ Future<void> _showMsgBadgeDialog(
     ),
   );
   if (res != null) {
-    final mainController = Get.find<MainController>()
+    final mainController = Get.find<MainControllerNotifier>()
       ..msgBadgeMode = DynamicBadgeMode.values[res.index];
     if (mainController.msgBadgeMode != DynamicBadgeMode.hidden) {
       mainController.queryUnreadMsg(true);
@@ -775,7 +775,7 @@ Future<void> _showMsgUnReadDialog(
     ),
   );
   if (res != null) {
-    final mainController = Get.find<MainController>()..msgUnReadTypes = res;
+    final mainController = Get.find<MainControllerNotifier>()..msgUnReadTypes = res;
     if (mainController.msgBadgeMode != DynamicBadgeMode.hidden) {
       mainController.queryUnreadMsg();
     }

@@ -48,7 +48,7 @@ class BiliDynamicsHost implements DynamicsHost {
 
   @override
   bool get isMainDynamicsTab {
-    final mainController = Get.find<MainController>();
+    final mainController = Get.find<MainControllerNotifier>();
     return mainController.navigationBars.first.id != MainTabIds.dynamics &&
         mainController.selectedIndex.value == 0;
   }
