@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/pages/setting/widgets/switch_item.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/filtering_text.dart';
 import 'package:skf/utils/storage.dart';
@@ -10,7 +11,6 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 
 class PlaySpeedPage extends StatefulWidget {
@@ -80,7 +80,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
         ),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '取消',
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
@@ -93,7 +93,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
                 if (speedList.contains(val)) {
                   SmartDialog.showToast('该倍速已存在');
                 } else {
-                  Get.back();
+                  AppNavigator.back();
                   speedList
                     ..add(val)
                     ..sort();
@@ -132,7 +132,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
                     ? false
                     : true,
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   menuAction(index, item.id);
                 },
                 minLeadingWidth: 0,

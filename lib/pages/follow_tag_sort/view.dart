@@ -1,17 +1,24 @@
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/reorder_mixin.dart';
 import 'package:skf/core/models/member_types.dart' show CoreMemberTagItemModel;
 import 'package:skf/core/repository/follow_repository.dart';
-import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/controller.dart';
 import 'package:skf/pages/follow/follow_models.dart' show isCustomFollowTag;
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 class FollowTagSortPage extends StatefulWidget {
-  const FollowTagSortPage({super.key, required this.controller});
+  const FollowTagSortPage({
+    super.key,
+    required this.notifier,
+    required this.initialTabs,
+  });
 
-  final FollowController controller;
+  final FollowControllerNotifier notifier;
+  final List<CoreMemberTagItemModel> initialTabs;
 
   @override
   State<FollowTagSortPage> createState() => _FollowTagSortPageState();
@@ -19,13 +26,14 @@ class FollowTagSortPage extends StatefulWidget {
 
 class _FollowTagSortPageState extends State<FollowTagSortPage>
     with ReorderMixin {
-  final List<CoreMemberTagItemModel> _defTags = <CoreMemberTagItemModel>[];
-  final List<CoreMemberTagItemModel> _customTags = <CoreMemberTagItemModel>[];
-
+  List<CoreMemberTagItemModel> _defTags = <CoreMemberTagItemModel>[];
+  List<CoreMemberTagItemModel> _customTags = <CoreMemberTagItemModel>[];
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void initState() {
     super.initState();
-    for (final e in widget.controller.tabs) {
+    for (final e in widget.initialTabs) {
       if (isCustomFollowTag(e.tagid)) {
         _customTags.add(e);
       } else {
@@ -44,18 +52,18 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
             ? [
                 TextButton(
                   onPressed: () async {
-                    final res = await Get.find<FollowRepository>().sortFollowTag(
+                    final res = await (_ref?.read(followRepositoryProvider) ?? Get.find<FollowRepository>()).sortFollowTag(
                       tagids: _customTags.map((e) => e.tagid).join(','),
                     );
                     if (res.isSuccess) {
                       SmartDialog.showToast('排序完成');
                       final tabs = _defTags + _customTags;
-                      widget.controller
-                        ..tabs.value = tabs
-                        ..onInitTab()
-                        ..followState.value = Success(tabs.hashCode);
+                      widget.notifier.state = widget.notifier.state.copyWith(
+                        tabs: tabs,
+                        currentTabIndex: 0,
+                      );
                       if (mounted) {
-                        Get.back();
+                        AppNavigator.back();
                       }
                     } else {
                       res.toast();

@@ -1,5 +1,5 @@
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 Future<bool> showConfirmDialog({
   required BuildContext context,
@@ -15,7 +15,7 @@ Future<bool> showConfirmDialog({
           content: content,
           actions: [
             TextButton(
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               child: Text(
                 '取消',
                 style: TextStyle(
@@ -25,7 +25,7 @@ Future<bool> showConfirmDialog({
             ),
             TextButton(
               onPressed: () {
-                Get.back(result: true);
+                AppNavigator.back(result: true);
                 onConfirm?.call();
               },
               child: const Text('确认'),
@@ -77,7 +77,7 @@ void showPgcFollowDialog({
             enabled: followStatus != item.followStatus,
             text: item.title,
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               onUpdateStatus(item.followStatus);
             },
           ),
@@ -92,7 +92,7 @@ void showPgcFollowDialog({
             ),
           ),
           onTap: () {
-            Get.back();
+            AppNavigator.back();
             onUpdateStatus(-1);
           },
         ),

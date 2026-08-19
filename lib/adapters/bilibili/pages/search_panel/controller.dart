@@ -85,8 +85,10 @@ class SearchPanelController<R extends SearchNumData<T>, T>
   @override
   bool customHandleResponse(bool isRefresh, Success<R> response) {
     if (isRefresh) {
-      searchResultController?.count[searchType.index] =
-          response.response.numResults ?? 0;
+      searchResultController?.updateCount(
+        searchType.index,
+        response.response.numResults ?? 0,
+      );
     }
     return false;
   }

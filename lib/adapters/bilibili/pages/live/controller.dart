@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+
 import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/repository/live_repository.dart';
@@ -10,6 +13,8 @@ import 'package:flutter/widgets.dart' show ScrollController;
 import 'package:get/get.dart';
 
 class LiveController extends CommonListController with AccountMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void onInit() {
     super.onInit();
@@ -75,14 +80,14 @@ class LiveController extends CommonListController with AccountMixin {
   Future<LoadingState> customGetData() async {
     final LoadingState biliResult;
     if (areaIndex.value != 0) {
-      biliResult = await Get.find<LiveRepository>().liveSecondList(
+      biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveSecondList(
         pn: page,
         areaId: areaId,
         parentAreaId: parentAreaId,
         sortType: sortType,
       );
     } else {
-      biliResult = await Get.find<LiveRepository>().liveFeedIndex(pn: page);
+      biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveFeedIndex(pn: page);
     }
     return switch (biliResult) {
       Loading _ => LoadingState.loading(),
@@ -104,7 +109,7 @@ class LiveController extends CommonListController with AccountMixin {
   }
 
   Future<void> queryTop() async {
-    final biliResult = await Get.find<LiveRepository>().liveFeedIndex(pn: page, moduleSelect: true);
+    final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveFeedIndex(pn: page, moduleSelect: true);
     final res = switch (biliResult) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

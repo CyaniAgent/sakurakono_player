@@ -20,14 +20,16 @@ class FollowChildPage extends StatefulWidget {
   const FollowChildPage({
     super.key,
     this.tag,
-    this.controller,
+    this.followState,
+    this.notifier,
     required this.mid,
     this.tagid,
     this.onSelect,
   });
 
   final String? tag;
-  final FollowController? controller;
+  final FollowState? followState;
+  final FollowControllerNotifier? notifier;
   final int mid;
   final int? tagid;
   final ValueChanged<UserModel>? onSelect;
@@ -57,7 +59,12 @@ class _FollowChildPageState extends State<FollowChildPage>
   void _initController() {
     _tag = _newTag;
     _followController = Get.put(
-      FollowChildController(widget.controller, widget.mid, widget.tagid),
+      FollowChildController(
+        widget.followState,
+        widget.notifier,
+        widget.mid,
+        widget.tagid,
+      ),
       tag: _tag,
     );
   }
@@ -107,7 +114,7 @@ class _FollowChildPageState extends State<FollowChildPage>
       ),
     );
     if (widget.onSelect != null ||
-        (widget.controller?.isOwner == true && widget.tagid == null)) {
+        (widget.followState?.isOwner == true && widget.tagid == null)) {
       return Stack(
         clipBehavior: Clip.none,
         children: [
@@ -172,7 +179,7 @@ class _FollowChildPageState extends State<FollowChildPage>
                   final item = response[index];
                   return FollowItem(
                     item: item,
-                    isOwner: widget.controller?.isOwner,
+                    isOwner: widget.followState?.isOwner,
                     onSelect: widget.onSelect,
                     afterMod: (attr) {
                       item.attribute = attr == 0 ? -1 : 0;
@@ -217,7 +224,7 @@ class _FollowChildPageState extends State<FollowChildPage>
                           moreTextButton(
                             onTap: () => FollowSamePage.toFollowSamePage(
                               mid: _followController.mid,
-                              name: widget.controller?.name.value,
+                              name: widget.followState?.name,
                             ),
                             color: colorScheme.outline,
                           ),
@@ -254,5 +261,5 @@ class _FollowChildPageState extends State<FollowChildPage>
 
   @override
   bool get wantKeepAlive =>
-      widget.onSelect != null || widget.controller?.tabController != null;
+      widget.onSelect != null || widget.followState != null;
 }

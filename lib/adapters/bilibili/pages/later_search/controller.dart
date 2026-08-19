@@ -2,6 +2,8 @@
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
@@ -14,6 +16,10 @@ class LaterSearchController
         DeleteItemMixin,
         BaseLaterController {
   dynamic mid;
+
+  ProviderContainer? _ref;
+  @override
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   dynamic count;
 
   @override
@@ -26,7 +32,7 @@ class LaterSearchController
 
   @override
   Future<LoadingState<CoreLaterData>> customGetData() async {
-    final result = await Get.find<UserRepository>().seeYouLater(
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).seeYouLater(
     page: page,
     keyword: editController.value.text,
   );

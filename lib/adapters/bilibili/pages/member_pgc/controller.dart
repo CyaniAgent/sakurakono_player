@@ -3,6 +3,8 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/pages/member/controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
 
 class MemberBangumiCtr
@@ -15,6 +17,8 @@ class MemberBangumiCtr
   final int mid;
   final String? heroTag;
   int? count;
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late final _ctr = Get.find<MemberController>(tag: heroTag);
 
   @override
@@ -46,7 +50,7 @@ class MemberBangumiCtr
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await Get.find<MemberRepository>().spaceArchive(
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArchive(
       type: CoreContributeType.bangumi,
       mid: mid,
       pn: page,

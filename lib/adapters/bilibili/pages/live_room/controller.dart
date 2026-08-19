@@ -1,3 +1,7 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+
 import 'dart:async' show Timer, StreamSubscription;
 import 'dart:convert' show jsonDecode;
 import 'dart:math' as math;
@@ -39,6 +43,8 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class LiveRoomController extends GetxController {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   LiveRoomController(this.heroTag);
   final String heroTag;
 
@@ -172,7 +178,7 @@ class LiveRoomController extends GetxController {
     queryLiveUrl(autoFullScreenFlag: true);
     queryLiveInfoH5();
     if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
-      Get.find<VideoRepository>().roomEntryAction(roomId: roomId);
+      (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).roomEntryAction(roomId: roomId);
     }
     if (showSuperChat) {
       pageController = PageController();
@@ -199,7 +205,7 @@ class LiveRoomController extends GetxController {
     currentQn ??= await ConnectivityUtils.isWiFi
         ? Pref.liveQuality
         : Pref.liveQualityCellular;
-    final res = await Get.find<LiveRepository>().liveRoomInfo(
+    final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomInfo(
       roomId: roomId,
       qn: currentQn,
       onlyAudio: plPlayerController.onlyPlayAudio.value,
@@ -300,7 +306,7 @@ class LiveRoomController extends GetxController {
   }
 
   Future<void> queryLiveInfoH5() async {
-    final res = await Get.find<LiveRepository>().liveRoomInfoH5(roomId: roomId);
+    final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomInfoH5(roomId: roomId);
     if (res case Success(:final response)) {
       roomInfoH5.value = response;
       title.value = response.roomInfo?.title ?? '';
@@ -383,7 +389,7 @@ class LiveRoomController extends GetxController {
 
   @pragma('vm:notify-debugger-on-exception')
   Future<void> prefetch() async {
-    final res = await Get.find<LiveRepository>().liveRoomDmPrefetch(roomId: roomId);
+    final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomDmPrefetch(roomId: roomId);
     if (res case Success(:final response)) {
       if (response != null && response.isNotEmpty) {
         messages.addAll(response);
@@ -397,7 +403,7 @@ class LiveRoomController extends GetxController {
   }
 
   Future<void> getSuperChatMsg() async {
-    final res = await Get.find<LiveRepository>().superChatMsg(roomId);
+    final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).superChatMsg(roomId);
     if (res.dataOrNull?.list case final list?) {
       superChatMsg.addAll(list);
     }
@@ -421,7 +427,7 @@ class LiveRoomController extends GetxController {
       initDm(dmInfo!);
       return;
     }
-      Get.find<LiveRepository>().liveRoomGetDanmakuToken(roomId: roomId).then((res) {
+      (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomGetDanmakuToken(roomId: roomId).then((res) {
         if (res case Success(:final response)) {
           initDm(dmInfo = response);
         }
@@ -658,7 +664,7 @@ class LiveRoomController extends GetxController {
       likeClickTime.value = 0;
       return;
     }
-    final res = await Get.find<LiveRepository>().liveLikeReport(
+    final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveLikeReport(
       clickTime: likeClickTime.value,
       roomId: roomId,
       uid: mid,
@@ -716,7 +722,7 @@ class LiveRoomController extends GetxController {
       ban: false,
       ReportOptions.liveDanmakuReport,
       (reasonType, reasonDesc, banUid) {
-        return Get.find<LiveRepository>().superChatReport(
+        return (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).superChatReport(
           id: item.id,
           roomId: roomId,
           uid: item.uid,

@@ -1,43 +1,56 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/common/widgets/dialog/export_import.dart';
 import 'package:skf/common/widgets/disabled_icon.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/sliver_wrap.dart';
-import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/search_types.dart';
+import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/search/controller.dart';
 import 'package:skf/pages/search/widgets/hot_keyword.dart';
 import 'package:skf/pages/search/widgets/search_text.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/em.dart' show Em;
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/utils.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage> {
   final _tag = Utils.generateRandomString(6);
-  late final SSearchController _searchController;
   late ThemeData theme;
   late bool isPortrait;
   late EdgeInsets padding;
 
-  @override
-  void initState() {
-    super.initState();
-    _searchController = Get.put(
-      SSearchController(_tag),
-      tag: _tag,
-    );
+  SSearchParams get _params => (
+        tag: _tag,
+        hintText: _getHintText(),
+        text: _getText(),
+      );
+
+  String? _getHintText() {
+    final route = ModalRoute.of(context);
+    if (route?.settings.arguments is Map) {
+      return (route!.settings.arguments as Map)['hintText'] as String?;
+    }
+    return null;
+  }
+
+  String? _getText() {
+    final route = ModalRoute.of(context);
+    if (route?.settings.arguments is Map) {
+      return (route!.settings.arguments as Map)['text'] as String?;
+    }
+    return null;
   }
 
   @override
@@ -50,34 +63,34 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final trending = _searchController.enableTrending
-        ? _buildHotSearch()
-        : null;
-    final rcmd = _searchController.enableSearchRcmd
-        ? _buildHotSearch(isTrending: false)
+    final ctrl = ref.watch(sSearchProvider(_params));
+
+    final trending =
+        ctrl.enableTrending ? _buildHotSearch(ctrl) : null;
+    final rcmd = ctrl.enableSearchRcmd
+        ? _buildHotSearch(ctrl, isTrending: false)
         : null;
 
     return Scaffold(
-      appBar: _buildAppBar,
+      appBar: _buildAppBar(ctrl),
       body: Padding(
         padding: .only(left: padding.left, right: padding.right),
         child: CustomScrollView(
           slivers: [
-            if (_searchController.searchSuggestion) _buildSearchSuggest(),
+            if (ctrl.searchSuggestion) _buildSearchSuggest(ctrl),
             if (isPortrait) ...[
               ?trending,
-              _buildHistory,
+              _buildHistory(ctrl),
               ?rcmd,
-            ] else if (_searchController.enableTrending ||
-                _searchController.enableSearchRcmd)
+            ] else if (ctrl.enableTrending || ctrl.enableSearchRcmd)
               SliverCrossAxisGroup(
                 slivers: [
                   SliverMainAxisGroup(slivers: [?trending, ?rcmd]),
-                  _buildHistory,
+                  _buildHistory(ctrl),
                 ],
               )
             else
-              _buildHistory,
+              _buildHistory(ctrl),
             SliverPadding(padding: .only(bottom: padding.bottom)),
           ],
         ),
@@ -85,7 +98,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  PreferredSizeWidget get _buildAppBar => AppBar(
+  PreferredSizeWidget _buildAppBar(SSearchController ctrl) => AppBar(
     shape: Border(
       bottom: BorderSide(
         color: theme.dividerColor.withValues(alpha: 0.08),
@@ -93,87 +106,85 @@ class _SearchPageState extends State<SearchPage> {
       ),
     ),
     actions: [
-      Obx(
-        () => _searchController.showUidBtn.value
-            ? IconButton(
-                tooltip: 'UID搜索用户',
-                icon: const Icon(Icons.person_outline, size: 22),
-                onPressed: () => Get.toNamed(
-                  '/member?mid=${_searchController.controller.text}',
-                ),
-              )
-            : const SizedBox.shrink(),
-      ),
+      if (ctrl.showUidBtn)
+        IconButton(
+          tooltip: 'UID搜索用户',
+          icon: const Icon(Icons.person_outline, size: 22),
+          onPressed: () => AppNavigator.toNamed(
+            '/member?mid=${ctrl.controller.text}',
+          ),
+        )
+      else
+        const SizedBox.shrink(),
       IconButton(
         tooltip: '清空',
         icon: const Icon(Icons.clear, size: 22),
-        onPressed: _searchController.onClear,
+        onPressed: ctrl.onClear,
       ),
       IconButton(
         tooltip: '搜索',
-        onPressed: _searchController.submit,
+        onPressed: ctrl.submit,
         icon: const Icon(Icons.search, size: 22),
       ),
       const SizedBox(width: 10),
     ],
     title: TextField(
       autofocus: true,
-      focusNode: _searchController.searchFocusNode,
-      controller: _searchController.controller,
+      focusNode: ctrl.searchFocusNode,
+      controller: ctrl.controller,
       textInputAction: TextInputAction.search,
-      onChanged: _searchController.onChange,
+      onChanged: ctrl.onChange,
       decoration: InputDecoration(
         visualDensity: .standard,
-        hintText: _searchController.hintText ?? '搜索',
+        hintText: ctrl.hintText ?? '搜索',
         border: InputBorder.none,
       ),
-      onSubmitted: (value) => _searchController.submit(),
+      onSubmitted: (value) => ctrl.submit(),
     ),
   );
 
-  Widget _buildSearchSuggest() {
-    return Obx(() {
-      final list = _searchController.searchSuggestList;
-      return list.isNotEmpty &&
-              list.first.term != null &&
-              _searchController.controller.text != ''
-          ? SliverList.list(
-              children: list
-                  .map(
-                    (item) => InkWell(
-                      borderRadius: const .all(.circular(4)),
-                      onTap: () => _searchController.onClickKeyword(item.term!),
-                      child: Padding(
-                        padding: const .only(left: 20, top: 9, bottom: 9),
-                        child: Text.rich(
-                          TextSpan(
-                            children: Em.regTitle(item.textRich)
-                                .map(
-                                  (e) => TextSpan(
-                                    text: e.text,
-                                    style: e.isEm
-                                        ? TextStyle(
-                                            fontWeight: .bold,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                          )
-                                        : null,
-                                  ),
-                                )
-                                .toList(),
-                          ),
+  Widget _buildSearchSuggest(SSearchController ctrl) {
+    final list = ctrl.searchSuggestList;
+    return list.isNotEmpty &&
+            list.first.term != null &&
+            ctrl.controller.text != ''
+        ? SliverList.list(
+            children: list
+                .map(
+                  (item) => InkWell(
+                    borderRadius: const .all(.circular(4)),
+                    onTap: () => ctrl.onClickKeyword(item.term!),
+                    child: Padding(
+                      padding: const .only(left: 20, top: 9, bottom: 9),
+                      child: Text.rich(
+                        TextSpan(
+                          children: Em.regTitle(item.textRich)
+                              .map(
+                                (e) => TextSpan(
+                                  text: e.text,
+                                  style: e.isEm
+                                      ? TextStyle(
+                                          fontWeight: .bold,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        )
+                                      : null,
+                                ),
+                              )
+                              .toList(),
                         ),
                       ),
                     ),
-                  )
-                  .toList(),
-            )
-          : const SliverToBoxAdapter();
-    });
+                  ),
+                )
+                .toList(),
+          )
+        : const SliverToBoxAdapter();
   }
 
-  Widget _buildHotSearch({
+  Widget _buildHotSearch(
+    SSearchController ctrl, {
     bool isTrending = true,
   }) {
     final text = Text(
@@ -194,9 +205,7 @@ class _SearchPageState extends State<SearchPage> {
     return SliverPadding(
       padding: .fromLTRB(
         10,
-        !isTrending && (isPortrait || _searchController.enableTrending)
-            ? 4
-            : 25,
+        !isTrending && (isPortrait || ctrl.enableTrending) ? 4 : 25,
         4,
         25,
       ),
@@ -222,7 +231,8 @@ class _SearchPageState extends State<SearchPage> {
                                   .symmetric(horizontal: 10),
                                 ),
                               ),
-                              onPressed: () => Get.toNamed('/searchTrending'),
+                              onPressed: () =>
+                                  AppNavigator.toNamed('/searchTrending'),
                               child: Row(
                                 children: [
                                   Text(
@@ -253,8 +263,8 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                     onPressed: isTrending
-                        ? _searchController.queryTrendingList
-                        : _searchController.queryRecommendList,
+                        ? ctrl.queryTrendingList
+                        : ctrl.queryRecommendList,
                     icon: Icon(
                       Icons.refresh_outlined,
                       size: 18,
@@ -270,12 +280,94 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-          Obx(
-            () => _buildHotKey(
-              isTrending
-                  ? _searchController.trendingState.value
-                  : _searchController.recommendData.value,
-              isTrending,
+          _buildHotKey(
+            ctrl,
+            isTrending ? ctrl.trendingState : ctrl.recommendData,
+            isTrending,
+          ),
+        ],
+      ),
+    );
+  }
+
+  late final mainAxisExtent =
+      16 + MediaQuery.textScalerOf(context).scale(14);
+
+  Widget _buildHistory(SSearchController ctrl) {
+    final list = ctrl.historyList;
+    if (list.isEmpty) {
+      return const SliverToBoxAdapter();
+    }
+    final secondary = theme.colorScheme.secondary;
+    return SliverPadding(
+      padding: .fromLTRB(
+        10,
+        !isPortrait
+            ? 25
+            : ctrl.enableTrending
+                ? 0
+                : 6,
+        6,
+        25,
+      ),
+      sliver: SliverMainAxisGroup(
+        slivers: [
+          SliverPadding(
+            padding: const .fromLTRB(6, 0, 6, 6),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  Text(
+                    '搜索历史',
+                    strutStyle: const StrutStyle(leading: 0, height: 1),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                      height: 1,
+                      fontWeight: .bold,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _recordBtn(ctrl),
+                  _exportBtn(ctrl),
+                  const Spacer(),
+                  TextButton.icon(
+                    style: const ButtonStyle(
+                      visualDensity: .compact,
+                      tapTargetSize: .shrinkWrap,
+                      padding: WidgetStatePropertyAll(
+                        .symmetric(horizontal: 10),
+                      ),
+                    ),
+                    onPressed: ctrl.onClearHistory,
+                    icon: Icon(
+                      Icons.clear_all_outlined,
+                      size: 18,
+                      color: secondary,
+                    ),
+                    label: Text(
+                      '清空',
+                      style: TextStyle(height: 1, color: secondary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverFixedWrap(
+            mainAxisExtent: mainAxisExtent,
+            spacing: 8,
+            runSpacing: 8,
+            delegate: SliverChildBuilderDelegate(
+              addAutomaticKeepAlives: false,
+              addRepaintBoundaries: false,
+              childCount: list.length,
+              (context, index) => SearchText(
+                text: list[index],
+                onTap: ctrl.onClickKeyword,
+                onLongPress: ctrl.onLongSelect,
+                fontSize: 14,
+                height: 1,
+                padding: const .fromLTRB(11, 8, 11, 0),
+              ),
             ),
           ),
         ],
@@ -283,124 +375,34 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  late final mainAxisExtent = 16 + MediaQuery.textScalerOf(context).scale(14);
-  Widget get _buildHistory {
-    return Obx(
-      () {
-        final list = _searchController.historyList;
-        if (list.isEmpty) {
-          return const SliverToBoxAdapter();
-        }
-        final secondary = theme.colorScheme.secondary;
-        return SliverPadding(
-          padding: .fromLTRB(
-            10,
-            !isPortrait
-                ? 25
-                : _searchController.enableTrending
-                ? 0
-                : 6,
-            6,
-            25,
-          ),
-          sliver: SliverMainAxisGroup(
-            slivers: [
-              SliverPadding(
-                padding: const .fromLTRB(6, 0, 6, 6),
-                sliver: SliverToBoxAdapter(
-                  child: Row(
-                    children: [
-                      Text(
-                        '搜索历史',
-                        strutStyle: const StrutStyle(leading: 0, height: 1),
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          height: 1,
-                          fontWeight: .bold,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      _recordBtn,
-                      _exportBtn,
-                      const Spacer(),
-                      TextButton.icon(
-                        style: const ButtonStyle(
-                          visualDensity: .compact,
-                          tapTargetSize: .shrinkWrap,
-                          padding: WidgetStatePropertyAll(
-                            .symmetric(horizontal: 10),
-                          ),
-                        ),
-                        onPressed: _searchController.onClearHistory,
-                        icon: Icon(
-                          Icons.clear_all_outlined,
-                          size: 18,
-                          color: secondary,
-                        ),
-                        label: Text(
-                          '清空',
-                          style: TextStyle(height: 1, color: secondary),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverFixedWrap(
-                mainAxisExtent: mainAxisExtent,
-                spacing: 8,
-                runSpacing: 8,
-                delegate: SliverChildBuilderDelegate(
-                  addAutomaticKeepAlives: false,
-                  addRepaintBoundaries: false,
-                  childCount: list.length,
-                  (context, index) => SearchText(
-                    text: list[index],
-                    onTap: _searchController.onClickKeyword,
-                    onLongPress: _searchController.onLongSelect,
-                    fontSize: 14,
-                    height: 1,
-                    padding: const .fromLTRB(11, 8, 11, 0),
-                  ),
-                ),
-              ),
-            ],
-          ),
+  Widget _recordBtn(SSearchController ctrl) {
+    final enable = ctrl.recordSearchHistory;
+    return IconButton(
+      iconSize: 22,
+      tooltip: enable ? '记录搜索' : '无痕搜索',
+      icon: DisabledIcon(
+        disable: !enable,
+        child: Icon(
+          Icons.history,
+          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+        ),
+      ),
+      style: const ButtonStyle(
+        visualDensity: .comfortable,
+        tapTargetSize: .shrinkWrap,
+        padding: WidgetStatePropertyAll(.zero),
+      ),
+      onPressed: () {
+        ctrl.recordSearchHistory = !enable;
+        GStorage.setting.put(
+          SettingBoxKey.recordSearchHistory,
+          !enable,
         );
       },
     );
   }
 
-  Widget get _recordBtn => Obx(
-    () {
-      bool enable = _searchController.recordSearchHistory.value;
-      return IconButton(
-        iconSize: 22,
-        tooltip: enable ? '记录搜索' : '无痕搜索',
-        icon: DisabledIcon(
-          disable: !enable,
-          child: Icon(
-            Icons.history,
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-          ),
-        ),
-        style: const ButtonStyle(
-          visualDensity: .comfortable,
-          tapTargetSize: .shrinkWrap,
-          padding: WidgetStatePropertyAll(.zero),
-        ),
-        onPressed: () {
-          enable = !enable;
-          _searchController.recordSearchHistory.value = enable;
-          GStorage.setting.put(
-            SettingBoxKey.recordSearchHistory,
-            enable,
-          );
-        },
-      );
-    },
-  );
-
-  Widget get _exportBtn => IconButton(
+  Widget _exportBtn(SSearchController ctrl) => IconButton(
     iconSize: 22,
     tooltip: '导入/导出历史记录',
     icon: Icon(
@@ -416,16 +418,16 @@ class _SearchPageState extends State<SearchPage> {
       context,
       title: '历史记录',
       localFileName: () => 'search',
-      onExport: () => jsonEncode(_searchController.historyList),
+      onExport: () => jsonEncode(ctrl.historyList),
       onImport: (json) {
         final list = List<String>.from(json);
-        _searchController.historyList.value = list;
-        GStorage.historyWord.put('cacheList', list);
+        ctrl.importHistory(list);
       },
     ),
   );
 
   Widget _buildHotKey(
+    SSearchController ctrl,
     LoadingState<CoreSearchRcmdData> loadingState,
     bool isTrending,
   ) {
@@ -433,14 +435,14 @@ class _SearchPageState extends State<SearchPage> {
       Success(:final response) when (response.list?.isNotEmpty ?? false) =>
         SliverHotKeyword(
           hotSearchList: response.list!,
-          onClick: _searchController.onClickKeyword,
+          onClick: ctrl.onClickKeyword,
         ),
       Error(:final errMsg) => HttpError(
         safeArea: false,
         errMsg: errMsg,
         onReload: isTrending
-            ? _searchController.queryTrendingList
-            : _searchController.queryRecommendList,
+            ? ctrl.queryTrendingList
+            : ctrl.queryRecommendList,
       ),
       _ => const SliverToBoxAdapter(),
     };

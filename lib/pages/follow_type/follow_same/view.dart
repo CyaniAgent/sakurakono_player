@@ -1,5 +1,6 @@
 import 'package:skf/pages/follow_type/follow_same/controller.dart';
 import 'package:skf/pages/follow_type/view.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/utils.dart';
@@ -14,7 +15,7 @@ class FollowSamePage extends StatefulWidget {
 
   static void toFollowSamePage({dynamic mid, String? name}) {
     if (mid == null) return;
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/sameFollowing',
       arguments: {
         'mid': safeToInt(mid),
@@ -28,7 +29,7 @@ class _FollowSamePageState extends FollowTypePageState<FollowSamePage> {
   @override
   final controller = Get.putOrFind(
     FollowSameController.new,
-    tag: Get.arguments?['mid']?.toString() ?? Utils.generateRandomString(8),
+    tag: AppNavigator.arguments?['mid']?.toString() ?? Utils.generateRandomString(8),
   );
 
   @override

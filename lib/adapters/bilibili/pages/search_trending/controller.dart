@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -6,6 +8,8 @@ import 'package:skf/pages/common/common_list_controller.dart';
 
 class SearchTrendingController
     extends CommonListController<CoreSearchTrendingData, CoreSearchTrendingItemModel> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   int topCount = 0;
 
   @override
@@ -22,7 +26,7 @@ class SearchTrendingController
 
   @override
   Future<LoadingState<CoreSearchTrendingData>> customGetData() async {
-    final result = await Get.find<SearchRepository>().searchTrending(needsTop: true);
+    final result = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).searchTrending(needsTop: true);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

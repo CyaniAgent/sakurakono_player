@@ -1,3 +1,4 @@
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
@@ -6,14 +7,17 @@ import 'package:skf/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 class ActionPanel extends StatelessWidget {
   const ActionPanel({
     super.key,
     required this.item,
+    this.ref,
   });
   final CoreDynamicItemModel item;
+  final Ref? ref;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +145,7 @@ class ActionPanel extends StatelessWidget {
       onSuccess();
       return;
     }
-    final res = await Get.find<DynamicsRepository>().thumbDynamic(
+    final res = await (ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).thumbDynamic(
       dynamicId: item.idStr!,
       up: status ? 2 : 1,
     );

@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:skf/adapters/bilibili/services/bili_account_provider.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
@@ -335,7 +336,7 @@ class BiliBridge {
     GetPage(name: '/dynTopicRcmd', page: () => const DynTopicRcmdPage()),
     GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
     GetPage(name: '/msgLikeDetail', page: () => const LikeDetailPage()),
-    GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage()),
+    GetPage(name: '/liveDmBlockPage', page: () => LiveDmBlockPage(roomId: Get.parameters['roomId']!)),
     GetPage(name: '/createVote', page: () => const CreateVotePage()),
     GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
     GetPage(name: '/popularSeries', page: () => const PopularSeriesPage()),
@@ -353,5 +354,13 @@ class BiliBridge {
     GetPage(name: '/bubble', page: () => const BubblePage()),
     ];
     return routes;
+  }
+
+  /// Convert GetX GetPage routes to GoRouter GoRoute routes.
+  static List<GoRoute> buildRoutes() {
+    return registerRoutes().map((page) => GoRoute(
+      path: page.name,
+      builder: (context, state) => page.page(),
+    )).toList();
   }
 }

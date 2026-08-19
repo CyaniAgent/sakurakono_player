@@ -11,7 +11,6 @@ import 'package:skf/adapters/bilibili/pages/member_article/widget/item.dart';
 import 'package:skf/adapters/bilibili/pages/member_audio/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/member_coin_arc/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_comic/widgets/item.dart';
-import 'package:skf/adapters/bilibili/pages/member_contribute/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_home/widgets/fav_item.dart';
 import 'package:skf/adapters/bilibili/pages/member_home/widgets/video_card_v_member_home.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
@@ -332,19 +331,7 @@ class _MemberHomeState extends State<MemberHome>
                       (item) => item.param == param1,
                     );
                     if (index1 != -1) {
-                      try {
-                        final contributeCtr = Get.find<MemberContributeCtr>(
-                          tag: widget.heroTag,
-                        );
-                        // contributeCtr.tabController?.animateTo(index1);
-                        if (contributeCtr.tabController?.index != index1) {
-                          contributeCtr.tabController?.index = index1;
-                        }
-                        // if (kDebugMode) debugPrint('initialized');
-                      } catch (e) {
-                        _ctr.contributeInitialIndex.value = index1;
-                        // if (kDebugMode) debugPrint('not initialized');
-                      }
+                      _ctr.contributeInitialIndex.value = index1;
                     }
                   }
                   _ctr.tabController?.animateTo(index);

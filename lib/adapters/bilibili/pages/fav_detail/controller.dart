@@ -16,11 +16,15 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show Text, ValueChanged;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 mixin BaseFavController
     on
         CommonListController<CoreFavDetailData, CoreFavDetailItemModel>,
         DeleteItemMixin<CoreFavDetailData, CoreFavDetailItemModel> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   bool get isOwner;
   int get mediaId;
 
@@ -29,7 +33,7 @@ mixin BaseFavController
   void onViewFav(CoreFavDetailItemModel item, int? index);
 
   Future<void> onCancelFav(int index, int id, int type) async {
-    final res = await Get.find<FavRepository>().favVideo(
+    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
       resources: '$id:$type',
       delIds: mediaId.toString(),
     );
@@ -52,7 +56,7 @@ mixin BaseFavController
       content: const Text('确认删除所选收藏吗？'),
       onConfirm: () async {
         final removeList = allChecked.toSet();
-        final res = await Get.find<FavRepository>().favVideo(
+        final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
           resources: removeList
               .map((item) => '${item.id}:${item.type}')
               .join(','),
@@ -140,7 +144,7 @@ class FavDetailController
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
-    final result = await Get.find<FavRepository>().userFavFolderDetail(
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userFavFolderDetail(
         pn: page,
         ps: 20,
         mediaId: mediaId,
@@ -180,8 +184,8 @@ class FavDetailController
       return;
     }
     final res = isFav
-        ? await Get.find<FavRepository>().unfavFavFolder(mediaId)
-        : await Get.find<FavRepository>().favFavFolder(mediaId);
+        ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).unfavFavFolder(mediaId)
+        : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favFavFolder(mediaId);
 
     if (res.isSuccess) {
       folderInfo
@@ -194,7 +198,7 @@ class FavDetailController
   }
 
   Future<void> cleanFav() async {
-    final res = await Get.find<FavRepository>().cleanFav(mediaId: mediaId.toString());
+    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).cleanFav(mediaId: mediaId.toString());
     if (res.isSuccess) {
       SmartDialog.showToast('清除成功');
       Future.delayed(const Duration(milliseconds: 200), onReload);

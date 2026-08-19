@@ -22,10 +22,26 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
-abstract class CommonIntroController extends GetxController
-    with GetSingleTickerProviderStateMixin, TripleMixin, FavMixin {
+/// Minimal state class for CommonIntroController.
+///
+/// Phase 3: empty — reactive fields (.obs) remain on the controller.
+/// Phase 4 will migrate them here.
+class CommonIntroState {
+  const CommonIntroState();
+}
+
+abstract class CommonIntroController extends StateNotifier<CommonIntroState>
+    with TripleMixin, FavMixin {
+  CommonIntroController() : super(const CommonIntroState()) {
+    onInit();
+  }
+
+  /// GetxController compatibility — StateNotifier uses [mounted].
+  bool get isClosed => !mounted;
   late final String heroTag;
   late String bvid;
 
@@ -71,9 +87,7 @@ abstract class CommonIntroController extends GetxController
 
   late final videoDetailCtr = Get.find<VideoDetailController>(tag: heroTag);
 
-  @override
   void onInit() {
-    super.onInit();
     final args = Get.arguments;
     heroTag = args['heroTag'];
     bvid = args['bvid'];
@@ -103,7 +117,7 @@ abstract class CommonIntroController extends GetxController
     if (!isShowOnlineTotal) {
       return;
     }
-    final result = await Get.find<VideoRepository>().onlineTotal(
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).onlineTotal(
       aid: IdUtils.bv2av(bvid),
       bvid: bvid,
       cid: cid.value,
@@ -113,10 +127,9 @@ abstract class CommonIntroController extends GetxController
     }
   }
 
-  @override
   void onClose() {
     cancelTimer();
-    super.onClose();
+    disposeTriple();
   }
 
   @override
@@ -125,7 +138,7 @@ abstract class CommonIntroController extends GetxController
     if (stat == null) {
       return;
     }
-    final res = await Get.find<VideoRepository>().coinVideo(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).coinVideo(
       bvid: bvid,
       multiply: coin,
       selectLike: coinWithLike ? 1 : 0,
@@ -145,19 +158,21 @@ abstract class CommonIntroController extends GetxController
   }
 
   Future<void> queryVideoTags() async {
-    final result = await Get.find<UserRepository>().videoTags(bvid: bvid, cid: cid.value);
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).videoTags(bvid: bvid, cid: cid.value);
     videoTags.value = result.dataOrNull;
   }
 
   Future<void> viewLater() async {
     final res = await (hasLater.value
-? Get.find<UserRepository>().toViewDel(aids: IdUtils.bv2av(bvid).toString())
-   : Get.find<UserRepository>().toViewLater(bvid: bvid));
+? (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewDel(aids: IdUtils.bv2av(bvid).toString())
+   : (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewLater(bvid: bvid));
     if (res.isSuccess) hasLater.toggle();
   }
 }
 
 mixin FavMixin on TripleMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   Set? favIds;
   int? quickFavId;
   late final enableQuickFav = Pref.enableQuickFav;
@@ -168,7 +183,7 @@ mixin FavMixin on TripleMixin {
   Future<LoadingState<CoreFavFolderData>> queryVideoInFolder() async {
     favIds = null;
     final (rid, type) = getFavRidType;
-    final res = await Get.find<FavRepository>().videoInFolder(
+    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).videoInFolder(
       mid: Accounts.main.mid,
       rid: rid,
       type: type,
@@ -235,8 +250,8 @@ mixin FavMixin on TripleMixin {
         if (res.isSuccess) {
           final hasFav = this.hasFav.value;
           final result = hasFav
-? await Get.find<FavRepository>().unfavAll(rid, type)
-   : await Get.find<FavRepository>().favVideo(
+? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).unfavAll(rid, type)
+   : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
                   resources: '$rid:$type',
                   addIds: favFolderId.toString(),
                 );
@@ -274,7 +289,7 @@ mixin FavMixin on TripleMixin {
       if (kDebugMode) debugPrint(e.toString());
     }
     SmartDialog.showLoading(msg: '请求中');
-    final result = await Get.find<FavRepository>().favVideo(
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
       resources: '$rid:$type',
       addIds: addMediaIdsNew.join(','),
       delIds: delMediaIdsNew.join(','),

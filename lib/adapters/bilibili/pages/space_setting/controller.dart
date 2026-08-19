@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class SpaceSettingController
     extends CommonDataController<CoreSpaceSettingData, CorePrivacy?> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void onInit() {
     super.onInit();
@@ -26,7 +30,7 @@ class SpaceSettingController
 
   @override
   Future<LoadingState<CoreSpaceSettingData>> customGetData() async {
-    final result = await Get.find<UserRepository>().spaceSetting();
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).spaceSetting();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -37,7 +41,7 @@ class SpaceSettingController
   Future<void> onMod() async {
     if (hasMod ?? false) {
       if (loadingState.value case Success(:final response?)) {
-        final res = await Get.find<UserRepository>().spaceSettingMod(
+        final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).spaceSettingMod(
           {
             for (final e in response.list1) e.key: e.value,
             for (final e in response.list2) e.key: e.value,

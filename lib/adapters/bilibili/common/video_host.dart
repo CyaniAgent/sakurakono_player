@@ -8,6 +8,7 @@ import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pbenum.dart'
     show PlaylistSource;
@@ -303,11 +304,16 @@ class BiliVideoPlayerHost implements VideoPlayerHost {
       VideoUtils.getCdnUrl(urls, isAudio: isAudio);
 }
 
-/// B站 片段跳过引擎（BlockMixin 的页面级包装）。
-class BiliVideoBlock extends GetxController
+/// B站 片段跳过引擎的状态。
+class BiliVideoBlockState {
+  const BiliVideoBlockState();
+}
+
+/// B站 片段跳过引擎（StateNotifier + BlockMixin 的页面级包装）。
+class BiliVideoBlockNotifier extends StateNotifier<BiliVideoBlockState>
     with BlockConfigMixin, BlockMixin
     implements VideoBlock {
-  BiliVideoBlock(this._ctr);
+  BiliVideoBlockNotifier(this._ctr) : super(const BiliVideoBlockState());
 
   final VideoDetailController _ctr;
 
@@ -427,10 +433,18 @@ class BiliVideoBlock extends GetxController
 
   @override
   void dispose() {
+    isClosed = true;
     blockListener?.cancel();
+    disposeBlock();
     super.dispose();
   }
 }
+
+/// B站 片段跳过引擎 Provider。
+final biliVideoBlockProvider =
+    StateNotifierProvider.family<BiliVideoBlockNotifier, BiliVideoBlockState, VideoDetailController>(
+  (ref, controller) => BiliVideoBlockNotifier(controller),
+);
 
 /// B站 视频页宿主实现。
 class BiliVideoHost implements VideoHost {
@@ -526,7 +540,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   VideoBlock createBlock(VideoDetailController controller) =>
-      BiliVideoBlock(controller);
+      BiliVideoBlockNotifier(controller);
 
   @override
   void reportVideo(int aid) => PageUtils.reportVideo(aid);

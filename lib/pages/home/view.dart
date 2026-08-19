@@ -13,6 +13,7 @@ import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -154,7 +155,7 @@ class _HomePageState extends CommonPageState<HomePage>
             splashColor: theme.colorScheme.primaryContainer.withValues(
               alpha: 0.3,
             ),
-            onTap: () => Get.toNamed(
+            onTap: () => AppNavigator.toNamed(
               '/search',
               parameters: _homeController.enableSearchWord
                   ? {'hintText': _homeController.defaultSearch.value}
@@ -278,7 +279,7 @@ Widget msgBadge(MainController mainController) {
             mainController
               ..msgUnReadCount.value = ''
               ..lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
-            Get.toNamed('/whisper');
+            AppNavigator.toNamed('/whisper');
           },
           icon: Badge(
             isLabelVisible:

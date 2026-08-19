@@ -1,16 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
-import 'package:skf/core/result/loading_state.dart';
-
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/search_types.dart';
-import 'package:skf/utils/extension/get_ext.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_pref.dart';
-import 'package:flutter/material.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 // 纯数字匹配（uid 判断）——原 IdUtils.digitOnlyRegExp 的等价纯函数
@@ -51,104 +50,137 @@ abstract class DebounceStreamState<T extends StatefulWidget, S> extends State<T>
   }
 }
 
-class BaseSearchController extends GetxController {
+// ---------------------------------------------------------------------------
+// BaseSearchController — shared state (trending, history, prefs)
+// ---------------------------------------------------------------------------
+
+class BaseSearchController extends ChangeNotifier {
+  BaseSearchController(this._ref);
+  final Ref _ref;
+
   final historyList = List<String>.from(
     GStorage.historyWord.get('cacheList') ?? const <String>[],
-  ).obs;
+  );
 
-  late final Rx<LoadingState<CoreSearchTrendingData>> trendingState;
+  late LoadingState<CoreSearchTrendingData> trendingState;
 
-  final recordSearchHistory = (Pref.recordSearchHistory).obs;
-  final searchSuggestion = Pref.searchSuggestion;
-  final enableTrending = Pref.enableTrending;
-  final enableSearchRcmd = Pref.enableSearchRcmd;
+  bool _recordSearchHistory = Pref.recordSearchHistory;
+  bool get recordSearchHistory => _recordSearchHistory;
+  set recordSearchHistory(bool value) {
+    _recordSearchHistory = value;
+    notifyListeners();
+  }
 
-  @override
-  void onInit() {
-    super.onInit();
+  final bool searchSuggestion = Pref.searchSuggestion;
+  final bool enableTrending = Pref.enableTrending;
+  final bool enableSearchRcmd = Pref.enableSearchRcmd;
 
+  void init() {
     if (enableTrending) {
-      trendingState = LoadingState<CoreSearchTrendingData>.loading().obs;
+      trendingState = LoadingState<CoreSearchTrendingData>.loading();
       queryTrendingList();
     }
   }
 
   // 获取热搜关键词
   Future<void> queryTrendingList() async {
-    final result = await Get.find<SearchRepository>().searchTrending(limit: 10);
-    trendingState.value = switch (result) {
+    final result =
+        await _ref.read(searchRepositoryProvider).searchTrending(limit: 10);
+    trendingState = switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
+    notifyListeners();
   }
 }
 
-class SSearchController extends GetxController
-    with DebounceStreamMixin<String> {
-  SSearchController(this.tag);
-  final String tag;
+// ---------------------------------------------------------------------------
+// SSearchParams — route params for the per-page search controller
+// ---------------------------------------------------------------------------
 
-  final searchFocusNode = FocusNode();
-  final controller = TextEditingController();
-  final _baseCtr = Get.putOrFind(BaseSearchController.new);
+typedef SSearchParams = ({String tag, String? hintText, String? text});
+
+// ---------------------------------------------------------------------------
+// SSearchController — per-search-page controller (Riverpod ChangeNotifier)
+// ---------------------------------------------------------------------------
+
+class SSearchController extends ChangeNotifier
+    with DebounceStreamMixin<String> {
+  SSearchController(this._ref, this._params)
+      : _baseCtr = _ref.read(baseSearchProvider) {
+    hintText = _params.hintText;
+    final text = _params.text;
+    if (text != null) {
+      _textEditingController.text = text;
+    }
+
+    if (_baseCtr.searchSuggestion) {
+      subInit();
+      _searchSuggestList = [];
+    }
+
+    if (_baseCtr.enableSearchRcmd) {
+      _recommendData = LoadingState<CoreSearchRcmdData>.loading();
+      queryRecommendList();
+    }
+  }
+
+  final Ref _ref;
+  final SSearchParams _params;
+
+  final _searchFocusNode = FocusNode();
+  final _textEditingController = TextEditingController();
+  final BaseSearchController _baseCtr;
 
   String? hintText;
 
   int initIndex = 0;
 
   // uid
-  final RxBool showUidBtn = false.obs;
+  bool showUidBtn = false;
 
   // history
-  RxBool get recordSearchHistory => _baseCtr.recordSearchHistory;
-  RxList<String> get historyList => _baseCtr.historyList;
+  bool get recordSearchHistory => _baseCtr.recordSearchHistory;
+  set recordSearchHistory(bool value) {
+    _baseCtr.recordSearchHistory = value;
+    notifyListeners();
+  }
+
+  List<String> get historyList => _baseCtr.historyList;
 
   // suggestion
   bool get searchSuggestion => _baseCtr.searchSuggestion;
-  late final RxList<CoreSearchSuggestItem> searchSuggestList;
+  late List<CoreSearchSuggestItem> _searchSuggestList;
+  List<CoreSearchSuggestItem> get searchSuggestList => _searchSuggestList;
 
   // trending
   bool get enableTrending => _baseCtr.enableTrending;
-  Rx<LoadingState<CoreSearchTrendingData>> get trendingState =>
+  LoadingState<CoreSearchTrendingData> get trendingState =>
       _baseCtr.trendingState;
 
   // rcmd
   bool get enableSearchRcmd => _baseCtr.enableSearchRcmd;
-  late final Rx<LoadingState<CoreSearchRcmdData>> recommendData;
+  late LoadingState<CoreSearchRcmdData> _recommendData;
+  LoadingState<CoreSearchRcmdData> get recommendData => _recommendData;
 
-  Future<void> Function() get queryTrendingList => _baseCtr.queryTrendingList;
+  Future<void> Function() get queryTrendingList =>
+      _baseCtr.queryTrendingList;
 
-  @override
-  void onInit() {
-    super.onInit();
-    final params = Get.parameters;
-    hintText = params['hintText'];
-    final text = params['text'];
-    if (text != null) {
-      controller.text = text;
-    }
-
-    if (searchSuggestion) {
-      subInit();
-      searchSuggestList = <CoreSearchSuggestItem>[].obs;
-    }
-
-    if (enableSearchRcmd) {
-      recommendData = LoadingState<CoreSearchRcmdData>.loading().obs;
-      queryRecommendList();
-    }
-  }
+  FocusNode get searchFocusNode => _searchFocusNode;
+  TextEditingController get controller => _textEditingController;
 
   void validateUid() {
-    showUidBtn.value = _digitOnlyRegExp.hasMatch(controller.text);
+    showUidBtn = _digitOnlyRegExp.hasMatch(_textEditingController.text);
+    notifyListeners();
   }
 
   void onChange(String value) {
     validateUid();
     if (searchSuggestion) {
       if (value.isEmpty) {
-        searchSuggestList.clear();
+        _searchSuggestList = [];
+        notifyListeners();
       } else {
         ctr!.add(value);
       }
@@ -156,71 +188,82 @@ class SSearchController extends GetxController
   }
 
   void onClear() {
-    if (controller.value.text != '') {
-      controller.clear();
-      if (searchSuggestion) searchSuggestList.clear();
-      searchFocusNode.requestFocus();
-      showUidBtn.value = false;
+    if (_textEditingController.value.text != '') {
+      _textEditingController.clear();
+      if (searchSuggestion) {
+        _searchSuggestList = [];
+        notifyListeners();
+      }
+      _searchFocusNode.requestFocus();
+      showUidBtn = false;
+      notifyListeners();
     } else {
-      Get.back();
+      AppNavigator.back();
     }
   }
 
   // 搜索
   Future<void> submit() async {
-    if (controller.text.isEmpty) {
+    if (_textEditingController.text.isEmpty) {
       if (hintText.isNullOrEmpty) {
         return;
       }
-      controller.text = hintText!;
+      _textEditingController.text = hintText!;
       validateUid();
     }
 
-    if (recordSearchHistory.value) {
+    if (recordSearchHistory) {
       historyList
-        ..remove(controller.text)
-        ..insert(0, controller.text);
+        ..remove(_textEditingController.text)
+        ..insert(0, _textEditingController.text);
       GStorage.historyWord.put('cacheList', historyList);
     }
 
-    searchFocusNode.unfocus();
-    await Get.toNamed(
+    _searchFocusNode.unfocus();
+    await AppNavigator.toNamed(
       '/searchResult',
       parameters: {
-        'tag': tag,
-        'keyword': controller.text,
+        'tag': _params.tag,
+        'keyword': _textEditingController.text,
       },
       arguments: {
         'initIndex': initIndex,
         'fromSearch': true,
       },
     );
-    searchFocusNode.requestFocus();
+    _searchFocusNode.requestFocus();
   }
 
   Future<void> queryRecommendList() async {
-    final result = await Get.find<SearchRepository>().searchRecommend();
-    recommendData.value = switch (result) {
+    final result =
+        await _ref.read(searchRepositoryProvider).searchRecommend();
+    _recommendData = switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
+    notifyListeners();
   }
 
   void onClickKeyword(String keyword) {
-    controller.text = keyword;
+    _textEditingController.text = keyword;
     validateUid();
 
-    if (searchSuggestion) searchSuggestList.clear();
+    if (searchSuggestion) {
+      _searchSuggestList = [];
+      notifyListeners();
+    }
     submit();
   }
 
   @override
   Future<void> onValueChanged(String value) async {
-    final res = await Get.find<SearchRepository>().searchSuggest(term: value);
+    final res =
+        await _ref.read(searchRepositoryProvider).searchSuggest(term: value);
     if (res case Success(:final response)) {
       if (response.tag?.isNotEmpty == true) {
-        searchSuggestList.value = response.tag!;
+        _searchSuggestList = response.tag!;
+        notifyListeners();
       }
     }
   }
@@ -228,24 +271,53 @@ class SSearchController extends GetxController
   void onLongSelect(String word) {
     historyList.remove(word);
     GStorage.historyWord.put('cacheList', historyList);
+    notifyListeners();
   }
 
   void onClearHistory() {
     showConfirmDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       title: const Text('确定清空搜索历史？'),
       onConfirm: () {
         historyList.clear();
         GStorage.historyWord.delete('cacheList');
+        notifyListeners();
       },
     );
   }
 
+  /// Import a list of history words (replaces current history).
+  void importHistory(List<String> list) {
+    historyList
+      ..clear()
+      ..addAll(list);
+    GStorage.historyWord.put('cacheList', list);
+    notifyListeners();
+  }
+
   @override
-  void onClose() {
+  void dispose() {
     subDispose();
-    searchFocusNode.dispose();
-    controller.dispose();
-    super.onClose();
+    _searchFocusNode.dispose();
+    _textEditingController.dispose();
+    super.dispose();
   }
 }
+
+// ---------------------------------------------------------------------------
+// Providers
+// ---------------------------------------------------------------------------
+
+/// Singleton provider for the shared base search state.
+final baseSearchProvider = ChangeNotifierProvider<BaseSearchController>((ref) {
+  return BaseSearchController(ref)..init();
+});
+
+/// Per-page search controller, keyed by [SSearchParams.tag].
+final sSearchProvider =
+    ChangeNotifierProvider.autoDispose.family<SSearchController, SSearchParams>(
+  (ref, params) {
+    final controller = SSearchController(ref, params);
+    return controller;
+  },
+);

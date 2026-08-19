@@ -2,6 +2,7 @@ import 'package:skf/common/style.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Bar-state contract consumed by [CommonPageState].
 ///
@@ -23,6 +24,13 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
   RxBool? _showTopBar;
   RxBool? _showBottomBar;
   final _mainController = Get.find<MainBarState>();
+
+  // ignore: unused_field
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during state initialization.
+  void attachRef(Ref ref) { _ref = ref; }
 
   bool get needsCorrection => false;
 

@@ -4,6 +4,7 @@ import 'package:skf/core/models/search_types.dart';
 import 'package:skf/pages/search/controller.dart';
 import 'package:skf/pages/search_result/controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 /// 搜索结果面板构造器。
@@ -17,18 +18,17 @@ typedef SearchPanelBuilder =
       required String keyword,
     });
 
-class SearchResultPage extends StatefulWidget {
+class SearchResultPage extends ConsumerStatefulWidget {
   const SearchResultPage({super.key, this.panelBuilder});
 
   final SearchPanelBuilder? panelBuilder;
 
   @override
-  State<SearchResultPage> createState() => _SearchResultPageState();
+  ConsumerState<SearchResultPage> createState() => _SearchResultPageState();
 }
 
-class _SearchResultPageState extends State<SearchResultPage>
+class _SearchResultPageState extends ConsumerState<SearchResultPage>
     with SingleTickerProviderStateMixin {
-  late SearchResultController _searchResultController;
   late TabController _tabController;
   final String _tag = DateTime.now().millisecondsSinceEpoch.toString();
   final bool _isFromSearch = Get.arguments?['fromSearch'] ?? false;
@@ -37,10 +37,12 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   void initState() {
     super.initState();
-    _searchResultController = Get.put(
-      SearchResultController(),
-      tag: _tag,
-    );
+
+    // Register GetX bridge so adapter-based SearchPanelController can still
+    // resolve via Get.find<SearchResultController>(tag: tag).
+    final keyword = Get.arguments?['keyword'] ?? '';
+    final notifier = ref.read(searchResultProvider(_tag).notifier);
+    Get.put(SearchResultController(keyword, notifier), tag: _tag);
 
     _tabController = TabController(
       vsync: this,
@@ -62,15 +64,15 @@ class _SearchResultPageState extends State<SearchResultPage>
     sSearchController?.initIndex = _tabController.index;
   }
 
-  Widget _buildPanel(CoreSearchType type) {
+  Widget _buildPanel(CoreSearchType type, String keyword) {
     final builder = widget.panelBuilder;
     if (builder == null) {
-      return _SearchResultPlaceholder(keyword: _searchResultController.keyword);
+      return _SearchResultPlaceholder(keyword: keyword);
     }
     return builder(
       type,
       tag: _tag,
-      keyword: _searchResultController.keyword,
+      keyword: keyword,
     );
   }
 
@@ -79,12 +81,16 @@ class _SearchResultPageState extends State<SearchResultPage>
     _tabController
       ..removeListener(listener)
       ..dispose();
+    Get.delete<SearchResultController>(tag: _tag, force: true);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final resultState = ref.watch(searchResultProvider(_tag));
+    final keyword = resultState.keyword;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -101,7 +107,7 @@ class _SearchResultPageState extends State<SearchResultPage>
             } else {
               Get.offNamed(
                 '/search',
-                parameters: {'text': _searchResultController.keyword},
+                parameters: {'text': keyword},
               );
             }
           },
@@ -109,7 +115,7 @@ class _SearchResultPageState extends State<SearchResultPage>
           child: SizedBox(
             width: double.infinity,
             child: Text(
-              _searchResultController.keyword,
+              keyword,
               style: theme.textTheme.titleMedium,
               maxLines: 1,
             ),
@@ -127,15 +133,13 @@ class _SearchResultPageState extends State<SearchResultPage>
               controller: _tabController,
               tabs: CoreSearchType.values
                   .map(
-                    (item) => Obx(
-                      () {
-                        int count = _searchResultController.count[item.index];
-                        return Tab(
-                          text:
-                              '${item.label}${count != -1 ? ' ${count > 99 ? '99+' : count}' : ''}',
-                        );
-                      },
-                    ),
+                    (item) {
+                      final count = resultState.count[item.index];
+                      return Tab(
+                        text:
+                            '${item.label}${count != -1 ? ' ${count > 99 ? '99+' : count}' : ''}',
+                      );
+                    },
                   )
                   .toList(),
               isScrollable: true,
@@ -161,18 +165,18 @@ class _SearchResultPageState extends State<SearchResultPage>
               tabAlignment: TabAlignment.start,
               onTap: (index) {
                 if (!_tabController.indexIsChanging) {
-                  if (_searchResultController.toTopIndex.value == index) {
-                    _searchResultController.toTopIndex.refresh();
-                  } else {
-                    _searchResultController.toTopIndex.value = index;
-                  }
+                  ref
+                      .read(searchResultProvider(_tag).notifier)
+                      .setToTopIndex(index);
                 }
               },
             ),
             Expanded(
               child: tabBarView(
                 controller: _tabController,
-                children: CoreSearchType.values.map(_buildPanel).toList(),
+                children: CoreSearchType.values
+                    .map((type) => _buildPanel(type, keyword))
+                    .toList(),
               ),
             ),
           ],

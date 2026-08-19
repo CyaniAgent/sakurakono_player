@@ -4,9 +4,9 @@ import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/widget/medal_widget.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MedalWall extends StatelessWidget {
   const MedalWall({super.key, required this.response});
@@ -74,7 +74,7 @@ class MedalWall extends StatelessWidget {
                   if (isLiving) {
                     MemberHost.of().pushFromUri(item.link!);
                   } else {
-                    Get.toNamed(
+                    AppNavigator.toNamed(
                       '/member?mid=${uinfoMedal.ruid}',
                       preventDuplicates: false,
                     );
@@ -90,7 +90,7 @@ class MedalWall extends StatelessWidget {
                     _ => null,
                   },
                   onTap: isLiving
-                      ? () => Get.toNamed(
+                      ? () => AppNavigator.toNamed(
                           '/member?mid=${uinfoMedal.ruid}',
                           preventDuplicates: false,
                         )

@@ -1,5 +1,10 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image_ce/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
@@ -7,10 +12,11 @@ import 'package:skf/common/widgets/extra_hit_test_widget.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/core/repository/user_repository.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/dynamics/controller.dart';
+import 'package:skf/pages/dynamics/temp_banned_set.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
@@ -18,13 +24,8 @@ import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:skf/utils/share_utils.dart';
-import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
-class AuthorPanel extends StatelessWidget {
+class AuthorPanel extends ConsumerWidget {
   final CoreDynamicItemModel item;
   final bool isSave;
   final bool isDetail;
@@ -32,7 +33,7 @@ class AuthorPanel extends StatelessWidget {
   final void Function(bool isTop, String dynId)? onSetTop;
   final VoidCallback? onBlock;
   final Future<LoadingState> Function(bool isPrivate, String dynId)?
-  onSetPubSetting;
+      onSetPubSetting;
   final VoidCallback? onEdit;
   final ValueChanged<int>? onSetReplySubject;
 
@@ -50,16 +51,16 @@ class AuthorPanel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final moduleAuthor = item.modules!.moduleAuthor!;
     final pubTime = moduleAuthor.pubTs != null
         ? isSave
-              ? DateFormatUtils.format(
-                  moduleAuthor.pubTs,
-                  format: DateFormatUtils.longFormatDs,
-                )
-              : DateFormatUtils.dateFormat(moduleAuthor.pubTs)
+            ? DateFormatUtils.format(
+                moduleAuthor.pubTs,
+                format: DateFormatUtils.longFormatDs,
+              )
+            : DateFormatUtils.dateFormat(moduleAuthor.pubTs)
         : moduleAuthor.pubTime;
     Widget? pubTs;
     if (pubTime != null) {
@@ -91,7 +92,7 @@ class AuthorPanel extends StatelessWidget {
       onTap: moduleAuthor.type == 'AUTHOR_TYPE_NORMAL'
           ? () {
               feedBack();
-              Get.toNamed('/member?mid=${moduleAuthor.mid}');
+              AppNavigator.toNamed('/member?mid=${moduleAuthor.mid}');
             }
           : null,
       child: ExtraHitTestWidget(
@@ -135,7 +136,7 @@ class AuthorPanel extends StatelessWidget {
               style: const ButtonStyle(
                 padding: WidgetStatePropertyAll(EdgeInsets.zero),
               ),
-              onPressed: () => morePanel(context),
+              onPressed: () => morePanel(context, ref),
               icon: const Icon(Icons.more_vert_outlined, size: 18),
             ),
           );
@@ -157,7 +158,8 @@ class AuthorPanel extends StatelessWidget {
                 fontSize: 12,
                 color: theme.colorScheme.primary,
               ),
-              strutStyle: const StrutStyle(height: 1, leading: 0, fontSize: 12),
+              strutStyle:
+                  const StrutStyle(height: 1, leading: 0, fontSize: 12),
             ),
           ),
           ?moreBtn,
@@ -227,14 +229,15 @@ class AuthorPanel extends StatelessWidget {
     return header;
   }
 
-  void morePanel(BuildContext context) {
+  void morePanel(BuildContext context, WidgetRef ref) {
     String? bvid;
     try {
-      String? getBvid(String? type, CoreDynamicMajorModel? major) => switch (type) {
-        'DYNAMIC_TYPE_AV' => major?.archive?.bvid,
-        'DYNAMIC_TYPE_UGC_SEASON' => major?.ugcSeason?.bvid,
-        _ => null,
-      };
+      String? getBvid(String? type, CoreDynamicMajorModel? major) =>
+          switch (type) {
+            'DYNAMIC_TYPE_AV' => major?.archive?.bvid,
+            'DYNAMIC_TYPE_UGC_SEASON' => major?.ugcSeason?.bvid,
+            _ => null,
+          };
       bvid = getBvid(item.type, item.modules?.moduleDynamic?.major);
       if (bvid == null && item.orig != null) {
         bvid = getBvid(
@@ -263,7 +266,7 @@ class AuthorPanel extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               InkWell(
-                onTap: Get.back,
+                onTap: AppNavigator.back,
                 borderRadius: Style.bottomSheetRadius,
                 child: SizedBox(
                   height: 35,
@@ -282,11 +285,14 @@ class AuthorPanel extends StatelessWidget {
               if (bvid != null)
                 ListTile(
                   onTap: () {
-                    Get.back();
-                    Get.find<UserRepository>().toViewLater(bvid: bvid);
+                    AppNavigator.back();
+                    ref
+                        .read(userRepositoryProvider)
+                        .toViewLater(bvid: bvid);
                   },
                   minLeadingWidth: 0,
-                  leading: const Icon(Icons.watch_later_outlined, size: 19),
+                  leading:
+                      const Icon(Icons.watch_later_outlined, size: 19),
                   title: Text(
                     '稍后再看',
                     style: theme.textTheme.titleSmall,
@@ -294,12 +300,13 @@ class AuthorPanel extends StatelessWidget {
                 ),
               ListTile(
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   host.showSavePanel(item: item);
                 },
                 minLeadingWidth: 0,
                 leading: const Icon(Icons.save_alt, size: 19),
-                title: Text('保存动态', style: theme.textTheme.titleSmall!),
+                title:
+                    Text('保存动态', style: theme.textTheme.titleSmall!),
               ),
               ListTile(
                 title: Text(
@@ -308,7 +315,7 @@ class AuthorPanel extends StatelessWidget {
                 ),
                 leading: const Icon(Icons.share_outlined, size: 19),
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   final url = host.buildDynamicsShareUrl(item.idStr);
                   if (url != null) ShareUtils.shareText(url);
                 },
@@ -322,20 +329,27 @@ class AuthorPanel extends StatelessWidget {
                     '分享至消息',
                     style: theme.textTheme.titleSmall,
                   ),
-                  leading: const Icon(Icons.forward_to_inbox, size: 19),
+                  leading:
+                      const Icon(Icons.forward_to_inbox, size: 19),
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     try {
-                      bool isDyn = item.basic!.commentType == 17;
-                      String id = isDyn ? item.idStr : item.basic!.ridStr!;
+                      bool isDyn =
+                          item.basic!.commentType == 17;
+                      String id = isDyn
+                          ? item.idStr
+                          : item.basic!.ridStr!;
                       int source = isDyn ? 11 : 2;
-                      final moduleDynamic = item.modules!.moduleDynamic!;
+                      final moduleDynamic =
+                          item.modules!.moduleDynamic!;
                       final title =
                           moduleDynamic.desc?.text ??
-                          moduleDynamic.major!.opus!.summary!.text!;
+                              moduleDynamic
+                                  .major!.opus!.summary!.text!;
                       String? thumb = isDyn
                           ? moduleAuthor.face
-                          : moduleDynamic.major?.opus?.pics?.firstOrNull?.url;
+                          : moduleDynamic
+                              .major?.opus?.pics?.firstOrNull?.url;
                       host.pmShare(
                         context,
                         content: {
@@ -343,9 +357,11 @@ class AuthorPanel extends StatelessWidget {
                           "title": title,
                           "headline": "",
                           "source": source,
-                          if (thumb?.isNotEmpty == true) "thumb": thumb,
+                          if (thumb?.isNotEmpty == true)
+                            "thumb": thumb,
                           "author": moduleAuthor.name,
-                          "author_id": moduleAuthor.mid.toString(),
+                          "author_id":
+                              moduleAuthor.mid.toString(),
                         },
                       );
                     } catch (e) {
@@ -359,14 +375,13 @@ class AuthorPanel extends StatelessWidget {
                   '临时屏蔽：${moduleAuthor.name}',
                   style: theme.textTheme.titleSmall,
                 ),
-                leading: const Icon(Icons.visibility_off_outlined, size: 19),
+                leading: const Icon(
+                    Icons.visibility_off_outlined, size: 19),
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   onBlock?.call();
                   try {
-                    Get.find<DynamicsController>().tempBannedList.add(
-                      moduleAuthor.mid!,
-                    );
+                    tempBannedSet.add(moduleAuthor.mid!);
                     SmartDialog.showToast(
                       '已临时屏蔽${moduleAuthor.name}(${moduleAuthor.mid!})，重启恢复',
                     );
@@ -374,27 +389,34 @@ class AuthorPanel extends StatelessWidget {
                 },
                 minLeadingWidth: 0,
               ),
-              if (kDebugMode || moduleAuthor.mid == host.currentUserId) ...[
+              if (kDebugMode ||
+                  moduleAuthor.mid == host.currentUserId) ...[
                 ListTile(
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     host.checkCreatedDyn(
                       id: item.idStr,
                       isManual: true,
                     );
                   },
                   minLeadingWidth: 0,
-                  leading: const Icon(CustomIcons.shield_published, size: 19),
-                  title: Text('检查动态', style: theme.textTheme.titleSmall!),
+                  leading: const Icon(
+                      CustomIcons.shield_published, size: 19),
+                  title: Text('检查动态',
+                      style: theme.textTheme.titleSmall!),
                 ),
                 if (onSetTop != null)
                   ListTile(
                     onTap: () {
-                      Get.back();
-                      onSetTop!(moduleAuthor.isTop ?? false, item.idStr);
+                      AppNavigator.back();
+                      onSetTop!(
+                        moduleAuthor.isTop ?? false,
+                        item.idStr,
+                      );
                     },
                     minLeadingWidth: 0,
-                    leading: const Icon(Icons.vertical_align_top, size: 19),
+                    leading: const Icon(
+                        Icons.vertical_align_top, size: 19),
                     title: Text(
                       '${moduleAuthor.isTop == true ? '取消' : ''}置顶',
                       style: theme.textTheme.titleSmall,
@@ -403,12 +425,13 @@ class AuthorPanel extends StatelessWidget {
                 if (onSetReplySubject != null)
                   ListTile(
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       host.showReplyInteractionDialog(
                         context,
                         oid: item.basic!.commentIdStr!,
                         type: item.basic!.commentType!,
-                        onSetReplySubject: onSetReplySubject!,
+                        onSetReplySubject:
+                            onSetReplySubject!,
                       );
                     },
                     minLeadingWidth: 0,
@@ -424,17 +447,19 @@ class AuthorPanel extends StatelessWidget {
                 if (onSetPubSetting != null)
                   ListTile(
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
 
-                      final isPrivate = moduleAuthor.badgeText != null;
+                      final isPrivate =
+                          moduleAuthor.badgeText != null;
                       Future<void> onTap() async {
-                        Get.back();
+                        AppNavigator.back();
                         if ((await onSetPubSetting!(
                           isPrivate,
                           item.idStr,
                         )).isSuccess) {
                           if (context.mounted) {
-                            (context as Element).markNeedsBuild();
+                            (context as Element)
+                                .markNeedsBuild();
                           }
                         }
                       }
@@ -443,14 +468,16 @@ class AuthorPanel extends StatelessWidget {
                         context: context,
                         builder: (context) => SimpleDialog(
                           clipBehavior: Clip.hardEdge,
-                          contentPadding: const .symmetric(vertical: 12),
+                          contentPadding:
+                              const .symmetric(vertical: 12),
                           children: [
                             ListTile(
                               dense: true,
                               enabled: isPrivate,
                               title: const Text(
                                 '所有用户可见',
-                                style: TextStyle(fontSize: 14),
+                                style:
+                                    TextStyle(fontSize: 14),
                               ),
                               onTap: onTap,
                             ),
@@ -459,7 +486,8 @@ class AuthorPanel extends StatelessWidget {
                               enabled: !isPrivate,
                               title: const Text(
                                 '仅自己可见',
-                                style: TextStyle(fontSize: 14),
+                                style:
+                                    TextStyle(fontSize: 14),
                               ),
                               onTap: onTap,
                             ),
@@ -468,40 +496,45 @@ class AuthorPanel extends StatelessWidget {
                       );
                     },
                     minLeadingWidth: 0,
-                    leading: const Icon(Icons.visibility, size: 19),
-                    title: Text('可见范围', style: theme.textTheme.titleSmall!),
+                    leading:
+                        const Icon(Icons.visibility, size: 19),
+                    title: Text('可见范围',
+                        style: theme.textTheme.titleSmall!),
                   ),
                 if (onEdit != null)
                   ListTile(
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       onEdit!();
                     },
                     minLeadingWidth: 0,
-                    leading: const Icon(Icons.edit_note, size: 19),
-                    title: Text('编辑动态', style: theme.textTheme.titleSmall!),
+                    leading:
+                        const Icon(Icons.edit_note, size: 19),
+                    title: Text('编辑动态',
+                        style: theme.textTheme.titleSmall!),
                   ),
                 if (onRemove != null)
                   ListTile(
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('确定删除该动态?'),
                           actions: [
                             TextButton(
-                              onPressed: Get.back,
+                              onPressed: AppNavigator.back,
                               child: Text(
                                 '取消',
                                 style: TextStyle(
-                                  color: theme.colorScheme.outline,
+                                  color: theme
+                                      .colorScheme.outline,
                                 ),
                               ),
                             ),
                             TextButton(
                               onPressed: () {
-                                Get.back();
+                                AppNavigator.back();
                                 onRemove!(item.idStr);
                               },
                               child: const Text('确定'),
@@ -518,17 +551,19 @@ class AuthorPanel extends StatelessWidget {
                     ),
                     title: Text(
                       '删除',
-                      style: theme.textTheme.titleSmall!.copyWith(
+                      style:
+                          theme.textTheme.titleSmall!.copyWith(
                         color: theme.colorScheme.error,
                       ),
                     ),
                   ),
               ],
-              if (Get.find<AccountProvider>().isLogin)
+              if (ref.read(accountProvider).isLogin)
                 ListTile(
                   title: Text(
                     '举报',
-                    style: theme.textTheme.titleSmall!.copyWith(
+                    style:
+                        theme.textTheme.titleSmall!.copyWith(
                       color: theme.colorScheme.error,
                     ),
                   ),
@@ -538,7 +573,7 @@ class AuthorPanel extends StatelessWidget {
                     color: theme.colorScheme.error,
                   ),
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     host.showReportDialog(
                       context,
                       mid: moduleAuthor.mid!,
@@ -549,12 +584,13 @@ class AuthorPanel extends StatelessWidget {
                 ),
               const Divider(thickness: 0.1, height: 1),
               ListTile(
-                onTap: Get.back,
+                onTap: AppNavigator.back,
                 minLeadingWidth: 0,
                 dense: true,
                 title: Text(
                   '取消',
-                  style: TextStyle(color: theme.colorScheme.outline),
+                  style: TextStyle(
+                      color: theme.colorScheme.outline),
                   textAlign: TextAlign.center,
                 ),
               ),

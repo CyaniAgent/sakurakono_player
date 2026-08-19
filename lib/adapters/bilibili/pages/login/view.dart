@@ -16,42 +16,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final LoginPageController _loginPageCtr = Get.put(LoginPageController());
-  // 二维码生成时间
+class _LoginPageState extends ConsumerState<LoginPage>
+    with TickerProviderStateMixin {
+  late final TabController _tabController;
   bool showPassword = false;
   GlobalKey globalKey = GlobalKey();
 
+  LoginNotifier get _notifier => ref.read(loginProvider.notifier);
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loginPageCtr.didChangeDependencies(context);
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this)
+      ..addListener(_handleTabChange);
   }
 
-  Widget loginByQRCode(ThemeData theme) {
+  @override
+  void dispose() {
+    _tabController
+      ..removeListener(_handleTabChange)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _handleTabChange() {
+    _notifier.updateTabIndex(_tabController.index);
+    if (_tabController.index == 2) {
+      if (_notifier.shouldAutoRefreshQRCode) {
+        _notifier.refreshQRCode(context);
+      }
+    }
+  }
+
+  Widget loginByQRCode(ThemeData theme, LoginState loginState) {
     return Column(
       children: [
         const SizedBox(height: 20),
         const Text('使用 bilibili 官方 App 扫码登录'),
         const SizedBox(height: 20),
-        Obx(
-          () => Text(
-            '剩余有效时间: ${_loginPageCtr.qrCodeLeftTime} 秒',
-            style: TextStyle(
-              fontFeatures: const [FontFeature.tabularFigures()],
-              color: theme.colorScheme.primaryFixedDim,
-            ),
+        Text(
+          '剩余有效时间: ${loginState.qrCodeLeftTime} 秒',
+          style: TextStyle(
+            fontFeatures: const [FontFeature.tabularFigures()],
+            color: theme.colorScheme.primaryFixedDim,
           ),
         ),
         const SizedBox(height: 5),
@@ -59,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton.icon(
-              onPressed: _loginPageCtr.refreshQRCode,
+              onPressed: () => _notifier.refreshQRCode(context),
               icon: const Icon(Icons.refresh),
               label: const Text('刷新二维码'),
             ),
@@ -75,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                 image.dispose();
                 SmartDialog.dismiss();
                 final picName =
-                    "${Constants.appName}_loginQRCode_${_loginPageCtr.codeInfo.value.data.authCode.hashCode.toUnsigned(32).toRadixString(16)}";
+                    "${Constants.appName}_loginQRCode_${loginState.codeInfo.data.authCode.hashCode.toUnsigned(32).toRadixString(16)}";
                 ImageUtils.saveByteImg(bytes: pngBytes, fileName: picName);
               },
               icon: const Icon(Icons.save),
@@ -84,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
             if (kDebugMode || PlatformUtils.isMobile)
               TextButton.icon(
                 onPressed: () => PageUtils.launchURL(
-                  'bilibili://browser?url=${Uri.encodeComponent(_loginPageCtr.codeInfo.value.data.url)}',
+                  'bilibili://browser?url=${Uri.encodeComponent(loginState.codeInfo.data.url)}',
                   mode: LaunchMode.externalNonBrowserApplication,
                 ),
                 icon: const Icon(Icons.open_in_browser_outlined),
@@ -94,49 +112,47 @@ class _LoginPageState extends State<LoginPage> {
         ),
         RepaintBoundary(
           key: globalKey,
-          child: Obx(
-            () => switch (_loginPageCtr.codeInfo.value) {
-              Loading() => const SizedBox(
-                height: 200,
-                width: 200,
-                child: m3eLoading,
-              ),
-              Success(:final response) => Container(
-                width: 200,
-                height: 200,
-                color: Colors.white,
-                padding: const EdgeInsets.all(8),
-                child: PrettyQrView.data(
-                  data: response.url,
-                  decoration: const PrettyQrDecoration(
-                    shape: PrettyQrSquaresSymbol(
-                      color: Colors.black87,
-                    ),
+          child: switch (loginState.codeInfo) {
+            Loading() => const SizedBox(
+              height: 200,
+              width: 200,
+              child: m3eLoading,
+            ),
+            Success(:final response) => Container(
+              width: 200,
+              height: 200,
+              color: Colors.white,
+              padding: const EdgeInsets.all(8),
+              child: PrettyQrView.data(
+                data: response.url,
+                decoration: const PrettyQrDecoration(
+                  shape: PrettyQrSquaresSymbol(
+                    color: Colors.black87,
                   ),
                 ),
               ),
-              Error(:final errMsg) => HttpError(
-                isSliver: false,
-                errMsg: errMsg,
-                onReload: _loginPageCtr.refreshQRCode,
-              ),
-            },
-          ),
+            ),
+            Error(:final errMsg) => HttpError(
+              isSliver: false,
+              errMsg: errMsg,
+              onReload: () => _notifier.refreshQRCode(context),
+            ),
+          },
         ),
         const SizedBox(height: 10),
-        Obx(
-          () => Text(
-            _loginPageCtr.statusQRCode.value,
-            style: TextStyle(color: theme.colorScheme.secondaryFixedDim),
-          ),
+        Text(
+          loginState.statusQRCode,
+          style: TextStyle(color: theme.colorScheme.secondaryFixedDim),
         ),
-        Obx(
-          () {
-            final url = _loginPageCtr.codeInfo.value.dataOrNull?.url ?? '';
+        Builder(
+          builder: (context) {
+            final url =
+                loginState.codeInfo.dataOrNull?.url ?? '';
             return GestureDetector(
               onTap: () => Utils.copyText(
                 url,
-                toastText: '已复制到剪贴板，可粘贴至已登录的app私信处发送，然后点击已发送的链接打开',
+                toastText:
+                    '已复制到剪贴板，可粘贴至已登录的app私信处发送，然后点击已发送的链接打开',
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -146,7 +162,9 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   url,
                   style: theme.textTheme.labelSmall!.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                    color: theme.colorScheme.onSurface.withValues(
+                      alpha: 0.4,
+                    ),
                   ),
                 ),
               ),
@@ -188,21 +206,23 @@ class _LoginPageState extends State<LoginPage> {
           child: TextField(
             minLines: 1,
             maxLines: 10,
-            controller: _loginPageCtr.cookieTextController,
-            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
+            controller: _notifier.cookieTextController,
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r"\s")),
+            ],
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.cookie_outlined),
               border: const UnderlineInputBorder(),
               labelText: 'Cookie',
               suffixIcon: IconButton(
-                onPressed: _loginPageCtr.cookieTextController.clear,
+                onPressed: _notifier.cookieTextController.clear,
                 icon: const Icon(Icons.clear),
               ),
             ),
           ),
         ),
         OutlinedButton.icon(
-          onPressed: _loginPageCtr.loginByCookie,
+          onPressed: () => _notifier.loginByCookie(context),
           icon: const Icon(Icons.login),
           label: const Text('登录'),
         ),
@@ -219,15 +239,17 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: TextField(
-            controller: _loginPageCtr.usernameTextController,
-            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
+            controller: _notifier.usernameTextController,
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r"\s")),
+            ],
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.account_box),
               border: const UnderlineInputBorder(),
               labelText: '账号',
               hintText: '邮箱/手机号',
               suffixIcon: IconButton(
-                onPressed: _loginPageCtr.usernameTextController.clear,
+                onPressed: _notifier.usernameTextController.clear,
                 icon: const Icon(Icons.clear),
               ),
             ),
@@ -238,15 +260,17 @@ class _LoginPageState extends State<LoginPage> {
           child: TextField(
             obscureText: !showPassword,
             keyboardType: TextInputType.visiblePassword,
-            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r"\s"))],
-            controller: _loginPageCtr.passwordTextController,
+            inputFormatters: [
+              FilteringTextInputFormatter.deny(RegExp(r"\s")),
+            ],
+            controller: _notifier.passwordTextController,
             autofillHints: const [AutofillHints.password],
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.password),
               border: const UnderlineInputBorder(),
               labelText: '密码',
               suffixIcon: IconButton(
-                onPressed: _loginPageCtr.passwordTextController.clear,
+                onPressed: _notifier.passwordTextController.clear,
                 icon: const Icon(Icons.clear),
               ),
             ),
@@ -257,14 +281,13 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(width: 10),
             Checkbox(
               value: showPassword,
-              onChanged: (value) => setState(() => showPassword = value!),
+              onChanged: (value) =>
+                  setState(() => showPassword = value!),
             ),
             const Text('显示密码'),
             const Spacer(),
             TextButton(
               onPressed: () {
-                //https://passport.bilibili.com/h5-app/passport/login/findPassword
-                //https://passport.bilibili.com/passport/findPassword
                 showDialog(
                   context: context,
                   builder: (context) => SimpleDialog(
@@ -285,44 +308,49 @@ class _LoginPageState extends State<LoginPage> {
                         title: const Text(
                           '找回密码（手机版）',
                         ),
-                        leading: const Icon(Icons.smartphone_outlined),
+                        leading:
+                            const Icon(Icons.smartphone_outlined),
                         subtitle: const Text(
                           'https://passport.bilibili.com/h5-app/passport/login/findPassword',
                         ),
                         dense: false,
-                        onTap: () => Get
-                          ..back()
-                          ..toNamed(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed(
                             '/webview',
-                            parameters: {
+                            arguments: {
                               'url':
                                   'https://passport.bilibili.com/h5-app/passport/login/findPassword',
                               'type': 'url',
                               'pageTitle': '忘记密码',
                             },
-                          ),
+                          );
+                        },
                       ),
                       ListTile(
                         title: const Text(
                           '找回密码（电脑版）',
                         ),
-                        leading: const Icon(Icons.desktop_windows_outlined),
+                        leading: const Icon(
+                          Icons.desktop_windows_outlined,
+                        ),
                         subtitle: const Text(
                           'https://passport.bilibili.com/pc/passport/findPassword',
                         ),
                         dense: false,
-                        onTap: () => Get
-                          ..back()
-                          ..toNamed(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed(
                             '/webview',
-                            parameters: {
+                            arguments: {
                               'url':
                                   'https://passport.bilibili.com/pc/passport/findPassword',
                               'type': 'url',
                               'pageTitle': '忘记密码',
                               'uaType': 'pc',
                             },
-                          ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -334,7 +362,7 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
         OutlinedButton.icon(
-          onPressed: _loginPageCtr.loginByPassword,
+          onPressed: () => _notifier.loginByPassword(context),
           icon: const Icon(Icons.login),
           label: const Text('登录'),
         ),
@@ -356,7 +384,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget loginBySmS(ThemeData theme) {
+  Widget loginBySmS(ThemeData theme, LoginState loginState) {
     return Column(
       children: [
         const SizedBox(height: 20),
@@ -373,57 +401,55 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               children: [
                 const SizedBox(width: 12),
-                Builder(
-                  builder: (context) {
-                    return PopupMenuButton(
-                      padding: EdgeInsets.zero,
-                      tooltip:
-                          '选择国际冠码，'
-                          '当前为${_loginPageCtr.selectedCountryCodeId.cname}，'
-                          '+${_loginPageCtr.selectedCountryCodeId.countryId}',
-                      onSelected: (item) {
-                        _loginPageCtr.selectedCountryCodeId = item;
-                        (context as Element).markNeedsBuild();
-                      },
-                      initialValue: _loginPageCtr.selectedCountryCodeId,
-                      itemBuilder: (_) => Login.dialPrefix.map((item) {
-                        return PopupMenuItem(
-                          value: item,
-                          child: Row(
-                            children: [
-                              Text(item.cname),
-                              const Spacer(),
-                              Text("+${item.countryId}"),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                PopupMenuButton(
+                  padding: EdgeInsets.zero,
+                  tooltip:
+                      '选择国际冠码，'
+                      '当前为${loginState.effectiveCountryCode.cname}，'
+                      '+${loginState.effectiveCountryCode.countryId}',
+                  onSelected: (item) {
+                    _notifier.setSelectedCountryCodeId(item);
+                  },
+                  initialValue: loginState.effectiveCountryCode,
+                  itemBuilder: (_) => Login.dialPrefix.map((item) {
+                    return PopupMenuItem(
+                      value: item,
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.phone,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            "+${_loginPageCtr.selectedCountryCodeId.countryId}",
-                          ),
+                          Text(item.cname),
+                          const Spacer(),
+                          Text("+${item.countryId}"),
                         ],
                       ),
                     );
-                  },
+                  }).toList(),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.phone,
+                        color:
+                            theme.colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        "+${loginState.effectiveCountryCode.countryId}",
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(width: 6),
                 SizedBox(
                   height: 24,
                   child: VerticalDivider(
-                    color: theme.colorScheme.outline.withValues(alpha: 0.5),
+                    color: theme.colorScheme.outline.withValues(
+                      alpha: 0.5,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: TextField(
-                    controller: _loginPageCtr.telTextController,
+                    controller: _notifier.telTextController,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly,
@@ -432,7 +458,8 @@ class _LoginPageState extends State<LoginPage> {
                       border: InputBorder.none,
                       labelText: '手机号',
                       suffixIcon: IconButton(
-                        onPressed: _loginPageCtr.telTextController.clear,
+                        onPressed:
+                            _notifier.telTextController.clear,
                         icon: const Icon(Icons.clear),
                       ),
                     ),
@@ -454,7 +481,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _loginPageCtr.smsCodeTextController,
+                    controller: _notifier.smsCodeTextController,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.sms_outlined),
                       border: InputBorder.none,
@@ -466,17 +493,15 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-                Obx(
-                  () => TextButton.icon(
-                    onPressed: _loginPageCtr.smsSendCooldown > 0
-                        ? null
-                        : _loginPageCtr.sendSmsCode,
-                    icon: const Icon(Icons.send),
-                    label: Text(
-                      _loginPageCtr.smsSendCooldown > 0
-                          ? '等待${_loginPageCtr.smsSendCooldown}秒'
-                          : '获取验证码',
-                    ),
+                TextButton.icon(
+                  onPressed: loginState.smsSendCooldown > 0
+                      ? null
+                      : _notifier.sendSmsCode,
+                  icon: const Icon(Icons.send),
+                  label: Text(
+                    loginState.smsSendCooldown > 0
+                        ? '等待${loginState.smsSendCooldown}秒'
+                        : '获取验证码',
                   ),
                 ),
               ],
@@ -485,7 +510,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const SizedBox(height: 20),
         OutlinedButton.icon(
-          onPressed: _loginPageCtr.loginBySmsCode,
+          onPressed: () => _notifier.loginBySmsCode(context),
           icon: const Icon(Icons.login),
           label: const Text('登录'),
         ),
@@ -511,6 +536,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loginState = ref.watch(loginProvider);
     padding =
         MediaQuery.viewPaddingOf(context).copyWith(top: 0) +
         const EdgeInsets.only(bottom: 25);
@@ -520,7 +546,7 @@ class _LoginPageState extends State<LoginPage> {
         leading: IconButton(
           tooltip: '关闭',
           icon: const Icon(Icons.close_outlined),
-          onPressed: Get.back,
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Row(
           children: [
@@ -536,19 +562,28 @@ class _LoginPageState extends State<LoginPage> {
                       Tab(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: [Icon(Icons.password), Text(' 密码')],
+                          children: [
+                            Icon(Icons.password),
+                            Text(' 密码'),
+                          ],
                         ),
                       ),
                       Tab(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: [Icon(Icons.sms_outlined), Text(' 短信')],
+                          children: [
+                            Icon(Icons.sms_outlined),
+                            Text(' 短信'),
+                          ],
                         ),
                       ),
                       Tab(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: [Icon(Icons.qr_code), Text(' 扫码')],
+                          children: [
+                            Icon(Icons.qr_code),
+                            Text(' 扫码'),
+                          ],
                         ),
                       ),
                       Tab(
@@ -561,7 +596,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ],
-                    controller: _loginPageCtr.tabController,
+                    controller: _tabController,
                   ),
                 ),
               ),
@@ -570,12 +605,24 @@ class _LoginPageState extends State<LoginPage> {
         bottom: !isLandscape
             ? TabBar(
                 tabs: const [
-                  Tab(icon: Icon(Icons.password), text: '密码'),
-                  Tab(icon: Icon(Icons.sms_outlined), text: '短信'),
-                  Tab(icon: Icon(Icons.qr_code), text: '扫码'),
-                  Tab(icon: Icon(Icons.cookie_outlined), text: 'Cookie'),
+                  Tab(
+                    icon: Icon(Icons.password),
+                    text: '密码',
+                  ),
+                  Tab(
+                    icon: Icon(Icons.sms_outlined),
+                    text: '短信',
+                  ),
+                  Tab(
+                    icon: Icon(Icons.qr_code),
+                    text: '扫码',
+                  ),
+                  Tab(
+                    icon: Icon(Icons.cookie_outlined),
+                    text: 'Cookie',
+                  ),
                 ],
-                controller: _loginPageCtr.tabController,
+                controller: _tabController,
               )
             : null,
       ),
@@ -587,11 +634,11 @@ class _LoginPageState extends State<LoginPage> {
           return false;
         },
         child: tabBarView(
-          controller: _loginPageCtr.tabController,
+          controller: _tabController,
           children: [
             tabViewOuter(loginByPassword(theme)),
-            tabViewOuter(loginBySmS(theme)),
-            tabViewOuter(loginByQRCode(theme)),
+            tabViewOuter(loginBySmS(theme, loginState)),
+            tabViewOuter(loginByQRCode(theme, loginState)),
             tabViewOuter(loginByCookie(theme)),
           ],
         ),

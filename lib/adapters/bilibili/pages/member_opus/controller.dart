@@ -5,6 +5,8 @@ import 'package:skf/adapters/bilibili/models_new/space/space/tab2.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/pages/member/controller.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
 
 class MemberOpusController
@@ -16,6 +18,9 @@ class MemberOpusController
 
   final String? heroTag;
   final int mid;
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   String offset = '';
   Rx<SpaceTabFilter> type = const SpaceTabFilter(
@@ -52,7 +57,7 @@ class MemberOpusController
 
   @override
   Future<LoadingState<CoreOpusSpaceFlowResp>> customGetData() async {
-    final result = await Get.find<MemberRepository>().spaceOpus(
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceOpus(
       hostMid: mid,
       page: page,
       offset: offset,

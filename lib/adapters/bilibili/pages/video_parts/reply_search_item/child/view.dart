@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/child/
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/child/widgets/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ReplySearchChildPage extends StatefulWidget {
   const ReplySearchChildPage({
@@ -43,7 +42,12 @@ class _ReplySearchChildPageState extends State<ReplySearchChildPage>
               top: 7,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+            sliver: StreamBuilder<LoadingState<List<Object?>?>?>(
+              stream: _controller.loadingState.stream,
+              initialData: _controller.loadingState.value,
+              builder: (context, snapshot) =>
+                  _buildBody(snapshot.data!),
+            ),
           ),
         ],
       ),

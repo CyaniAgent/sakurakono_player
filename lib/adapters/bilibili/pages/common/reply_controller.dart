@@ -15,10 +15,14 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 abstract class ReplyController<R>
     extends CommonListController<R, ReplyInfo> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   final RxInt count = (-1).obs;
 
   late final Rx<ReplySortType> sortType;
@@ -239,7 +243,7 @@ abstract class ReplyController<R>
     int type,
   ) async {
     bool isUpTop = item.replyControl.isUpTop;
-    final res = await Get.find<ReplyRepository>().replyTop(
+    final res = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).replyTop(
       oid: oid,
       type: type,
       rpid: item.id.toString(),

@@ -1,5 +1,6 @@
 import 'package:skf/pages/follow_type/followed/controller.dart';
 import 'package:skf/pages/follow_type/view.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/utils.dart';
@@ -14,7 +15,7 @@ class FollowedPage extends StatefulWidget {
 
   static void toFollowedPage({dynamic mid, String? name}) {
     if (mid == null) return;
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/followed',
       arguments: {
         'mid': safeToInt(mid),
@@ -28,7 +29,7 @@ class _FollowedPageState extends FollowTypePageState<FollowedPage> {
   @override
   final controller = Get.putOrFind(
     FollowedController.new,
-    tag: Get.arguments?['mid']?.toString() ?? Utils.generateRandomString(8),
+    tag: AppNavigator.arguments?['mid']?.toString() ?? Utils.generateRandomString(8),
   );
 
   @override

@@ -6,6 +6,7 @@ import 'package:skf/core/models/blacklist_item.dart' show CoreBlackListItem;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/pages/blacklist/controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -81,7 +82,7 @@ class _BlackListPageState extends State<BlackListPage> {
                   final item = response[index];
                   return ListTile(
                     visualDensity: .standard,
-                    onTap: () => Get.toNamed('/member?mid=${item.mid}'),
+                    onTap: () => AppNavigator.toNamed('/member?mid=${item.mid}'),
                     leading: NetworkImgLayer(
                       width: 45,
                       height: 45,

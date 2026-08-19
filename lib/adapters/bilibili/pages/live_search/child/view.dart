@@ -11,9 +11,10 @@ import 'package:skf/adapters/bilibili/pages/live_search/widgets/live_search_user
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class LiveSearchChildPage extends StatefulWidget {
+class LiveSearchChildPage extends ConsumerStatefulWidget {
   const LiveSearchChildPage({
     super.key,
     required this.controller,
@@ -24,10 +25,10 @@ class LiveSearchChildPage extends StatefulWidget {
   final LiveSearchType searchType;
 
   @override
-  State<LiveSearchChildPage> createState() => _LiveSearchChildPageState();
+  ConsumerState<LiveSearchChildPage> createState() => _LiveSearchChildPageState();
 }
 
-class _LiveSearchChildPageState extends State<LiveSearchChildPage>
+class _LiveSearchChildPageState extends ConsumerState<LiveSearchChildPage>
     with AutomaticKeepAliveClientMixin {
   LiveSearchChildController get _controller => widget.controller;
 

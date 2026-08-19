@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -8,6 +10,8 @@ import 'package:get/get.dart';
 class PopularSeriesController
     extends CommonListController<CorePopularSeriesOneData, CoreHotVideoItemModel>
     with ReloadMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late int number;
 
   final config = Rxn<Map<String, dynamic>>();
@@ -21,7 +25,7 @@ class PopularSeriesController
   }
 
   Future<void> _getSeriesList() async {
-    final res = await Get.find<VideoRepository>().popularSeriesList();
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).popularSeriesList();
     if (res case Success(:final response)) {
       if (response != null && response.isNotEmpty) {
         number = response.first.number!;
@@ -44,7 +48,7 @@ class PopularSeriesController
 
   @override
   Future<LoadingState<CorePopularSeriesOneData>> customGetData() async {
-    final result = await Get.find<VideoRepository>().popularSeriesOne(number: number);
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).popularSeriesOne(number: number);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

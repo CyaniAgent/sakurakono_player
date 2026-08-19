@@ -16,10 +16,18 @@ import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class MineController extends CommonDataController<CoreFavFolderData, CoreFavFolderData>
     with AccountMixin {
   int? favFolderCount;
+
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
 
   // 用户信息 头像、昵称、lv
   final Rx<CoreUserInfoData> userInfo = CoreUserInfoData().obs;
@@ -62,7 +70,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   }
 
   Future<void> queryUserInfo() async {
-    final res = await Get.find<UserRepository>().userInfo();
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userInfo();
     if (res case Success(:final response)) {
       if (response.isLogin == true) {
         userInfo.value = response;
@@ -90,7 +98,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   void _onLogoutMain() => MineActions.of().logout();
 
   Future<void> queryUserStatOwner() async {
-    final res = await Get.find<UserRepository>().userStatOwner();
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userStatOwner();
     if (res case Success(:final response)) {
       userStat.value = response;
     }
@@ -105,7 +113,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
 
   @override
   Future<LoadingState<CoreFavFolderData>> customGetData() async {
-    final result = await Get.find<FavRepository>().userfavFolder(
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userfavFolder(
       pn: 1,
       ps: 20,
       mid: accountService.userId,

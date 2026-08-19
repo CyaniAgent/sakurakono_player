@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 
 import 'package:skf/core/repository/user_repository.dart';
@@ -13,9 +15,11 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 class HistorySearchController
     extends CommonSearchController<CoreHistoryData, CoreHistoryItemModel>
     with CommonMultiSelectMixin<CoreHistoryItemModel>, DeleteItemMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   Future<LoadingState<CoreHistoryData>> customGetData() async {
-    final result = await Get.find<UserRepository>().searchHistory(
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).searchHistory(
     pn: page,
     keyword: editController.value.text,
     account: account,
@@ -35,7 +39,7 @@ class HistorySearchController
   final account = Accounts.history;
 
   Future<void> onDelHistory(int index, kid, String business) async {
-    final res = await Get.find<UserRepository>().delHistory(
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).delHistory(
       '${business}_$kid',
       account: account,
     );
@@ -58,7 +62,7 @@ class HistorySearchController
       onConfirm: () async {
         SmartDialog.showLoading(msg: '请求中');
         final removeList = allChecked.toSet();
-        final response = await Get.find<UserRepository>().delHistory(
+        final response = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).delHistory(
           removeList
               .map((item) => '${item.history.business!}_${item.kid!}')
               .join(','),

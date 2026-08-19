@@ -7,6 +7,7 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart'
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/fav/topic/controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart'
@@ -91,7 +92,7 @@ class _FavTopicPageState extends State<FavTopicPage>
                     color: theme.colorScheme.onInverseSurface,
                     borderRadius: const BorderRadius.all(Radius.circular(6)),
                     child: InkWell(
-                      onTap: () => Get.toNamed(
+                      onTap: () => AppNavigator.toNamed(
                         '/dynTopic',
                         parameters: {
                           'id': item.id!.toString(),

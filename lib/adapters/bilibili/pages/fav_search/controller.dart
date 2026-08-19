@@ -1,6 +1,8 @@
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
@@ -14,6 +16,8 @@ class FavSearchController
         CommonMultiSelectMixin<CoreFavDetailItemModel>,
         DeleteItemMixin,
         BaseFavController {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late int type;
   @override
   late int mediaId;
@@ -37,7 +41,7 @@ class FavSearchController
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
-    final result = await Get.find<FavRepository>().userFavFolderDetail(
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userFavFolderDetail(
         pn: page,
         ps: 20,
         mediaId: mediaId,

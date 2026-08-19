@@ -3,8 +3,12 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class RcmdController extends CommonListController {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late bool enableSaveLastData = Pref.enableSaveLastData;
   final bool appRcmd = Pref.appRcmd;
 
@@ -24,8 +28,8 @@ class RcmdController extends CommonListController {
   @override
   Future<LoadingState> customGetData() async {
     final result = await (appRcmd
-        ? Get.find<VideoRepository>().rcmdVideoListApp(freshIdx: page)
-        : Get.find<VideoRepository>().rcmdVideoList(freshIdx: page, ps: 20));
+        ? (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).rcmdVideoListApp(freshIdx: page)
+        : (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).rcmdVideoList(freshIdx: page, ps: 20));
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

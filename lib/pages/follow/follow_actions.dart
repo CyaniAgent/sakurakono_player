@@ -14,6 +14,7 @@ import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/widgets/follow_tag_panel.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/feed_back.dart';
@@ -22,13 +23,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 abstract final class FollowActions {
   /// Create a follow tag group via a name-input dialog.
   static Future<void> createFavTag(
     BuildContext context,
     ValueChanged<({int tagid, String tagName})> onSuccess,
-  ) async {
+  {Ref? ref}) async {
     String tagName = '';
     final onCreate = await showConfirmDialog(
       context: context,
@@ -44,7 +47,7 @@ abstract final class FollowActions {
       ),
     );
     if (onCreate) {
-      final res = await Get.find<MemberRepository>().createFollowTag(tagName);
+      final res = await (ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).createFollowTag(tagName);
       if (res case Success(:final response)) {
         onSuccess((tagid: response, tagName: tagName));
         SmartDialog.showToast('创建成功');
@@ -61,10 +64,11 @@ abstract final class FollowActions {
     required bool isFollow,
     required ValueChanged<int>? afterMod,
     CoreRelationData? followStatus,
+    Ref? ref,
   }) async {
     feedBack();
     if (!isFollow) {
-      final res = await Get.find<VideoRepository>().relationMod(
+      final res = await (ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
         mid: mid,
         act: 1,
         reSrc: 11,
@@ -77,7 +81,7 @@ abstract final class FollowActions {
       }
     } else {
       if (followStatus?.tag == null) {
-        final res = await Get.find<UserRepository>().userRelation(mid);
+        final res = await (ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userRelation(mid);
         if (res case Success(:final response)) {
           followStatus = response;
         } else {
@@ -97,8 +101,8 @@ abstract final class FollowActions {
             children: [
               DialogOption(
                 onPressed: () async {
-                  Get.back();
-                  final res = await Get.find<MemberRepository>().specialAction(
+                  AppNavigator.back();
+                  final res = await (ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).specialAction(
                     fid: mid,
                     isAdd: !isSpecialFollowed,
                   );
@@ -113,7 +117,7 @@ abstract final class FollowActions {
               ),
               DialogOption(
                 onPressed: () async {
-                  Get.back();
+                  AppNavigator.back();
                   final result = await showModalBottomSheet<Set<int>>(
                     context: context,
                     useSafeArea: true,
@@ -153,8 +157,8 @@ abstract final class FollowActions {
               ),
               DialogOption(
                 onPressed: () async {
-                  Get.back();
-                  final res = await Get.find<VideoRepository>().relationMod(
+                  AppNavigator.back();
+                  final res = await (ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
                     mid: mid,
                     act: 2,
                     reSrc: 11,

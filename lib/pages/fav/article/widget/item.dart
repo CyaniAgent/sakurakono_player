@@ -4,8 +4,8 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/core/models/fav_types.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FavArticleItem extends StatelessWidget {
   const FavArticleItem({
@@ -26,7 +26,7 @@ class FavArticleItem extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           InkWell(
-            onTap: () => Get.toNamed(
+            onTap: () => AppNavigator.toNamed(
               '/articlePage',
               parameters: {
                 'id': item.opusId!.toString(),

@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -7,6 +9,8 @@ import 'package:get/get.dart';
 
 class ArticleListController
     extends CommonListController<CoreArticleListData, CoreArticleListItemModel> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   final id = Get.parameters['id']!;
 
   @override
@@ -27,7 +31,7 @@ class ArticleListController
 
   @override
   Future<LoadingState<CoreArticleListData>> customGetData() async {
-    final result = await Get.find<DynamicsRepository>().articleList(id: id);
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).articleList(id: id);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

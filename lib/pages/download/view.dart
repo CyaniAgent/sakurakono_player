@@ -16,6 +16,7 @@ import 'package:skf/pages/download/detail/widgets/item.dart';
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/download/download_page_info.dart';
 import 'package:skf/pages/download/search/view.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/platform_utils.dart';
@@ -97,7 +98,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                   onPressed: () async {
                     await _downloadActions.waitForInitialization;
                     if (!mounted) return;
-                    Get.to(DownloadSearchPage(progress: _progress));
+                    AppNavigator.to(DownloadSearchPage(progress: _progress));
                   },
                   icon: const Icon(Icons.search),
                 ),
@@ -234,7 +235,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
               children: [
                 DialogOption(
                   onPressed: () {
-                    Get.back();
+                    AppNavigator.back();
                     showConfirmDialog(
                       context: context,
                       title: const Text('确定删除？'),
@@ -252,7 +253,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                 ),
                 DialogOption(
                   onPressed: () async {
-                    Get.back();
+                    AppNavigator.back();
                     final res = await Future.wait(
                       pageInfo.entries.map(
                         (e) => _downloadActions.downloadDanmaku(
@@ -281,7 +282,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
             _controller.onSelect(pageInfo);
             return;
           }
-          Get.to(
+          AppNavigator.to(
             DownloadDetailPage(
               pageId: pageInfo.pageId,
               title: pageInfo.title,

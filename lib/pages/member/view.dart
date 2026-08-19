@@ -1,3 +1,4 @@
+import 'package:skf/core/repository/repository_providers.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/style.dart';
@@ -13,6 +14,7 @@ import 'package:skf/pages/member/controller.dart';
 import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/widget/reserve_button.dart';
 import 'package:skf/pages/member/widget/user_info_card.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/num_utils.dart';
@@ -21,6 +23,7 @@ import 'package:skf/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 class MemberPage extends StatefulWidget {
@@ -37,11 +40,12 @@ class _MemberPageState extends State<MemberPage> {
   PageController? _headerController;
   PageController getHeaderController() =>
       _headerController ??= PageController();
-
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void initState() {
     super.initState();
-    _mid = int.tryParse(Get.parameters['mid']!) ?? -1;
+    _mid = int.tryParse(AppNavigator.parametersOf(context)['mid']!) ?? -1;
     _heroTag = Utils.makeHeroTag(_mid);
     _userController = Get.put(
       MemberController(mid: _mid),
@@ -169,7 +173,7 @@ class _MemberPageState extends State<MemberPage> {
             mainAxisSize: .min,
             children: [
               InkWell(
-                onTap: Get.back,
+                onTap: AppNavigator.back,
                 borderRadius: Style.bottomSheetRadius,
                 child: SizedBox(
                   height: 35,
@@ -191,7 +195,7 @@ class _MemberPageState extends State<MemberPage> {
                     Widget trailing = FilledButton.tonal(
                       onPressed: () async {
                         final isFollow = e.isFollow ?? false;
-                        final res = await Get.find<UserRepository>().spaceReserve(
+                        final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).spaceReserve(
                           sid: e.sid!.toString(),
                           isFollow: isFollow,
                         );
@@ -277,7 +281,7 @@ class _MemberPageState extends State<MemberPage> {
                                   recognizer:
                                       lottery.jumpUrl?.isNotEmpty == true
                                       ? (NoDeadlineTapGestureRecognizer()
-                                          ..onTap = () => Get.toNamed(
+                                          ..onTap = () => AppNavigator.toNamed(
                                             '/webview',
                                             parameters: {
                                               'url': lottery.jumpUrl!,
@@ -309,7 +313,7 @@ class _MemberPageState extends State<MemberPage> {
       ),
     IconButton(
       tooltip: '搜索',
-      onPressed: () => Get.toNamed(
+      onPressed: () => AppNavigator.toNamed(
         '/memberSearch?mid=$_mid&uname=${_userController.username}',
       ),
       icon: const Icon(Icons.search_outlined),
@@ -484,7 +488,7 @@ class _MemberPageState extends State<MemberPage> {
               ),
             ),
             PopupMenuItem(
-              onTap: () => Get.toNamed('/spaceSetting'),
+              onTap: () => AppNavigator.toNamed('/spaceSetting'),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -560,7 +564,7 @@ class _MemberPageState extends State<MemberPage> {
           content: Text(_cacheFollowTime!),
           actions: [
             TextButton(
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               child: Text(
                 '关闭',
                 style: TextStyle(color: ColorScheme.of(context).outline),
@@ -575,7 +579,7 @@ class _MemberPageState extends State<MemberPage> {
       onShow();
       return;
     }
-    final res = await Get.find<UserRepository>().userRelation(_mid);
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userRelation(_mid);
     if (res case Success(:final response)) {
       if (response.mtime == null) return;
       _cacheFollowTime =

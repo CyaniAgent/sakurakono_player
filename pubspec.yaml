@@ -111,6 +111,8 @@ dependencies:
     git:
       url: https://github.com/bggRGjQaUbCoE/getx.git
       ref: version_4.7.2
+  go_router: ^17.5.0
+  flutter_riverpod: ^2.6.1
   hive_ce: ^2.19.3
   html: ^0.15.4
   http2: ^2.3.1
@@ -144,6 +146,7 @@ dependencies:
   pretty_qr_code: ^3.3.0
   protobuf: ^6.0.0
   re_highlight: ^0.0.3
+  riverpod: ^2.6.1
   saver_gallery: ^5.0.2
   screen_brightness_platform_interface: ^2.1.0
   screen_retriever: ^0.2.0

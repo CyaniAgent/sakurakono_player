@@ -3,16 +3,18 @@
 /// The adapter original stays for its other call sites.
 library;
 
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/follow_actions.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FollowTagPanel extends StatefulWidget {
   final int mid;
@@ -32,11 +34,12 @@ class FollowTagPanel extends StatefulWidget {
 class _FollowTagPanelState extends State<FollowTagPanel> {
   LoadingState<List<CoreMemberTagItemModel>> loadingState =
       LoadingState.loading();
-  final RxBool showDefaultBtn = true.obs;
+  bool _showDefaultBtn = true;
   late final Set<int> tags = widget.tags == null
       ? {}
       : Set<int>.from(widget.tags!);
-
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void initState() {
     super.initState();
@@ -44,7 +47,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
   }
 
   void _queryFollowUpTags() {
-    Get.find<MemberRepository>().followUpTags().then((res) {
+    _ref!.read(memberRepositoryProvider).followUpTags().then((res) {
       if (mounted) {
         loadingState = switch (res) {
               Loading() => LoadingState.loading(),
@@ -54,7 +57,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
               ),
               Error(:final errMsg) => Error(errMsg),
             };
-        showDefaultBtn.value = tags.isEmpty;
+        _showDefaultBtn = tags.isEmpty;
         setState(() {});
       }
     });
@@ -62,18 +65,18 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
 
   Future<void> onSave() async {
     if (!loadingState.isSuccess) {
-      Get.back();
+      AppNavigator.back();
       return;
     }
     feedBack();
     // 保存
-    final res = await Get.find<MemberRepository>().addUsers(
+    final res = await _ref!.read(memberRepositoryProvider).addUsers(
       widget.mid.toString(),
       tags.isEmpty ? '0' : tags.join(','),
     );
     if (res.isSuccess) {
       SmartDialog.showToast('保存成功');
-      Get.back(result: tags);
+      AppNavigator.back(result: tags);
     } else {
       res.toast();
     }
@@ -101,7 +104,9 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
                     item.count = (item.count ?? 0) + 1;
                   }
                   (context as Element).markNeedsBuild();
-                  showDefaultBtn.value = tags.isEmpty;
+                  setState(() {
+                    _showDefaultBtn = tags.isEmpty;
+                  });
                 }
 
                 return ListTile(
@@ -142,10 +147,10 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
       children: [
         AppBar(
           backgroundColor: Colors.transparent,
-          leading: IconButton(
+          leading: const IconButton(
             tooltip: '关闭',
-            onPressed: Get.back,
-            icon: const Icon(Icons.close_outlined),
+            onPressed: AppNavigator.back,
+            icon: Icon(Icons.close_outlined),
           ),
           title: const Text('设置关注分组'),
           actions: [
@@ -180,9 +185,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
           child: FilledButton.tonal(
             onPressed: onSave,
             style: const ButtonStyle(visualDensity: .compact),
-            child: Obx(
-              () => Text(showDefaultBtn.value ? '保存至默认分组' : '保存'),
-            ),
+            child: Text(_showDefaultBtn ? '保存至默认分组' : '保存'),
           ),
         ),
       ],
@@ -194,8 +197,9 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
     if (loadingState case Success(:final response)) {
       response.add(CoreMemberTagItemModel.fromCreate(res, count: 1));
       tags.add(res.tagid);
-      showDefaultBtn.value = false;
-      setState(() {});
+      setState(() {
+        _showDefaultBtn = false;
+      });
     } else {
       _queryFollowUpTags();
     }

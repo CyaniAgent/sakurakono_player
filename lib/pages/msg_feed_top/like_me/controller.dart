@@ -6,6 +6,8 @@ import 'package:skf/pages/common/common_data_controller.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LikeMeController
     extends
@@ -17,6 +19,12 @@ class LikeMeController
   int? cursorTime;
 
   bool isEnd = false;
+
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
 
   @override
   void onInit() {
@@ -62,7 +70,7 @@ class LikeMeController
 
   @override
   Future<LoadingState<CoreMsgLikeData>> customGetData() async {
-    final result = await Get.find<MsgRepository>().msgFeedLikeMe(cursor: cursor, cursorTime: cursorTime);
+    final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).msgFeedLikeMe(cursor: cursor, cursorTime: cursorTime);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -72,7 +80,7 @@ class LikeMeController
 
   Future<void> onRemove(dynamic id, int index, bool isLatest) async {
     try {
-      final res = await Get.find<MsgRepository>().delMsgfeed(0, id);
+      final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).delMsgfeed(0, id);
       if (res.isSuccess) {
         Pair<List<CoreMsgLikeItem>, List<CoreMsgLikeItem>> pair =
             loadingState.value.data;
@@ -91,7 +99,7 @@ class LikeMeController
 
   Future<void> onSetNotice(CoreMsgLikeItem item, bool isNotice) async {
     int noticeState = isNotice ? 1 : 0;
-    final res = await Get.find<MsgRepository>().msgSetNotice(
+    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).msgSetNotice(
       id: item.id!.toString(),
       noticeState: noticeState,
     );

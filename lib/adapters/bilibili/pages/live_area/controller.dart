@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -10,6 +13,8 @@ import 'package:get/get.dart';
 
 class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreAreaList>
     with GetSingleTickerProviderStateMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late final isLogin = Accounts.main.isLogin;
 
   late final isEditing = false.obs;
@@ -49,7 +54,7 @@ class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreA
 
   @override
   Future<LoadingState<List<CoreAreaList>?>> customGetData() async {
-    final result = await Get.find<LiveRepository>().liveAreaList();
+    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveAreaList();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -58,7 +63,7 @@ class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreA
   }
 
   Future<void> queryFavTags() async {
-    final biliResult = await Get.find<LiveRepository>().getLiveFavTag();
+    final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).getLiveFavTag();
     favState.value = switch (biliResult) {
       Loading _ => LoadingState<List<CoreAreaItem>>.loading(),
       Success(:final response) => Success(response),
@@ -68,7 +73,7 @@ class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreA
 
   Future<void> setFavTag() async {
     if (favState.value case Success(:final response)) {
-      final biliResult = await Get.find<LiveRepository>().setLiveFavTag(
+      final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).setLiveFavTag(
         ids: response.map((e) => e.id).join(','),
       );
       final res = switch (biliResult) {

@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -8,6 +10,8 @@ import 'package:get/get.dart';
 
 class BubbleController extends CommonListController<CoreBubbleData, CoreDynList>
     with GetSingleTickerProviderStateMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   BubbleController(this.categoryId);
   final Object? categoryId;
 
@@ -55,7 +59,7 @@ class BubbleController extends CommonListController<CoreBubbleData, CoreDynList>
 
   @override
   Future<LoadingState<CoreBubbleData>> customGetData() async {
-    final result = await Get.find<DynamicsRepository>().bubble(
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).bubble(
       tribeId: tribeId,
       categoryId: categoryId,
       sortType: sortType,

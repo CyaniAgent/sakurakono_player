@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
+import 'package:skf/router/app_navigator.dart';
 
 /// OttoHub 的 mine 域导航/账号动作契约实现。
 ///
@@ -24,13 +24,13 @@ class OttoMineActions implements MineActions {
   Widget? buildMsgBadge() => null;
 
   @override
-  void openSearch() => Get.toNamed('/search');
+  void openSearch() => AppNavigator.toNamed('/search');
 
   @override
-  void openReply() => Get.toNamed('/myReply');
+  void openReply() => AppNavigator.toNamed('/myReply');
 
   @override
-  void openSetting() => Get.toNamed('/setting', preventDuplicates: false);
+  void openSetting() => AppNavigator.toNamed('/setting', preventDuplicates: false);
 
   @override
   Future<void>? switchAccountDialog(BuildContext context) {
@@ -39,16 +39,16 @@ class OttoMineActions implements MineActions {
   }
 
   @override
-  void openLoginPage() => Get.toNamed('/loginPage');
+  void openLoginPage() => AppNavigator.toNamed('/loginPage');
 
   @override
-  void openMemberPage(int? mid) => Get.toNamed('/member?mid=$mid');
+  void openMemberPage(int? mid) => AppNavigator.toNamed('/member?mid=$mid');
 
   @override
-  void openUserPage(String name, int mid) => Get.toNamed('/$name?mid=$mid');
+  void openUserPage(String name, int mid) => AppNavigator.toNamed('/$name?mid=$mid');
 
   @override
-  Future<dynamic>? openFav() => Get.toNamed('/fav');
+  Future<dynamic>? openFav() => AppNavigator.toNamed('/fav');
 
   @override
   void openFavDetail(
@@ -56,7 +56,7 @@ class OttoMineActions implements MineActions {
     String heroTag,
     VoidCallback onPop,
   ) =>
-      Get.toNamed(
+      AppNavigator.toNamed(
         '/favDetail',
         arguments: item,
         parameters: {

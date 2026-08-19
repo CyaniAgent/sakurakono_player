@@ -36,13 +36,7 @@ class OttoAccountProvider extends AccountProvider {
   static const _faceKey = 'ottohub_face';
 
   @override
-  void onInit() {
-    super.onInit();
-    restoreFromCache();
-  }
-
-  @override
-  void restoreFromCache() {
+  Future<void> restoreFromCache() async {
     final cachedToken = GStorage.userInfo.get(_tokenKey) as String?;
     if (cachedToken != null && cachedToken.isNotEmpty) {
       _client.token = cachedToken;
@@ -88,8 +82,7 @@ class OttoAccountProvider extends AccountProvider {
     GStorage.userInfo.delete(_faceKey);
   }
 
-  @override
   Map<String, String> get authHeaders => {};
   @override
-  Stream<bool> onAuthStateChanged() => rxIsLogin.stream;
+  void onAuthStateChanged(Map<String, String> headers) {}
 }

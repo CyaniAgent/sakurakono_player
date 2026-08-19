@@ -11,25 +11,26 @@ import 'package:skf/pages/later/base_controller.dart';
 import 'package:skf/pages/later/child_view.dart';
 import 'package:skf/pages/later/controller.dart';
 import 'package:skf/pages/later/later_actions.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LaterPage extends StatefulWidget {
+class LaterPage extends ConsumerStatefulWidget {
   const LaterPage({super.key, this.actions});
 
   /// 导航契约（适配器注入），null 时对应导航动作禁用。
   final LaterActions? actions;
 
   @override
-  State<LaterPage> createState() => _LaterPageState();
+  ConsumerState<LaterPage> createState() => _LaterPageState();
 }
 
-class _LaterPageState extends State<LaterPage>
+class _LaterPageState extends ConsumerState<LaterPage>
     with SingleTickerProviderStateMixin {
-  final LaterBaseController _baseCtr = Get.put(LaterBaseController());
   late final TabController _tabController;
 
   LaterController currCtr([int? index]) {
@@ -59,103 +60,102 @@ class _LaterPageState extends State<LaterPage>
     _tabController
       ..removeListener(listener)
       ..dispose();
-    Get.delete<LaterBaseController>();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        final enableMultiSelect = _baseCtr.enableMultiSelect.value;
-        return popScope(
-          canPop: !enableMultiSelect,
-          onPopInvokedWithResult: (didPop, result) {
-            if (enableMultiSelect) {
-              currCtr().handleSelect();
-            }
-          },
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: _buildAppbar(enableMultiSelect),
-            floatingActionButtonLocation: const NoRightMarginFabLocation(),
-            floatingActionButton: Padding(
-              padding: const .only(right: kFloatingActionButtonMargin),
-              child: Obx(
-                () => currCtr().loadingState.value.isSuccess
-                    ? AnimatedSlide(
-                        offset: _baseCtr.isPlayAll.value
-                            ? Offset.zero
-                            : const Offset(0.75, 0),
-                        duration: const Duration(milliseconds: 120),
-                        child: GestureDetector(
-                          onHorizontalDragDown: (details) =>
-                              _baseCtr.dx = details.localPosition.dx,
-                          onHorizontalDragStart: (details) =>
-                              _baseCtr.setIsPlayAll(
-                                details.localPosition.dx < _baseCtr.dx,
-                              ),
-                          child: FloatingActionButton.extended(
-                            onPressed: () {
-                              if (_baseCtr.isPlayAll.value) {
-                                currCtr().toViewPlayAll();
-                              } else {
-                                _baseCtr.setIsPlayAll(true);
-                              }
-                            },
-                            label: const Text('播放全部'),
-                            icon: const Icon(Icons.playlist_play),
+    final baseState = ref.watch(laterBaseProvider);
+    final enableMultiSelect = baseState.enableMultiSelect;
+    return popScope(
+      canPop: !enableMultiSelect,
+      onPopInvokedWithResult: (didPop, result) {
+        if (enableMultiSelect) {
+          currCtr().handleSelect();
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: _buildAppbar(enableMultiSelect),
+        floatingActionButtonLocation: const NoRightMarginFabLocation(),
+        floatingActionButton: Padding(
+          padding: const .only(right: kFloatingActionButtonMargin),
+          child: Obx(
+            () => currCtr().loadingState.value.isSuccess
+                ? AnimatedSlide(
+                    offset: ref.read(laterBaseProvider).isPlayAll
+                        ? Offset.zero
+                        : const Offset(0.75, 0),
+                    duration: const Duration(milliseconds: 120),
+                    child: GestureDetector(
+                      onHorizontalDragDown: (details) =>
+                          ref.read(laterBaseProvider.notifier).dx =
+                              details.localPosition.dx,
+                      onHorizontalDragStart: (details) =>
+                          ref.read(laterBaseProvider.notifier).setIsPlayAll(
+                            details.localPosition.dx <
+                                ref.read(laterBaseProvider.notifier).dx,
                           ),
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          if (ref.read(laterBaseProvider).isPlayAll) {
+                            currCtr().toViewPlayAll();
+                          } else {
+                            ref.read(laterBaseProvider.notifier)
+                                .setIsPlayAll(true);
+                          }
+                        },
+                        label: const Text('播放全部'),
+                        icon: const Icon(Icons.playlist_play),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ),
+        body: ViewSafeArea(
+          child: Column(
+            children: [
+              TabBar(
+                // isScrollable: true,
+                // tabAlignment: TabAlignment.start,
+                controller: _tabController,
+                tabs: LaterViewType.values.map((item) {
+                  final count = baseState.counts[item.index];
+                  return Tab(
+                    text: '${item.title}${count != -1 ? '($count)' : ''}',
+                  );
+                }).toList(),
+                onTap: (_) {
+                  if (!_tabController.indexIsChanging) {
+                    currCtr().scrollController.animToTop();
+                  } else if (enableMultiSelect) {
+                    currCtr(_tabController.previousIndex).handleSelect();
+                  }
+                },
+              ),
+              Expanded(
+                child: TabBarView<CustomHorizontalDragGestureRecognizer>(
+                  physics: enableMultiSelect
+                      ? const NeverScrollableScrollPhysics()
+                      : clampingScrollPhysics,
+                  controller: _tabController,
+                  horizontalDragGestureRecognizer:
+                      CustomHorizontalDragGestureRecognizer.new,
+                  children: LaterViewType.values
+                      .map(
+                        (item) => LaterViewChildPage(
+                          laterViewType: item,
+                          actions: widget.actions,
                         ),
                       )
-                    : const SizedBox.shrink(),
+                      .toList(),
+                ),
               ),
-            ),
-            body: ViewSafeArea(
-              child: Column(
-                children: [
-                  TabBar(
-                    // isScrollable: true,
-                    // tabAlignment: TabAlignment.start,
-                    controller: _tabController,
-                    tabs: LaterViewType.values.map((item) {
-                      final count = _baseCtr.counts[item.index];
-                      return Tab(
-                        text: '${item.title}${count != -1 ? '($count)' : ''}',
-                      );
-                    }).toList(),
-                    onTap: (_) {
-                      if (!_tabController.indexIsChanging) {
-                        currCtr().scrollController.animToTop();
-                      } else if (enableMultiSelect) {
-                        currCtr(_tabController.previousIndex).handleSelect();
-                      }
-                    },
-                  ),
-                  Expanded(
-                    child: TabBarView<CustomHorizontalDragGestureRecognizer>(
-                      physics: enableMultiSelect
-                          ? const NeverScrollableScrollPhysics()
-                          : clampingScrollPhysics,
-                      controller: _tabController,
-                      horizontalDragGestureRecognizer:
-                          CustomHorizontalDragGestureRecognizer.new,
-                      children: LaterViewType.values
-                          .map(
-                            (item) => LaterViewChildPage(
-                              laterViewType: item,
-                              actions: widget.actions,
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -202,14 +202,14 @@ class _LaterPageState extends State<LaterPage>
             tooltip: '搜索',
             onPressed: () {
               final mid = currCtr().mid;
-              Get.toNamed(
+              AppNavigator.toNamed(
                 '/laterSearch',
                 arguments: {
                   'type': 0,
                   'mediaId': mid,
                   'mid': mid,
                   'title': '稍后再看',
-                  'count': _baseCtr.counts[LaterViewType.all.index],
+                  'count': ref.read(laterBaseProvider).counts[LaterViewType.all.index],
                 },
               );
             },

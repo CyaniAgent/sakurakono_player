@@ -1,4 +1,4 @@
-import 'package:get/get.dart' show GetPage;
+import 'package:go_router/go_router.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
 
@@ -18,8 +18,8 @@ abstract class AppAdapter {
   /// Register all DI bindings for this adapter via GetX.
   Future<void> registerDependencies();
 
-  /// Adapter-specific routes.
-  List<GetPage> get routes;
+  /// Adapter-specific routes (go_router GoRoutes).
+  List<GoRoute> get routes;
 
   /// Process an image URL for display.
   /// Bilibili adapter adds CDN quality params (@1q.webp etc).

@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
@@ -7,6 +10,8 @@ import 'package:get/get.dart';
 
 class LiveFollowController
     extends CommonListController<CoreLiveFollowData, CoreLiveFollowItem> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void onInit() {
     super.onInit();
@@ -31,7 +36,7 @@ class LiveFollowController
 
   @override
   Future<LoadingState<CoreLiveFollowData>> customGetData() async {
-    final result = await Get.find<LiveRepository>().liveFollow(page);
+    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveFollow(page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

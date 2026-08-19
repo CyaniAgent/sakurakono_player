@@ -1,9 +1,12 @@
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 abstract class FollowTypeController
     extends CommonListController<CoreFollowData, CoreFollowItemModel> {
@@ -12,6 +15,12 @@ abstract class FollowTypeController
 
   RxInt total = 0.obs;
 
+  Ref? repoRef;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { repoRef = ref; }
+
   @override
   void onInit() {
     super.onInit();
@@ -19,8 +28,8 @@ abstract class FollowTypeController
   }
 
   void init() {
-    final ownerMid = Get.find<AccountProvider>().userId ?? 0;
-    final Map? args = Get.arguments;
+    final ownerMid = repoRef?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId ?? 0;
+    final Map? args = AppNavigator.arguments;
     mid = args?['mid'] ?? ownerMid;
     final String? name = args?['name'];
     this.name = RxnString(name);
@@ -31,7 +40,7 @@ abstract class FollowTypeController
   }
 
   Future<void> queryUserName() async {
-    final res = await Get.find<MemberRepository>().memberCardInfo(mid: mid);
+    final res = await (repoRef?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberCardInfo(mid: mid);
     name.value = res.dataOrNull?.card?.name;
   }
 

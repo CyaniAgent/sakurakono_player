@@ -11,22 +11,24 @@ import 'package:skf/pages/follow/controller.dart';
 import 'package:skf/pages/follow/follow_actions.dart' show FollowActions;
 import 'package:skf/pages/follow/follow_models.dart' show isCustomFollowTag;
 import 'package:skf/pages/follow_tag_sort/view.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class FollowPage extends StatefulWidget {
+class FollowPage extends ConsumerStatefulWidget {
   const FollowPage({super.key});
 
   @override
-  State<FollowPage> createState() => _FollowPageState();
+  ConsumerState<FollowPage> createState() => _FollowPageState();
 
   static void toFollowPage({dynamic mid, String? name}) {
     if (mid == null) return;
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/follow',
       arguments: {
         'mid': safeToInt(mid),
@@ -36,163 +38,193 @@ class FollowPage extends StatefulWidget {
   }
 }
 
-class _FollowPageState extends State<FollowPage> {
+class _FollowPageState extends ConsumerState<FollowPage>
+    with TickerProviderStateMixin {
   final _tag = Utils.generateRandomString(8);
-  late final FollowController _followController;
+  TabController? _tabController;
 
   @override
-  void initState() {
-    super.initState();
-    _followController = Get.put(FollowController(), tag: _tag);
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  void _syncTabController(List<CoreMemberTagItemModel> tabs) {
+    if (tabs.isEmpty) return;
+    final currentIndex = _tabController?.index.clamp(0, tabs.length - 1) ?? 0;
+    _tabController?.dispose();
+    _tabController = TabController(
+      initialIndex: currentIndex,
+      length: tabs.length,
+      vsync: this,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final followState = ref.watch(followControllerProvider);
+    final notifier = ref.read(followControllerProvider.notifier);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: _buildAppBar,
-      body: _followController.isOwner
-          ? Obx(() => _buildBody(_followController.followState.value))
-          : _childPage(),
+      appBar: _buildAppBar(followState, notifier),
+      body: followState.isOwner
+          ? _buildBody(followState, notifier)
+          : _childPage(notifier, followState),
     );
   }
 
-  PreferredSizeWidget get _buildAppBar => AppBar(
-    title: _followController.isOwner
-        ? const Text('我的关注')
-        : Obx(() {
-            final name = _followController.name.value;
-            if (name != null) return Text('$name的关注');
-            return const SizedBox.shrink();
-          }),
-    actions: _followController.isOwner
-        ? [
-            IconButton(
-              onPressed: () => FollowActions.createFavTag(
-                context,
-                _followController.onCreateFavTag,
-              ),
-              icon: const Icon(Icons.add),
-              tooltip: '新建分组',
-            ),
-            IconButton(
-              onPressed: () {
-                if (_followController.followState.value is! Success) {
-                  return;
-                }
-                Get.to(FollowTagSortPage(controller: _followController));
-              },
-              icon: const Icon(Icons.sort),
-              tooltip: '分组排序',
-            ),
-            IconButton(
-              onPressed: () => Get.toNamed(
-                '/followSearch',
-                arguments: {
-                  'mid': _followController.mid,
-                },
-              ),
-              icon: const Icon(Icons.search_outlined),
-              tooltip: '搜索',
-            ),
-            PopupMenuButton(
-              icon: const Icon(Icons.more_vert),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: () => Get.toNamed('/blackListPage'),
-                  child: const Row(
-                    spacing: 10,
-                    mainAxisSize: .min,
-                    children: [
-                      Icon(Icons.block, size: 19),
-                      Text('黑名单管理'),
-                    ],
+  PreferredSizeWidget _buildAppBar(
+    FollowState followState,
+    FollowControllerNotifier notifier,
+  ) =>
+      AppBar(
+        title: followState.isOwner
+            ? const Text('我的关注')
+            : Text(followState.name != null ? '${followState.name}的关注' : ''),
+        actions: followState.isOwner
+            ? [
+                IconButton(
+                  onPressed: () => FollowActions.createFavTag(
+                    context,
+                    notifier.onCreateFavTag,
                   ),
+                  icon: const Icon(Icons.add),
+                  tooltip: '新建分组',
                 ),
-              ],
-            ),
-            const SizedBox(width: 6),
-          ]
-        : null,
-  );
-
-  Widget _childPage([CoreMemberTagItemModel? item]) => FollowChildPage(
-    tag: _tag,
-    controller: _followController,
-    mid: _followController.mid,
-    tagid: item?.tagid,
-  );
-
-  Widget _buildBody(LoadingState loadingState) {
-    return switch (loadingState) {
-      Loading() => m3eLoading,
-      Success() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ViewSafeArea(
-            child: TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              controller: _followController.tabController,
-              tabs: List.generate(_followController.tabs.length, (index) {
-                return Obx(() {
-                  final item = _followController.tabs[index];
-                  int? count = item.count;
-                  if (isCustomFollowTag(item.tagid)) {
-                    return GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onLongPress: () {
-                        Feedback.forLongPress(context);
-                        _onHandleTag(index, item);
-                      },
-                      onSecondaryTap: PlatformUtils.isMobile
-                          ? null
-                          : () => _onHandleTag(index, item),
-                      child: Tab(
-                        child: Row(
-                          children: [
-                            Text(
-                              '${item.name}${count != null ? '($count)' : ''} ',
-                            ),
-                            const Icon(Icons.menu, size: 18),
-                          ],
-                        ),
+                IconButton(
+                  onPressed: () {
+                    if (followState.tabs.isEmpty) return;
+                    _syncTabController(followState.tabs);
+                    AppNavigator.to(
+                      FollowTagSortPage(
+                        notifier: notifier,
+                        initialTabs: followState.tabs,
                       ),
                     );
-                  }
-                  return Tab(
-                    text: '${item.name}${count != null ? '($count)' : ''}',
-                  );
-                });
-              }),
-              onTap: (value) {
-                if (!_followController.tabController!.indexIsChanging) {
-                  final item = _followController.tabs[value];
-                  // if (_isCustomTag(item.tagid)) {
-                  //   _onHandleTag(value, item);
-                  // }
-                  try {
-                    Get.find<FollowChildController>(
-                      tag: '$_tag${item.tagid}',
-                    ).animateToTop();
-                  } catch (_) {}
-                }
-              },
-            ),
+                  },
+                  icon: const Icon(Icons.sort),
+                  tooltip: '分组排序',
+                ),
+                IconButton(
+                  onPressed: () => AppNavigator.toNamed(
+                    '/followSearch',
+                    arguments: {
+                      'mid': followState.mid,
+                    },
+                  ),
+                  icon: const Icon(Icons.search_outlined),
+                  tooltip: '搜索',
+                ),
+                PopupMenuButton(
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: () => AppNavigator.toNamed('/blackListPage'),
+                      child: const Row(
+                        spacing: 10,
+                        mainAxisSize: .min,
+                        children: [
+                          Icon(Icons.block, size: 19),
+                          Text('黑名单管理'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 6),
+              ]
+            : null,
+      );
+
+  Widget _childPage(
+    FollowControllerNotifier notifier,
+    FollowState followState, [
+    CoreMemberTagItemModel? item,
+  ]) =>
+      FollowChildPage(
+        tag: _tag,
+        followState: followState,
+        notifier: notifier,
+        mid: followState.mid,
+        tagid: item?.tagid,
+      );
+
+  Widget _buildBody(
+    FollowState followState,
+    FollowControllerNotifier notifier,
+  ) {
+    if (followState.isTagsLoading) return m3eLoading;
+    if (followState.tabs.isEmpty) return _childPage(notifier, followState);
+    _syncTabController(followState.tabs);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ViewSafeArea(
+          child: TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            controller: _tabController,
+            tabs: List.generate(followState.tabs.length, (index) {
+              final item = followState.tabs[index];
+              final int? count = item.count;
+              if (isCustomFollowTag(item.tagid)) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onLongPress: () {
+                    Feedback.forLongPress(context);
+                    _onHandleTag(index, item, notifier);
+                  },
+                  onSecondaryTap: PlatformUtils.isMobile
+                      ? null
+                      : () => _onHandleTag(index, item, notifier),
+                  child: Tab(
+                    child: Row(
+                      children: [
+                        Text(
+                          '${item.name}${count != null ? '($count)' : ''} ',
+                        ),
+                        const Icon(Icons.menu, size: 18),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return Tab(
+                text: '${item.name}${count != null ? '($count)' : ''}',
+              );
+            }),
+            onTap: (value) {
+              if (_tabController != null && !_tabController!.indexIsChanging) {
+                final item = followState.tabs[value];
+                try {
+                  Get.find<FollowChildController>(
+                    tag: '$_tag${item.tagid}',
+                  ).animateToTop();
+                } catch (_) {}
+              }
+            },
           ),
-          Expanded(
-            child: tabBarView(
-              controller: _followController.tabController,
-              children: _followController.tabs.map(_childPage).toList(),
-            ),
+        ),
+        Expanded(
+          child: tabBarView(
+            controller: _tabController,
+            children: followState.tabs
+                .map(
+                  (item) => _childPage(notifier, followState, item),
+                )
+                .toList(),
           ),
-        ],
-      ),
-      Error() => _childPage(),
-    };
+        ),
+      ],
+    );
   }
 
-  void _onHandleTag(int index, CoreMemberTagItemModel item) {
+  void _onHandleTag(
+    int index,
+    CoreMemberTagItemModel item,
+    FollowControllerNotifier notifier,
+  ) {
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
@@ -201,7 +233,7 @@ class _FollowPageState extends State<FollowPage> {
         children: [
           DialogOption(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               String tagName = item.name!;
               showConfirmDialog(
                 context: context,
@@ -217,7 +249,7 @@ class _FollowPageState extends State<FollowPage> {
                 ),
                 onConfirm: () {
                   if (tagName.isNotEmpty) {
-                    _followController.onUpdateTag(item, tagName);
+                    notifier.onUpdateTag(item, tagName);
                   }
                 },
               );
@@ -226,12 +258,12 @@ class _FollowPageState extends State<FollowPage> {
           ),
           DialogOption(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               showConfirmDialog(
                 context: context,
                 title: const Text('删除分组'),
                 content: const Text('删除后，该分组下的用户依旧保留？'),
-                onConfirm: () => _followController.onDelTag(index, item.tagid!),
+                onConfirm: () => notifier.onDelTag(index, item.tagid!),
               );
             },
             child: const Text('删除分组', style: TextStyle(fontSize: 14)),

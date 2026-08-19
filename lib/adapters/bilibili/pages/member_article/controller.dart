@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
@@ -11,6 +13,9 @@ class MemberArticleCtr
   });
 
   final int mid;
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   int count = -1;
 
@@ -35,7 +40,7 @@ class MemberArticleCtr
 
   @override
   Future<LoadingState<CoreSpaceArticleData>> customGetData() async {
-    final result = await Get.find<MemberRepository>().spaceArticle(mid: mid, page: page);
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArticle(mid: mid, page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

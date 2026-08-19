@@ -12,6 +12,7 @@ import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/download/downloading/view.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
@@ -74,7 +75,7 @@ Widget entryMoreBtn({
             '访问${entry.ownerName != null ? '：${entry.ownerName}' : '用户主页'}',
             style: const TextStyle(fontSize: 13),
           ),
-          onTap: () => Get.toNamed('/member?mid=$mid'),
+          onTap: () => AppNavigator.toNamed('/member?mid=$mid'),
         ),
     ],
   ),
@@ -122,7 +123,7 @@ class DetailItem extends StatelessWidget {
               children: [
                 DialogOption(
                   onPressed: () {
-                    Get.back();
+                    AppNavigator.back();
                     showConfirmDialog(
                       context: context,
                       title: const Text('确定删除该视频？'),
@@ -133,7 +134,7 @@ class DetailItem extends StatelessWidget {
                 ),
                 DialogOption(
                   onPressed: () async {
-                    Get.back();
+                    AppNavigator.back();
                     final res = await actions.downloadDanmaku(
                       entry: entry,
                       isUpdate: true,
@@ -156,7 +157,7 @@ class DetailItem extends StatelessWidget {
       child: InkWell(
         onTap: () async {
           if (!canDel) {
-            Get.to(const DownloadingPage());
+            AppNavigator.to(const DownloadingPage());
             return;
           }
           if (enableMultiSelect) {

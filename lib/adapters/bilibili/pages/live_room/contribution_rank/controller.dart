@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+
 import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
@@ -12,6 +15,8 @@ class ContributionRankController
           CoreLiveContributionRankData,
           CoreLiveContributionRankItem
         > {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   final int ruid;
   final int roomId;
   final CoreLiveContributionRankType type;
@@ -37,7 +42,7 @@ class ContributionRankController
 
   @override
   Future<LoadingState<CoreLiveContributionRankData>> customGetData() async {
-    final result = await Get.find<LiveRepository>().liveContributionRank(
+    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveContributionRank(
         ruid: ruid,
         roomId: roomId,
         page: page,

@@ -36,7 +36,8 @@ mixin BlockConfigMixin {
   Color _getColor(SegmentType segment) => blockColor[segment.index];
 }
 
-mixin BlockMixin on GetxController {
+mixin BlockMixin {
+  bool isClosed = false;
   int? _lastBlockPos;
   BlockConfigMixin get blockConfig;
   StreamSubscription<Duration>? _blockListener;
@@ -508,12 +509,10 @@ mixin BlockMixin on GetxController {
     return null;
   }
 
-  @override
-  void onClose() {
+  void disposeBlock() {
     _stopSkipTimer();
     if (blockConfig.enableBlock) {
       resetBlock();
     }
-    super.onClose();
   }
 }

@@ -2,41 +2,85 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/models/common/live/live_search_type.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/child/view.dart';
+import 'package:skf/adapters/bilibili/pages/live_search/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/controller.dart';
-import 'package:skf/utils/utils.dart';
+import 'package:skf/core/models/live_enums.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LiveSearchPage extends StatefulWidget {
-  const LiveSearchPage({super.key});
+class LiveSearchPage extends ConsumerStatefulWidget {
+  const LiveSearchPage({
+    super.key,
+    this.mid,
+    this.uname,
+  });
+
+  final String? mid;
+  final String? uname;
 
   @override
-  State<LiveSearchPage> createState() => _LiveSearchPageState();
+  ConsumerState<LiveSearchPage> createState() => _LiveSearchPageState();
 }
 
-class _LiveSearchPageState extends State<LiveSearchPage> {
-  final _controller = Get.put(
-    LiveSearchController(),
-    tag: Utils.generateRandomString(8),
-  );
+class _LiveSearchPageState extends ConsumerState<LiveSearchPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  late final LiveSearchChildController _roomCtr;
+  late final LiveSearchChildController _userCtr;
+
+  LiveSearchParams get _params =>
+      LiveSearchParams(mid: widget.mid, uname: widget.uname);
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: 2);
+    final notifier = ref.read(liveSearchProvider(_params).notifier);
+    _roomCtr = LiveSearchChildController(notifier, CoreLiveSearchType.room);
+    _userCtr = LiveSearchChildController(notifier, CoreLiveSearchType.user);
+    _roomCtr.attachRef(ref);
+    _userCtr.attachRef(ref);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _onClear() {
+    final notifier = ref.read(liveSearchProvider(_params).notifier);
+    if (notifier.editingController.text.isNotEmpty) {
+      notifier.clearSearchData();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _onSubmit() {
+    final notifier = ref.read(liveSearchProvider(_params).notifier);
+    notifier.submitSearch(roomCtr: _roomCtr, userCtr: _userCtr);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final liveState = ref.watch(liveSearchProvider(_params));
+    final notifier = ref.read(liveSearchProvider(_params).notifier);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [
           IconButton(
             tooltip: '搜索',
-            onPressed: _controller.submit,
+            onPressed: _onSubmit,
             icon: const Icon(Icons.search, size: 22),
           ),
           const SizedBox(width: 10),
         ],
         title: TextField(
           autofocus: true,
-          focusNode: _controller.focusNode,
-          controller: _controller.editingController,
+          focusNode: notifier.focusNode,
+          controller: notifier.editingController,
           textInputAction: TextInputAction.search,
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
@@ -46,68 +90,60 @@ class _LiveSearchPageState extends State<LiveSearchPage> {
             suffixIcon: IconButton(
               tooltip: '清空',
               icon: const Icon(Icons.clear, size: 22),
-              onPressed: _controller.onClear,
+              onPressed: _onClear,
             ),
           ),
-          onSubmitted: (value) => _controller.submit(),
+          onSubmitted: (_) => _onSubmit(),
           onChanged: (value) {
             if (value.isEmpty) {
-              _controller.hasData.value = false;
+              notifier.setHasData(false);
             }
           },
         ),
       ),
       body: ViewSafeArea(
-        child: Obx(() {
-          return Opacity(
-            opacity: _controller.hasData.value ? 1 : 0,
-            child: Column(
-              children: [
-                TabBar(
-                  controller: _controller.tabController,
-                  tabs: [
-                    Obx(
-                      () => Tab(
-                        text:
-                            '正在直播 ${_controller.counts[0] != -1 ? _controller.counts[0] : ''}',
-                      ),
+        child: Opacity(
+          opacity: liveState.hasData ? 1 : 0,
+          child: Column(
+            children: [
+              TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(
+                    text: '正在直播 ${liveState.counts[0] != -1 ? liveState.counts[0] : ''}',
+                  ),
+                  Tab(
+                    text: '主播 ${liveState.counts[1] != -1 ? liveState.counts[1] : ''}',
+                  ),
+                ],
+                onTap: (index) {
+                  if (!_tabController.indexIsChanging) {
+                    if (index == 0) {
+                      _roomCtr.animateToTop();
+                    } else {
+                      _userCtr.animateToTop();
+                    }
+                  }
+                },
+              ),
+              Expanded(
+                child: tabBarView(
+                  controller: _tabController,
+                  children: [
+                    LiveSearchChildPage(
+                      controller: _roomCtr,
+                      searchType: LiveSearchType.room,
                     ),
-                    Obx(
-                      () => Tab(
-                        text:
-                            '主播 ${_controller.counts[1] != -1 ? _controller.counts[1] : ''}',
-                      ),
+                    LiveSearchChildPage(
+                      controller: _userCtr,
+                      searchType: LiveSearchType.user,
                     ),
                   ],
-                  onTap: (index) {
-                    if (!_controller.tabController.indexIsChanging) {
-                      if (index == 0) {
-                        _controller.roomCtr.animateToTop();
-                      } else {
-                        _controller.userCtr.animateToTop();
-                      }
-                    }
-                  },
                 ),
-                Expanded(
-                  child: tabBarView(
-                    controller: _controller.tabController,
-                    children: [
-                      LiveSearchChildPage(
-                        controller: _controller.roomCtr,
-                        searchType: LiveSearchType.room,
-                      ),
-                      LiveSearchChildPage(
-                        controller: _controller.userCtr,
-                        searchType: LiveSearchType.user,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

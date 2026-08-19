@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
@@ -6,6 +8,8 @@ import 'package:get/get.dart';
 
 class PopularPreciousController
     extends CommonListController<CorePopularPreciousData, CoreHotVideoItemModel> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void onInit() {
     super.onInit();
@@ -22,7 +26,7 @@ class PopularPreciousController
 
   @override
   Future<LoadingState<CorePopularPreciousData>> customGetData() async {
-    final result = await Get.find<VideoRepository>().popularPrecious(page: page);
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).popularPrecious(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

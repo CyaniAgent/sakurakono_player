@@ -622,9 +622,9 @@ class CoreMsgFeedUnreadData {
 
   factory CoreMsgFeedUnreadData.fromJson(Map<String, dynamic> json) =>
       CoreMsgFeedUnreadData(
-        at: json['at'] ?? 0,
-        like: json['like'] ?? 0,
-        reply: json['reply'] ?? 0,
-        sysMsg: json['sys_msg'] ?? 0,
+        at: (json['at'] as int?) ?? 0,
+        like: (json['like'] as int?) ?? 0,
+        reply: (json['reply'] as int?) ?? 0,
+        sysMsg: (json['sys_msg'] as int?) ?? 0,
       );
 }

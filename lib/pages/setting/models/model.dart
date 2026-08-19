@@ -4,6 +4,7 @@ import 'package:skf/pages/setting/widgets/normal_item.dart';
 import 'package:skf/pages/setting/widgets/popup_item.dart';
 import 'package:skf/pages/setting/widgets/select_dialog.dart';
 import 'package:skf/pages/setting/widgets/switch_item.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:flutter/material.dart' hide PopupMenuItemSelected;
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
@@ -240,7 +241,7 @@ SettingsModel getBanWordModel({
           ),
           actions: [
             TextButton(
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               child: Text(
                 '取消',
                 style: TextStyle(color: ColorScheme.of(context).outline),
@@ -249,7 +250,7 @@ SettingsModel getBanWordModel({
             TextButton(
               child: const Text('保存'),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 banWord = editValue;
                 setState();
                 onChanged(RegExp(banWord, caseSensitive: false));
@@ -316,7 +317,7 @@ SettingsModel getVideoFilterSelectModel({
               ),
               actions: [
                 TextButton(
-                  onPressed: Get.back,
+                  onPressed: AppNavigator.back,
                   child: Text(
                     '取消',
                     style: TextStyle(color: ColorScheme.of(context).outline),
@@ -326,7 +327,7 @@ SettingsModel getVideoFilterSelectModel({
                   onPressed: () {
                     try {
                       result = int.parse(valueStr);
-                      Get.back();
+                      AppNavigator.back();
                     } catch (e) {
                       SmartDialog.showToast(e.toString());
                     }

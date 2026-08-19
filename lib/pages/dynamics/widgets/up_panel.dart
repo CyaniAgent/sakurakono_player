@@ -4,6 +4,7 @@ import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/platform_utils.dart';
@@ -138,7 +139,7 @@ class _UpPanelState extends State<UpPanel> {
     final isCurrent = isLive || currentMid == item.mid || currentMid == -1;
 
     final isAll = item.mid == -1;
-    void toMemberPage() => Get.toNamed('/member?mid=${item.mid}');
+    void toMemberPage() => AppNavigator.toNamed('/member?mid=${item.mid}');
 
     Widget avatar;
     if (isAll) {

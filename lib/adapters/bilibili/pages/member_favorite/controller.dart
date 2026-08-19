@@ -2,6 +2,8 @@ import 'package:skf/adapters/bilibili/http/api.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
 
 import 'package:skf/core/models/fav_types.dart';
@@ -17,6 +19,9 @@ class MemberFavoriteCtr
   });
 
   final int mid;
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   late int favPage = 2;
   bool _favExpand = true;
@@ -154,7 +159,7 @@ class MemberFavoriteCtr
 
   @override
   Future<LoadingState<List<CoreSpaceFavData>?>> customGetData() async {
-    final result = await Get.find<FavRepository>().spaceFav(mid: mid);
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).spaceFav(mid: mid);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

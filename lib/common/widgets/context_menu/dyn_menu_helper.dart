@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:get/get.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/selectable_region_ext.dart';
 
@@ -70,7 +70,7 @@ void _showEmoteDialog(/* ModuleDynamicModel? */ dynamic moduleDynamic) {
   if (emotes == null || emotes.isEmpty) return;
   SelectedContent? lastSelection;
   showDialog(
-    context: Get.context!,
+    context: AppNavigator.context!,
     builder: (context) => Dialog(
       child: Padding(
         padding: const .symmetric(horizontal: 20, vertical: 16),
@@ -112,7 +112,7 @@ void _showEmoteDialog(/* ModuleDynamicModel? */ dynamic moduleDynamic) {
 void _showTextDialog(String text) {
   SelectedContent? lastSelection;
   showDialog(
-    context: Get.context!,
+    context: AppNavigator.context!,
     builder: (context) => Dialog(
       child: Padding(
         padding: const .symmetric(horizontal: 20, vertical: 16),

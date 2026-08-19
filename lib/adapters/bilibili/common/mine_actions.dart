@@ -65,7 +65,7 @@ class BiliMineActions implements MineActions {
 
   @override
   Future<void>? switchAccountDialog(BuildContext context) =>
-      LoginPageController.switchAccountDialog(context);
+      LoginNotifier.switchAccountDialog(context);
 
   @override
   void openLoginPage() => Get.toNamed('/loginPage');

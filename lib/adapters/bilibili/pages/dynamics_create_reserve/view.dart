@@ -1,34 +1,23 @@
-import 'package:skf/common/widgets/time_picker.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_create_reserve/controller.dart';
-import 'package:skf/utils/date_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide showTimePicker;
 import 'package:flutter/services.dart'
     show TextInputFormatter, LengthLimitingTextInputFormatter;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/adapters/bilibili/pages/dynamics_create_reserve/controller.dart';
+import 'package:skf/common/widgets/time_picker.dart';
+import 'package:skf/utils/date_utils.dart';
 
-class CreateReservePage extends StatefulWidget {
+class CreateReservePage extends ConsumerStatefulWidget {
   const CreateReservePage({super.key, this.sid});
 
   final int? sid;
 
   @override
-  State<CreateReservePage> createState() => _CreateReservePageState();
+  ConsumerState<CreateReservePage> createState() => _CreateReservePageState();
 }
 
-class _CreateReservePageState extends State<CreateReservePage> {
-  late final CreateReserveController _controller;
+class _CreateReservePageState extends ConsumerState<CreateReservePage> {
   late TextStyle _leadingStyle;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = Get.put(
-      CreateReserveController(widget.sid),
-      tag: Utils.generateRandomString(6),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +26,8 @@ class _CreateReservePageState extends State<CreateReservePage> {
       fontSize: 15,
       color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.9),
     );
+    final state = ref.watch(createReserveProvider(widget.sid));
+    final notifier = ref.read(createReserveProvider(widget.sid).notifier);
     final padding = MediaQuery.viewPaddingOf(context);
     final divider = [
       const SizedBox(height: 10),
@@ -63,26 +54,24 @@ class _CreateReservePageState extends State<CreateReservePage> {
                 width: 65,
                 child: Text('类型', style: _leadingStyle),
               ),
-              Obx(
-                () => PopupMenuButton(
-                  requestFocus: false,
-                  initialValue: _controller.subType.value,
-                  onSelected: _controller.subType.call,
-                  itemBuilder: (context) {
-                    return const [
-                      PopupMenuItem(
-                        value: 0,
-                        child: Text('公开直播'),
-                      ),
-                      PopupMenuItem(
-                        value: 1,
-                        child: Text('大航海直播'),
-                      ),
-                    ];
-                  },
-                  child: Text(
-                    _controller.subType.value == 0 ? '公开直播' : '大航海直播',
-                  ),
+              PopupMenuButton(
+                requestFocus: false,
+                initialValue: state.subType,
+                onSelected: notifier.updateSubType,
+                itemBuilder: (context) {
+                  return const [
+                    PopupMenuItem(
+                      value: 0,
+                      child: Text('公开直播'),
+                    ),
+                    PopupMenuItem(
+                      value: 1,
+                      child: Text('大航海直播'),
+                    ),
+                  ];
+                },
+                child: Text(
+                  state.subType == 0 ? '公开直播' : '大航海直播',
                 ),
               ),
             ],
@@ -102,15 +91,15 @@ class _CreateReservePageState extends State<CreateReservePage> {
                     FocusManager.instance.primaryFocus?.unfocus();
                     DateTime? newDate = await showDatePicker(
                       context: context,
-                      initialDate: _controller.date.value,
-                      firstDate: _controller.now,
-                      lastDate: _controller.end,
+                      initialDate: state.date,
+                      firstDate: notifier.now,
+                      lastDate: notifier.end,
                     );
                     if (newDate != null && context.mounted) {
                       TimeOfDay? newTime = await showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.fromDateTime(
-                          _controller.date.value,
+                          state.date,
                         ),
                       );
                       if (newTime != null) {
@@ -123,7 +112,7 @@ class _CreateReservePageState extends State<CreateReservePage> {
                         );
                         if (newEndtime.difference(DateTime.now()) >=
                             const Duration(minutes: 5)) {
-                          _controller.date.value = newEndtime;
+                          notifier.updateDate(newEndtime);
                         } else {
                           SmartDialog.showToast('至少选择5分钟之后');
                         }
@@ -132,11 +121,9 @@ class _CreateReservePageState extends State<CreateReservePage> {
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Obx(
-                      () => Text(
-                        DateFormatUtils.longFormatD.format(
-                          _controller.date.value,
-                        ),
+                    child: Text(
+                      DateFormatUtils.longFormatD.format(
+                        state.date,
                       ),
                     ),
                   ),
@@ -145,29 +132,28 @@ class _CreateReservePageState extends State<CreateReservePage> {
             ],
           ),
           ...divider,
-          Obx(
-            () => _buildInput(
-              theme,
-              key: ValueKey(_controller.key),
-              initialValue: _controller.title.value,
-              onChanged: (value) => _controller
-                ..title.value = value
-                ..updateCanCreate(),
-              desc: '标题',
-              hintText: '请填写标题，最多14字',
-              inputFormatters: [LengthLimitingTextInputFormatter(14)],
-            ),
+          _buildInput(
+            theme,
+            key: ValueKey(notifier.key),
+            initialValue: state.title,
+            onChanged: notifier.updateTitle,
+            desc: '标题',
+            hintText: '请填写标题，最多14字',
+            inputFormatters: [LengthLimitingTextInputFormatter(14)],
           ),
           ...divider,
           const SizedBox(height: 25),
-          Obx(() {
-            return FilledButton.tonal(
-              onPressed: _controller.canCreate.value
-                  ? _controller.onCreate
-                  : null,
-              child: const Text('添加预约'),
-            );
-          }),
+          FilledButton.tonal(
+            onPressed: state.canCreate
+                ? () async {
+                    final result = await notifier.onCreate();
+                    if (result != null && context.mounted) {
+                      Navigator.of(context).pop(result);
+                    }
+                  }
+                : null,
+            child: const Text('添加预约'),
+          ),
         ],
       ),
     );
@@ -214,3 +200,4 @@ class _CreateReservePageState extends State<CreateReservePage> {
     );
   }
 }
+

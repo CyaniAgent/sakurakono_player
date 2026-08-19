@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
-import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/ottohub/repository/otto_app_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
@@ -38,34 +38,11 @@ import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
-import 'package:skf/core/repository/app_repository.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/pages/member/member_host.dart';
-import 'package:skf/core/repository/auth_repository.dart';
-import 'package:skf/core/repository/black_repository.dart';
-import 'package:skf/core/repository/danmaku_repository.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
-import 'package:skf/core/repository/fan_repository.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/follow_repository.dart';
-import 'package:skf/core/repository/im_repository.dart';
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/core/repository/pgc_repository.dart';
-import 'package:skf/core/repository/progress_repository.dart';
-import 'package:skf/core/repository/reply_repository.dart';
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:skf/core/repository/live_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
-import 'package:skf/core/repository/audio_repository.dart';
-import 'package:skf/core/repository/danmaku_filter_repository.dart';
-import 'package:skf/core/repository/download_repository.dart';
-import 'package:skf/core/repository/match_repository.dart';
-import 'package:skf/core/repository/music_repository.dart';
-import 'package:skf/core/repository/sponsor_block_repository.dart';
-import 'package:skf/core/repository/validate_repository.dart';
-import 'package:skf/core/repository/space_repository.dart';
 import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/home/controller.dart';
@@ -77,6 +54,7 @@ import 'package:skf/pages/video/video_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/utils/extension/string_ext.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// OttoHub adapter implementation of [AppAdapter].
 ///
@@ -103,45 +81,8 @@ class OttoAdapter implements AppAdapter {
 
     // Register repositories using the modern (non-Old) OttoHub API modules.
     Get
-      ..lazyPut<VideoRepository>(() => OttoVideoRepository(client))
-      ..lazyPut<AuthRepository>(() => OttoAuthRepository(client))
-      ..lazyPut<DanmakuRepository>(() => OttoDanmakuRepository(client))
-      ..lazyPut<FollowRepository>(() => OttoFollowRepository(client))
-      ..lazyPut<BlackRepository>(() => OttoBlackRepository(client))
-      ..lazyPut<UserRepository>(() => OttoUserRepository(client))
-      ..lazyPut<MemberRepository>(() => OttoMemberRepository(client))
-      ..lazyPut<DynamicsRepository>(() => OttoDynamicsRepository(client))
-      ..lazyPut<ReplyRepository>(() => OttoReplyRepository(client))
-      ..lazyPut<FavRepository>(() => OttoFavRepository(client))
-      ..lazyPut<MsgRepository>(() => OttoMsgRepository(client))
-      ..lazyPut<ImRepository>(() => OttoImRepository(client))
-      ..lazyPut<FanRepository>(() => OttoFanRepository(client))
-      ..lazyPut<ProgressRepository>(OttoProgressRepository.new)
-      // Stub registrations for features the OttoHub SDK does not support.
-      // These prevent crashes when Bilibili UI code does Get.find<>()
-      // for features not implemented by the OttoHub adapter.
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<AudioRepository>(OttoAudioRepository.new)
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<DanmakuFilterRepository>(OttoDanmakuFilterRepository.new)
-      ..lazyPut<DownloadRepository>(() => OttoDownloadRepository(client))
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<LiveRepository>(OttoLiveRepository.new)
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<MatchRepository>(OttoMatchRepository.new)
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<MusicRepository>(OttoMusicRepository.new)
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<PgcRepository>(OttoPgcRepository.new)
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<SponsorBlockRepository>(OttoSponsorBlockRepository.new)
-      // impossible — no SDK API (OttoHub 无此域)
-      ..lazyPut<ValidateRepository>(OttoValidateRepository.new)
-      ..lazyPut<SearchRepository>(() => OttoSearchRepository(client))
-      ..lazyPut<SpaceRepository>(() => OttoSpaceRepository(client))
       ..lazyPut<DownloadService>(_StubDownloadService.new)
       ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
-      ..lazyPut<AppRepository>(OttoAppRepository.new)
       // Generic page bar-state bridges: interface -> generic shell controllers
       ..lazyPut<MainBarState>(() => Get.find<MainController>())
       ..lazyPut<HomeBarState>(() => Get.find<HomeController>())
@@ -159,10 +100,39 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<VideoHost>(OttoVideoHost.new)
       // Setting page host (framework rows; account ops stub)
       ..lazyPut<SettingHost>(OttoSettingHost.new);
+    // Riverpod ProviderScope overrides — direct instantiation, no Get.find dependency
+    adapterOverrides = <Override>[
+      videoRepositoryProvider.overrideWithValue(OttoVideoRepository(client)),
+      audioRepositoryProvider.overrideWithValue(OttoAudioRepository()),
+      authRepositoryProvider.overrideWithValue(OttoAuthRepository(client)),
+      userRepositoryProvider.overrideWithValue(OttoUserRepository(client)),
+      memberRepositoryProvider.overrideWithValue(OttoMemberRepository(client)),
+      dynamicsRepositoryProvider.overrideWithValue(OttoDynamicsRepository(client)),
+      followRepositoryProvider.overrideWithValue(OttoFollowRepository(client)),
+      fanRepositoryProvider.overrideWithValue(OttoFanRepository(client)),
+      favRepositoryProvider.overrideWithValue(OttoFavRepository(client)),
+      danmakuRepositoryProvider.overrideWithValue(OttoDanmakuRepository(client)),
+      replyRepositoryProvider.overrideWithValue(OttoReplyRepository(client)),
+      searchRepositoryProvider.overrideWithValue(OttoSearchRepository(client)),
+      imRepositoryProvider.overrideWithValue(OttoImRepository(client)),
+      pgcRepositoryProvider.overrideWithValue(OttoPgcRepository()),
+      progressRepositoryProvider.overrideWithValue(OttoProgressRepository()),
+      sponsorBlockRepositoryProvider.overrideWithValue(OttoSponsorBlockRepository()),
+      validateRepositoryProvider.overrideWithValue(OttoValidateRepository()),
+      liveRepositoryProvider.overrideWithValue(OttoLiveRepository()),
+      matchRepositoryProvider.overrideWithValue(OttoMatchRepository()),
+      musicRepositoryProvider.overrideWithValue(OttoMusicRepository()),
+      downloadRepositoryProvider.overrideWithValue(OttoDownloadRepository(client)),
+      spaceRepositoryProvider.overrideWithValue(OttoSpaceRepository(client)),
+      appRepositoryProvider.overrideWithValue(OttoAppRepository()),
+      danmakuFilterRepositoryProvider.overrideWithValue(OttoDanmakuFilterRepository()),
+      msgRepositoryProvider.overrideWithValue(OttoMsgRepository(client)),
+      blackRepositoryProvider.overrideWithValue(OttoBlackRepository(client)),
+    ];
   }
 
   @override
-  List<GetPage> get routes => BiliBridge.registerRoutes();
+  List<GoRoute> get routes => [];
 
   @override
   String processImageUrl(String? originalUrl, {int quality = 1}) {

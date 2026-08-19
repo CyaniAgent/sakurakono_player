@@ -1,4 +1,6 @@
 import 'package:skf/core/repository/reply_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models_new/emote/package.dart'; // ignore: adapter import (no core equivalent for Package)
@@ -7,6 +9,8 @@ import 'package:flutter/material.dart';
 
 class EmotePanelController extends CommonListController<List<Package>?, Package>
     with GetSingleTickerProviderStateMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   TabController? tabController;
 
   @override
@@ -29,7 +33,7 @@ class EmotePanelController extends CommonListController<List<Package>?, Package>
 
   @override
   Future<LoadingState<List<Package>?>> customGetData() async {
-    final result = await Get.find<ReplyRepository>()
+    final result = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>())
         .getEmoteList(business: 'reply');
     return switch (result) {
       Loading _ => LoadingState.loading(),

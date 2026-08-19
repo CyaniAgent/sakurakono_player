@@ -7,12 +7,12 @@ import 'package:skf/pages/later/base_controller.dart';
 import 'package:skf/pages/later/controller.dart';
 import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/pages/later/widgets/video_card_h_later.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LaterViewChildPage extends StatefulWidget {
+class LaterViewChildPage extends ConsumerStatefulWidget {
   const LaterViewChildPage({
     super.key,
     required this.laterViewType,
@@ -25,13 +25,12 @@ class LaterViewChildPage extends StatefulWidget {
   final LaterActions? actions;
 
   @override
-  State<LaterViewChildPage> createState() => _LaterViewChildPageState();
+  ConsumerState<LaterViewChildPage> createState() => _LaterViewChildPageState();
 }
 
-class _LaterViewChildPageState extends State<LaterViewChildPage>
+class _LaterViewChildPageState extends ConsumerState<LaterViewChildPage>
     with AutomaticKeepAliveClientMixin, GridMixin {
   late final LaterController _laterController;
-  late final _baseCtr = Get.putOrFind(LaterBaseController.new);
 
   @override
   void initState() {
@@ -43,6 +42,7 @@ class _LaterViewChildPageState extends State<LaterViewChildPage>
       ),
       tag: widget.laterViewType.type.toString(),
     );
+    _laterController.attachRef(ProviderScope.containerOf(context));
   }
 
   @override
@@ -94,12 +94,10 @@ class _LaterViewChildPageState extends State<LaterViewChildPage>
                           title: videoItem.title,
                           dimension: videoItem.dimension,
                           isWatchLaterPlaylist:
-                              _baseCtr.isPlayAll.value,
+                              ref.read(laterBaseProvider).isPlayAll,
                           watchLaterExtra: {
                             'oid': videoItem.aid,
-                            'count': _laterController
-                                .baseCtr
-                                .counts[LaterViewType.all.index],
+                            'count': ref.read(laterBaseProvider).counts[LaterViewType.all.index],
                             'favTitle': '稍后再看',
                             'mediaId': _laterController.mid,
                             'desc': _laterController.asc.value,

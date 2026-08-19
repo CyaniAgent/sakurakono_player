@@ -91,7 +91,7 @@ class BiliSettingHost implements SettingHost {
 
   @override
   Future<void> switchAccountDialog(BuildContext context) async {
-    await LoginPageController.switchAccountDialog(context);
+    await LoginNotifier.switchAccountDialog(context);
   }
 
   @override

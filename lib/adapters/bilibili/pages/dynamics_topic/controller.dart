@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -11,6 +14,8 @@ import 'package:get/get.dart';
 
 class DynTopicController
     extends CommonListController<CoreTopicCardList?, CoreTopicCardItem> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   final topicId = Get.parameters['id']!;
   String topicName = Get.parameters['name'] ?? '';
 
@@ -36,7 +41,7 @@ class DynTopicController
   }
 
   Future<void> queryTop() async {
-    final result = await Get.find<DynamicsRepository>().topicTop(topicId: topicId);
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicTop(topicId: topicId);
     topState.value = switch (result) {
       Loading _ => LoadingState<CoreTopDetails?>.loading(),
       Success(:final response) => Success(response),
@@ -86,7 +91,7 @@ class DynTopicController
 
   @override
   Future<LoadingState<CoreTopicCardList?>> customGetData() async {
-    final result = await Get.find<DynamicsRepository>().topicFeed(
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicFeed(
       topicId: topicId,
       offset: offset,
       sortBy: sortBy,
@@ -110,8 +115,8 @@ class DynTopicController
     }
     final isFav = this.isFav.value;
     final res = isFav
-        ? await Get.find<FavRepository>().delFavTopic(topicId)
-        : await Get.find<FavRepository>().addFavTopic(topicId);
+        ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavTopic(topicId)
+        : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).addFavTopic(topicId);
     if (res.isSuccess) {
       if (isFav) {
         topState.value.data!.topicItem!.fav -= 1;
@@ -130,7 +135,7 @@ class DynTopicController
       return;
     }
     final isLike = this.isLike.value;
-    final res = await Get.find<FavRepository>().likeTopic(topicId, isLike);
+    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).likeTopic(topicId, isLike);
     if (res.isSuccess) {
       if (isLike) {
         topState.value.data!.topicItem!.like -= 1;
@@ -144,7 +149,7 @@ class DynTopicController
   }
 
   Future<void> topicFold() async {
-    final result = await Get.find<DynamicsRepository>().topicFold(topicId: topicId, sortBy: sortBy);
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicFold(topicId: topicId, sortBy: sortBy);
     if (result case Success(:final response)) {
       if (response?.items case final items? when items.isNotEmpty) {
         loadingState.value.data!

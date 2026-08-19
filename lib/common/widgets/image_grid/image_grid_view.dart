@@ -24,6 +24,7 @@ import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/image_grid/image_grid_builder.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
@@ -34,8 +35,6 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class ImageModel {
   ImageModel({
@@ -100,7 +99,7 @@ class ImageGridView extends StatelessWidget {
     final delegate = actionDelegate ?? const DefaultImageActionDelegate();
     if (horizontalPreview &&
         !fullScreen &&
-        Get.currentRoute.startsWith(_regex) &&
+        AppNavigator.currentRoute.startsWith(_regex) &&
         !context.mediaQuerySize.isPortrait) {
       final scaffoldState = Scaffold.maybeOf(context);
       if (scaffoldState != null) {

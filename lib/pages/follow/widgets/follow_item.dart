@@ -2,9 +2,9 @@ import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
 import 'package:skf/pages/follow/follow_actions.dart' show FollowActions;
 import 'package:skf/pages/follow/follow_models.dart' show UserModel, coreOfficialVerifyType;
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FollowItem extends StatelessWidget {
   final CoreFollowItemModel item;
@@ -61,7 +61,7 @@ class FollowItem extends StatelessWidget {
             );
           } else {
             feedBack();
-            Get.toNamed('/member?mid=${item.mid}');
+            AppNavigator.toNamed('/member?mid=${item.mid}');
           }
         },
         child: Padding(

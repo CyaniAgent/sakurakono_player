@@ -3,6 +3,8 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
@@ -43,6 +45,8 @@ class MemberVideoCtr
   RxBool isLocating = false.obs;
   bool isLoadPrevious = false;
   bool? hasPrev;
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   @override
   Future<void> onRefresh() async {
@@ -109,7 +113,7 @@ class MemberVideoCtr
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await Get.find<MemberRepository>().spaceArchive(
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArchive(
       type: type,
       mid: mid,
       aid: isVideo
@@ -159,7 +163,7 @@ class MemberVideoCtr
       String? oid = params['oid'];
       if (oid != null) {
         final bvid = IdUtils.av2bv(int.parse(oid));
-        final res = await Get.find<SearchRepository>().ab2cWithDimension(aid: int.tryParse(oid), bvid: bvid);
+        final res = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2cWithDimension(aid: int.tryParse(oid), bvid: bvid);
         final cid = res?.cid;
         if (cid != null) {
           PageUtils.toVideoPage(

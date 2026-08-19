@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,11 +30,10 @@ class _FakeAccountProvider extends AccountProvider {
   @override
   String? get displayName => null;
   @override
-  void restoreFromCache() {}
-  @override
+  Future<void> restoreFromCache() async {}
   Map<String, String> get authHeaders => const {};
   @override
-  Stream<bool> onAuthStateChanged() => const Stream<bool>.empty();
+  void onAuthStateChanged(Map<String, String> headers) {}
 }
 
 void main() {

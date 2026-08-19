@@ -8,8 +8,8 @@ import 'package:skf/pages/dynamics/widgets/dyn_content.dart';
 import 'package:skf/pages/dynamics/widgets/interaction.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-
-class DynamicPanel extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+class DynamicPanel extends ConsumerWidget {
   final CoreDynamicItemModel item;
   final bool isDetail;
   final ValueChanged<Object>? onRemove;
@@ -39,7 +39,7 @@ class DynamicPanel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (item.visible == false) {
       return const SizedBox.shrink();
     }
@@ -56,7 +56,7 @@ class DynamicPanel extends StatelessWidget {
       onSetReplySubject: onSetReplySubject,
     );
 
-    void showMore() => _imageSaveDialog(context, authorWidget.morePanel);
+    void showMore() => _imageSaveDialog(context, ref, authorWidget.morePanel);
 
     final child = Material(
       type: MaterialType.transparency,
@@ -140,7 +140,8 @@ class DynamicPanel extends StatelessWidget {
 
   void _imageSaveDialog(
     BuildContext context,
-    Function(BuildContext) morePanel,
+    WidgetRef ref,
+    void Function(BuildContext, WidgetRef) morePanel,
   ) {
     String? title;
     String? cover;
@@ -193,7 +194,7 @@ class DynamicPanel extends StatelessWidget {
         }
         break;
       default:
-        morePanel(context);
+        morePanel(context, ref);
         return;
     }
     DynamicsHost.of().showImageSaveDialog(

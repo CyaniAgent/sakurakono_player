@@ -8,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-mixin TripleMixin on GetxController, TickerProvider {
+mixin TripleMixin {
+  TickerProvider? _tickerProvider;
+  void attachTicker(TickerProvider ticker) { _tickerProvider = ticker; }
   // 是否点赞
   final RxBool hasLike = false.obs;
   // 投币数量
@@ -69,7 +71,7 @@ mixin TripleMixin on GetxController, TickerProvider {
 
   AnimationController get tripleAnimCtr =>
       _tripleAnimCtr ??= AnimationController(
-        vsync: this,
+        vsync: _tickerProvider!,
         duration: const Duration(milliseconds: 1200),
         reverseDuration: const Duration(milliseconds: 400),
       );
@@ -116,10 +118,8 @@ mixin TripleMixin on GetxController, TickerProvider {
     }
   }
 
-  @override
-  void onClose() {
+  void disposeTriple() {
     _cancelTimer();
     _tripleAnimCtr?.dispose();
-    super.onClose();
   }
 }

@@ -47,8 +47,12 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class UgcIntroController extends CommonIntroController with ReloadMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late final RxBool expand;
   final RxBool status = true.obs;
 
@@ -88,7 +92,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   @override
   Future<void> queryVideoIntro() async {
     queryVideoTags();
-    final res = await Get.find<VideoRepository>().videoIntro(bvid: bvid);
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).videoIntro(bvid: bvid);
     if (res case Success(:final response)) {
       if (response.redirectUrl != null &&
           videoDetailCtr.epId == null &&
@@ -176,7 +180,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       if (mid == null) {
         return;
       }
-      final res = await Get.find<MemberRepository>().memberCardInfo(mid: mid);
+      final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberCardInfo(mid: mid);
       if (res case Success(:final response)) {
         userStat.value = response;
       }
@@ -184,7 +188,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   }
 
   Future<void> queryAllStatus() async {
-    final result = await Get.find<VideoRepository>().videoRelation(bvid: bvid);
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).videoRelation(bvid: bvid);
     if (result case Success(:final response)) {
       late final stat = videoDetail.value.stat;
       if (response.like!) {
@@ -213,7 +217,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       SmartDialog.showToast('已三连');
       return;
     }
-    final result = await Get.find<VideoRepository>().ugcTriple(bvid: bvid);
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).ugcTriple(bvid: bvid);
     if (result case Success(:final response)) {
       late final stat = videoDetail.value.stat;
       if (response.like == true && !hasLike.value) {
@@ -251,7 +255,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       return;
     }
     final newVal = !hasLike.value;
-    final result = await Get.find<VideoRepository>().likeVideo(bvid: bvid, type: newVal);
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).likeVideo(bvid: bvid, type: newVal);
     if (result case Success(:final response)) {
       SmartDialog.showToast(newVal ? response : '取消赞');
       videoDetail.value.stat?.like += newVal ? 1 : -1;
@@ -269,7 +273,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final res = await Get.find<VideoRepository>().dislikeVideo(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).dislikeVideo(
       bvid: bvid,
       type: !hasDislike.value,
     );
@@ -420,7 +424,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
     if (videoDetail.owner == null || videoDetail.staff?.isNotEmpty == true) {
       return;
     }
-    final res = await Get.find<UserRepository>().userRelation(videoDetail.owner!.mid!);
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userRelation(videoDetail.owner!.mid!);
     if (res case Success(:final response)) {
       if (response.special == 1) response.attribute = -10;
       followStatus.value = response;
@@ -443,7 +447,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
     }
     int attr = followStatus.value.attribute ?? 0;
     if (attr == 128) {
-      final res = await Get.find<VideoRepository>().relationMod(
+      final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
         mid: mid,
         act: 6,
         reSrc: 11,
@@ -486,7 +490,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       int? cid = episode.cid;
       Dimension? dimension;
       if (cid == null) {
-        if (await Get.find<SearchRepository>().ab2cWithDimension(aid: aid, bvid: bvid)
+        if (await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2cWithDimension(aid: aid, bvid: bvid)
             case final res?) {
           cid = res.cid;
           final coreDim = res.dimension;

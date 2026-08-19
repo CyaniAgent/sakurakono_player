@@ -16,8 +16,13 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late final account = Accounts.main;
 
   late final int talkerId;
@@ -64,7 +69,7 @@ class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
 
   // 消息标记已读
   Future<void> ackSessionMsg(int msgSeqno) async {
-    final res = await Get.find<MsgRepository>().ackSessionMsg(
+    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).ackSessionMsg(
       talkerId: talkerId,
       ackSeqno: msgSeqno,
     );
@@ -172,7 +177,7 @@ class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
   }
 
   Future<LoadingState> onReport(Msg item, int reasonType, String reasonDesc) async {
-    final result = await Get.find<MsgRepository>().imMsgReport(
+    final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).imMsgReport(
       accusedUid: item.senderUid.toInt(),
       reasonType: reasonType,
       reasonDesc: reasonDesc,

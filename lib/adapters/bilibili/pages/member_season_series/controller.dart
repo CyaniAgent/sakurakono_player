@@ -1,6 +1,8 @@
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 
@@ -9,6 +11,8 @@ class SeasonSeriesController
   SeasonSeriesController(this.mid);
   final int mid;
   int? count;
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   @override
   void onInit() {
@@ -32,7 +36,7 @@ class SeasonSeriesController
 
   @override
   Future<LoadingState<CoreSpaceSsData>> customGetData() async {
-    final result = await Get.find<MemberRepository>().seasonSeriesList(
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).seasonSeriesList(
       mid: mid,
       pn: page,
     );

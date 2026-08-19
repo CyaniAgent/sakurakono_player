@@ -1,8 +1,8 @@
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FollowTypeItem extends StatelessWidget {
   const FollowTypeItem({
@@ -23,7 +23,7 @@ class FollowTypeItem extends StatelessWidget {
     return SizedBox(
       height: 66,
       child: InkWell(
-        onTap: onTap ?? () => Get.toNamed('/member?mid=${item.mid}'),
+        onTap: onTap ?? () => AppNavigator.toNamed('/member?mid=${item.mid}'),
         onLongPress: onLongPress,
         onSecondaryTap: onSecondaryTap,
         child: Padding(

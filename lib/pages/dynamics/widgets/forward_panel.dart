@@ -2,10 +2,10 @@ import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/pages/dynamics/widgets/dyn_content.dart';
 import 'package:skf/pages/dynamics/widgets/module_panel.dart';
 import 'package:skf/core/models/dynamics_types.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 Widget forwardPanel(
   BuildContext context, {
@@ -111,7 +111,7 @@ Widget _forwardAuthor({
     children: [
       GestureDetector(
         onTap: isNormalAuth
-            ? () => Get.toNamed('/member?mid=${moduleAuthor.mid}')
+            ? () => AppNavigator.toNamed('/member?mid=${moduleAuthor.mid}')
             : null,
         child: Text(
           '${isNormalAuth ? '@' : ''}${moduleAuthor.name}',

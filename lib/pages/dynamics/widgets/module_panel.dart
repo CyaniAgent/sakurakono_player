@@ -8,12 +8,12 @@ import 'package:skf/pages/dynamics/widgets/live_panel.dart';
 import 'package:skf/pages/dynamics/widgets/live_panel_sub.dart';
 import 'package:skf/pages/dynamics/widgets/live_rcmd_panel.dart';
 import 'package:skf/pages/dynamics/widgets/video_panel.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 Widget noneWidget(ThemeData theme, String? tips) => Row(
   spacing: 5,
@@ -187,7 +187,7 @@ Widget module(
         borderRadius: borderRadius,
         child: InkWell(
           borderRadius: borderRadius,
-          onTap: () => Get.toNamed(
+          onTap: () => AppNavigator.toNamed(
             '/audio',
             arguments: {
               'oid': music.id,

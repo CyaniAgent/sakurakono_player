@@ -1,61 +1,61 @@
-import 'package:skf/adapters/bilibili/models/common/reply/reply_search_type.dart';
-import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/child/controller.dart';
-import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReplySearchController extends GetxController
-    with GetSingleTickerProviderStateMixin {
-  ReplySearchController(this.type, this.oid);
+// ---------------------------------------------------------------------------
+// Immutable state
+// ---------------------------------------------------------------------------
+
+class ReplySearchState {
+  const ReplySearchState({
+    required this.type,
+    required this.oid,
+  });
+
   final int type;
   final int oid;
+}
 
-  late final FocusNode focusNode;
-  late final TabController tabController;
-  late final TextEditingController editingController;
+// ---------------------------------------------------------------------------
+// Notifier
+// ---------------------------------------------------------------------------
 
-  late final videoCtr = Get.put(
-    ReplySearchChildController(this, ReplySearchType.video),
-    tag: Utils.generateRandomString(8),
-  );
-  late final articleCtr = Get.put(
-    ReplySearchChildController(this, ReplySearchType.article),
-    tag: Utils.generateRandomString(8),
-  );
+class ReplySearchNotifier extends StateNotifier<ReplySearchState> {
+  ReplySearchNotifier({required int type, required int oid})
+      : super(ReplySearchState(type: type, oid: oid));
 
-  void onClear() {
-    if (editingController.value.text.isNotEmpty) {
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController editingController = TextEditingController();
+
+  // -- Public state accessors (avoids protected-state access from outside) --
+  int get type => state.type;
+  int get oid => state.oid;
+
+  /// Clears text and requests focus. Returns `true` if text was cleared,
+  /// `false` if already empty (caller should navigate back).
+  bool tryClear() {
+    if (editingController.text.isNotEmpty) {
       editingController.clear();
       focusNode.requestFocus();
-    } else {
-      Get.back();
+      return true;
     }
+    return false;
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    focusNode = FocusNode();
-    tabController = TabController(vsync: this, length: 2);
-    editingController = TextEditingController();
-    submit();
-  }
-
-  void submit() {
-    videoCtr
-      ..scrollController.jumpToTop()
-      ..onReload();
-    articleCtr
-      ..scrollController.jumpToTop()
-      ..onReload();
-  }
-
-  @override
-  void onClose() {
+  void dispose() {
     focusNode.dispose();
-    tabController.dispose();
     editingController.dispose();
-    super.onClose();
+    super.dispose();
   }
 }
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
+
+final replySearchProvider = StateNotifierProvider.autoDispose.family<
+    ReplySearchNotifier,
+    ReplySearchState,
+    ({int type, int oid})>((ref, params) {
+  return ReplySearchNotifier(type: params.type, oid: params.oid);
+});

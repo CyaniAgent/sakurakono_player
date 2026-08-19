@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -9,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class SubController extends CommonListController<CoreSubData, CoreSubItemModel> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late final account = Accounts.main;
 
   @override
@@ -43,7 +47,7 @@ class SubController extends CommonListController<CoreSubData, CoreSubItemModel> 
           ),
           TextButton(
             onPressed: () async {
-              final res = await Get.find<FavRepository>().cancelSub(
+              final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).cancelSub(
                 id: subFolderItem.id!,
                 type: subFolderItem.type!,
               );
@@ -74,7 +78,7 @@ class SubController extends CommonListController<CoreSubData, CoreSubItemModel> 
 
   @override
   Future<LoadingState<CoreSubData>> customGetData() async {
-    final result = await Get.find<UserRepository>().userSubFolder(
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userSubFolder(
       pn: page,
       ps: 20,
       mid: account.mid,

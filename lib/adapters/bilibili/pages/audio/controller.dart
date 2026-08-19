@@ -49,6 +49,8 @@ import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:media_kit/media_kit.dart';
 
 class AudioController extends GetxController
@@ -58,6 +60,8 @@ class AudioController extends GetxController
         FavMixin,
         BlockConfigMixin,
         BlockMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late Int64 id;
   late Int64 oid;
   late List<Int64> subId;
@@ -131,6 +135,7 @@ class AudioController extends GetxController
 
   @override
   void onInit() {
+    attachTicker(this);
     super.onInit();
     final args = Get.arguments;
     oid = Int64(args['oid']);
@@ -416,7 +421,7 @@ class AudioController extends GetxController
       return;
     }
     final newVal = !hasLike.value;
-    final res = await Get.find<AudioRepository>().audioThumbUp(
+    final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioThumbUp(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -444,7 +449,7 @@ class AudioController extends GetxController
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final res = await Get.find<AudioRepository>().audioTripleLike(
+    final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioTripleLike(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -477,7 +482,7 @@ class AudioController extends GetxController
 
   @override
   Future<void> onPayCoin(int coin, bool coinWithLike) async {
-    final res = await Get.find<AudioRepository>().audioCoinAdd(
+    final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioCoinAdd(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -776,6 +781,7 @@ class AudioController extends GetxController
     player?.dispose();
     player = null;
     animController.dispose();
+    disposeTriple();
     super.onClose();
   }
 }

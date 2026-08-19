@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -14,6 +17,8 @@ import 'package:flutter/widgets.dart' show ScrollController;
 class PgcController
     extends CommonListController<List<CorePgcIndexItem>?, CorePgcIndexItem>
     with AccountMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   PgcController({required this.tabType})
     : indexType = tabType == HomeTabType.cinema ? 102 : null;
 
@@ -66,8 +71,8 @@ class PgcController
 
   Future<void> queryPgcTimeline() async {
     final res = await Future.wait([
-Get.find<PgcRepository>().pgcTimeline(types: 1, before: 6, after: 6),
-   Get.find<PgcRepository>().pgcTimeline(types: 4, before: 6, after: 6),
+(_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcTimeline(types: 1, before: 6, after: 6),
+  (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcTimeline(types: 4, before: 6, after: 6),
     ]);
     final list1 = res.first.dataOrNull;
     final list2 = res[1].dataOrNull;
@@ -90,7 +95,7 @@ Get.find<PgcRepository>().pgcTimeline(types: 1, before: 6, after: 6),
       return;
     }
     followLoading = true;
-    final res = await Get.find<FavRepository>().favPgc(
+    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favPgc(
       type: tabType == HomeTabType.bangumi ? 1 : 2,
       pn: followPage,
     );
@@ -133,7 +138,7 @@ Get.find<PgcRepository>().pgcTimeline(types: 1, before: 6, after: 6),
 
   @override
   Future<LoadingState<List<CorePgcIndexItem>?>> customGetData() async {
-    final result = await Get.find<PgcRepository>().pgcIndex(
+    final result = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcIndex(
       page: page,
       indexType: indexType,
     );

@@ -2,11 +2,19 @@ import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavArticleController
     extends CommonListController<CoreFavArticleData, CoreFavArticleItemModel> {
+
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void onInit() {
     super.onInit();
@@ -23,7 +31,7 @@ class FavArticleController
 
   @override
   Future<LoadingState<CoreFavArticleData>> customGetData() async {
-    final result = await Get.find<FavRepository>().favArticle(page: page);
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favArticle(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -32,7 +40,7 @@ class FavArticleController
   }
 
   Future<void> onRemove(int index, String id) async {
-    final res = await Get.find<FavRepository>().communityAction(opusId: id, action: 4);
+    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).communityAction(opusId: id, action: 4);
     if (res.isSuccess) {
       loadingState
         ..value.data!.removeAt(index)

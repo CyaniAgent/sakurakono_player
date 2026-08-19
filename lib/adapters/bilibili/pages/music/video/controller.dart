@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
@@ -8,6 +10,8 @@ typedef MusicRecommendArgs = ({String id, CoreMusicDetail item});
 
 class MusicRecommendController
     extends CommonListController<List<CoreBgmRecommend>?, CoreBgmRecommend> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   late final String musicId;
   late final CoreMusicDetail musicDetail;
 
@@ -27,7 +31,7 @@ class MusicRecommendController
 
   @override
   Future<LoadingState<List<CoreBgmRecommend>?>> customGetData() async {
-    final result = await Get.find<MusicRepository>().bgmRecommend(musicId);
+    final result = await (_ref?.read(musicRepositoryProvider) ?? Get.find<MusicRepository>()).bgmRecommend(musicId);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

@@ -27,6 +27,7 @@ import 'package:skf/common/widgets/image_viewer/viewer.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/main.dart' show tmpPadding;
 import 'package:skf/core/models/ui/image_preview_type.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/device_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
@@ -145,7 +146,7 @@ class _GalleryViewerState extends State<GalleryViewer>
 
     _pageController = PageController(initialPage: widget.initIndex);
 
-    final gestureSettings = MediaQuery.maybeGestureSettingsOf(Get.context!);
+    final gestureSettings = MediaQuery.maybeGestureSettingsOf(AppNavigator.context!);
     _tapGestureRecognizer = TapGestureRecognizer()
       // ..onTap = _onTap
       ..gestureSettings = gestureSettings;
@@ -276,7 +277,7 @@ class _GalleryViewerState extends State<GalleryViewer>
 
     if (!_animateController.isDismissed) {
       if (_animateController.value > 0.2) {
-        Get.back();
+        AppNavigator.back();
       } else {
         _animateController.reverse();
       }
@@ -533,7 +534,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     EasyThrottle.throttle(
       'VIEWER_TAP',
       const Duration(milliseconds: 555),
-      Get.back,
+      AppNavigator.back,
     );
   }
 
@@ -550,21 +551,21 @@ class _GalleryViewerState extends State<GalleryViewer>
           if (PlatformUtils.isMobile)
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 ImageUtils.onShareImg(item.url);
               },
               child: const Text('分享', style: TextStyle(fontSize: 14)),
             ),
           DialogOption(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               Utils.copyText(item.url);
             },
             child: const Text('复制链接', style: TextStyle(fontSize: 14)),
           ),
           DialogOption(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               ImageUtils.downloadImg([item.url]);
             },
             child: const Text('保存图片', style: TextStyle(fontSize: 14)),
@@ -572,7 +573,7 @@ class _GalleryViewerState extends State<GalleryViewer>
           if (PlatformUtils.isDesktop)
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 launchUrl(Uri.parse(item.url));
               },
               child: const Text('网页打开', style: TextStyle(fontSize: 14)),
@@ -580,7 +581,7 @@ class _GalleryViewerState extends State<GalleryViewer>
           else if (widget.sources.length > 1)
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 ImageUtils.downloadImg(
                   widget.sources.map((item) => item.url).toList(),
                 );
@@ -590,7 +591,7 @@ class _GalleryViewerState extends State<GalleryViewer>
           if (item.sourceType == CoreSourceType.livePhoto)
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 widget.onDownloadLivePhoto?.call(
                   url: item.url,
                   liveUrl: item.liveUrl!,

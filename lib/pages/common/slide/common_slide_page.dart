@@ -1,10 +1,10 @@
 import 'dart:math' show max;
 
 import 'package:skf/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/gestures.dart' show HorizontalDragGestureRecognizer;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 abstract class CommonSlidePage extends StatefulWidget {
   const CommonSlidePage({super.key, this.enableSlide = true});
@@ -102,7 +102,7 @@ mixin CommonSlideMixin<T extends CommonSlidePage> on State<T>, TickerProvider {
     final dx = _downDx!;
     if (_animController.value * _maxWidth + (_isRTL ? (_maxWidth - dx) : dx) >=
         100) {
-      Get.back();
+      AppNavigator.back();
     } else {
       _animController.reverse();
     }

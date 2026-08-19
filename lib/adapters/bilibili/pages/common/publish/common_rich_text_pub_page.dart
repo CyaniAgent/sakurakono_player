@@ -31,7 +31,9 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -52,6 +54,8 @@ abstract class CommonRichTextPubPage
 
 abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     extends CommonPublishPageState<T> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   final key = GlobalKey<RichTextFieldState>();
   late final imagePicker = ImagePicker();
   late final RxList<PicModel> imageList;
@@ -518,7 +522,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
           imageList.map((img) async {
             switch (img) {
               case FilePicModel e:
-                final result = await Get.find<MsgRepository>().uploadBfs(
+                final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).uploadBfs(
                   path: e.path,
                   category: 'daily',
                   biz: 'new_dyn',

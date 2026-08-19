@@ -11,6 +11,7 @@ import 'package:skf/pages/common/multi_select/base.dart'
 import 'package:skf/pages/download/controller.dart';
 import 'package:skf/pages/download/detail/widgets/item.dart';
 import 'package:skf/pages/download/download_actions.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:collection/collection.dart';
@@ -164,7 +165,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                                 pageDirPath: entry.pageDirPath,
                               );
                               if (mounted) {
-                                Get.back();
+                                AppNavigator.back();
                               }
                             } else {
                               _downloadActions.deleteDownload(
@@ -215,7 +216,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
         if (isDeleteAll) {
           SmartDialog.dismiss();
           if (mounted) {
-            Get.back();
+            AppNavigator.back();
           }
         } else {
           if (enableMultiSelect.value) {

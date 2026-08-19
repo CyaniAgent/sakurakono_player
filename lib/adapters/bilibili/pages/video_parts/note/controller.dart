@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -6,6 +8,8 @@ import 'package:get/get.dart';
 
 class NoteListPageCtr
     extends CommonListController<CoreVideoNoteData, Map<String, dynamic>> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   NoteListPageCtr({required this.oid});
   final int oid;
 
@@ -33,7 +37,7 @@ class NoteListPageCtr
 
   @override
   Future<LoadingState<CoreVideoNoteData>> customGetData() async {
-    final result = await Get.find<VideoRepository>().getVideoNoteList(
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).getVideoNoteList(
       oid: oid.toString(),
       page: page,
     );

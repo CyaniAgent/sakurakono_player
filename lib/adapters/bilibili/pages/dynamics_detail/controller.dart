@@ -6,9 +6,13 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class DynamicDetailController extends CommonDynController with ReloadMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   late int oid;
   @override
@@ -30,7 +34,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
         commentIdStr.isNotEmpty) {
       _init(commentIdStr, commentType);
     } else {
-      Get.find<DynamicsRepository>().dynamicDetail(id: dynItem.idStr).then((res) {
+      (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynamicDetail(id: dynItem.idStr).then((res) {
         if (res case Success(:final response)) {
           _init(response.basic!.commentIdStr!, response.basic!.commentType!);
         } else {
@@ -47,7 +51,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   }
 
   Future<LoadingState> onSetPubSetting(bool isPrivate, String dynId) async {
-    final result = await Get.find<DynamicsRepository>().dynPrivatePubSetting(
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynPrivatePubSetting(
       dynId: dynId,
       action: isPrivate ? 'public_pub' : 'private_pub',
     );
@@ -66,7 +70,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   }
 
   Future<void> onSetReplySubject(int action) async {
-    final res = await Get.find<ReplyRepository>().replySubjectModify(
+    final res = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).replySubjectModify(
       oid: oid,
       type: replyType,
       action: action,

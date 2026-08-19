@@ -1,8 +1,11 @@
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LikeDetailController
     extends CommonListController<CoreMsgLikeDetailData, CoreMsgLikeDetailItem> {
@@ -12,10 +15,16 @@ class LikeDetailController
 
   int lastMid = 0;
 
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
+
   @override
   void onInit() {
     super.onInit();
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     cardId = args['id'];
     uri = args['uri'];
     counts = args['counts'];
@@ -49,7 +58,7 @@ class LikeDetailController
 
   @override
   Future<LoadingState<CoreMsgLikeDetailData>> customGetData() async {
-    final result = await Get.find<MsgRepository>().msgLikeDetail(cardId: cardId, pn: page, lastMid: lastMid);
+    final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).msgLikeDetail(cardId: cardId, pn: page, lastMid: lastMid);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),

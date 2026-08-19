@@ -19,6 +19,7 @@ import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/widget/header_layout_widget.dart';
 import 'package:skf/pages/member/widget/medal_widget.dart';
 import 'package:skf/pages/member/widget/user_info_type.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
@@ -419,7 +420,7 @@ class UserInfoCard extends StatelessWidget {
               onPressed: () {
                 if (Get.find<AccountProvider>().isLogin) {
                   int mid = int.parse(card.mid.toString());
-                  Get.toNamed(
+                  AppNavigator.toNamed(
                     '/whisperDetail',
                     arguments: {
                       'talkerId': mid,
@@ -1122,7 +1123,7 @@ Future<void> _imageView({
   required List<CoreSourceModel> imgList,
   ValueChanged<int>? onPageChanged,
 }) {
-  return Get.key.currentState!.push<void>(
+  return AppNavigator.push<void>(
     HeroDialogRoute(
       pageBuilder: (context, animation, secondaryAnimation) => GalleryViewer(
         sources: imgList,
@@ -1131,5 +1132,5 @@ Future<void> _imageView({
         onPageChanged: onPageChanged,
       ),
     ),
-  );
+  ) ?? Future.value();
 }

@@ -12,16 +12,25 @@ import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class FollowChildController
     extends CommonListController<CoreFollowData, CoreFollowItemModel> {
-  FollowChildController(this.controller, this.mid, this.tagid);
-  final FollowController? controller;
+  FollowChildController(this._followState, this._notifier, this.mid, this.tagid);
+  final FollowState? _followState;
+  final FollowControllerNotifier? _notifier;
   final int? tagid;
   final int mid;
   int? total;
 
-  late final loadSameFollow = controller?.isOwner == false;
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
+
+  late final loadSameFollow = _followState?.isOwner == false;
   late final Rx<LoadingState<List<CoreFollowItemModel>?>> sameState =
       LoadingState<List<CoreFollowItemModel>?>.loading().obs;
 
@@ -56,15 +65,16 @@ class FollowChildController
 
   @override
   bool customHandleResponse(bool isRefresh, Success<CoreFollowData> response) {
-    if (controller != null) {
+    if (_followState != null && _notifier != null) {
       try {
-        if (controller!.isOwner &&
+        if (_followState!.isOwner &&
             tagid == null &&
             isRefresh &&
-            controller!.followState.value.isSuccess) {
-          controller!.tabs
-            ..[0].count = response.response.total
-            ..refresh();
+            _followState!.hasLoadedTags) {
+          final total = response.response.total;
+          if (total != null) {
+            _notifier!.updateTabCount(total);
+          }
         }
       } catch (_) {}
     }
@@ -74,7 +84,7 @@ class FollowChildController
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
     if (tagid != null) {
-      final biliResult = await Get.find<MemberRepository>().followUpGroup(
+      final biliResult = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).followUpGroup(
         mid: mid,
         tagid: tagid,
         pn: page,
@@ -86,7 +96,7 @@ class FollowChildController
       };
     }
 
-    return Get.find<FollowRepository>().followings(
+    return (_ref?.read(followRepositoryProvider) ?? Get.find<FollowRepository>()).followings(
       vmid: mid,
       pn: page,
       orderType: orderType.value.type,
@@ -94,7 +104,7 @@ class FollowChildController
   }
 
   Future<void> _loadSameFollow() async {
-    final res = await Get.find<UserRepository>().sameFollowing(mid: mid);
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).sameFollowing(mid: mid);
     if (res case Success(:final response)) {
       sameState.value = Success(response.list);
     }

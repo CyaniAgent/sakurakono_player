@@ -3,10 +3,10 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/extra_hittest_stack.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/image_type.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 
 enum BadgeType {
   none(),
@@ -120,7 +120,7 @@ class PendantAvatar extends StatelessWidget {
     return Positioned(
       bottom: liveBottom ?? 0.0,
       child: GestureDetector(
-        onTap: () => Get.toNamed('/liveRoom', arguments: roomId),
+        onTap: () => AppNavigator.toNamed('/liveRoom', arguments: roomId),
         child: Container(
           padding: const .symmetric(horizontal: 5, vertical: 1),
           decoration: BoxDecoration(

@@ -1,74 +1,88 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/adapters/bilibili/models/common/dm_block_type.dart';
+import 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
+import 'package:skf/adapters/bilibili/pages/danmaku_block/controller.dart';
+import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
-import 'package:skf/adapters/bilibili/models/common/dm_block_type.dart';
-import 'package:skf/adapters/bilibili/models/user/danmaku_rule.dart';
-import 'package:skf/adapters/bilibili/pages/danmaku_block/controller.dart';
 import 'package:skf/core/models/danmaku_block.dart' show CoreSimpleRule;
-import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
-class DanmakuBlockPage extends StatefulWidget {
+class DanmakuBlockPage extends ConsumerStatefulWidget {
   const DanmakuBlockPage({super.key});
 
   @override
-  State<DanmakuBlockPage> createState() => _DanmakuBlockPageState();
+  ConsumerState<DanmakuBlockPage> createState() => _DanmakuBlockPageState();
 }
 
-class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
-  final DanmakuBlockController _controller = Get.put(DanmakuBlockController());
-  late PlPlayerController plPlayerController;
+class _DanmakuBlockPageState extends ConsumerState<DanmakuBlockPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController tabController;
+  PlPlayerController? _plPlayerController;
 
   @override
   void initState() {
     super.initState();
-    plPlayerController = Get.arguments as PlPlayerController;
+    tabController = TabController(
+      length: DmBlockType.values.length,
+      vsync: this,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _plPlayerController ??=
+        ModalRoute.of(context)?.settings.arguments as PlPlayerController?;
   }
 
   @override
   void dispose() {
-    final ruleFilter = RuleFilter.fromRuleTypeEntries(
-      _controller.rules.map((e) => e.toList()).toList(),
-    );
-    plPlayerController.filters = ruleFilter;
-    GStorage.localCache.put(LocalCacheKey.danmakuFilterRules, ruleFilter);
+    final plController = _plPlayerController;
+    if (plController != null) {
+      final state = ref.read(danmakuBlockProvider);
+      final ruleFilter = RuleFilter.fromRuleTypeEntries(
+        state.rules.map((e) => e.toList()).toList(),
+      );
+      plController.filters = ruleFilter;
+      GStorage.localCache.put(LocalCacheKey.danmakuFilterRules, ruleFilter);
+    }
+    tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(danmakuBlockProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('弹幕屏蔽'),
         bottom: TabBar(
-          controller: _controller.tabController,
+          controller: tabController,
           tabs: DmBlockType.values
               .map(
-                (e) => Obx(
-                  () => Tab(
-                    text: '${e.label}(${_controller.rules[e.index].length})',
-                  ),
+                (e) => Tab(
+                  text: '${e.label}(${state.rules[e.index].length})',
                 ),
               )
               .toList(),
         ),
       ),
       body: tabBarView(
-        controller: _controller.tabController,
+        controller: tabController,
         children: DmBlockType.values
             .map(
               (e) => KeepAliveWrapper(
-                child: Obx(
-                  () => tabViewBuilder(e.index, _controller.rules[e.index]),
-                ),
+                child: tabViewBuilder(e.index, state.rules[e.index]),
               ),
             )
             .toList(),
@@ -76,7 +90,7 @@ class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
       floatingActionButton: FloatingActionButton(
         tooltip: '添加',
         onPressed: () =>
-            _showAddDialog(DmBlockType.values[_controller.tabController.index]),
+            _showAddDialog(DmBlockType.values[tabController.index]),
         child: const Icon(Icons.add),
       ),
     );
@@ -100,11 +114,13 @@ class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
           onPressed: () => showConfirmDialog(
             context: context,
             title: const Text('确定删除该规则？'),
-            onConfirm: () => _controller.danmakuFilterDel(
-              tabIndex,
-              itemIndex,
-              item.id,
-            ),
+            onConfirm: () => ref
+                .read(danmakuBlockProvider.notifier)
+                .danmakuFilterDel(
+                  tabIndex,
+                  itemIndex,
+                  item.id,
+                ),
           ),
         );
         return ListTile(
@@ -122,7 +138,7 @@ class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
                       tooltip: '编辑',
                       icon: const Icon(Icons.edit_outlined),
                       onPressed: () => _showAddDialog(
-                        DmBlockType.values[_controller.tabController.index],
+                        DmBlockType.values[tabController.index],
                         initFilter: item.filter,
                         itemIndex: itemIndex,
                         itemId: item.id,
@@ -152,7 +168,7 @@ class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
     final isUid = type == DmBlockType.uid;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text('${itemId != null ? "编辑" : "添加新的"}${type.label}规则'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -172,7 +188,7 @@ class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
         ),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: Text(
               '取消',
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
@@ -182,15 +198,16 @@ class _DanmakuBlockPageState extends State<DanmakuBlockPage> {
             child: const Text('确定'),
             onPressed: () async {
               if (filter != initFilter) {
-                Get.back();
+                Navigator.of(dialogContext).pop();
+                final notifier = ref.read(danmakuBlockProvider.notifier);
                 if (itemId != null) {
-                  await _controller.danmakuFilterDel(
+                  await notifier.danmakuFilterDel(
                     type.index,
                     itemIndex!,
                     itemId,
                   );
                 }
-                await _controller.danmakuFilterAdd(
+                await notifier.danmakuFilterAdd(
                   filter: filter,
                   type: type.index,
                 );

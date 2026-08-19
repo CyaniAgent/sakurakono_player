@@ -8,35 +8,50 @@ import 'package:skf/adapters/bilibili/models_new/live/live_dm_block/shield_user_
 import 'package:skf/adapters/bilibili/pages/live_dm_block/controller.dart';
 import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/extension/size_ext.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LiveDmBlockPage extends StatefulWidget {
-  const LiveDmBlockPage({super.key});
+class LiveDmBlockPage extends ConsumerStatefulWidget {
+  const LiveDmBlockPage({super.key, required this.roomId});
+
+  final String roomId;
 
   @override
-  State<LiveDmBlockPage> createState() => _LiveDmBlockPageState();
+  ConsumerState<LiveDmBlockPage> createState() => _LiveDmBlockPageState();
 }
 
-class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
-  final _controller = Get.put(
-    LiveDmBlockController(),
-    tag: Utils.generateRandomString(8),
-  );
-  late bool isPortrait;
-  late EdgeInsets padding;
+class _LiveDmBlockPageState extends ConsumerState<LiveDmBlockPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  late final String _roomId = widget.roomId;
+  int? _oldLevel;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  LiveDmBlockNotifier get _notifier =>
+      ref.read(liveDmBlockProvider(_roomId).notifier);
 
   @override
   Widget build(BuildContext context) {
-    isPortrait = MediaQuery.sizeOf(context).isPortrait;
-    padding = MediaQuery.viewPaddingOf(context);
+    final state = ref.watch(liveDmBlockProvider(_roomId));
+    final isPortrait = MediaQuery.sizeOf(context).isPortrait;
+    final padding = MediaQuery.viewPaddingOf(context);
     final theme = Theme.of(context);
     Widget tabBar = TabBar(
-      controller: _controller.tabController,
+      controller: _tabController,
       tabs: const [
         Tab(text: '关键词'),
         Tab(text: '用户'),
@@ -44,13 +59,13 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
     );
 
     Widget view = tabBarView(
-      controller: _controller.tabController,
+      controller: _tabController,
       children: [
         KeepAliveWrapper(
-          child: Obx(() => _buildKeyword(_controller.keywordList)),
+          child: _buildKeyword(state.keywordList, padding),
         ),
         KeepAliveWrapper(
-          child: Obx(() => _buildKeyword(_controller.shieldUserList)),
+          child: _buildKeyword(state.shieldUserList, padding),
         ),
       ],
     );
@@ -76,7 +91,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
             '全局屏蔽',
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
           ),
-          ..._buildHeader(theme),
+          ..._buildHeader(theme, state),
           if (isPortrait) title,
         ],
       ),
@@ -155,7 +170,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
     );
   }
 
-  Widget _buildKeyword(List list) {
+  Widget _buildKeyword(List list, EdgeInsets padding) {
     if (list.isEmpty) {
       return scrollableError;
     }
@@ -176,7 +191,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
               onTap: (value) => showConfirmDialog(
                 context: context,
                 title: const Text('确定删除该规则？'),
-                onConfirm: () => _controller.onRemove(i, e),
+                onConfirm: () => _notifier.onRemove(i, e),
               ),
             );
           },
@@ -185,91 +200,75 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
     );
   }
 
-  List<Widget> _buildHeader(ThemeData theme) {
+  List<Widget> _buildHeader(ThemeData theme, LiveDmBlockState state) {
     return [
       const SizedBox(height: 6),
-      Obx(
-        () {
-          final isEnable = _controller.isEnable.value;
-          return Row(
-            spacing: 10,
-            children: [
-              Text('屏蔽${isEnable ? '已' : '未'}开启'),
-              Transform.scale(
-                scale: .8,
-                child: Switch(
-                  value: isEnable,
-                  onChanged: _controller.setEnable,
-                ),
-              ),
-            ],
-          );
-        },
+      Row(
+        spacing: 10,
+        children: [
+          Text('屏蔽${state.isEnable ? '已' : '未'}开启'),
+          Transform.scale(
+            scale: .8,
+            child: Switch(
+              value: state.isEnable,
+              onChanged: _notifier.setEnable,
+            ),
+          ),
+        ],
       ),
       const SizedBox(height: 6),
-      Obx(
-        () {
-          final level = _controller.level.value;
-          return Row(
-            children: [
-              const Text('用户等级'),
-              Slider(
-                min: 0,
-                max: 60,
-                // ignore: deprecated_member_use
-                year2023: true,
-                inactiveColor: theme.colorScheme.onInverseSurface,
-                padding: const EdgeInsets.only(left: 20, right: 25),
-                value: level.toDouble(),
-                onChangeStart: (value) => _controller.oldLevel = level,
-                onChanged: (value) =>
-                    _controller.level.value = value.round().clamp(0, 60),
-                onChangeEnd: (value) {
-                  if (_controller.oldLevel != level) {
-                    _controller.setSilent(
-                      LiveDmSilentType.level,
-                      level,
-                      onError: () =>
-                          _controller.level.value = _controller.oldLevel ?? 0,
-                    );
-                  }
-                },
-              ),
-              Text('$level 以下'),
-            ],
-          );
-        },
+      Row(
+        children: [
+          const Text('用户等级'),
+          Slider(
+            min: 0,
+            max: 60,
+            // ignore: deprecated_member_use
+            year2023: true,
+            inactiveColor: theme.colorScheme.onInverseSurface,
+            padding: const EdgeInsets.only(left: 20, right: 25),
+            value: state.level.toDouble(),
+            onChangeStart: (value) => _oldLevel = state.level,
+            onChanged: (value) =>
+                _notifier.updateLevel(value.round().clamp(0, 60)),
+            onChangeEnd: (value) {
+              if (_oldLevel != state.level) {
+                _notifier.setSilent(
+                  LiveDmSilentType.level,
+                  state.level,
+                  onError: () =>
+                      _notifier.updateLevel(_oldLevel ?? 0),
+                );
+              }
+            },
+          ),
+          Text('${state.level} 以下'),
+        ],
       ),
       const SizedBox(height: 20),
       Row(
         spacing: 16,
         children: [
-          Obx(() {
-            final isEnable = _controller.rank.value == 1;
-            return _headerBtn(
-              theme,
-              isEnable,
-              Icons.live_tv,
-              '非正式会员',
-              () => _controller.setSilent(
-                LiveDmSilentType.rank,
-                isEnable ? 0 : 1,
-              ),
-            );
-          }),
-          Obx(() {
-            final isEnable = _controller.verify.value == 1;
-            return _headerBtn(
-              theme,
-              isEnable,
-              Icons.smartphone,
-              '未绑定手机用户',
-              () => _controller.setSilent(
-                LiveDmSilentType.verify,
-                isEnable ? 0 : 1,
-              ),
-            );
-          }),
+          _headerBtn(
+            theme,
+            state.rank == 1,
+            Icons.live_tv,
+            '非正式会员',
+            () => _notifier.setSilent(
+              LiveDmSilentType.rank,
+              state.rank == 1 ? 0 : 1,
+            ),
+          ),
+          _headerBtn(
+            theme,
+            state.verify == 1,
+            Icons.smartphone,
+            '未绑定手机用户',
+            () => _notifier.setSilent(
+              LiveDmSilentType.verify,
+              state.verify == 1 ? 0 : 1,
+            ),
+          ),
         ],
       ),
     ];
@@ -343,7 +342,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
   }
 
   void _addShieldKeyword() {
-    bool isKeyword = _controller.tabController.index == 0;
+    bool isKeyword = _tabController.index == 0;
     String value = '';
     showConfirmDialog(
       context: context,
@@ -360,7 +359,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
       ),
       onConfirm: () {
         if (value.isNotEmpty) {
-          _controller.addShieldKeyword(isKeyword, value);
+          _notifier.addShieldKeyword(isKeyword, value);
         }
       },
     );

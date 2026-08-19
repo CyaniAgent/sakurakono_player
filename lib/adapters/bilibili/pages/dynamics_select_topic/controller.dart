@@ -1,4 +1,6 @@
 import 'package:skf/core/models/search_types.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
@@ -7,6 +9,8 @@ import 'package:get/get.dart';
 
 class SelectTopicController
     extends CommonListController<CoreTopicPubSearchData, CoreTopicItem> {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   final focusNode = FocusNode();
   final controller = TextEditingController();
 
@@ -28,7 +32,7 @@ class SelectTopicController
 
   @override
   Future<LoadingState<CoreTopicPubSearchData>> customGetData() async {
-    final result = await Get.find<SearchRepository>().topicPubSearch(
+    final result = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).topicPubSearch(
       keywords: controller.text,
       pageNum: page,
     );

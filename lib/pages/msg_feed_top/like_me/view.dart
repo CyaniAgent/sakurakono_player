@@ -12,6 +12,7 @@ import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/msg_feed_top/like_me/controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
@@ -36,7 +37,7 @@ class _LikeMePageState extends State<LikeMePage> {
         title: const Text('收到的赞'),
         actions: [
           IconButton(
-            onPressed: () => Get.toNamed(
+            onPressed: () => AppNavigator.toNamed(
               '/whisperSettings',
               arguments: {'type': CoreImSettingType.receiveLike},
             ),
@@ -196,7 +197,7 @@ class _LikeMePageState extends State<LikeMePage> {
           children: [
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 showConfirmDialog(
                   context: context,
                   title: const Text('删除'),
@@ -208,7 +209,7 @@ class _LikeMePageState extends State<LikeMePage> {
             ),
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 if (isNotice) {
                   showConfirmDialog(
                     context: context,
@@ -237,7 +238,7 @@ class _LikeMePageState extends State<LikeMePage> {
         bool isInvalid =
             nativeUri == null || nativeUri.isEmpty || nativeUri.startsWith('?');
         if (item.counts! > 1) {
-          Get.toNamed(
+          AppNavigator.toNamed(
             'msgLikeDetail',
             arguments: {
               'id': item.id!.toString(),

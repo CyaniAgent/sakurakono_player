@@ -10,6 +10,7 @@ import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/msg_feed_top/at_me/controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
@@ -34,7 +35,7 @@ class _AtMePageState extends State<AtMePage> {
         title: const Text('@我的'),
         actions: [
           IconButton(
-            onPressed: () => Get.toNamed(
+            onPressed: () => AppNavigator.toNamed(
               '/whisperSettings',
               arguments: {'type': CoreImSettingType.atMe},
             ),
@@ -109,7 +110,7 @@ class _AtMePageState extends State<AtMePage> {
                     onLongPress: onLongPress,
                     onSecondaryTap: PlatformUtils.isMobile ? null : onLongPress,
                     leading: GestureDetector(
-                      onTap: () => Get.toNamed('/member?mid=${item.user?.mid}'),
+                      onTap: () => AppNavigator.toNamed('/member?mid=${item.user?.mid}'),
                       child: NetworkImgLayer(
                         width: 45,
                         height: 45,

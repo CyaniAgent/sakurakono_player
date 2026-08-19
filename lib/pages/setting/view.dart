@@ -1,23 +1,24 @@
+import 'package:flutter/material.dart' hide ListTile;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/pages/setting/play_input_dialog.dart';
 import 'package:skf/pages/setting/setting_host.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/size_ext.dart';
-import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
 
 /// 通用设置页框架：搜索 + 菜单列表 + 播放链接/切换账号/退出登录 + 底部菜单。
 ///
 /// 菜单项、账号操作与搜索入口均由 [SettingHost] 注入（B站: [BiliSettingHost]；
 /// OttoHub: [OttoSettingHost]），本页零适配器依赖。
-class SettingPage extends StatefulWidget {
+class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  ConsumerState<SettingPage> createState() => _SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingPageState extends ConsumerState<SettingPage> {
   final SettingHost _host = SettingHost.of();
   SettingMenuItem? _type;
   late bool _isPortrait;
@@ -68,7 +69,7 @@ class _SettingPageState extends State<SettingPage> {
 
   void _toPage(SettingMenuItem item) {
     if (_isPortrait) {
-      Get.to(() => item.contentBuilder(true));
+      AppNavigator.to(() => item.contentBuilder(true));
     } else {
       _type = item;
       setState(() {});
@@ -116,15 +117,12 @@ class _SettingPageState extends State<SettingPage> {
           leading: const Icon(Icons.switch_account_outlined),
           title: Text('切换账号', style: titleStyle),
         ),
-        Obx(
-          () => _host.hasAccount
-              ? ListTile(
-                  leading: const Icon(Icons.logout_outlined),
-                  onTap: () => _host.logout(context),
-                  title: Text('退出登录', style: titleStyle),
-                )
-              : const SizedBox.shrink(),
-        ),
+        if (_host.hasAccount)
+          ListTile(
+            leading: const Icon(Icons.logout_outlined),
+            onTap: () => _host.logout(context),
+            title: Text('退出登录', style: titleStyle),
+          ),
         ..._host.footerItems.map(
           (item) => ListTile(
             tileColor: _getTileColor(theme, item),
@@ -179,4 +177,3 @@ class _SettingPageState extends State<SettingPage> {
     ),
   );
 }
-

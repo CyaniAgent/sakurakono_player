@@ -12,7 +12,6 @@ class BiliAccountProvider extends AccountProvider {
   @override
   int? get userId => Accounts.main.isLogin ? Accounts.main.mid : null;
   @override
-  // 展示缓存（与 rxFace 同源）；身份判断请用 userId / isLogin。
   String? get displayName => BiliPref.userInfoCache?.uname;
 
   @override
@@ -20,14 +19,12 @@ class BiliAccountProvider extends AccountProvider {
   @override
   String? get face => rxFace.value;
 
-  @override
   void onInit() {
-    super.onInit();
     restoreFromCache();
   }
 
   @override
-  void restoreFromCache() {
+  Future<void> restoreFromCache() async {
     UserInfoData? userInfo = BiliPref.userInfoCache;
     if (userInfo != null) {
       rxFace.value = userInfo.face ?? '';
@@ -35,8 +32,9 @@ class BiliAccountProvider extends AccountProvider {
     }
   }
 
-  @override
   Map<String, String> get authHeaders => {};
   @override
-  Stream<bool> onAuthStateChanged() => rxIsLogin.stream;
+  void onAuthStateChanged(Map<String, String> headers) {
+    restoreFromCache();
+  }
 }

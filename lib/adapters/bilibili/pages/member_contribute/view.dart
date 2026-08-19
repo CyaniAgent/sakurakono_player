@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/models/member_types.dart';
+import 'package:skf/pages/member/controller.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space/tab2.dart';
 import 'package:skf/adapters/bilibili/pages/member_article/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_audio/view.dart';
@@ -8,11 +11,12 @@ import 'package:skf/adapters/bilibili/pages/member_contribute/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_opus/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_season_series/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_video/view.dart';
-import 'package:skf/utils/extension/get_ext.dart';
+import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class MemberContribute extends StatefulWidget {
+class MemberContribute extends ConsumerStatefulWidget {
   const MemberContribute({
     super.key,
     this.heroTag,
@@ -25,33 +29,66 @@ class MemberContribute extends StatefulWidget {
   final int mid;
 
   @override
-  State<MemberContribute> createState() => _MemberContributeState();
+  ConsumerState<MemberContribute> createState() => _MemberContributeState();
 }
 
-class _MemberContributeState extends State<MemberContribute>
-    with AutomaticKeepAliveClientMixin {
+class _MemberContributeState extends ConsumerState<MemberContribute>
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
-  late final MemberContributeCtr _controller;
+  TabController? _tabController;
 
   @override
   void initState() {
     super.initState();
-    _controller = Get.putOrFind(
-      () => MemberContributeCtr(
-        heroTag: widget.heroTag,
-        initialIndex: widget.initialIndex,
-      ),
-      tag: widget.heroTag,
-    );
+    // Read MemberController data and feed into the Riverpod notifier.
+    try {
+      final memberCtr = Get.find<MemberController>(tag: widget.heroTag);
+      final contribute = memberCtr.tab2!.firstWhere(
+        (item) => item.param == 'contribute',
+      );
+      if (contribute.items?.isNullOrEmpty == false) {
+        ref
+            .read(memberContributeProvider(widget.heroTag).notifier)
+            .initData(
+              contributeItems: contribute.items,
+              hasSeasonOrSeries: memberCtr.hasSeasonOrSeries == true,
+            );
+      }
+    } catch (_) {
+      // MemberController not ready yet; state stays default.
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
-    return _controller.tabs != null
+    final state = ref.watch(memberContributeProvider(widget.heroTag));
+
+    // Create / recreate TabController when tabs become available or change
+    // length.  The controller lives here (with TickerProviderStateMixin)
+    // because TabController requires a TickerProvider for vsync.
+    if (state.tabs != null) {
+      if (_tabController == null ||
+          _tabController!.length != state.tabs!.length) {
+        _tabController?.dispose();
+        _tabController = TabController(
+          vsync: this,
+          length: state.tabs!.length,
+          initialIndex: max(0, state.currentIndex),
+        );
+      }
+    }
+
+    return state.tabs != null
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -60,9 +97,9 @@ class _MemberContributeState extends State<MemberContribute>
                 splashFactory: NoSplash.splashFactory,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 isScrollable: true,
-                tabs: _controller.tabs!,
+                tabs: state.tabs!,
                 tabAlignment: TabAlignment.start,
-                controller: _controller.tabController,
+                controller: _tabController,
                 dividerHeight: 0,
                 indicatorWeight: 0,
                 indicatorPadding: const EdgeInsets.symmetric(
@@ -85,8 +122,8 @@ class _MemberContributeState extends State<MemberContribute>
               Expanded(
                 child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
-                  controller: _controller.tabController,
-                  children: _controller.items!
+                  controller: _tabController,
+                  children: state.items!
                       .whereType<SpaceTab2Item>()
                       .map(_getPageFromType)
                       .toList(),
@@ -94,13 +131,14 @@ class _MemberContributeState extends State<MemberContribute>
               ),
             ],
           )
-        : _controller.items?.isNotEmpty == true
-        ? _getPageFromType(_controller.items!.first)
+        : state.items?.isNotEmpty == true
+        ? _getPageFromType(state.items!.first as SpaceTab2Item)
         : scrollableError;
   }
 
   Widget _getPageFromType(SpaceTab2Item item) {
-    final isSingle = _controller.tabs == null;
+    final state = ref.watch(memberContributeProvider(widget.heroTag));
+    final isSingle = state.tabs == null;
     return switch (item.param) {
       'video' => MemberVideo(
         type: CoreContributeType.video,

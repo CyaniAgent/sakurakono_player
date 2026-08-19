@@ -22,7 +22,7 @@ class _FakeAccountProvider extends OttoAccountProvider {
   String? lastFace;
 
   @override
-  void restoreFromCache() {
+  Future<void> restoreFromCache() async {
     // GStorage/Hive is not initialized in tests.
   }
 

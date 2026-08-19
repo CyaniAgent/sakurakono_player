@@ -1,10 +1,10 @@
 import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/pages/setting/setting_host.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 /// 弹出「播放链接」输入对话框。
 ///
@@ -50,7 +50,7 @@ void showPlayInputDialog(BuildContext context) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(
@@ -61,7 +61,7 @@ void showPlayInputDialog(BuildContext context) {
         TextButton(
           onPressed: () async {
             final input = controller.text;
-            Get.back();
+            AppNavigator.back();
             await _dispatchPlayInput(input);
           },
           child: const Text('确定'),

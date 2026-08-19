@@ -8,12 +8,15 @@ import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_data_controller.dart';
 import 'package:skf/pages/member/member_host.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/nested_scroll_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     show ExtendedNestedScrollViewState;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData?>
     with GetTickerProviderStateMixin {
@@ -22,9 +25,14 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   String? username;
   String? userAvatar;
 
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
   int get currentUserId => MemberHost.of().currentUserId;
 
-  bool get isLogin => Get.find<AccountProvider>().isLogin;
+  bool get isLogin => _ref?.read(accountProvider).isLogin == true || Get.find<AccountProvider>().isLogin;
 
   CoreLive? live;
   int? silence;
@@ -170,7 +178,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
 
   @override
   Future<LoadingState<CoreSpaceData>> customGetData() async {
-    final result = await Get.find<MemberRepository>().space(
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).space(
       mid: mid,
       fromViewAid: fromViewAid,
     );
@@ -193,7 +201,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
         content: Text(relation.value != 128 ? '确定拉黑UP主?' : '从黑名单移除UP主'),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '点错了',
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
@@ -201,7 +209,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
           ),
           TextButton(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               _onBlock();
             },
             child: const Text('确认'),
@@ -217,7 +225,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
 
   Future<void> _onBlock() async {
     final isBlocked = relation.value == 128;
-    final res = await Get.find<VideoRepository>().relationMod(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
       mid: mid,
       act: isBlocked ? 6 : 5,
       reSrc: 11,
@@ -229,7 +237,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
 
   void onFollow(BuildContext context) {
     if (mid == currentUserId) {
-      Get.toNamed('/editProfile');
+      AppNavigator.toNamed('/editProfile');
     } else if (relation.value == 128) {
       _onBlock();
     } else {
@@ -253,7 +261,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   }
 
   Future<void> onRemoveFan() async {
-    final res = await Get.find<VideoRepository>().relationMod(mid: mid, act: 7, reSrc: 11);
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(mid: mid, act: 7, reSrc: 11);
     if (res.isSuccess) {
       isFollowed = null;
       if (relation.value == 4) {
@@ -272,7 +280,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   }
 
   Future<void> vipExpAdd() async {
-    final res = await Get.find<UserRepository>().vipExpAdd();
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).vipExpAdd();
     if (res.isSuccess) {
       SmartDialog.showToast('领取成功');
     } else {

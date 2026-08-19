@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
@@ -28,7 +28,7 @@ class BiliAdapter implements AppAdapter {
   }
 
   @override
-  List<GetPage> get routes => BiliBridge.registerRoutes();
+  List<GoRoute> get routes => BiliBridge.buildRoutes();
 
   @override
   String processImageUrl(String? originalUrl, {int quality = 1}) {

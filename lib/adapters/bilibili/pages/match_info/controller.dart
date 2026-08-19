@@ -3,8 +3,13 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/match_contest.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class MatchInfoController extends CommonDynController {
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   final int oid = int.parse(Get.parameters['cid']!);
   @override
@@ -23,7 +28,7 @@ class MatchInfoController extends CommonDynController {
   }
 
   Future<void> getMatchInfo() async {
-    final res = await Get.find<MatchRepository>().matchInfo(oid);
+    final res = await (_ref?.read(matchRepositoryProvider) ?? Get.find<MatchRepository>()).matchInfo(oid);
     if (res.isSuccess) {
       queryData();
     }

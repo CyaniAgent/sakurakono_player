@@ -7,6 +7,7 @@ import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/msg_feed_top/like_detail/controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,7 @@ class _LikeDetailPageState extends State<LikeDetailPage> {
 
   Widget _buildItem(ThemeData theme, CoreMsgLikeDetailItem item) {
     return ListTile(
-      onTap: () => Get.toNamed('/member?mid=${item.user!.mid}'),
+      onTap: () => AppNavigator.toNamed('/member?mid=${item.user!.mid}'),
       leading: NetworkImgLayer(
         width: 45,
         height: 45,

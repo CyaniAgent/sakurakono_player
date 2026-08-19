@@ -2,6 +2,8 @@ import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
@@ -9,22 +11,25 @@ import 'package:skf/adapters/bilibili/pages/live_search/controller.dart';
 
 class LiveSearchChildController
     extends CommonListController<CoreLiveSearchData, dynamic> {
-  LiveSearchChildController(this.controller, this.searchType);
+  LiveSearchChildController(this.notifier, this.searchType);
 
-  final LiveSearchController controller;
+  final LiveSearchNotifier notifier;
   final CoreLiveSearchType searchType;
+
+  WidgetRef? _ref;
+  void attachRef(WidgetRef ref) { _ref = ref; }
 
   @override
   void checkIsEnd(int length) {
     switch (searchType) {
       case CoreLiveSearchType.room:
-        if (controller.counts.first != -1 &&
-            length >= controller.counts.first) {
+        if (notifier.counts.first != -1 &&
+            length >= notifier.counts.first) {
           isEnd = true;
         }
         break;
       case CoreLiveSearchType.user:
-        if (controller.counts[1] != -1 && length >= controller.counts[1]) {
+        if (notifier.counts[1] != -1 && length >= notifier.counts[1]) {
           isEnd = true;
         }
         break;
@@ -35,19 +40,19 @@ class LiveSearchChildController
   List? getDataList(response) {
     switch (searchType) {
       case CoreLiveSearchType.room:
-        controller.counts[searchType.index] = response.room?.totalRoom ?? 0;
+        notifier.updateCount(searchType.index, response.room?.totalRoom ?? 0);
         return response.room?.list;
       case CoreLiveSearchType.user:
-        controller.counts[searchType.index] = response.user?.totalUser ?? 0;
+        notifier.updateCount(searchType.index, response.user?.totalUser ?? 0);
         return response.user?.list;
     }
   }
 
   @override
   Future<LoadingState<CoreLiveSearchData>> customGetData() async {
-    final result = await Get.find<LiveRepository>().liveSearch(
+    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveSearch(
       page: page,
-      keyword: controller.editingController.text,
+      keyword: notifier.editingController.text,
       type: searchType,
     );
     return switch (result) {

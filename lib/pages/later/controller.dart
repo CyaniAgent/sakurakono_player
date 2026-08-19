@@ -3,6 +3,8 @@ import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/later/later_view_type.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart'
@@ -11,6 +13,7 @@ import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/pages/later/base_controller.dart';
 import 'package:skf/pages/later/later_actions.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter/material.dart';
@@ -23,16 +26,22 @@ mixin BaseLaterController
         DeleteItemMixin<CoreLaterData, CoreLaterItemModel> {
   ValueChanged<int>? updateCount;
 
+  ProviderContainer? _ref;
+
+  /// Attach a Riverpod [ProviderContainer] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(ProviderContainer ref) { _ref = ref; }
+
   @override
   void onRemove() {
     showConfirmDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       title: const Text('提示'),
       content: const Text('确认删除所选稍后再看吗？'),
       onConfirm: () async {
         final removeList = allChecked.toSet();
         SmartDialog.showLoading(msg: '请求中');
-        final res = await Get.find<UserRepository>().toViewDel(
+        final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewDel(
           aids: removeList.map((item) => item.aid).join(','),
         );
         if (res.isSuccess) {
@@ -57,7 +66,7 @@ mixin BaseLaterController
         content: const Text('即将移除该视频，确定是否移除'),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '取消',
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
@@ -65,8 +74,8 @@ mixin BaseLaterController
           ),
           TextButton(
             onPressed: () async {
-              Get.back();
-              final res = await Get.find<UserRepository>().toViewDel(aids: aid.toString());
+              AppNavigator.back();
+              final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewDel(aids: aid.toString());
               if (res.isSuccess) {
                 loadingState
                   ..value.data!.removeAt(index)
@@ -90,21 +99,14 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
   /// 导航契约（适配器注入），null 时对应导航动作禁用。
   final LaterActions? actions;
 
-  late final int mid = Get.find<AccountProvider>().userId ?? 0;
+  late final int mid = (_ref?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId) ?? 0;
 
   final RxBool asc = false.obs;
 
-  final LaterBaseController baseCtr = Get.put(LaterBaseController());
-
-  @override
-  RxBool get enableMultiSelect => baseCtr.enableMultiSelect;
-
-  @override
-  RxInt get rxCount => baseCtr.checkedCount;
 
   @override
   Future<LoadingState<CoreLaterData>> customGetData() async {
-    final result = await Get.find<UserRepository>().seeYouLater(
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).seeYouLater(
     page: page,
     viewed: laterViewType.type,
     asc: asc.value,
@@ -119,18 +121,24 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
   @override
   void onInit() {
     super.onInit();
+    ever(enableMultiSelect, (bool val) {
+      _ref?.read(laterBaseProvider.notifier).setEnableMultiSelect(val);
+    });
+    ever(rxCount, (int val) {
+      _ref?.read(laterBaseProvider.notifier).setCheckedCount(val);
+    });
     queryData();
   }
 
   @override
   List<CoreLaterItemModel>? getDataList(response) {
-    baseCtr.counts[laterViewType.index] = response.count ?? 0;
+    _ref?.read(laterBaseProvider.notifier).updateCount(laterViewType.index, response.count ?? 0);
     return response.list;
   }
 
   @override
   void checkIsEnd(int length) {
-    if (length >= baseCtr.counts[laterViewType.index]) {
+    if (length >= (_ref?.read(laterBaseProvider).counts[laterViewType.index] ?? -1)) {
       isEnd = true;
     }
   }
@@ -147,7 +155,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
       title: const Text('确认'),
       content: Text(content),
       onConfirm: () async {
-        final res = await Get.find<UserRepository>().toViewClear(cleanType);
+        final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewClear(cleanType);
         if (res.isSuccess) {
           onReload();
           final restTypes = List<LaterViewType>.from(LaterViewType.values)
@@ -183,7 +191,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
               dimension: item.dimension,
               isWatchLaterPlaylist: true,
               watchLaterExtra: {
-                'count': baseCtr.counts[LaterViewType.all.index],
+                'count': _ref?.read(laterBaseProvider).counts[LaterViewType.all.index],
                 'favTitle': '稍后再看',
                 'mediaId': mid,
                 'desc': asc.value,
@@ -198,7 +206,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
 
   @override
   ValueChanged<int>? get updateCount =>
-      (count) => baseCtr.counts[laterViewType.index] -= count;
+      (count) => _ref?.read(laterBaseProvider.notifier).decrementCount(laterViewType.index, count);
 
   @override
   Future<void> onReload() {

@@ -4,13 +4,14 @@ import 'package:skf/build_config.dart';
 import 'package:skf/common/constants.dart';
 import 'package:skf/common/widgets/back_detector.dart';
 import 'package:skf/common/widgets/custom_toast.dart';
-import 'package:skf/common/widgets/route_aware_mixin.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/router/app_router.dart';
 import 'package:skf/common/widgets/scale_app.dart';
 import 'package:skf/common/widgets/scroll_behavior.dart';
 import 'package:skf/adapters/adapters.dart';
 import 'package:skf/core/adapter/adapter_registry.dart';
+import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/player/utils/fullscreen.dart';
-import 'package:skf/router/app_pages.dart';
 import 'package:skf/utils/cache_manager.dart';
 import 'package:skf/utils/calc_window_position.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -31,11 +32,11 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -217,12 +218,12 @@ void main() async {
 
     Catcher2(
       [?fileHandler, const ConsoleHandler()],
-      const MyApp(),
+      ProviderScope(overrides: adapterOverrides, child: const MyApp()),
       logger: logger,
       customParameters: customParameters,
     );
   } else {
-    runApp(const MyApp());
+    runApp(ProviderScope(overrides: adapterOverrides, child: const MyApp()));
   }
 }
 
@@ -237,18 +238,7 @@ class MyApp extends StatelessWidget {
       return;
     }
 
-    final route = Get.routing.route;
-    if (route is GetPageRoute) {
-      if (route.popDisposition == .doNotPop) {
-        route.onPopInvokedWithResult(false, null);
-        return;
-      }
-    }
-
-    final navigator = Get.key.currentState;
-    if (navigator?.canPop() ?? false) {
-      navigator!.pop();
-    }
+    AppNavigator.back();
   }
 
   static (ThemeData, ThemeData) getAllTheme() {
@@ -275,7 +265,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (light, dark) = getAllTheme();
-    return GetMaterialApp(
+    return MaterialApp.router(
       title: Constants.appName,
       theme: light,
       darkTheme: dark,
@@ -286,11 +276,12 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       locale: const Locale("zh", "CN"),
-      fallbackLocale: const Locale("zh", "CN"),
       supportedLocales: const [Locale("zh", "CN"), Locale("en", "US")],
-      initialRoute: '/',
-      getPages: Routes.getPages,
-      defaultTransition: Pref.pageTransition,
+      routerConfig: AppRouter.create(
+        observers: [
+          FlutterSmartDialog.observer,
+        ],
+      ),
       builder: FlutterSmartDialog.init(
         toastBuilder: CustomToast.new,
         loadingBuilder: LoadingWidget.new,
@@ -299,10 +290,6 @@ class MyApp extends StatelessWidget {
         ),
         builder: _builder,
       ),
-      navigatorObservers: [
-        routeObserver,
-        FlutterSmartDialog.observer,
-      ],
       scrollBehavior: PlatformUtils.isDesktop
           ? const CustomScrollBehavior(desktopDragDevices)
           : null,

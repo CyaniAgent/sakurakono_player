@@ -1,6 +1,6 @@
 import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 abstract class CommonSearchController<R, T> extends CommonListController<R, T> {
   final editController = TextEditingController();
@@ -10,7 +10,7 @@ abstract class CommonSearchController<R, T> extends CommonListController<R, T> {
     if (editController.text.isNotEmpty) {
       editController.clear();
     } else {
-      Get.back();
+      AppNavigator.back();
     }
   }
 

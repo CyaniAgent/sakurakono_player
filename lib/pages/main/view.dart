@@ -23,6 +23,7 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:win32/win32.dart' as kernel32;
 import 'package:window_manager/window_manager.dart';
@@ -530,7 +531,7 @@ class _MainAppState extends PopScopeState<MainApp>
             Icons.search_outlined,
             semanticLabel: '搜索',
           ),
-          onPressed: () => Get.toNamed('/search'),
+          onPressed: () => AppNavigator.toNamed('/search'),
         ),
       ],
     );

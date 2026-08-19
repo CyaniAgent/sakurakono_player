@@ -5,6 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/pages/history/base_controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage.dart';
@@ -12,15 +13,15 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class HistoryController
     extends MultiSelectController<CoreHistoryData, CoreHistoryItemModel>
     with GetSingleTickerProviderStateMixin {
   HistoryController(this.type);
 
-  late final baseCtr = Get.put(HistoryBaseController());
-
-  Object? get account => baseCtr.account;
+  Object? get account => null;
 
   final String? type;
   TabController? tabController;
@@ -29,11 +30,11 @@ class HistoryController
   int? max;
   int? viewAt;
 
-  @override
-  RxInt get rxCount => baseCtr.checkedCount;
+  WidgetRef? _ref;
 
-  @override
-  RxBool get enableMultiSelect => baseCtr.enableMultiSelect;
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(WidgetRef ref) { _ref = ref; }
 
   @override
   void onInit() {
@@ -76,9 +77,9 @@ class HistoryController
 
   // 观看历史暂停状态
   Future<void> historyStatus() async {
-    final res = await Get.find<UserRepository>().historyStatus(account: account);
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).historyStatus(account: account);
     if (res case Success(:final response)) {
-      baseCtr.pauseStatus.value = response;
+      _ref?.read(historyBaseProvider.notifier).setPauseStatus(response);
       GStorage.localCache.put(LocalCacheKey.historyPause, response);
     } else {
       SmartDialog.showToast(res.toString());
@@ -104,7 +105,7 @@ class HistoryController
 
   Future<void> _onDelete(Set<CoreHistoryItemModel> removeList) async {
     SmartDialog.showLoading(msg: '请求中');
-    final res = await Get.find<UserRepository>().delHistory(
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).delHistory(
       removeList
           .map((item) => '${item.history.business}_${item.kid}')
           .join(','),
@@ -123,7 +124,7 @@ class HistoryController
   @override
   void onRemove() {
     showConfirmDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       title: const Text('提示'),
       content: const Text('确认删除所选历史记录吗？'),
       onConfirm: () => _onDelete(allChecked.toSet()),
@@ -132,7 +133,7 @@ class HistoryController
 
   @override
   Future<LoadingState<CoreHistoryData>> customGetData() async {
-    final result = await Get.find<UserRepository>().historyList(
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).historyList(
     type: type ?? 'all',
     max: max,
     viewAt: viewAt,

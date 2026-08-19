@@ -1,10 +1,9 @@
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/core/models/dynamics_types.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
 Widget dynInteraction({
   required ThemeData theme,
@@ -79,7 +78,7 @@ Widget _item(
                   : TextStyle(color: theme.colorScheme.onSurfaceVariant),
               recognizer: isAt
                   ? (NoDeadlineTapGestureRecognizer()
-                      ..onTap = () => Get.toNamed('/member?mid=${e.rid}'))
+                      ..onTap = () => AppNavigator.toNamed('/member?mid=${e.rid}'))
                   : null,
             );
           },

@@ -1,3 +1,4 @@
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/repository/fan_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -6,6 +7,7 @@ import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class FansController extends FollowTypeController {
   FansController(this.showName);
@@ -14,8 +16,8 @@ class FansController extends FollowTypeController {
 
   @override
   void init() {
-    final Map? args = Get.arguments;
-    final ownerMid = Get.find<AccountProvider>().userId ?? 0;
+    final Map? args = AppNavigator.arguments;
+    final ownerMid = repoRef?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId ?? 0;
     final int? mid = args?['mid'];
     this.mid = mid ?? ownerMid;
     isOwner = ownerMid == this.mid;
@@ -31,7 +33,7 @@ class FansController extends FollowTypeController {
 
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
-    final result = await Get.find<FanRepository>().fans(
+    final result = await (repoRef?.read(fanRepositoryProvider) ?? Get.find<FanRepository>()).fans(
       vmid: mid,
       pn: page,
       orderType: 'attention',
@@ -44,7 +46,7 @@ class FansController extends FollowTypeController {
   }
 
   Future<void> onRemoveFan(int index, int mid) async {
-    final res = await Get.find<VideoRepository>().relationMod(
+    final res = await (repoRef?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
       mid: mid,
       act: 7,
       reSrc: 11,

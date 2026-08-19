@@ -19,48 +19,81 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPageController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+/// Immutable state for the login page.
+class LoginState {
+  LoginState({
+    LoadingState<({String authCode, String url})>? codeInfo,
+    int? qrCodeLeftTime,
+    String? statusQRCode,
+    ({int id, String cname, int countryId})? selectedCountryCodeId,
+    String? captchaKey,
+    int? smsSendCooldown,
+    int? currentTabIndex,
+  })  : codeInfo = codeInfo ?? LoadingState<({String authCode, String url})>.loading(),
+        qrCodeLeftTime = qrCodeLeftTime ?? 180,
+        statusQRCode = statusQRCode ?? '',
+        this.selectedCountryCodeId = selectedCountryCodeId,
+        captchaKey = captchaKey ?? '',
+        smsSendCooldown = smsSendCooldown ?? 0,
+        currentTabIndex = currentTabIndex ?? 0;
+
+  final LoadingState<({String authCode, String url})> codeInfo;
+  final int qrCodeLeftTime;
+  final String statusQRCode;
+  final ({int id, String cname, int countryId})? selectedCountryCodeId;
+  final String captchaKey;
+  final int smsSendCooldown;
+  final int currentTabIndex;
+
+  ({int id, String cname, int countryId}) get effectiveCountryCode =>
+      selectedCountryCodeId ?? Login.dialPrefix.first;
+
+  LoginState copyWith({
+    LoadingState<({String authCode, String url})>? codeInfo,
+    int? qrCodeLeftTime,
+    String? statusQRCode,
+    ({int id, String cname, int countryId})? selectedCountryCodeId,
+    String? captchaKey,
+    int? smsSendCooldown,
+    int? currentTabIndex,
+  }) {
+    return LoginState(
+      codeInfo: codeInfo ?? this.codeInfo,
+      qrCodeLeftTime: qrCodeLeftTime ?? this.qrCodeLeftTime,
+      statusQRCode: statusQRCode ?? this.statusQRCode,
+      selectedCountryCodeId:
+          selectedCountryCodeId ?? this.selectedCountryCodeId,
+      captchaKey: captchaKey ?? this.captchaKey,
+      smsSendCooldown: smsSendCooldown ?? this.smsSendCooldown,
+      currentTabIndex: currentTabIndex ?? this.currentTabIndex,
+    );
+  }
+}
+
+/// Notifier managing login page business logic and non-reactive resources.
+class LoginNotifier extends StateNotifier<LoginState> {
+  LoginNotifier() : super(LoginState());
+
+  // TextEditingControllers — owned by the notifier, disposed in dispose().
   final TextEditingController telTextController = TextEditingController();
   final TextEditingController usernameTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
   final TextEditingController smsCodeTextController = TextEditingController();
   final TextEditingController cookieTextController = TextEditingController();
 
-  late final codeInfo =
-      LoadingState<({String authCode, String url})>.loading().obs;
-
-  late final TabController tabController;
-
   late final CaptchaDataModel captchaData = CaptchaDataModel();
-  late final RxInt qrCodeLeftTime = 180.obs;
-  late final RxString statusQRCode = ''.obs;
 
-  late var selectedCountryCodeId = Login.dialPrefix.first;
-  late String captchaKey = '';
-  late final RxInt smsSendCooldown = 0.obs;
-  late int smsSendTimestamp = 0;
+  // Non-reactive fields
+  int smsSendTimestamp = 0;
+  bool _isReq = false;
 
-  // 定时器
   Timer? qrCodeTimer;
   Timer? smsSendCooldownTimer;
 
-  bool _isReq = false;
-
   @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(length: 4, vsync: this)
-      ..addListener(_handleTabChange);
-  }
-
-  @override
-  void onClose() {
-    tabController
-      ..removeListener(_handleTabChange)
-      ..dispose();
+  void dispose() {
     qrCodeTimer?.cancel();
     smsSendCooldownTimer?.cancel();
     telTextController.dispose();
@@ -68,52 +101,60 @@ class LoginPageController extends GetxController
     passwordTextController.dispose();
     smsCodeTextController.dispose();
     cookieTextController.dispose();
-    super.onClose();
+    super.dispose();
   }
 
-  Future<void> refreshQRCode() async {
+  void updateTabIndex(int index) {
+    state = state.copyWith(currentTabIndex: index);
+  }
+
+  void setSelectedCountryCodeId(
+    ({int id, String cname, int countryId}) value,
+  ) {
+    state = state.copyWith(selectedCountryCodeId: value);
+  }
+
+  bool get shouldAutoRefreshQRCode =>
+      qrCodeTimer == null || !qrCodeTimer!.isActive;
+
+  Future<void> refreshQRCode(BuildContext context) async {
     final res = await LoginHttp.getHDcode();
     if (res case Success(:final response)) {
       qrCodeTimer?.cancel();
-      codeInfo.value = res;
+      state = state.copyWith(codeInfo: res);
       qrCodeTimer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
         final left = 180 - t.tick;
         if (left <= 0) {
           t.cancel();
-          statusQRCode.value = '二维码已过期，请刷新';
-          qrCodeLeftTime.value = 0;
+          state = state.copyWith(
+            statusQRCode: '二维码已过期，请刷新',
+            qrCodeLeftTime: 0,
+          );
           return;
         }
-        qrCodeLeftTime.value = left;
-        if (_isReq || tabController.index != 2) return;
+        state = state.copyWith(qrCodeLeftTime: left);
+        if (_isReq || state.currentTabIndex != 2) return;
 
         _isReq = true;
         LoginHttp.codePoll(response.authCode).then((value) async {
           _isReq = false;
           if (value['status']) {
             t.cancel();
-            statusQRCode.value = '扫码成功';
+            state = state.copyWith(statusQRCode: '扫码成功');
             await setAccount(
               value['data'],
               value['data']['cookie_info']['cookies'],
+              context,
             );
-            Get.back();
+            if (context.mounted) Navigator.of(context).pop();
           } else if (value['code'] == 86038) {
             t.cancel();
-            qrCodeLeftTime.value = 0;
+            state = state.copyWith(qrCodeLeftTime: 0);
           } else {
-            statusQRCode.value = value['msg'];
+            state = state.copyWith(statusQRCode: value['msg']);
           }
         });
       });
-    }
-  }
-
-  void _handleTabChange() {
-    if (tabController.index == 2) {
-      if (qrCodeTimer == null || !qrCodeTimer!.isActive) {
-        refreshQRCode();
-      }
     }
   }
 
@@ -153,7 +194,7 @@ class LoginPageController extends GetxController
   }
 
   // cookie登录
-  Future<void> loginByCookie() async {
+  Future<void> loginByCookie(BuildContext context) async {
     if (cookieTextController.text.isEmpty) {
       SmartDialog.showToast('cookie不能为空');
       return;
@@ -182,9 +223,11 @@ class LoginPageController extends GetxController
             null,
             null,
           ).onChange();
-          if (!Accounts.main.isLogin) await switchAccountDialog(Get.context!);
+          if (!Accounts.main.isLogin) {
+            await switchAccountDialog(context);
+          }
           SmartDialog.showToast('登录成功');
-          Get.back();
+          if (context.mounted) Navigator.of(context).pop();
         } catch (e) {
           SmartDialog.showToast("登录失败: $e");
         }
@@ -197,14 +240,13 @@ class LoginPageController extends GetxController
   }
 
   // app端密码登录
-  Future<void> loginByPassword() async {
+  Future<void> loginByPassword(BuildContext context) async {
     String username = usernameTextController.text;
     String password = passwordTextController.text;
     if (username.isEmpty || password.isEmpty) {
       SmartDialog.showToast('用户名或密码不能为空');
       return;
     }
-    // if ((passwordFormKey.currentState as FormState).validate()) {
     final webKeyRes = await LoginHttp.getWebKey();
     if (!webKeyRes['status']) {
       SmartDialog.showToast(webKeyRes['msg']);
@@ -230,14 +272,11 @@ class LoginPageController extends GetxController
       }
       if (data['status'] == 2) {
         SmartDialog.showToast(data['message']);
-        // return;
-        //{"code":0,"message":"0","ttl":1,"data":{"status":2,"message":"本次登录环境存在风险, 需使用手机号进行验证或绑定","url":"https://passport.bilibili.com/h5-app/passport/risk/verify?tmp_token=9e785433940891dfa78f033fb7928181&request_id=e5a6d6480df04097870be56c6e60f7ef&source=risk","token_info":null,"cookie_info":null,"sso":null,"is_new":false,"is_tourist":false}}
         String url = data['url']!;
         Uri currentUri = Uri.parse(url);
         final safeCenterRes = await LoginHttp.safeCenterGetInfo(
           tmpCode: currentUri.queryParameters['tmp_token']!,
         );
-        //{"code":0,"message":"0","ttl":1,"data":{"account_info":{"hide_tel":"111*****111","hide_mail":"aaa*****aaaa.aaa","bind_mail":true,"bind_tel":true,"tel_verify":true,"mail_verify":true,"unneeded_check":false,"bind_safe_question":false,"mid":1111111},"member_info":{"nickname":"xxxxxxx","face":"https://i0.hdslb.com/bfs/face/xxxxxxx.jpg","realname_status":false},"sns_info":{"bind_google":false,"bind_fb":false,"bind_apple":false,"bind_qq":true,"bind_weibo":true,"bind_wechat":false},"account_safe":{"score":80}}}
         if (!safeCenterRes['status']) {
           SmartDialog.showToast(
             "获取安全验证信息失败，请尝试其它登录方式\n"
@@ -257,8 +296,8 @@ class LoginPageController extends GetxController
         TextEditingController textFieldController = TextEditingController();
         String captchaKey = '';
         showDialog(
-          context: Get.context!,
-          builder: (context) => AlertDialog(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
             titlePadding: const EdgeInsets.only(
               left: 16,
               top: 18,
@@ -281,7 +320,6 @@ class LoginPageController extends GetxController
                   accountInfo['hindTel'] ?? '未能获取手机号',
                   style: const TextStyle(fontSize: 18),
                 ),
-                // 带有清空按钮的输入框
                 TextField(
                   style: const TextStyle(fontSize: 15),
                   controller: textFieldController,
@@ -316,7 +354,8 @@ class LoginPageController extends GetxController
                   }
                   String geeGt = preCaptureRes['data']['gee_gt'];
                   String geeChallenge = preCaptureRes['data']['gee_challenge'];
-                  captchaData.token = preCaptureRes['data']['recaptcha_token'];
+                  captchaData.token =
+                      preCaptureRes['data']['recaptcha_token'];
                   if (!isGeeArgumentValid(geeGt, geeChallenge)) {
                     SmartDialog.showToast(
                       "获取极验参数为空，请尝试其它登录方式\n"
@@ -331,7 +370,8 @@ class LoginPageController extends GetxController
                     () async {
                       final safeCenterSendSmsCodeRes =
                           await LoginHttp.safeCenterSmsCode(
-                            tmpCode: currentUri.queryParameters['tmp_token']!,
+                            tmpCode:
+                                currentUri.queryParameters['tmp_token']!,
                             geeChallenge: geeChallenge,
                             geeSeccode: captchaData.seccode,
                             geeValidate: captchaData.validate,
@@ -353,10 +393,12 @@ class LoginPageController extends GetxController
                 },
               ),
               TextButton(
-                onPressed: Get.back,
+                onPressed: () => Navigator.of(dialogContext).pop(),
                 child: Text(
                   "取消",
-                  style: TextStyle(color: ThemeUtils.theme.colorScheme.outline),
+                  style: TextStyle(
+                    color: ThemeUtils.theme.colorScheme.outline,
+                  ),
                 ),
               ),
               TextButton(
@@ -369,8 +411,10 @@ class LoginPageController extends GetxController
                   final safeCenterSmsVerifyRes =
                       await LoginHttp.safeCenterSmsVerify(
                         code: code,
-                        tmpCode: currentUri.queryParameters['tmp_token']!,
-                        requestId: currentUri.queryParameters['request_id']!,
+                        tmpCode:
+                            currentUri.queryParameters['tmp_token']!,
+                        requestId:
+                            currentUri.queryParameters['request_id']!,
                         source: currentUri.queryParameters['source']!,
                         captchaKey: captchaKey,
                         refererUrl: url,
@@ -398,7 +442,8 @@ class LoginPageController extends GetxController
                   if (data['token_info'] == null ||
                       data['cookie_info'] == null) {
                     SmartDialog.showToast(
-                      '登录异常，接口未返回身份信息，可能是因为账号风控，请尝试其它登录方式。\n${oauth2AccessTokenRes["msg"]}，\n $data',
+                      '登录异常，接口未返回身份信息，可能是因为账号风控，请尝试其它登录方式。\n'
+                      '${oauth2AccessTokenRes["msg"]}，\n $data',
                     );
                     return;
                   }
@@ -406,10 +451,12 @@ class LoginPageController extends GetxController
                   await setAccount(
                     data['token_info'],
                     data['cookie_info']['cookies'],
+                    context,
                   );
-                  Get
-                    ..back()
-                    ..back();
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop();
+                  }
+                  if (context.mounted) Navigator.of(context).pop();
                 },
                 child: const Text("确认"),
               ),
@@ -421,13 +468,18 @@ class LoginPageController extends GetxController
       }
       if (data['token_info'] == null || data['cookie_info'] == null) {
         SmartDialog.showToast(
-          '登录异常，接口未返回身份信息，可能是因为账号风控，请尝试其它登录方式。\n${res["msg"]}，\n $data',
+          '登录异常，接口未返回身份信息，可能是因为账号风控，请尝试其它登录方式。\n'
+          '${res["msg"]}，\n $data',
         );
         return;
       }
       SmartDialog.showToast('正在保存身份信息');
-      await setAccount(data['token_info'], data['cookie_info']['cookies']);
-      Get.back();
+      await setAccount(
+        data['token_info'],
+        data['cookie_info']['cookies'],
+        context,
+      );
+      if (context.mounted) Navigator.of(context).pop();
     } else {
       // handle login result
       switch (res['code']) {
@@ -437,11 +489,13 @@ class LoginPageController extends GetxController
         case -105:
           String captureUrl = res['data']['url'];
           Uri captureUri = Uri.parse(captureUrl);
-          captchaData.token = captureUri.queryParameters['recaptcha_token']!;
+          captchaData.token =
+              captureUri.queryParameters['recaptcha_token']!;
           String geeGt = captureUri.queryParameters['gee_gt']!;
-          String geeChallenge = captureUri.queryParameters['gee_challenge']!;
+          String geeChallenge =
+              captureUri.queryParameters['gee_challenge']!;
 
-          getCaptcha(geeGt, geeChallenge, loginByPassword);
+          getCaptcha(geeGt, geeChallenge, () => loginByPassword(context));
           break;
         default:
           SmartDialog.showToast(res['msg']);
@@ -449,16 +503,15 @@ class LoginPageController extends GetxController
           break;
       }
     }
-    // }
   }
 
   // 短信验证码登录
-  Future<void> loginBySmsCode() async {
+  Future<void> loginBySmsCode(BuildContext context) async {
     if (telTextController.text.isEmpty) {
       SmartDialog.showToast('手机号不能为空');
       return;
     }
-    if (captchaKey.isEmpty) {
+    if (state.captchaKey.isEmpty) {
       SmartDialog.showToast('请先点击获取验证码');
       return;
     }
@@ -480,15 +533,19 @@ class LoginPageController extends GetxController
     final res = await LoginHttp.loginBySms(
       tel: telTextController.text,
       code: smsCodeTextController.text,
-      captchaKey: captchaKey,
-      cid: selectedCountryCodeId.countryId,
+      captchaKey: state.captchaKey,
+      cid: state.effectiveCountryCode.countryId,
       key: key,
     );
     if (res['status']) {
       SmartDialog.showToast('登录成功');
       final data = res['data'];
-      await setAccount(data['token_info'], data['cookie_info']['cookies']);
-      Get.back();
+      await setAccount(
+        data['token_info'],
+        data['cookie_info']['cookies'],
+        context,
+      );
+      if (context.mounted) Navigator.of(context).pop();
     } else {
       SmartDialog.showToast(res['msg']);
     }
@@ -500,52 +557,10 @@ class LoginPageController extends GetxController
       SmartDialog.showToast('手机号不能为空');
       return;
     }
-    // String? guestId;
-    // final webKeyRes = await LoginHttp.getWebKey();
-    // if (!webKeyRes['status']) {
-    //   SmartDialog.showToast(webKeyRes['msg']);
-    // } else {
-    //   String key = webKeyRes['data']['key'];
-    //   final guestIdRes = await LoginHttp.getGuestId(key);
-    //   if (!guestIdRes['status']) {
-    //     SmartDialog.showToast(guestIdRes['msg']);
-    //   } else {
-    //     guestId = guestIdRes['data']['guest_id'];
-    //   }
-    // }
-    // final preCaptureRes = await LoginHttp.preCapture();
-    // if (!preCaptureRes['status']) {
-    //   SmartDialog.showToast("获取验证码失败，请尝试其它登录方式\n"
-    //       "(${preCaptureRes['code']}) ${preCaptureRes['msg']}");
-    //   return;
-    // }
-    // String geeGt = preCaptureRes['data']['gee_gt']!;
-    // String geeChallenge = preCaptureRes['data']['gee_challenge'];
-    // captchaData.token = preCaptureRes['data']['recaptcha_token']!;
-
-    // getCaptcha(geeGt, geeChallenge, () async {
-
-    // final safeCenterSendSmsCodeRes =
-    // await LoginHttp.safeCenterSmsCode(
-    //   tmpCode: currentUri.queryParameters['tmp_token']!,
-    //   geeChallenge: geeChallenge,
-    //   geeSeccode: captchaData.seccode!,
-    //   geeValidate: captchaData.validate!,
-    //   recaptchaToken: captchaData.token!,
-    //   refererUrl: url,
-    // );
-    // if (!safeCenterSendSmsCodeRes['status']) {
-    //   SmartDialog.showToast("发送短信验证码失败，请尝试其它登录方式\n"
-    //       "(${safeCenterSendSmsCodeRes['code']}) ${safeCenterSendSmsCodeRes['msg']}");
-    //   return;
-    // }
-    // SmartDialog.showToast("短信验证码已发送，请查收");
-    // captchaKey = safeCenterSendSmsCodeRes['data']['captcha_key'];
 
     final res = await LoginHttp.sendSmsCode(
       tel: telTextController.text,
-      cid: selectedCountryCodeId.countryId,
-      // deviceTouristId: guestId,
+      cid: state.effectiveCountryCode.countryId,
       geeValidate: captchaData.validate,
       geeSeccode: captchaData.seccode,
       geeChallenge: captchaData.geetest?.challenge,
@@ -554,15 +569,16 @@ class LoginPageController extends GetxController
     if (res['status']) {
       SmartDialog.showToast('发送成功');
       smsSendTimestamp = DateTime.now().millisecondsSinceEpoch;
-      smsSendCooldown.value = 60;
-      captchaKey = res['data']['captcha_key'];
+      state = state.copyWith(smsSendCooldown: 60);
+      final newCaptchaKey = res['data']['captcha_key'];
+      state = state.copyWith(captchaKey: newCaptchaKey);
       smsSendCooldownTimer = Timer.periodic(const Duration(seconds: 1), (
         timer,
       ) {
-        smsSendCooldown.value = 60 - timer.tick;
-        if (smsSendCooldown <= 0) {
+        state = state.copyWith(smsSendCooldown: 60 - timer.tick);
+        if (state.smsSendCooldown <= 0) {
           smsSendCooldownTimer?.cancel();
-          smsSendCooldown.value = 0;
+          state = state.copyWith(smsSendCooldown: 0);
         }
       });
     } else {
@@ -575,7 +591,8 @@ class LoginPageController extends GetxController
           String? geeChallenge;
           if (captureUrl != null && captureUrl.isNotEmpty) {
             Uri captureUri = Uri.parse(captureUrl);
-            captchaData.token = captureUri.queryParameters['recaptcha_token'];
+            captchaData.token =
+                captureUri.queryParameters['recaptcha_token'];
             geeGt = captureUri.queryParameters['gee_gt'];
             geeChallenge = captureUri.queryParameters['gee_challenge'];
           }
@@ -596,7 +613,8 @@ class LoginPageController extends GetxController
             }
             geeGt = preCaptureRes['data']['gee_gt'];
             geeChallenge = preCaptureRes['data']['gee_challenge'];
-            captchaData.token = preCaptureRes['data']['recaptcha_token'];
+            captchaData.token =
+                preCaptureRes['data']['recaptcha_token'];
           }
 
           if (!isGeeArgumentValid(geeGt, geeChallenge)) {
@@ -619,7 +637,11 @@ class LoginPageController extends GetxController
         captchaData.token?.isNotEmpty == true;
   }
 
-  Future<void> setAccount(Map tokenInfo, List cookieInfo) async {
+  Future<void> setAccount(
+    Map tokenInfo,
+    List cookieInfo,
+    BuildContext context,
+  ) async {
     final account = LoginAccount(
       BiliCookieJar.fromList(cookieInfo),
       tokenInfo['access_token'],
@@ -635,14 +657,15 @@ class LoginPageController extends GetxController
       SmartDialog.showToast('登录成功');
     } else {
       SmartDialog.showToast('登录成功, 请先设置账号模式');
-      await switchAccountDialog(Get.context!);
+      if (context.mounted) await switchAccountDialog(context);
     }
   }
 
   static Future<void>? switchAccountDialog(BuildContext context) {
     if (Accounts.account.isEmpty) {
       SmartDialog.showToast('请先登录');
-      return Get.toNamed('/loginPage');
+      Navigator.of(context).pushNamed('/loginPage');
+      return null;
     }
     final colorScheme = ColorScheme.of(context);
     final selectAccount = List.of(Accounts.accountMode);
@@ -667,7 +690,10 @@ class LoginPageController extends GetxController
                   const TextSpan(text: '账号切换'),
                   TextSpan(
                     text: '\nmid为0时使用匿名',
-                    style: TextStyle(fontSize: 14, color: colorScheme.outline),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: colorScheme.outline,
+                    ),
                   ),
                 ],
               ),
@@ -698,7 +724,11 @@ class LoginPageController extends GetxController
                     builder: (context) => RadioGroup<Account>(
                       groupValue: selectAccount[0],
                       onChanged: (v) {
-                        selectAccount.fillRange(0, selectAccount.length, v);
+                        selectAccount.fillRange(
+                          0,
+                          selectAccount.length,
+                          v,
+                        );
                         (context as Element).markNeedsBuild();
                       },
                       child: Column(
@@ -711,7 +741,11 @@ class LoginPageController extends GetxController
                                 mainAxisSize: .max,
                                 padding: PlatformUtils.isDesktop
                                     ? const .only(left: 12)
-                                    : const .only(left: 12, top: 2, bottom: 2),
+                                    : const .only(
+                                        left: 12,
+                                        top: 2,
+                                        bottom: 2,
+                                      ),
                               ),
                             )
                             .toList(),
@@ -742,12 +776,15 @@ class LoginPageController extends GetxController
         ),
         actions: [
           TextButton(
-            onPressed: Get.back,
-            child: Text('取消', style: TextStyle(color: colorScheme.outline)),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              '取消',
+              style: TextStyle(color: colorScheme.outline),
+            ),
           ),
           TextButton(
             onPressed: () {
-              Get.back();
+              Navigator.of(context).pop();
               for (final type in AccountType.values) {
                 final index = type.index;
                 final account = quickSelect
@@ -765,3 +802,8 @@ class LoginPageController extends GetxController
     );
   }
 }
+
+final loginProvider =
+    StateNotifierProvider.autoDispose<LoginNotifier, LoginState>((ref) {
+      return LoginNotifier();
+    });

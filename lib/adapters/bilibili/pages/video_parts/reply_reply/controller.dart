@@ -4,6 +4,8 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
     show ReplyInfo, DetailListReply;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
@@ -36,6 +38,9 @@ class VideoReplyReplyController extends ReplyController
 
   bool hasRoot = false;
   final firstFloor = Rxn<ReplyInfo>();
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   final index = RxnInt();
 
@@ -123,14 +128,14 @@ class VideoReplyReplyController extends ReplyController
   @override
   Future<LoadingState> customGetData() async {
     final result = await (dialog != null
-        ? Get.find<ReplyRepository>().dialogList(
+        ? (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).dialogList(
             type: replyType,
             oid: oid,
             root: rpid,
             dialog: dialog!,
             offset: paginationReply?.nextOffset,
           )
-        : Get.find<ReplyRepository>().detailList(
+        : (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).detailList(
             type: replyType,
             oid: oid,
             root: rpid,

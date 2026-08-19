@@ -3,6 +3,7 @@ import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/download/download_page_info.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' show Text;
@@ -74,7 +75,7 @@ class DownloadPageController extends GetxController
   @override
   void onRemove() {
     showConfirmDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       title: const Text('确定删除选中视频？'),
       onConfirm: () async {
         SmartDialog.showLoading();

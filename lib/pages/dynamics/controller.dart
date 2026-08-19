@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_data_controller.dart';
@@ -29,6 +31,12 @@ class DynamicsController
   late int hostMid = -1, currentMid = -1;
   late bool showLiveUp = Pref.expandDynLivePanel;
   late final _showAllUp = Pref.dynamicsShowAllFollowedUp;
+
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
 
   final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
 
@@ -127,16 +135,16 @@ class DynamicsController
   Future<LoadingState<CoreFollowUpModel>> customGetData() async {
     LoadingState<CoreFollowUpModel> biliResult;
     if (_offset == null) {
-      biliResult = await Get.find<DynamicsRepository>().followUp();
+      biliResult = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).followUp();
     } else if (_showAllUp) {
-      biliResult = await Get.find<DynamicsRepository>().followings(
+      biliResult = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).followings(
         vmid: DynamicsHost.of().currentUserId,
         pn: _page,
         orderType: 'attention',
         ps: 50,
       );
     } else {
-      biliResult = await Get.find<DynamicsRepository>().dynUpList(_offset);
+      biliResult = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynUpList(_offset);
     }
     return switch (biliResult) {
       Loading _ => LoadingState.loading(),

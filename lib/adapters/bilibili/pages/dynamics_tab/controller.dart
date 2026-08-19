@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -13,6 +16,8 @@ import 'package:get/get.dart';
 class DynamicsTabController
     extends CommonListController<CoreDynamicsDataModel, CoreDynamicItemModel>
     with AccountMixin {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   DynamicsTabController({required this.dynamicsType});
   final CoreDynamicsTabType dynamicsType;
 
@@ -44,7 +49,7 @@ class DynamicsTabController
 
   @override
   Future<LoadingState<CoreDynamicsDataModel>> customGetData() async {
-    final result = await Get.find<DynamicsRepository>().followDynamic(
+    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).followDynamic(
       offset: offset,
       type: dynamicsType,
       hostMid: dynamicsController.hostMid,
@@ -58,7 +63,7 @@ class DynamicsTabController
   }
 
   Future<void> onRemove(int index, dynamic dynamicId) async {
-    final res = await Get.find<MsgRepository>().removeDynamic(dynIdStr: dynamicId.toString());
+    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
       loadingState
         ..value.data!.removeAt(index)

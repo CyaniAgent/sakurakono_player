@@ -11,6 +11,7 @@ import 'package:skf/player/models/heart_beat_type.dart';
 import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/models/video_fit_type.dart';
 import 'package:skf/player/utils/fullscreen.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/android/android_helper.dart';
 import 'package:skf/utils/android/bindings.g.dart';
 import 'package:skf/utils/device_utils.dart';
@@ -1235,7 +1236,7 @@ class PlayerController implements CorePlayerService {
   void onCloseAll() {
     _isCloseAll = true;
     dispose();
-    Get.until((route) => route.isFirst);
+    AppNavigator.until((route) => route.isFirst);
   }
 
   @override
@@ -1329,7 +1330,7 @@ class PlayerController implements CorePlayerService {
       triggerFullScreen(status: false);
       return;
     }
-    Get.back();
+    AppNavigator.back();
   }
 
   // ---------------------------------------------------------------------------

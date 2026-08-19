@@ -4,6 +4,7 @@ import 'package:skf/pages/fan/controller.dart';
 import 'package:skf/pages/follow/follow_models.dart' show UserModel;
 import 'package:skf/pages/follow_type/view.dart';
 import 'package:skf/pages/follow_type/widgets/item.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
@@ -27,7 +28,7 @@ class FansPage extends StatefulWidget {
     if (mid == null) {
       return;
     }
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/fan',
       arguments: {
         'mid': safeToInt(mid),
@@ -47,7 +48,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
     super.initState();
     controller = Get.put(
       FansController(widget.showName),
-      tag: Get.arguments?['mid']?.toString() ?? Utils.generateRandomString(8),
+      tag: AppNavigator.argsOf(context)?['mid']?.toString() ?? Utils.generateRandomString(8),
     );
   }
 
@@ -86,7 +87,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
           );
           return;
         }
-        Get.toNamed('/member?mid=${item.mid}');
+        AppNavigator.toNamed('/member?mid=${item.mid}');
       },
       onLongPress: flag ? onRemove : null,
       onSecondaryTap: flag && !PlatformUtils.isMobile ? onRemove : null,

@@ -1,3 +1,4 @@
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -10,11 +11,13 @@ import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/user_types.dart' show CoreHistoryItemModel;
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/history/history_actions.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -22,6 +25,7 @@ class HistoryItem extends StatelessWidget {
   final CoreHistoryItemModel item;
   final MultiSelectBase ctr;
   final void Function(int kid, String business) onDelete;
+  final Ref? ref;
 
   /// 导航契约（适配器注入），null 时对应导航动作禁用。
   final HistoryActions? actions;
@@ -31,6 +35,7 @@ class HistoryItem extends StatelessWidget {
     required this.item,
     required this.ctr,
     required this.onDelete,
+    this.ref,
     this.actions,
   });
 
@@ -56,7 +61,7 @@ class HistoryItem extends StatelessWidget {
             ? () => ctr.onSelect(item)
             : () async {
                 if (business?.contains('article') == true) {
-                  Get.toNamed(
+                  AppNavigator.toNamed(
                     '/articlePage',
                     parameters: {
                       'id': business == 'article-list'
@@ -70,7 +75,7 @@ class HistoryItem extends StatelessWidget {
                   if (item.liveStatus == 1) {
                     final roomId = item.history.oid;
                     if (roomId != null) {
-                      Get.toNamed(
+                      AppNavigator.toNamed(
                         '/liveRoom',
                         arguments: roomId,
                         preventDuplicates: false,
@@ -93,7 +98,7 @@ class HistoryItem extends StatelessWidget {
                   int? cid = item.history.cid;
                   CoreDimension? dimension;
                   if (cid == null) {
-                    if (await Get.find<SearchRepository>().ab2cWithDimension(
+                    if (await (ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2cWithDimension(
                           aid: aid,
                           bvid: bvid,
                           part: item.history.page,
@@ -219,7 +224,7 @@ class HistoryItem extends StatelessWidget {
                   if (item.authorMid != null &&
                       item.authorName?.isNotEmpty == true)
                     PopupMenuItem(
-                      onTap: () => Get.toNamed('/member?mid=${item.authorMid}'),
+                      onTap: () => AppNavigator.toNamed('/member?mid=${item.authorMid}'),
                       height: 38,
                       child: Row(
                         children: [
@@ -242,7 +247,7 @@ class HistoryItem extends StatelessWidget {
                       business?.contains('article') != true)
                     PopupMenuItem(
                       onTap: () =>
-                          Get.find<UserRepository>().toViewLater(bvid: item.history.bvid),
+                          (ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewLater(bvid: item.history.bvid),
                       height: 38,
                       child: const Row(
                         children: [

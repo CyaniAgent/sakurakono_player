@@ -2,12 +2,13 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/models/common/reply/reply_search_type.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/child/view.dart';
+import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/controller.dart';
-import 'package:skf/utils/utils.dart';
+import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReplySearchPage extends StatefulWidget {
+class ReplySearchPage extends ConsumerStatefulWidget {
   const ReplySearchPage({
     super.key,
     required this.type,
@@ -18,38 +19,70 @@ class ReplySearchPage extends StatefulWidget {
   final int oid;
 
   @override
-  State<ReplySearchPage> createState() => _ReplySearchPageState();
+  ConsumerState<ReplySearchPage> createState() => _ReplySearchPageState();
 }
 
-class _ReplySearchPageState extends State<ReplySearchPage> {
-  late final ReplySearchController _controller;
+class _ReplySearchPageState extends ConsumerState<ReplySearchPage>
+    with TickerProviderStateMixin {
+  late final TabController _tabController;
+  late final ReplySearchChildController _videoCtr;
+  late final ReplySearchChildController _articleCtr;
+
+  ({int type, int oid}) get _providerParam =>
+      (type: widget.type, oid: widget.oid);
 
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      ReplySearchController(widget.type, widget.oid),
-      tag: Utils.generateRandomString(8),
-    );
+    _tabController = TabController(vsync: this, length: 2);
+
+    final notifier =
+        ref.read(replySearchProvider(_providerParam).notifier);
+    _videoCtr =
+        ReplySearchChildController(notifier, ReplySearchType.video);
+    _articleCtr =
+        ReplySearchChildController(notifier, ReplySearchType.article);
+
+    _submit();
+  }
+
+  void _submit() {
+    _videoCtr
+      ..scrollController.jumpToTop()
+      ..onReload();
+    _articleCtr
+      ..scrollController.jumpToTop()
+      ..onReload();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _videoCtr.dispose();
+    _articleCtr.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final notifier =
+        ref.watch(replySearchProvider(_providerParam).notifier);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [
           IconButton(
             tooltip: '搜索',
-            onPressed: _controller.submit,
+            onPressed: _submit,
             icon: const Icon(Icons.search, size: 22),
           ),
           const SizedBox(width: 10),
         ],
         title: TextField(
           autofocus: true,
-          focusNode: _controller.focusNode,
-          controller: _controller.editingController,
+          focusNode: notifier.focusNode,
+          controller: notifier.editingController,
           textInputAction: TextInputAction.search,
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
@@ -59,41 +92,45 @@ class _ReplySearchPageState extends State<ReplySearchPage> {
             suffixIcon: IconButton(
               tooltip: '清空',
               icon: const Icon(Icons.clear, size: 22),
-              onPressed: _controller.onClear,
+              onPressed: () {
+                if (!notifier.tryClear()) {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ),
-          onSubmitted: (value) => _controller.submit(),
+          onSubmitted: (_) => _submit(),
         ),
       ),
       body: ViewSafeArea(
         child: Column(
           children: [
             TabBar(
-              controller: _controller.tabController,
+              controller: _tabController,
               tabs: const [
                 Tab(text: '视频'),
                 Tab(text: '专栏'),
               ],
               onTap: (index) {
-                if (!_controller.tabController.indexIsChanging) {
+                if (!_tabController.indexIsChanging) {
                   if (index == 0) {
-                    _controller.videoCtr.animateToTop();
+                    _videoCtr.animateToTop();
                   } else {
-                    _controller.articleCtr.animateToTop();
+                    _articleCtr.animateToTop();
                   }
                 }
               },
             ),
             Expanded(
               child: tabBarView(
-                controller: _controller.tabController,
+                controller: _tabController,
                 children: [
                   ReplySearchChildPage(
-                    controller: _controller.videoCtr,
+                    controller: _videoCtr,
                     searchType: ReplySearchType.video,
                   ),
                   ReplySearchChildPage(
-                    controller: _controller.articleCtr,
+                    controller: _articleCtr,
                     searchType: ReplySearchType.article,
                   ),
                 ],

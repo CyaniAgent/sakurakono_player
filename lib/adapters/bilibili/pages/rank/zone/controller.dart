@@ -1,9 +1,13 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 
 class ZoneController extends CommonListController {
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   ZoneController({this.rid, this.seasonType});
 
   int? rid;
@@ -18,10 +22,10 @@ class ZoneController extends CommonListController {
   @override
   Future<LoadingState> customGetData() async {
     final result = await (rid != null
-        ? Get.find<VideoRepository>().getRankVideoList(rid!)
+        ? (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).getRankVideoList(rid!)
         : seasonType == 4 || seasonType == 5
-            ? Get.find<VideoRepository>().pgcRankList(seasonType: seasonType!)
-            : Get.find<VideoRepository>().pgcSeasonRankList(seasonType: seasonType!));
+            ? (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcRankList(seasonType: seasonType!)
+            : (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcSeasonRankList(seasonType: seasonType!));
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

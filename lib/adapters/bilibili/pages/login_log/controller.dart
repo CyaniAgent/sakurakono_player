@@ -3,8 +3,13 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/pages/log_table/controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class LoginLogController extends LogController<CoreLoginLogData, CoreLoginLogItem> {
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   List<CoreLoginLogItem>? getDataList(CoreLoginLogData response) {
     return response.list;
@@ -12,7 +17,7 @@ class LoginLogController extends LogController<CoreLoginLogData, CoreLoginLogIte
 
   @override
   Future<LoadingState<CoreLoginLogData>> customGetData() async {
-    final result = await Get.find<UserRepository>().loginLog();
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).loginLog();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

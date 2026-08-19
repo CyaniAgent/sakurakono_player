@@ -2,14 +2,12 @@ import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
 
-
 import 'package:skf/adapters/bilibili/pages/whisper_link_setting/controller.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WhisperLinkSettingPage extends StatefulWidget {
+class WhisperLinkSettingPage extends ConsumerWidget {
   const WhisperLinkSettingPage({
     super.key,
     required this.talkerUid,
@@ -18,23 +16,9 @@ class WhisperLinkSettingPage extends StatefulWidget {
   final int talkerUid;
 
   @override
-  State<WhisperLinkSettingPage> createState() => _WhisperLinkSettingPageState();
-}
-
-class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
-  late final WhisperLinkSettingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = Get.put(
-      WhisperLinkSettingController(talkerUid: widget.talkerUid),
-      tag: Utils.generateRandomString(8),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(whisperLinkSettingProvider(talkerUid));
+    final notifier = ref.read(whisperLinkSettingProvider(talkerUid).notifier);
     final ThemeData theme = Theme.of(context);
     final divider = Divider(
       height: 12,
@@ -55,29 +39,24 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
         ),
         children: [
           divider,
-          Obx(
-            () => _buildUserInfo(theme, divider, _controller.userState.value),
+          _buildUserInfo(theme, divider, state.userState, notifier, context),
+          _buildSessionSs(
+            theme,
+            divider,
+            divider2,
+            state.sessionSs,
+            state,
+            notifier,
+            context,
           ),
-          Obx(
-            () => _buildSessionSs(
-              theme,
-              divider,
-              divider2,
-              _controller.sessionSs.value,
-            ),
-          ),
-          Obx(
-            () {
-              if (_controller.sessionSs.value case Success(:final response)) {
-                return _buildBlockItem(response.followStatus == 128);
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+          if (state.sessionSs case Success(:final response))
+            _buildBlockItem(response.followStatus == 128, notifier, context)
+          else
+            const SizedBox.shrink(),
           divider2,
           ListTile(
             dense: true,
-            onTap: _controller.report,
+            onTap: () => notifier.report(context),
             title: const Text('举报', style: TextStyle(fontSize: 14)),
             trailing: Icon(
               Icons.keyboard_arrow_right,
@@ -90,17 +69,21 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
     );
   }
 
-  Widget _buildBlockItem(bool isBlocked) {
+  Widget _buildBlockItem(
+    bool isBlocked,
+    WhisperLinkSettingNotifier notifier,
+    BuildContext context,
+  ) {
     return ListTile(
       dense: true,
-      onTap: () => _controller.setBlock(isBlocked),
+      onTap: () => notifier.setBlock(context, isBlocked),
       title: const Text('加入黑名单', style: TextStyle(fontSize: 14)),
       trailing: Transform.scale(
         alignment: Alignment.centerRight,
         scale: 0.8,
         child: Switch(
           value: isBlocked,
-          onChanged: (value) => _controller.setBlock(isBlocked),
+          onChanged: (value) => notifier.setBlock(context, isBlocked),
         ),
       ),
     );
@@ -110,6 +93,8 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
     ThemeData theme,
     Widget divider,
     LoadingState<List<CoreImUserInfosData>?> loadingState,
+    WhisperLinkSettingNotifier notifier,
+    BuildContext context,
   ) {
     return switch (loadingState) {
       Loading() => const SizedBox.shrink(),
@@ -123,7 +108,9 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
                     builder: (context) {
                       final CoreImUserInfosData item = response.first;
                       return ListTile(
-                        onTap: () => Get.toNamed('/member?mid=${item.mid}'),
+                        onTap: () => Navigator.of(context).pushNamed(
+                          '/member?mid=${item.mid}',
+                        ),
                         leading: PendantAvatar(
                           item.face,
                           size: 42,
@@ -165,7 +152,7 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
                 ],
               )
             : const SizedBox.shrink(),
-      Error(:final errMsg) => _errWidget(errMsg, _controller.getUserInfo),
+      Error(:final errMsg) => _errWidget(errMsg, notifier.getUserInfo),
     };
   }
 
@@ -174,6 +161,9 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
     Widget divider,
     Widget divider2,
     LoadingState<CoreSessionSsData> loadingState,
+    WhisperLinkSettingState state,
+    WhisperLinkSettingNotifier notifier,
+    BuildContext context,
   ) {
     return switch (loadingState) {
       Loading() => const SizedBox.shrink(),
@@ -190,7 +180,8 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
               if (response.showPushSetting == 1)
                 ListTile(
                   dense: true,
-                  onTap: () => _controller.setPush(response.pushSetting == 0),
+                  onTap: () =>
+                      notifier.setPush(context, response.pushSetting == 0),
                   title: const Text('接收消息推送', style: TextStyle(fontSize: 14)),
                   subtitle: Text(
                     '若关闭此开关，你将不再收到该账号的图文消息与稿件推送，但通知类消息不受影响',
@@ -202,45 +193,46 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
                     child: Switch(
                       value: response.pushSetting == 0,
                       onChanged: (value) =>
-                          _controller.setPush(response.pushSetting == 0),
+                          notifier.setPush(context, response.pushSetting == 0),
                     ),
                   ),
                 ),
               divider2,
-              Obx(
-                () => ListTile(
-                  dense: true,
-                  onTap: _controller.setPin,
-                  title: const Text('置顶聊天', style: TextStyle(fontSize: 14)),
-                  trailing: Transform.scale(
-                    alignment: Alignment.centerRight,
-                    scale: 0.8,
-                    child: Switch(
-                      value: _controller.isPinned.value,
-                      onChanged: (value) => _controller.setPin(),
-                    ),
+              ListTile(
+                dense: true,
+                onTap: notifier.setPin,
+                title: const Text('置顶聊天', style: TextStyle(fontSize: 14)),
+                trailing: Transform.scale(
+                  alignment: Alignment.centerRight,
+                  scale: 0.8,
+                  child: Switch(
+                    value: state.isPinned,
+                    onChanged: (value) => notifier.setPin(),
                   ),
                 ),
               ),
               divider2,
-              Obx(() => _buildMuteItem(_controller.msgDnd.value)),
+              _buildMuteItem(state.msgDnd, notifier),
               divider,
             ],
           );
         },
       ),
-      Error(:final errMsg) => _errWidget(errMsg, _controller.getSessionSs),
+      Error(:final errMsg) => _errWidget(errMsg, notifier.getSessionSs),
     };
   }
 
-  Widget _buildMuteItem(LoadingState<List<CoreUidSetting>?> loadingState) {
+  Widget _buildMuteItem(
+    LoadingState<List<CoreUidSetting>?> loadingState,
+    WhisperLinkSettingNotifier notifier,
+  ) {
     return switch (loadingState) {
       Loading() => const SizedBox.shrink(),
       Success(:final response) =>
         response != null && response.isNotEmpty
             ? ListTile(
                 dense: true,
-                onTap: () => _controller.setMute(response.first.setting == 1),
+                onTap: () => notifier.setMute(response.first.setting == 1),
                 title: const Text('消息免打扰', style: TextStyle(fontSize: 14)),
                 trailing: Transform.scale(
                   alignment: Alignment.centerRight,
@@ -248,12 +240,12 @@ class _WhisperLinkSettingPageState extends State<WhisperLinkSettingPage> {
                   child: Switch(
                     value: response.first.setting == 1,
                     onChanged: (value) =>
-                        _controller.setMute(response.first.setting == 1),
+                        notifier.setMute(response.first.setting == 1),
                   ),
                 ),
               )
             : const SizedBox.shrink(),
-      Error(:final errMsg) => _errWidget(errMsg, _controller.getMsgDnd),
+      Error(:final errMsg) => _errWidget(errMsg, notifier.getMsgDnd),
     };
   }
 

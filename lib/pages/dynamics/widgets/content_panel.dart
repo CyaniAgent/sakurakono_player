@@ -6,8 +6,8 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/pages/dynamics/widgets/rich_node_panel.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skf/common/widgets/context_menu/dyn_menu_helper.dart';
 
 
@@ -37,7 +37,7 @@ Widget content(
       children: [
         if (moduleDynamic?.topic case final topic?)
           GestureDetector(
-            onTap: () => Get.toNamed(
+            onTap: () => AppNavigator.toNamed(
               '/dynTopic',
               parameters: {
                 'id': topic.id!.toString(),

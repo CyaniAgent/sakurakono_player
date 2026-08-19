@@ -1,3 +1,4 @@
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
@@ -15,6 +16,7 @@ import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 // 视频卡片 - 水平布局
@@ -25,16 +27,17 @@ class VideoCardHLater extends StatelessWidget {
     required this.index,
     required this.videoItem,
     required this.onViewLater,
+    this.ref,
     this.actions,
   });
   final int index;
   final BaseLaterController ctr;
   final CoreLaterItemModel videoItem;
   final ValueChanged<int> onViewLater;
+  final Ref? ref;
 
   /// 导航契约（适配器注入），null 时对应导航动作禁用。
   final LaterActions? actions;
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final enableMultiSelect = ctr.enableMultiSelect.value;
@@ -70,7 +73,7 @@ class VideoCardHLater extends StatelessWidget {
                 try {
                   final cid =
                       videoItem.cid ??
-                      await Get.find<SearchRepository>().ab2c(
+                      await (ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2c(
                         aid: videoItem.aid,
                         bvid: videoItem.bvid,
                       );

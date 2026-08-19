@@ -3,6 +3,8 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 
 class MemberSSWebCtr
     extends BaseVideoWebCtr<CoreSeasonWebData, CoreSeasonArchive, CoreArchiveSortTypeApp> {
@@ -10,6 +12,8 @@ class MemberSSWebCtr
   final Rx<CoreArchiveSortTypeApp> order = Rx(CoreArchiveSortTypeApp.desc);
   late final CoreWebSsType _type;
   late final Object _id;
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   @override
   void onInit() {
@@ -41,7 +45,7 @@ class MemberSSWebCtr
 
   @override
   Future<LoadingState<CoreSeasonWebData>> customGetData() async {
-    final result = await Get.find<MemberRepository>().seasonSeriesWeb(
+    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).seasonSeriesWeb(
       type: _type,
       mid: mid,
       id: _id.toString(),

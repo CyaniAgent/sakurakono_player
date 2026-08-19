@@ -15,6 +15,7 @@ import 'package:skf/player/models/data_source.dart';
 import 'package:skf/player/models/heart_beat_type.dart';
 import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/player_controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/connectivity_utils.dart';
 import 'package:skf/utils/extension/nested_scroll_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
@@ -30,6 +31,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:media_kit/media_kit.dart' hide Subtitle;
 
@@ -40,6 +43,12 @@ import 'package:media_kit/media_kit.dart' hide Subtitle;
 class VideoDetailController extends GetxController
     with GetTickerProviderStateMixin {
   /// 路由传参
+
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
   late final Map args;
   late String bvid;
   late int aid;
@@ -314,7 +323,7 @@ class VideoDetailController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    args = Get.arguments;
+    args = AppNavigator.arguments;
     videoType = coreVideoTypeFromArgs(args['videoType']);
     if (videoType == CoreVideoType.pgc) {
       if (!isLoginVideo) {
@@ -366,7 +375,7 @@ class VideoDetailController extends GetxController
     if (!isReverse && count != null && mediaList.length >= count) {
       return;
     }
-    final res = await Get.find<UserRepository>().getMediaList(
+    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).getMediaList(
       type: VideoHost.of().sourceMediaType(args['sourceType']),
       bizId: (args['mediaId'] ?? -1).toString(),
       ps: 20,
@@ -627,7 +636,7 @@ class VideoDetailController extends GetxController
             : Pref.defaultAudioQaCellular;
     }
 
-    final result = await Get.find<VideoRepository>().videoUrl(
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).videoUrl(
       cid: cid.value,
       bvid: bvid,
       epid: epId?.toString(),
@@ -758,7 +767,7 @@ class VideoDetailController extends GetxController
     if (subtitle != null) {
       await setSub(subtitle);
     } else {
-      final result = await Get.find<VideoRepository>().vttSubtitles(
+      final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).vttSubtitles(
         subtitles[index - 1].subtitleUrl!,
       );
       if (!isClosed && result != null) {
@@ -791,7 +800,7 @@ class VideoDetailController extends GetxController
     if (plPlayerController.showViewPoints) {
       viewPointList.clear();
     }
-    final res = await Get.find<VideoRepository>().playInfo(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).playInfo(
       bvid: bvid,
       cid: cid.value,
       seasonId: seasonId?.toString(),
@@ -876,7 +885,7 @@ class VideoDetailController extends GetxController
   void updateMediaListHistory(int aid) {
     if (args['sortField'] != null) {
       final mediaId = args['mediaId'];
-      Get.find<VideoRepository>().medialistHistory(
+      (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).medialistHistory(
         desc: _mediaDesc ? 1 : 0,
         oid: '$aid',
         upperMid: mediaId is int ? mediaId : int.parse('$mediaId'),
@@ -1041,7 +1050,7 @@ class VideoDetailController extends GetxController
       ),
     );
     showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (context) => AlertDialog(
         constraints: Style.dialogFixedConstraints,
         title: const Text('播放地址'),
@@ -1065,7 +1074,7 @@ class VideoDetailController extends GetxController
         actions: [
           TextButton(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               this.videoUrl = videoUrl;
               this.audioUrl = audioUrl;
               playerInit();
@@ -1080,7 +1089,7 @@ class VideoDetailController extends GetxController
   @pragma('vm:notify-debugger-on-exception')
   Future<void> onCast() async {
     SmartDialog.showLoading();
-    final res = await Get.find<VideoRepository>().tvPlayUrl(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).tvPlayUrl(
       cid: cid.value,
       objectId: epId ?? aid,
       playurlType: epId != null ? 2 : 1,
@@ -1104,7 +1113,7 @@ class VideoDetailController extends GetxController
       if (kDebugMode) {
         debugPrint(title);
       }
-      Get.toNamed(
+      AppNavigator.toNamed(
         '/dlna',
         parameters: {
           'url': url,

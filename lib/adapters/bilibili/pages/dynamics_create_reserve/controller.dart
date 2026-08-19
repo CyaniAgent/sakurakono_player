@@ -1,71 +1,122 @@
-import 'package:skf/core/repository/dynamics_repository.dart';
-import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/dynamics_types.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/utils/utils.dart';
 
-class CreateReserveController extends GetxController {
-  CreateReserveController(this.sid);
-  final int? sid;
-  final RxInt subType = 0.obs;
-  String key = Utils.generateRandomString(6);
-  final RxString title = ''.obs;
-  final now = DateTime.now();
-  late final Rx<DateTime> date;
-  late final end = now.copyWith(day: now.day + 90);
-  final RxBool canCreate = false.obs;
+class CreateReserveState {
+  const CreateReserveState({
+    this.subType = 0,
+    this.title = '',
+    required this.date,
+    this.canCreate = false,
+  });
 
-  @override
-  void onInit() {
-    super.onInit();
-    date = DateTime(now.year, now.month, now.day + 1, 20, 0).obs;
+  final int subType;
+  final String title;
+  final DateTime date;
+  final bool canCreate;
+
+  CreateReserveState copyWith({
+    int? subType,
+    String? title,
+    DateTime? date,
+    bool? canCreate,
+  }) {
+    return CreateReserveState(
+      subType: subType ?? this.subType,
+      title: title ?? this.title,
+      date: date ?? this.date,
+      canCreate: canCreate ?? this.canCreate,
+    );
+  }
+}
+
+class CreateReserveNotifier extends StateNotifier<CreateReserveState> {
+  CreateReserveNotifier(this._ref, this.sid)
+      : super(CreateReserveState(
+          date: DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day + 1,
+            20,
+          ),
+        )) {
     if (sid != null) {
       queryData();
     }
   }
 
-  void updateCanCreate() {
-    canCreate.value = title.value.trim().isNotEmpty;
+  final Ref _ref;
+  final int? sid;
+  final DateTime now = DateTime.now();
+  late final DateTime end = now.copyWith(day: now.day + 90);
+  String key = Utils.generateRandomString(6);
+
+  void updateSubType(int value) {
+    state = state.copyWith(subType: value);
+  }
+
+  void updateTitle(String value) {
+    state = state.copyWith(title: value);
+    _updateCanCreate();
+  }
+
+  void updateDate(DateTime value) {
+    state = state.copyWith(date: value);
+  }
+
+  void _updateCanCreate() {
+    state = state.copyWith(canCreate: state.title.trim().isNotEmpty);
   }
 
   Future<void> queryData() async {
-    final res = await Get.find<DynamicsRepository>().reserveInfo(sid: sid);
+    final res = await _ref
+        .read(dynamicsRepositoryProvider)
+        .reserveInfo(sid: sid);
     if (res case Success(:final response)) {
       key = Utils.generateRandomString(6);
-      title.value = response.title!;
-      date.value = DateTime.fromMillisecondsSinceEpoch(
-        response.livePlanStartTime! * 1000,
+      state = state.copyWith(
+        title: response.title!,
+        date: DateTime.fromMillisecondsSinceEpoch(
+          response.livePlanStartTime! * 1000,
+        ),
+        canCreate: true,
       );
-      canCreate.value = true;
     } else {
       res.toast();
     }
   }
 
-  Future<void> onCreate() async {
-    final livePlanStartTime = date.value.millisecondsSinceEpoch ~/ 1000;
+  Future<CoreReserveInfoData?> onCreate() async {
+    final livePlanStartTime = state.date.millisecondsSinceEpoch ~/ 1000;
+    final repository = _ref.read(dynamicsRepositoryProvider);
     final res = sid == null
-        ? await Get.find<DynamicsRepository>().createReserve(
-            title: title.value,
-            subType: subType.value,
+        ? await repository.createReserve(
+            title: state.title,
+            subType: state.subType,
             livePlanStartTime: livePlanStartTime,
           )
-        : await Get.find<DynamicsRepository>().updateReserve(
+        : await repository.updateReserve(
             sid: sid!,
-            subType: subType.value,
-            title: title.value,
+            subType: state.subType,
+            title: state.title,
             livePlanStartTime: livePlanStartTime,
           );
     if (res case Success(:final response)) {
-      Get.back(
-        result: CoreReserveInfoData(
-          id: response,
-          title: title.value,
-          livePlanStartTime: livePlanStartTime,
-        ),
+      return CoreReserveInfoData(
+        id: response,
+        title: state.title,
+        livePlanStartTime: livePlanStartTime,
       );
     } else {
       res.toast();
+      return null;
     }
   }
 }
+
+final createReserveProvider =
+    StateNotifierProvider.family<CreateReserveNotifier, CreateReserveState, int?>(
+  (ref, sid) => CreateReserveNotifier(ref, sid),
+);

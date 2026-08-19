@@ -1,56 +1,83 @@
-import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/child/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LiveSearchController extends GetxController
-    with GetSingleTickerProviderStateMixin {
-  late final TabController tabController;
+@immutable
+class LiveSearchState {
+  const LiveSearchState({
+    this.hasData = false,
+    this.counts = const [-1, -1],
+  });
+
+  final bool hasData;
+  final List<int> counts;
+
+  LiveSearchState copyWith({
+    bool? hasData,
+    List<int>? counts,
+  }) {
+    return LiveSearchState(
+      hasData: hasData ?? this.hasData,
+      counts: counts ?? this.counts,
+    );
+  }
+}
+
+class LiveSearchParams {
+  const LiveSearchParams({required this.mid, required this.uname});
+
+  final String? mid;
+  final String? uname;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LiveSearchParams && mid == other.mid && uname == other.uname;
+
+  @override
+  int get hashCode => Object.hash(mid, uname);
+}
+
+class LiveSearchNotifier extends StateNotifier<LiveSearchState> {
+  LiveSearchNotifier({required this.mid, required this.uname})
+      : super(const LiveSearchState());
+
+  final String? mid;
+  final String? uname;
   final editingController = TextEditingController();
   final focusNode = FocusNode();
 
-  final mid = Get.parameters['mid'];
-  final uname = Get.parameters['uname'];
+  List<int> get counts => state.counts;
+  bool get hasData => state.hasData;
 
-  final RxBool hasData = false.obs;
-  final RxList<int> counts = <int>[-1, -1].obs;
-
-  late final roomCtr = Get.put(
-    LiveSearchChildController(this, CoreLiveSearchType.room),
-    tag: Utils.generateRandomString(8),
-  );
-  late final userCtr = Get.put(
-    LiveSearchChildController(this, CoreLiveSearchType.user),
-    tag: Utils.generateRandomString(8),
-  );
-
-  @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(vsync: this, length: 2);
+  void updateCount(int index, int value) {
+    final newCounts = List<int>.from(state.counts);
+    newCounts[index] = value;
+    state = state.copyWith(counts: newCounts);
   }
 
-  void onClear() {
-    if (editingController.value.text.isNotEmpty) {
-      editingController.clear();
-      counts.value = <int>[-1, -1];
-      hasData.value = false;
-      focusNode.requestFocus();
-    } else {
-      Get.back();
-    }
+  void setHasData(bool value) {
+    state = state.copyWith(hasData: value);
   }
 
-  void submit() {
+  void clearSearchData() {
+    editingController.clear();
+    state = state.copyWith(counts: [-1, -1], hasData: false);
+    focusNode.requestFocus();
+  }
+
+  void submitSearch({
+    required LiveSearchChildController roomCtr,
+    required LiveSearchChildController userCtr,
+  }) {
     if (editingController.text.isNotEmpty) {
       if (IdUtils.digitOnlyRegExp.hasMatch(editingController.text)) {
         PageUtils.toLiveRoom(int.parse(editingController.text));
       } else {
-        hasData.value = true;
+        state = state.copyWith(hasData: true);
         roomCtr
           ..scrollController.jumpToTop()
           ..onReload();
@@ -62,10 +89,15 @@ class LiveSearchController extends GetxController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     editingController.dispose();
     focusNode.dispose();
-    tabController.dispose();
-    super.onClose();
+    super.dispose();
   }
 }
+
+final liveSearchProvider = StateNotifierProvider.autoDispose.family<
+  LiveSearchNotifier,
+  LiveSearchState,
+  LiveSearchParams
+>((ref, params) => LiveSearchNotifier(mid: params.mid, uname: params.uname));

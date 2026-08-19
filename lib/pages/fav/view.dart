@@ -7,6 +7,7 @@ import 'package:skf/pages/fav/article/controller.dart';
 import 'package:skf/pages/fav/cheese/controller.dart';
 import 'package:skf/pages/fav/topic/controller.dart';
 import 'package:skf/pages/fav/video/controller.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -33,7 +34,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    int initialIndex = Get.arguments is int ? Get.arguments as int : 0;
+    int initialIndex = AppNavigator.argsOf(context) is int ? AppNavigator.argsOf(context) as int : 0;
     _showVideoFavMenu = (initialIndex == 0).obs;
     _tabController = TabController(
       length: FavTabType.values.length,
@@ -61,7 +62,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
           Obx(
             () => _showVideoFavMenu.value
                 ? IconButton(
-                    onPressed: () => Get.toNamed('/createFav')?.then(
+                    onPressed: () => AppNavigator.toNamed('/createFav')?.then(
                       (data) {
                         if (data != null) {
                           final list =
@@ -109,7 +110,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                         try {
                           if (response == null || response.isEmpty) return;
                           final item = response.first;
-                          Get.toNamed(
+                          AppNavigator.toNamed(
                             '/favSearch',
                             arguments: {
                               'type': 1,

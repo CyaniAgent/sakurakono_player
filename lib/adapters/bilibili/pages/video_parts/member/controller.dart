@@ -2,12 +2,17 @@ import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 
 class HorizontalMemberPageController
     extends CommonListController<CoreSpaceArchiveData, CoreSpaceArchiveItem> {
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   HorizontalMemberPageController({this.mid, required this.currAid});
 
   dynamic mid;
@@ -24,7 +29,7 @@ class HorizontalMemberPageController
   }
 
   Future<void> getUserInfo() async {
-    final res = await Get.find<MemberRepository>().memberInfo(mid: mid);
+    final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberInfo(mid: mid);
     userState.value = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -37,7 +42,7 @@ class HorizontalMemberPageController
   }
 
   Future<void> getMemberStat() async {
-    final res = await Get.find<MemberRepository>().memberStat(mid: mid);
+    final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberStat(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
     }
@@ -47,7 +52,7 @@ class HorizontalMemberPageController
     if (!Accounts.main.isLogin) {
       return;
     }
-    final res = await Get.find<MemberRepository>().memberView(mid: mid);
+    final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberView(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
     }
@@ -92,7 +97,7 @@ class HorizontalMemberPageController
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-      final result = await Get.find<MemberRepository>().spaceArchive(
+      final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArchive(
         type: .video,
         mid: mid,
         aid: page == 1

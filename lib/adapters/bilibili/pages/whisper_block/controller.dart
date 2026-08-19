@@ -5,10 +5,15 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class WhisperBlockController
     extends
         CommonListController<CoreImKeywordBlockingListReply, CoreImKeywordBlockingItem> {
+
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
   @override
   void onInit() {
     super.onInit();
@@ -29,7 +34,7 @@ class WhisperBlockController
 
   @override
   Future<LoadingState<CoreImKeywordBlockingListReply>> customGetData() async {
-          final result = await Get.find<ImRepository>().keywordBlockingList();
+          final result = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingList();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -38,7 +43,7 @@ class WhisperBlockController
   }
 
   Future<void> onAdd(String keyword) async {
-    final res = await Get.find<ImRepository>().keywordBlockingAdd(keyword);
+    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingAdd(keyword);
     if (res.isSuccess) {
       Get.back();
       loadingState
@@ -52,7 +57,7 @@ class WhisperBlockController
   }
 
   Future<void> onRemove(CoreImKeywordBlockingItem item) async {
-    final res = await Get.find<ImRepository>().keywordBlockingDelete(item.keyword);
+    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingDelete(item.keyword);
     if (res.isSuccess) {
       loadingState
         ..value.data!.remove(item)

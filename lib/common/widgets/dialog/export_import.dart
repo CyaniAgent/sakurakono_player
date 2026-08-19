@@ -3,6 +3,7 @@ import 'dart:convert' show utf8, jsonDecode;
 
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/theme_ext.dart';
 import 'package:skf/utils/storage_utils.dart';
 import 'package:skf/utils/utils.dart';
@@ -10,8 +11,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:re_highlight/languages/json.dart';
 import 'package:re_highlight/re_highlight.dart';
@@ -86,11 +85,11 @@ Future<void> importFromClipBoard<T>(
             ),
             actions: [
               TextButton(
-                onPressed: Get.back,
+                onPressed: AppNavigator.back,
                 child: Text('取消', style: TextStyle(color: colorScheme.outline)),
               ),
               TextButton(
-                onPressed: () => Get.back(result: true),
+                onPressed: () => AppNavigator.back(result: true),
                 child: const Text('确定'),
               ),
             ],
@@ -174,7 +173,7 @@ void importFromInput<T>(
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(
@@ -187,7 +186,7 @@ void importFromInput<T>(
             if (key.currentState?.validate() == true) {
               try {
                 await onImport(json);
-                Get.back();
+                AppNavigator.back();
                 SmartDialog.showToast('导入成功');
                 return;
               } catch (e) {
@@ -221,14 +220,14 @@ Future<void> showImportExportDialog<T>(
         DialogOption(
           child: const Text('导出至剪贴板', style: style),
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             exportToClipBoard(onExport: onExport);
           },
         ),
         DialogOption(
           child: const Text('导出文件至本地', style: style),
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             exportToLocalFile(onExport: onExport, localFileName: localFileName);
           },
         ),
@@ -239,14 +238,14 @@ Future<void> showImportExportDialog<T>(
         DialogOption(
           child: const Text('输入', style: style),
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             importFromInput<T>(context, title: title, onImport: onImport);
           },
         ),
         DialogOption(
           child: const Text('从剪贴板导入', style: style),
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             importFromClipBoard<T>(
               context,
               title: title,
@@ -258,7 +257,7 @@ Future<void> showImportExportDialog<T>(
         DialogOption(
           child: const Text('从本地文件导入', style: style),
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             importFromLocalFile<T>(onImport: onImport);
           },
         ),

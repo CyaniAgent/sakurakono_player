@@ -7,6 +7,8 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:flutter/material.dart' show TabController;
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LiveAreaDetailController
     extends CommonListController<List<CoreAreaItem>?, CoreAreaItem>
@@ -14,6 +16,8 @@ class LiveAreaDetailController
   LiveAreaDetailController(this.areaId, this.parentAreaId);
   final dynamic areaId;
   final dynamic parentAreaId;
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   TabController? tabController;
 
@@ -41,7 +45,7 @@ class LiveAreaDetailController
 
   @override
   Future<LoadingState<List<CoreAreaItem>?>> customGetData() async {
-    final result = await Get.find<LiveRepository>().liveRoomAreaList(parentid: parentAreaId);
+    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomAreaList(parentid: parentAreaId);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

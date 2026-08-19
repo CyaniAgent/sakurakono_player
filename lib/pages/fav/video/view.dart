@@ -5,6 +5,7 @@ import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/fav/fav_actions.dart';
 import 'package:skf/pages/fav/video/controller.dart';
 import 'package:skf/pages/fav/video/widgets/item.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class _FavVideoPageState extends State<FavVideoPage>
                       item.cover,
                     ),
                     onTap: () async {
-                      final res = await Get.toNamed(
+                      final res = await AppNavigator.toNamed(
                         '/favDetail',
                         arguments: item,
                         parameters: {

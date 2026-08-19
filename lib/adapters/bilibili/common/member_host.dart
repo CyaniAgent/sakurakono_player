@@ -92,7 +92,7 @@ class BiliMemberHost implements MemberHost {
 
   @override
   bool canToWebArchive(String heroTag) =>
-      Get.isRegistered<MemberContributeCtr>(tag: heroTag);
+      MemberContributeNotifier.isRegistered(heroTag);
 
   @override
   void toWebArchive({
@@ -101,8 +101,8 @@ class BiliMemberHost implements MemberHost {
     required String username,
   }) {
     try {
-      final ctr = Get.find<MemberContributeCtr>(tag: heroTag);
-      final item = ctr.items?[ctr.tabController?.index ?? 0];
+      final state = MemberContributeNotifier.getState(heroTag);
+      final item = state?.items?[state.currentIndex];
       if (item != null) {
         final id = item.seasonId ?? item.seriesId;
         if (id != null) {

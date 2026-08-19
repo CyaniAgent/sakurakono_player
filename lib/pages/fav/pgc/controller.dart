@@ -2,6 +2,8 @@ import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -10,10 +12,15 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavPgcController
     extends MultiSelectController<CoreFavPgcData, CoreFavPgcItemModel> {
+  FavPgcController(this.type, this.followStatus);
   final int type;
   final int followStatus;
 
-  FavPgcController(this.type, this.followStatus);
+  Ref? _ref;
+
+  /// Attach a Riverpod [Ref] for repository access.
+  /// Call this during controller initialization after construction.
+  void attachRef(Ref ref) { _ref = ref; }
 
   @override
   void onInit() {
@@ -37,7 +44,7 @@ class FavPgcController
 
   @override
   Future<LoadingState<CoreFavPgcData>> customGetData() async {
-    final result = await Get.find<FavRepository>().favPgc(
+    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favPgc(
     type: type,
     followStatus: followStatus,
     pn: page,
@@ -58,7 +65,7 @@ class FavPgcController
 
   // 取消追番
   Future<void> pgcDel(int index, seasonId) async {
-    final result = await Get.find<VideoRepository>().pgcDel(seasonId: seasonId);
+    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcDel(seasonId: seasonId);
     if (result case Success(:final response)) {
       loadingState
         ..value.data!.removeAt(index)
@@ -76,7 +83,7 @@ class FavPgcController
 
   Future<void> onUpdateList(int followStatus) async {
     final removeList = allChecked.toSet();
-    final res = await Get.find<VideoRepository>().pgcUpdate(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcUpdate(
       seasonId: removeList.map((item) => item.seasonId).join(','),
       status: followStatus,
     );
@@ -103,7 +110,7 @@ class FavPgcController
   }
 
   Future<void> onUpdate(int index, int followStatus, int? seasonId) async {
-    final res = await Get.find<VideoRepository>().pgcUpdate(
+    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcUpdate(
       seasonId: seasonId.toString(),
       status: followStatus,
     );
