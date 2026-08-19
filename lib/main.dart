@@ -10,6 +10,7 @@ import 'package:skf/common/widgets/scale_app.dart';
 import 'package:skf/common/widgets/scroll_behavior.dart';
 import 'package:skf/adapters/adapters.dart';
 import 'package:skf/core/adapter/adapter_registry.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/player/utils/fullscreen.dart';
 import 'package:skf/utils/cache_manager.dart';
@@ -128,6 +129,7 @@ void main() async {
   ]);
   // Activate the active adapter (DI bindings + routes).
   await AdapterRegistry.activate(adapterName);
+  appContainer = ProviderContainer(overrides: adapterOverrides);
   HttpOverrides.global = _CustomHttpOverrides();
 
   if (PlatformUtils.isMobile) {
@@ -218,12 +220,12 @@ void main() async {
 
     Catcher2(
       [?fileHandler, const ConsoleHandler()],
-      ProviderScope(overrides: adapterOverrides, child: const MyApp()),
+      UncontrolledProviderScope(container: appContainer, child: const MyApp()),
       logger: logger,
       customParameters: customParameters,
     );
   } else {
-    runApp(ProviderScope(overrides: adapterOverrides, child: const MyApp()));
+    runApp(UncontrolledProviderScope(container: appContainer, child: const MyApp()));
   }
 }
 
@@ -280,6 +282,7 @@ class MyApp extends StatelessWidget {
       routerConfig: AppRouter.create(
         observers: [
           FlutterSmartDialog.observer,
+          AppNavigator.observer,
         ],
       ),
       builder: FlutterSmartDialog.init(

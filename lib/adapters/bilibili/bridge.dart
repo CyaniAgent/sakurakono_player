@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/adapters/bilibili/services/bili_account_provider.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
@@ -11,6 +12,7 @@ import 'package:skf/adapters/bilibili/utils/accounts/account_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account_type_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/cookie_jar_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
+import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
@@ -155,6 +157,8 @@ import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/validate_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 
@@ -234,12 +238,47 @@ class BiliBridge {
       ..lazyPut<SettingHost>(BiliSettingHost.new);
     setupServiceLocator();
     _initHttp();
+    adapterOverrides = buildAdapterOverrides();
   }
 
   static void _initHttp() {
     Request();
     Request.setCookie();
     RequestUtils.syncHistoryStatus();
+  }
+
+  /// 构建 26 个核心 repository provider 的 Riverpod overrides。
+  /// 使用 overrideWith（延迟闭包）——Get.find 在首次读取时才执行，
+  /// 确保 activate() 与 GetX DI 完成后才解析。
+  static List<Override> buildAdapterOverrides() {
+    return <Override>[
+      videoRepositoryProvider.overrideWith((ref) => Get.find<VideoRepository>()),
+      audioRepositoryProvider.overrideWith((ref) => Get.find<AudioRepository>()),
+      authRepositoryProvider.overrideWith((ref) => Get.find<AuthRepository>()),
+      userRepositoryProvider.overrideWith((ref) => Get.find<UserRepository>()),
+      memberRepositoryProvider.overrideWith((ref) => Get.find<MemberRepository>()),
+      dynamicsRepositoryProvider.overrideWith((ref) => Get.find<DynamicsRepository>()),
+      followRepositoryProvider.overrideWith((ref) => Get.find<FollowRepository>()),
+      fanRepositoryProvider.overrideWith((ref) => Get.find<FanRepository>()),
+      favRepositoryProvider.overrideWith((ref) => Get.find<FavRepository>()),
+      danmakuRepositoryProvider.overrideWith((ref) => Get.find<DanmakuRepository>()),
+      replyRepositoryProvider.overrideWith((ref) => Get.find<ReplyRepository>()),
+      searchRepositoryProvider.overrideWith((ref) => Get.find<SearchRepository>()),
+      imRepositoryProvider.overrideWith((ref) => Get.find<ImRepository>()),
+      pgcRepositoryProvider.overrideWith((ref) => Get.find<PgcRepository>()),
+      progressRepositoryProvider.overrideWith((ref) => Get.find<ProgressRepository>()),
+      sponsorBlockRepositoryProvider.overrideWith((ref) => Get.find<SponsorBlockRepository>()),
+      validateRepositoryProvider.overrideWith((ref) => Get.find<ValidateRepository>()),
+      liveRepositoryProvider.overrideWith((ref) => Get.find<LiveRepository>()),
+      matchRepositoryProvider.overrideWith((ref) => Get.find<MatchRepository>()),
+      musicRepositoryProvider.overrideWith((ref) => Get.find<MusicRepository>()),
+      downloadRepositoryProvider.overrideWith((ref) => Get.find<DownloadRepository>()),
+      spaceRepositoryProvider.overrideWith((ref) => Get.find<SpaceRepository>()),
+      appRepositoryProvider.overrideWith((ref) => Get.find<AppRepository>()),
+      danmakuFilterRepositoryProvider.overrideWith((ref) => Get.find<DanmakuFilterRepository>()),
+      msgRepositoryProvider.overrideWith((ref) => Get.find<MsgRepository>()),
+      blackRepositoryProvider.overrideWith((ref) => Get.find<BlackRepository>()),
+    ];
   }
 
   static List<GetPage> registerRoutes() {

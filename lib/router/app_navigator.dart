@@ -18,12 +18,17 @@ abstract final class AppNavigator {
     return GoRouterState.of(ctx).uri.path;
   }
 
-  /// 上一路由名（go_router 无直接 API，返回空字符串）。
-  static String get previousRoute => '';
+  /// 上一路由名（go_router 无直接 API，由 [_PreviousRouteObserver] 记录）。
+  static String get previousRoute => _previousRoute;
+
+  static String _previousRoute = '';
+
+  /// 记录上一路由的 observer，注册到 AppRouter.create(observers:)。
+  static final NavigatorObserver observer = _PreviousRouteObserver();
 
   /// 当前路由 query 参数（无 context 版本，controller 层用）。
-  /// 仅 Wave A 可用；Wave B 由调用点改为显式传参。
-  static Map<String, String?> get parameters => const {};
+  static Map<String, String?> get parameters =>
+      AppRouter.instance.state.uri.queryParameters;
 
   /// 读取当前路由参数（extra），controller 层用（无 context）。
   static dynamic get arguments {
@@ -51,10 +56,10 @@ abstract final class AppNavigator {
     bool preventDuplicates = true,
   }) {
     final router = AppRouter.instance;
-    final uri = _buildUri(page, parameters);
+    final uri = buildUri(page, parameters);
     if (preventDuplicates) {
       final current = router.state.matchedLocation;
-      if (current == uri.path) return null;
+      if (isDuplicate(uri, current)) return null;
     }
     return router.pushNamed<T>(uri.toString(), extra: arguments);
   }
@@ -67,10 +72,10 @@ abstract final class AppNavigator {
     bool preventDuplicates = true,
   }) {
     final router = AppRouter.instance;
-    final uri = _buildUri(page, parameters);
+    final uri = buildUri(page, parameters);
     if (preventDuplicates) {
       final current = router.state.matchedLocation;
-      if (current == uri.path) return null;
+      if (isDuplicate(uri, current)) return null;
     }
     return router.pushReplacementNamed<T>(uri.toString(), extra: arguments);
   }
@@ -82,7 +87,7 @@ abstract final class AppNavigator {
     Map<String, String>? parameters,
     RoutePredicate? predicate,
   }) {
-    final uri = _buildUri(page, parameters);
+    final uri = buildUri(page, parameters);
     AppRouter.instance.go(uri.toString(), extra: arguments);
     return Future<T?>.value(null);
   }
@@ -95,7 +100,7 @@ abstract final class AppNavigator {
     bool off = false,
   }) {
     if (off) {
-      final uri = _buildUri(page, parameters);
+      final uri = buildUri(page, parameters);
       AppRouter.instance.go(uri.toString(), extra: arguments);
       return Future<T?>.value(null);
     }
@@ -143,8 +148,13 @@ abstract final class AppNavigator {
     return navigatorKey.currentState?.push<T>(route);
   }
 
+  /// 判断目标 URI 与当前路由是否重复（含 query 比较）。
+  @visibleForTesting
+  static bool isDuplicate(Uri uri, String? current) => current == uri.toString();
+
   /// 构建 URI，合并路径和查询参数。
-  static Uri _buildUri(String path, Map<String, String>? parameters) {
+  @visibleForTesting
+  static Uri buildUri(String path, Map<String, String>? parameters) {
     if (parameters == null || parameters.isEmpty) {
       return Uri.parse(path);
     }
@@ -155,5 +165,33 @@ abstract final class AppNavigator {
         ...parameters,
       },
     );
+  }
+}
+
+/// 记录上一路由的 NavigatorObserver。
+class _PreviousRouteObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _track(previousRoute);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _track(previousRoute);
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _track(previousRoute);
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    _track(oldRoute);
+  }
+
+  void _track(Route<dynamic>? previousRoute) {
+    if (previousRoute == null) return;
+    AppNavigator._previousRoute = previousRoute.settings.name ?? '';
   }
 }
