@@ -6,7 +6,7 @@ import 'package:skf/adapters/bilibili/pages/live/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live/view.dart';
 import 'package:skf/adapters/bilibili/pages/pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc/view.dart';
-import 'package:skf/adapters/bilibili/pages/rank/controller.dart';
+import 'package:skf/adapters/bilibili/pages/rank/controller.dart' show RankScrollBridge;
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/view.dart';
@@ -30,7 +30,7 @@ enum HomeTabType implements EnumWithLabel {
     HomeTabType.live => Get.find<LiveController>,
     HomeTabType.rcmd => Get.find<RcmdController>,
     HomeTabType.hot => Get.find<HotController>,
-    HomeTabType.rank => Get.find<RankController>,
+    HomeTabType.rank => () => RankScrollBridge(),
     HomeTabType.bangumi ||
     HomeTabType.cinema => () => Get.find<PgcController>(tag: name),
   };
