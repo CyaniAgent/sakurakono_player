@@ -281,134 +281,122 @@ class BiliBridge {
     ];
   }
 
-  static List<GetPage> registerRoutes() {
-    final routes = <GetPage>[
-    // 首页(推荐)
-    GetPage(name: '/home', page: () => const HomePage()),
-    // 热门
-    GetPage(name: '/hot', page: () => const HotPage()),
-    // 视频详情
-    GetPage(name: '/videoV', page: () => const VideoDetailPageV()),
-    //
-    GetPage(name: '/webview', page: () => const WebviewPage()),
-    // 设置
-    GetPage(name: '/setting', page: () => const SettingPage()),
-    //
-    GetPage(name: '/fav', page: () => FavPage(actions: biliFavActions)),
-    //
-    GetPage(name: '/favDetail', page: () => const FavDetailPage()),
-    GetPage(
-      name: '/later',
-      page: () => LaterPage(actions: biliLaterActions),
-    ),
-    GetPage(
-      name: '/history',
-      page: () => HistoryPage(actions: biliHistoryActions),
-    ),
-    // 搜索页面
-    GetPage(name: '/search', page: () => const SearchPage()),
-    // 搜索结果
-    GetPage(name: '/searchResult', page: () => const SearchResultPage(panelBuilder: biliSearchPanelBuilder)),
-    // 动态
-    GetPage(name: '/dynamics', page: () => const DynamicsPage()),
-    // 动态详情
-    GetPage(name: '/dynamicDetail', page: () => const DynamicDetailPage()),
-    // 关注
-    GetPage(name: '/follow', page: () => const FollowPage()),
-    // 粉丝
-    GetPage(name: '/fan', page: () => const FansPage()),
-    // 直播详情
-    GetPage(name: '/liveRoom', page: () => const LiveRoomPage()),
-    // 用户中心
-    GetPage(name: '/member', page: () => const MemberPage()),
-    GetPage(name: '/memberSearch', page: () => const MemberSearchPage()),
-    //
-    GetPage(name: '/blackListPage', page: () => const BlackListPage()),
-    GetPage(name: '/colorSetting', page: () => const ColorSelectPage()),
-    GetPage(name: '/fontSizeSetting', page: () => const FontSizeSelectPage()),
-    // 屏幕帧率
-    GetPage(name: '/displayModeSetting', page: () => const SetDisplayMode()),
-    //
-    GetPage(name: '/articlePage', page: () => const ArticlePage()),
-
-    // 历史记录搜索
-    GetPage(name: '/playSpeedSet', page: () => const PlaySpeedPage()),
-    // 收藏搜索
-    GetPage(name: '/favSearch', page: () => const FavSearchPage()),
-    GetPage(name: '/historySearch', page: () => const HistorySearchPage()),
-    GetPage(name: '/laterSearch', page: () => const LaterSearchPage()),
-    GetPage(name: '/followSearch', page: () => const FollowSearchPage()),
-    // 消息页面
-    GetPage(name: '/whisper', page: () => const WhisperPage()),
-    // 私信详情
-    GetPage(name: '/whisperDetail', page: () => const WhisperDetailPage()),
-    // 回复我的
-    GetPage(name: '/replyMe', page: () => const ReplyMePage()),
-    // @我的
-    GetPage(name: '/atMe', page: () => const AtMePage()),
-    // 收到的赞
-    GetPage(name: '/likeMe', page: () => const LikeMePage()),
-    // 系统消息
-    GetPage(name: '/sysMsg', page: () => const SysMsgPage()),
-    // 消息设置（从通用消息页经路由进入，参数 ['type'] 为 CoreImSettingType）
-    GetPage(name: '/whisperSettings', page: () => const WhisperSettingsPage()),
-    // 登录页面
-    GetPage(name: '/loginPage', page: () => const LoginPage()),
-    // 用户动态
-    GetPage(name: '/memberDynamics', page: () => const MemberDynamicsPage()),
-    // 日志
-    GetPage(name: '/logs', page: () => const LogsPage()),
-    // 订阅
-    GetPage(name: '/subscription', page: () => const SubPage()),
-    // 订阅详情
-    GetPage(name: '/subDetail', page: () => const SubDetailPage()),
-    // 弹幕屏蔽管理
-    GetPage(name: '/danmakuBlock', page: () => const DanmakuBlockPage()),
-    GetPage(name: '/sponsorBlock', page: () => const SponsorBlockPage()),
-    GetPage(name: '/createFav', page: () => const CreateFavPage()),
-    GetPage(name: '/editProfile', page: () => const EditProfilePage()),
-    GetPage(name: '/settingsSearch', page: () => const SettingsSearchPage()),
-    GetPage(name: '/searchTrending', page: () => const SearchTrendingPage()),
-    GetPage(name: '/dynTopic', page: () => const DynTopicPage()),
-    GetPage(name: '/articleList', page: () => const ArticleListPage()),
-    GetPage(name: '/barSetting', page: () => const BarSetPage()),
-    GetPage(name: '/upowerRank', page: () => const UpowerRankPage()),
-    GetPage(name: '/spaceSetting', page: () => const SpaceSettingPage()),
-    GetPage(name: '/dynTopicRcmd', page: () => const DynTopicRcmdPage()),
-    GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
-    GetPage(name: '/msgLikeDetail', page: () => const LikeDetailPage()),
-    GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage(roomId: '')),
-    GetPage(name: '/createVote', page: () => const CreateVotePage()),
-    GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
-    GetPage(name: '/popularSeries', page: () => const PopularSeriesPage()),
-    GetPage(name: '/popularPrecious', page: () => const PopularPreciousPage()),
-    GetPage(name: '/audio', page: () => const AudioPage()),
-    GetPage(name: '/mainReply', page: () => const MainReplyPage()),
-    GetPage(name: '/followed', page: () => const FollowedPage()),
-    GetPage(name: '/sameFollowing', page: () => const FollowSamePage()),
-    GetPage(name: '/download', page: () => const DownloadPage()),
-    GetPage(name: '/dlna', page: () => const DLNAPage()),
-    GetPage(name: '/myReply', page: () => const MyReply()),
-    GetPage(name: '/videoWeb', page: () => const MemberVideoWeb()),
-    GetPage(name: '/ssWeb', page: () => const MemberSSWeb()),
-    GetPage(name: '/memberGuard', page: () => const MemberGuard()),
-    GetPage(name: '/bubble', page: () => const BubblePage()),
-    ];
-    return routes;
-  }
-
   /// Convert GetX GetPage routes to GoRouter GoRoute routes.
   static List<GoRoute> buildRoutes() {
-    return registerRoutes().map((page) => GoRoute(
-      path: page.name,
-      builder: (context, state) {
-        // /liveDmBlockPage carries roomId as a go_router query parameter
-        // (GetX Get.parameters is empty under MaterialApp.router); nav passes it via parameters:.
-        if (page.name == '/liveDmBlockPage') {
-          return LiveDmBlockPage(roomId: state.uri.queryParameters['roomId']!);
-        }
-        return page.page();
-      },
-    )).toList();
+    return [
+      // 首页(推荐)
+      GoRoute(path: '/home', builder: (_, _) => const HomePage()),
+      // 热门
+      GoRoute(path: '/hot', builder: (_, _) => const HotPage()),
+      // 视频详情
+      GoRoute(path: '/videoV', builder: (_, _) => const VideoDetailPageV()),
+      //
+      GoRoute(path: '/webview', builder: (_, _) => const WebviewPage()),
+      // 设置
+      GoRoute(path: '/setting', builder: (_, _) => const SettingPage()),
+      //
+      GoRoute(path: '/fav', builder: (_, _) => FavPage(actions: biliFavActions)),
+      //
+      GoRoute(path: '/favDetail', builder: (_, _) => const FavDetailPage()),
+      GoRoute(
+        path: '/later',
+        builder: (_, _) => LaterPage(actions: biliLaterActions),
+      ),
+      GoRoute(
+        path: '/history',
+        builder: (_, _) => HistoryPage(actions: biliHistoryActions),
+      ),
+      // 搜索页面
+      GoRoute(path: '/search', builder: (_, _) => const SearchPage()),
+      // 搜索结果
+      GoRoute(path: '/searchResult', builder: (_, _) => const SearchResultPage(panelBuilder: biliSearchPanelBuilder)),
+      // 动态
+      GoRoute(path: '/dynamics', builder: (_, _) => const DynamicsPage()),
+      // 动态详情
+      GoRoute(path: '/dynamicDetail', builder: (_, _) => const DynamicDetailPage()),
+      // 关注
+      GoRoute(path: '/follow', builder: (_, _) => const FollowPage()),
+      // 粉丝
+      GoRoute(path: '/fan', builder: (_, _) => const FansPage()),
+      // 直播详情
+      GoRoute(path: '/liveRoom', builder: (_, _) => const LiveRoomPage()),
+      // 用户中心
+      GoRoute(path: '/member', builder: (_, _) => const MemberPage()),
+      GoRoute(path: '/memberSearch', builder: (_, _) => const MemberSearchPage()),
+      //
+      GoRoute(path: '/blackListPage', builder: (_, _) => const BlackListPage()),
+      GoRoute(path: '/colorSetting', builder: (_, _) => const ColorSelectPage()),
+      GoRoute(path: '/fontSizeSetting', builder: (_, _) => const FontSizeSelectPage()),
+      // 屏幕帧率
+      GoRoute(path: '/displayModeSetting', builder: (_, _) => const SetDisplayMode()),
+      //
+      GoRoute(path: '/articlePage', builder: (_, _) => const ArticlePage()),
+
+      // 历史记录搜索
+      GoRoute(path: '/playSpeedSet', builder: (_, _) => const PlaySpeedPage()),
+      // 收藏搜索
+      GoRoute(path: '/favSearch', builder: (_, _) => const FavSearchPage()),
+      GoRoute(path: '/historySearch', builder: (_, _) => const HistorySearchPage()),
+      GoRoute(path: '/laterSearch', builder: (_, _) => const LaterSearchPage()),
+      GoRoute(path: '/followSearch', builder: (_, _) => const FollowSearchPage()),
+      // 消息页面
+      GoRoute(path: '/whisper', builder: (_, _) => const WhisperPage()),
+      // 私信详情
+      GoRoute(path: '/whisperDetail', builder: (_, _) => const WhisperDetailPage()),
+      // 回复我的
+      GoRoute(path: '/replyMe', builder: (_, _) => const ReplyMePage()),
+      // @我的
+      GoRoute(path: '/atMe', builder: (_, _) => const AtMePage()),
+      // 收到的赞
+      GoRoute(path: '/likeMe', builder: (_, _) => const LikeMePage()),
+      // 系统消息
+      GoRoute(path: '/sysMsg', builder: (_, _) => const SysMsgPage()),
+      // 消息设置（从通用消息页经路由进入，参数 ['type'] 为 CoreImSettingType）
+      GoRoute(path: '/whisperSettings', builder: (_, _) => const WhisperSettingsPage()),
+      // 登录页面
+      GoRoute(path: '/loginPage', builder: (_, _) => const LoginPage()),
+      // 用户动态
+      GoRoute(path: '/memberDynamics', builder: (_, _) => const MemberDynamicsPage()),
+      // 日志
+      GoRoute(path: '/logs', builder: (_, _) => const LogsPage()),
+      // 订阅
+      GoRoute(path: '/subscription', builder: (_, _) => const SubPage()),
+      // 订阅详情
+      GoRoute(path: '/subDetail', builder: (_, _) => const SubDetailPage()),
+      // 弹幕屏蔽管理
+      GoRoute(path: '/danmakuBlock', builder: (_, _) => const DanmakuBlockPage()),
+      GoRoute(path: '/sponsorBlock', builder: (_, _) => const SponsorBlockPage()),
+      GoRoute(path: '/createFav', builder: (_, _) => const CreateFavPage()),
+      GoRoute(path: '/editProfile', builder: (_, _) => const EditProfilePage()),
+      GoRoute(path: '/settingsSearch', builder: (_, _) => const SettingsSearchPage()),
+      GoRoute(path: '/searchTrending', builder: (_, _) => const SearchTrendingPage()),
+      GoRoute(path: '/dynTopic', builder: (_, _) => const DynTopicPage()),
+      GoRoute(path: '/articleList', builder: (_, _) => const ArticleListPage()),
+      GoRoute(path: '/barSetting', builder: (_, _) => const BarSetPage()),
+      GoRoute(path: '/upowerRank', builder: (_, _) => const UpowerRankPage()),
+      GoRoute(path: '/spaceSetting', builder: (_, _) => const SpaceSettingPage()),
+      GoRoute(path: '/dynTopicRcmd', builder: (_, _) => const DynTopicRcmdPage()),
+      GoRoute(path: '/matchInfo', builder: (_, _) => const MatchInfoPage()),
+      GoRoute(path: '/msgLikeDetail', builder: (_, _) => const LikeDetailPage()),
+      GoRoute(
+        path: '/liveDmBlockPage',
+        builder: (_, state) => LiveDmBlockPage(roomId: state.uri.queryParameters['roomId']!),
+      ),
+      GoRoute(path: '/createVote', builder: (_, _) => const CreateVotePage()),
+      GoRoute(path: '/musicDetail', builder: (_, _) => const MusicDetailPage()),
+      GoRoute(path: '/popularSeries', builder: (_, _) => const PopularSeriesPage()),
+      GoRoute(path: '/popularPrecious', builder: (_, _) => const PopularPreciousPage()),
+      GoRoute(path: '/audio', builder: (_, _) => const AudioPage()),
+      GoRoute(path: '/mainReply', builder: (_, _) => const MainReplyPage()),
+      GoRoute(path: '/followed', builder: (_, _) => const FollowedPage()),
+      GoRoute(path: '/sameFollowing', builder: (_, _) => const FollowSamePage()),
+      GoRoute(path: '/download', builder: (_, _) => const DownloadPage()),
+      GoRoute(path: '/dlna', builder: (_, _) => const DLNAPage()),
+      GoRoute(path: '/myReply', builder: (_, _) => const MyReply()),
+      GoRoute(path: '/videoWeb', builder: (_, _) => const MemberVideoWeb()),
+      GoRoute(path: '/ssWeb', builder: (_, _) => const MemberSSWeb()),
+      GoRoute(path: '/memberGuard', builder: (_, _) => const MemberGuard()),
+      GoRoute(path: '/bubble', builder: (_, _) => const BubblePage()),
+    ];
   }
 }
