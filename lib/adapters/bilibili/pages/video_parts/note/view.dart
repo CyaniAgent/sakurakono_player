@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_reply.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -217,7 +218,7 @@ class _NoteListPageState extends State<NoteListPage>
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
-        onTap: () => Get.toNamed(
+        onTap: () => AppNavigator.toNamed(
           '/articlePage',
           parameters: {
             'id': item['cvid']!.toString(),
@@ -230,7 +231,7 @@ class _NoteListPageState extends State<NoteListPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () => Get.toNamed('/member?mid=${item['author']['mid']}'),
+                onTap: () => AppNavigator.toNamed('/member?mid=${item['author']['mid']}'),
                 child: NetworkImgLayer(
                   height: 34,
                   width: 34,
@@ -246,7 +247,7 @@ class _NoteListPageState extends State<NoteListPage>
                   children: [
                     GestureDetector(
                       onTap: () =>
-                          Get.toNamed('/member?mid=${item['author']['mid']}'),
+                          AppNavigator.toNamed('/member?mid=${item['author']['mid']}'),
                       child: Row(
                         children: [
                           Text(

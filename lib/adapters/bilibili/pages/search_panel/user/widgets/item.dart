@@ -1,10 +1,9 @@
 import 'package:skf/common/widgets/pendant_avatar.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class SearchUserItem extends StatelessWidget {
   const SearchUserItem({
@@ -24,7 +23,7 @@ class SearchUserItem extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
-        onTap: () => Get.toNamed('/member?mid=${item.mid}'),
+        onTap: () => AppNavigator.toNamed('/member?mid=${item.mid}'),
         child: Row(
           children: [
             const SizedBox(width: 15),

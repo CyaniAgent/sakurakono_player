@@ -1,4 +1,5 @@
 import 'package:skf/common/assets.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/common/widgets/dynamic_sliver_app_bar/dynamic_sliver_app_bar.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
@@ -221,7 +222,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                 margin: const EdgeInsets.only(left: 45, right: 78),
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () => Get.toNamed(
+                  onTap: () => AppNavigator.toNamed(
                     '/member?mid=${response.topicCreator!.uid}',
                   ),
                   child: Row(

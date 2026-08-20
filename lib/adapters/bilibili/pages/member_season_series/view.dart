@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
@@ -72,7 +73,7 @@ class _SeasonSeriesPageState extends State<SeasonSeriesPage>
                     item: item,
                     onTap: () {
                       bool isSeason = item.meta!.seasonId != null;
-                      Get.to(
+                      AppNavigator.to(
                         Scaffold(
                           resizeToAvoidBottomInset: false,
                           appBar: AppBar(title: Text(item.meta!.name!)),

@@ -1,4 +1,7 @@
 import 'dart:convert' show jsonEncode;
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math';
 
 import 'package:skf/common/widgets/dialog/dialog.dart';
@@ -15,7 +18,6 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/http/member.dart';
 import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/adapters/bilibili/http/video.dart';
-import 'package:skf/core/repository/validate_repository.dart';
 
 import 'package:skf/adapters/bilibili/models/login/model.dart';
 import 'package:skf/adapters/bilibili/models_new/fav/fav_detail/media.dart';
@@ -177,7 +179,7 @@ abstract final class RequestUtils {
             children: [
               DialogOption(
                 onPressed: () async {
-                  Get.back();
+                  AppNavigator.back();
                   final res = await MemberHttp.specialAction(
                     fid: mid,
                     isAdd: !isSpecialFollowed,
@@ -193,7 +195,7 @@ abstract final class RequestUtils {
               ),
               DialogOption(
                 onPressed: () async {
-                  Get.back();
+                  AppNavigator.back();
                   final result = await showModalBottomSheet<Set<int>>(
                     context: context,
                     useSafeArea: true,
@@ -233,7 +235,7 @@ abstract final class RequestUtils {
               ),
               DialogOption(
                 onPressed: () async {
-                  Get.back();
+                  AppNavigator.back();
                   final res = await VideoHttp.relationMod(
                     mid: mid,
                     act: 2,
@@ -336,9 +338,9 @@ abstract final class RequestUtils {
             if (!isSuccess)
               TextButton(
                 onPressed: () {
-                  Get.back();
+                  AppNavigator.back();
                   Utils.copyText('https://www.bilibili.com/opus/$id');
-                  Get.toNamed(
+                  AppNavigator.toNamed(
                     '/webview',
                     parameters: {
                       'url':
@@ -358,7 +360,7 @@ abstract final class RequestUtils {
               ),
           ];
           showDialog(
-            context: Get.context!,
+            context: AppNavigator.context!,
             barrierDismissible: isManual,
             builder: (context) => AlertDialog(
               title: const Text('动态检查结果'),
@@ -484,7 +486,7 @@ abstract final class RequestUtils {
                           }
                           SmartDialog.dismiss();
                           SmartDialog.showToast('${isCopy ? '复制' : '移动'}成功');
-                          Get.back();
+                          AppNavigator.back();
                         } else {
                           SmartDialog.dismiss();
                           res.toast();
@@ -508,7 +510,7 @@ abstract final class RequestUtils {
     String vVoucher,
     ValueChanged<String> onSuccess,
   ) async {
-    final res = await Get.find<ValidateRepository>().gaiaVgateRegister(vVoucher);
+    final res = await appRead(validateRepositoryProvider).gaiaVgateRegister(vVoucher);
     if (!res.isSuccess) {
       res.toast();
       return;
@@ -539,7 +541,7 @@ abstract final class RequestUtils {
     }
 
     Future<void> gaiaVgateValidate() async {
-      final res = await Get.find<ValidateRepository>().gaiaVgateValidate(
+      final res = await appRead(validateRepositoryProvider).gaiaVgateValidate(
         challenge: captchaData.geetest!.challenge,
         seccode: captchaData.seccode!,
         token: captchaData.token!,
@@ -577,7 +579,7 @@ abstract final class RequestUtils {
     if (res case Success(:final response)) {
       final show = !response.name.isNullOrEmpty;
       showDialog(
-        context: Get.context!,
+        context: AppNavigator.context!,
         builder: (context) => AlertDialog(
           title: SelectionText(
             show ? response.name! : response.rejectPage?.title ?? '',

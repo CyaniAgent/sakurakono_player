@@ -1,4 +1,5 @@
 import 'package:skf/core/models/member_types.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/models/common/member/archive_sort_type_app.dart';
 import 'package:skf/adapters/bilibili/models_new/member/season_web/archive.dart';
 import 'package:skf/adapters/bilibili/models_new/member/season_web/data.dart';
@@ -20,7 +21,7 @@ class MemberSSWeb extends StatefulWidget {
     required Object mid,
     required String name,
   }) {
-    return Get.toNamed(
+    return AppNavigator.toNamed(
       '/ssWeb',
       arguments: {
         'type': type,

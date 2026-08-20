@@ -1,10 +1,11 @@
 import 'package:skf/common/widgets/badge.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_popup_menu.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
@@ -17,7 +18,6 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 // 视频卡片 - 垂直布局
@@ -48,7 +48,7 @@ class VideoCardV extends StatelessWidget {
         if (cid == null) {
           try {
             final result =
-                await Get.find<SearchRepository>().ab2cWithDimension(
+                await appRead(searchRepositoryProvider).ab2cWithDimension(
               aid: videoItem.aid,
               bvid: bvid,
             );

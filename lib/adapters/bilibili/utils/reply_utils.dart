@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/grpc/bilibili/main/community/reply/v1.pb.dart'
@@ -103,7 +104,7 @@ abstract final class ReplyUtils {
         if (isBan)
           TextButton(
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               String? uri;
               switch (type) {
                 case 1:
@@ -114,7 +115,7 @@ abstract final class ReplyUtils {
               if (uri != null) {
                 Utils.copyText(uri);
               }
-              Get.toNamed(
+              AppNavigator.toNamed(
                 '/webview',
                 parameters: {
                   'url':
@@ -134,7 +135,7 @@ abstract final class ReplyUtils {
           ),
       ];
       showDialog(
-        context: Get.context!,
+        context: AppNavigator.context!,
         barrierDismissible: isManual,
         builder: (context) => AlertDialog(
           title: const Text('评论检查结果'),

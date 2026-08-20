@@ -1,10 +1,10 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ArticleListItem extends StatelessWidget {
   const ArticleListItem({
@@ -22,7 +22,7 @@ class ArticleListItem extends StatelessWidget {
       child: InkWell(
         onTap: () {
           final dynIdStr = item.dynIdStr;
-          Get.toNamed(
+          AppNavigator.toNamed(
             '/articlePage',
             parameters: {
               'id': dynIdStr ?? item.id!.toString(),

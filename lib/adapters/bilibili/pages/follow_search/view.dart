@@ -1,4 +1,5 @@
 import 'package:skf/core/models/follow_data.dart' show CoreFollowData;
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
 import 'package:skf/pages/common/search/common_search_page.dart';
 import 'package:skf/pages/follow/widgets/follow_item.dart';
@@ -31,7 +32,7 @@ class _FollowSearchPageState
   void initState() {
     super.initState();
     controller = Get.put(
-      FollowSearchController(widget.mid ?? Get.arguments['mid']),
+      FollowSearchController(widget.mid ?? AppNavigator.arguments['mid']),
       tag: Utils.generateRandomString(8),
     );
   }
@@ -47,7 +48,7 @@ class _FollowSearchPageState
         return FollowItem(
           item: list[index],
           onSelect: widget.mid != null && widget.isFromSelect
-              ? (userModel) => Get.back(result: userModel)
+              ? (userModel) => AppNavigator.back(result: userModel)
               : null,
         );
       }),

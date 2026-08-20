@@ -1,13 +1,14 @@
 import 'package:skf/common/widgets/reorder_mixin.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/widget/fav_video_card.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class FavSortPage extends StatefulWidget {
   const FavSortPage({super.key, required this.favDetailController});
@@ -55,10 +56,10 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
           TextButton(
             onPressed: () {
               if (sort.isEmpty) {
-                Get.back();
+                AppNavigator.back();
                 return;
               }
-              Get.find<FavRepository>().sortFav(
+              appRead(favRepositoryProvider).sortFav(
                 mediaId: _favDetailController.mediaId.toString(),
                 sort: sort.join(','),
               ).then((res) {
@@ -66,7 +67,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
                   SmartDialog.showToast('排序完成');
                   _favDetailController.loadingState.value = Success(sortList);
                   if (mounted) {
-                    Get.back();
+                    AppNavigator.back();
                   }
                 } else {
                   res.toast();

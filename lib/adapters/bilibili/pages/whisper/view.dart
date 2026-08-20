@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/whisper_item.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pb.dart';
@@ -34,7 +35,7 @@ class _WhisperPageState extends State<WhisperPage> {
         actions: [
           IconButton(
             tooltip: '新增粉丝',
-            onPressed: () => Get.toNamed(
+            onPressed: () => AppNavigator.toNamed(
               '/webview',
               parameters: {
                 'url':
@@ -207,7 +208,7 @@ class _WhisperPageState extends State<WhisperPage> {
                   return;
                 }
                 _controller.unreadCounts[index] = 0;
-                Get.toNamed(item.route);
+                AppNavigator.toNamed(item.route);
               },
             );
           }),

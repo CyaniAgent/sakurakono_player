@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/space_opus.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -109,7 +110,7 @@ class _MemberShopState extends State<MemberShop>
                             clickUrl,
                           ).queryParameters['url'];
                           if (url case final url?) {
-                            Get.toNamed(
+                            AppNavigator.toNamed(
                               '/webview',
                               parameters: {'url': url},
                             );

@@ -1,4 +1,5 @@
 import 'package:skf/adapters/bilibili/http/member.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -150,7 +151,7 @@ Future<void> showMemberReportDialog(
               if (reason.isEmpty) {
                 SmartDialog.showToast('至少选择一项作为举报内容');
               } else {
-                Get.back();
+                AppNavigator.back();
                 MemberHttp.reportMember(
                   mid,
                   reason: reason.join(','),

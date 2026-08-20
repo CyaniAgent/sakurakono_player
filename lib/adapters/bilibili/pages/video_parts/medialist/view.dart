@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/badge.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
@@ -82,7 +83,7 @@ class _MediaListPanelState extends State<MediaListPanel>
                     ? const Icon(MdiIcons.sortAscending)
                     : const Icon(MdiIcons.sortDescending),
                 onPressed: () {
-                  Get.back();
+                  AppNavigator.back();
                   widget.onReverse();
                 },
               ),
@@ -175,7 +176,7 @@ class _MediaListPanelState extends State<MediaListPanel>
                 SmartDialog.showToast('不支持播放该类型视频');
                 return;
               }
-              Get.back();
+              AppNavigator.back();
               widget.onChangeEpisode(item);
             },
             onLongPress: onLongPress,

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math';
 
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
-import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 
@@ -128,7 +130,7 @@ class PostPanel extends CommonSlidePage {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => Get.back(result: initV),
+                        onPressed: () => AppNavigator.back(result: initV),
                         child: const Text('确定'),
                       ),
                     ],
@@ -303,8 +305,8 @@ class _PostPanelState extends State<PostPanel>
   }
 
   Future<void> _onPost() async {
-    Get.back();
-    final res = await Get.find<SponsorBlockRepository>().postSkipSegments(
+    AppNavigator.back();
+    final res = await appRead(sponsorBlockRepositoryProvider).postSkipSegments(
       bvid: videoDetailController.bvid,
       cid: videoDetailController.cid.value,
       videoDuration: videoDuration,
@@ -312,7 +314,7 @@ class _PostPanelState extends State<PostPanel>
     );
 
     if (res case Success(:final response)) {
-      Get.back();
+      AppNavigator.back();
       SmartDialog.showToast('提交成功');
       list.clear();
       videoDetailController.block.handleSBData(response);

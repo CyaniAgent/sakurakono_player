@@ -1,4 +1,5 @@
 import 'dart:convert' show base64, jsonDecode, jsonEncode, utf8;
+import 'package:skf/router/app_navigator.dart';
 import 'dart:io' show Platform;
 
 import 'package:skf/adapters/bilibili/http/browser_ua.dart';
@@ -23,7 +24,7 @@ class GeetestWebviewDialog extends StatefulWidget {
 
   static Future geetest(String gt, String challenge) {
     return showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (context) => GeetestWebviewDialog(gt, challenge),
     );
   }
@@ -101,7 +102,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
 
     if (config is Error) {
       config.toast();
-      Get.back();
+      AppNavigator.back();
       return;
     }
 
@@ -126,20 +127,20 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
         final dataStr = msgStr.substring("success:".length);
         try {
           final data = jsonDecode(dataStr);
-          Get.back(result: data);
+          AppNavigator.back(result: data);
         } catch (e) {
           debugPrint('geetest decode error: $e');
         }
       } else if (msgStr.startsWith("error:")) {
         debugPrint('geetest error: $msgStr');
       } else if (msgStr.startsWith('close:')) {
-        Get.back();
+        AppNavigator.back();
       }
     });
 
     _linuxWebview!.onClose.whenComplete(() {
       if (mounted) {
-        Get.back();
+        AppNavigator.back();
       }
     });
 
@@ -249,7 +250,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
                 callback: (args) {
                   if (args.isNotEmpty) {
                     if (args[0] case Map<String, dynamic> data) {
-                      Get.back(result: data);
+                      AppNavigator.back(result: data);
                       return;
                     }
                   }
@@ -264,7 +265,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
               )
               ..addJavaScriptHandler(
                 handlerName: 'close',
-                callback: (args) => Get.back(),
+                callback: (args) => AppNavigator.back(),
               );
           },
           onLoadStop: (ctr, _) async {
@@ -274,7 +275,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
               ctr.evaluateJavascript(source: _showJs(response));
             } else {
               config.toast();
-              Get.back();
+              AppNavigator.back();
             }
           },
         ),

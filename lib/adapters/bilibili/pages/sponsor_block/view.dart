@@ -1,9 +1,11 @@
 import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/user_info.dart';
 import 'package:skf/pages/setting/slide_color_picker.dart';
 import 'package:skf/utils/filtering_text.dart';
@@ -58,11 +60,11 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
   }
 
   Future<void> _checkServerStatus() async {
-    _serverStatus.value = (await Get.find<SponsorBlockRepository>().uptimeStatus()).isSuccess;
+    _serverStatus.value = (await appRead(sponsorBlockRepositoryProvider).uptimeStatus()).isSuccess;
   }
 
   Future<void> _getUserInfo() async {
-    final info = await Get.find<SponsorBlockRepository>().userInfo(
+    final info = await appRead(sponsorBlockRepositoryProvider).userInfo(
       const [
         'viewCount',
         'minutesSaved',
@@ -112,7 +114,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                   onPressed: () {
                     try {
                       _blockLimit = double.parse(_textController.text);
-                      Get.back();
+                      AppNavigator.back();
                       setting.put(SettingBoxKey.blockLimit, _blockLimit);
                       (context as Element).markNeedsBuild();
                     } catch (e) {
@@ -183,7 +185,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Get.back();
+                      AppNavigator.back();
                       _userId = Digest(
                         List.generate(16, (_) => Utils.random.nextInt(256)),
                       ).toString();
@@ -204,7 +206,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                   TextButton(
                     onPressed: () {
                       if (key.currentState?.validate() == true) {
-                        Get.back();
+                        AppNavigator.back();
                         _userId = _textController.text;
                         setting.put(SettingBoxKey.blockUserID, _userId);
                         (context as Element).markNeedsBuild();
@@ -336,7 +338,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Get.back();
+                    AppNavigator.back();
                     _blockServer = HttpString.sponsorBlockBaseUrl;
                     setting.put(SettingBoxKey.blockServer, _blockServer);
                     Request.accountManager.blockServer = _blockServer;
@@ -355,7 +357,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Get.back();
+                    AppNavigator.back();
                     _blockServer = _textController.text;
                     setting.put(SettingBoxKey.blockServer, _blockServer);
                     Request.accountManager.blockServer = _blockServer;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/pages/home/view.dart' show msgBadge;
@@ -19,25 +20,25 @@ class BiliMineActions implements MineActions {
     MineMenuItem(
       icon: CustomIcons.folderDownloadOutline,
       title: '离线缓存',
-      onTap: () => Get.toNamed('/download'),
+      onTap: () => AppNavigator.toNamed('/download'),
     ),
     MineMenuItem(
       icon: CustomIcons.history,
       title: '观看记录',
       loginRequired: true,
-      onTap: () => Get.toNamed('/history'),
+      onTap: () => AppNavigator.toNamed('/history'),
     ),
     MineMenuItem(
       icon: CustomIcons.subscriptions_outlined,
       title: '我的订阅',
       loginRequired: true,
-      onTap: () => Get.toNamed('/subscription'),
+      onTap: () => AppNavigator.toNamed('/subscription'),
     ),
     MineMenuItem(
       icon: CustomIcons.watch_later_outlined,
       title: '稍后再看',
       loginRequired: true,
-      onTap: () => Get.toNamed('/later'),
+      onTap: () => AppNavigator.toNamed('/later'),
     ),
   ];
 
@@ -55,29 +56,29 @@ class BiliMineActions implements MineActions {
   Widget? buildMsgBadge() => msgBadge(Get.find<MainControllerNotifier>());
 
   @override
-  void openSearch() => Get.toNamed('/search');
+  void openSearch() => AppNavigator.toNamed('/search');
 
   @override
-  void openReply() => Get.toNamed('/myReply');
+  void openReply() => AppNavigator.toNamed('/myReply');
 
   @override
-  void openSetting() => Get.toNamed('/setting', preventDuplicates: false);
+  void openSetting() => AppNavigator.toNamed('/setting', preventDuplicates: false);
 
   @override
   Future<void>? switchAccountDialog(BuildContext context) =>
       LoginNotifier.switchAccountDialog(context);
 
   @override
-  void openLoginPage() => Get.toNamed('/loginPage');
+  void openLoginPage() => AppNavigator.toNamed('/loginPage');
 
   @override
-  void openMemberPage(int? mid) => Get.toNamed('/member?mid=$mid');
+  void openMemberPage(int? mid) => AppNavigator.toNamed('/member?mid=$mid');
 
   @override
-  void openUserPage(String name, int mid) => Get.toNamed('/$name?mid=$mid');
+  void openUserPage(String name, int mid) => AppNavigator.toNamed('/$name?mid=$mid');
 
   @override
-  Future<dynamic>? openFav() => Get.toNamed('/fav');
+  Future<dynamic>? openFav() => AppNavigator.toNamed('/fav');
 
   @override
   void openFavDetail(
@@ -85,7 +86,7 @@ class BiliMineActions implements MineActions {
     String heroTag,
     VoidCallback onPop,
   ) =>
-      Get.toNamed(
+      AppNavigator.toNamed(
         '/favDetail',
         arguments: item,
         parameters: {

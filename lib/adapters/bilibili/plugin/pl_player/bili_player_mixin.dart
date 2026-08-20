@@ -1,4 +1,5 @@
 import 'dart:convert' show ascii;
+import 'package:skf/router/app_navigator.dart';
 import 'dart:io' show Platform;
 import 'dart:math' show max, min;
 import 'dart:ui' as ui;
@@ -494,7 +495,7 @@ mixin BiliPlayerMixin on PlayerController {
     if (image != null) {
       SmartDialog.showToast('点击弹窗保存截图');
       showDialog(
-        context: Get.context!,
+        context: AppNavigator.context!,
         builder: (context) => GestureDetector(
           onTap: () async {
             final bytes = await image.toByteData(format: .png);
@@ -504,7 +505,7 @@ mixin BiliPlayerMixin on PlayerController {
                 fileName: 'screenshot_${cid}_$time',
               );
             }
-            Get.back();
+            AppNavigator.back();
           },
           child: Align(
             alignment: Alignment.centerRight,

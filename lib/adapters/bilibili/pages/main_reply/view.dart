@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_reply.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -29,7 +30,7 @@ class MainReplyPage extends StatefulWidget {
     required int oid,
     required int replyType,
   }) {
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/mainReply',
       arguments: {
         'oid': oid,
@@ -219,7 +220,7 @@ class _MainReplyPageState extends State<MainReplyPage>
     EasyThrottle.throttle('replyReply', const Duration(milliseconds: 500), () {
       int oid = replyItem.oid.toInt();
       int rpid = replyItem.id.toInt();
-      Get.to(
+      AppNavigator.to(
         Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(

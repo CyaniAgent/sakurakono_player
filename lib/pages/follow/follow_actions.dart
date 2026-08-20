@@ -5,13 +5,11 @@
 library;
 
 import 'dart:math';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/core/models/user_types.dart' show CoreRelationData;
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/widgets/follow_tag_panel.dart';
 import 'package:skf/router/app_navigator.dart';
@@ -22,7 +20,6 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -47,7 +44,7 @@ abstract final class FollowActions {
       ),
     );
     if (onCreate) {
-      final res = await (ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).createFollowTag(tagName);
+      final res = await (ref?.read(memberRepositoryProvider) ?? appRead(memberRepositoryProvider)).createFollowTag(tagName);
       if (res case Success(:final response)) {
         onSuccess((tagid: response, tagName: tagName));
         SmartDialog.showToast('创建成功');
@@ -68,7 +65,7 @@ abstract final class FollowActions {
   }) async {
     feedBack();
     if (!isFollow) {
-      final res = await (ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
+      final res = await (ref?.read(videoRepositoryProvider) ?? appRead(videoRepositoryProvider)).relationMod(
         mid: mid,
         act: 1,
         reSrc: 11,
@@ -81,7 +78,7 @@ abstract final class FollowActions {
       }
     } else {
       if (followStatus?.tag == null) {
-        final res = await (ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userRelation(mid);
+        final res = await (ref?.read(userRepositoryProvider) ?? appRead(userRepositoryProvider)).userRelation(mid);
         if (res case Success(:final response)) {
           followStatus = response;
         } else {
@@ -102,7 +99,7 @@ abstract final class FollowActions {
               DialogOption(
                 onPressed: () async {
                   AppNavigator.back();
-                  final res = await (ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).specialAction(
+                  final res = await (ref?.read(memberRepositoryProvider) ?? appRead(memberRepositoryProvider)).specialAction(
                     fid: mid,
                     isAdd: !isSpecialFollowed,
                   );
@@ -158,7 +155,7 @@ abstract final class FollowActions {
               DialogOption(
                 onPressed: () async {
                   AppNavigator.back();
-                  final res = await (ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
+                  final res = await (ref?.read(videoRepositoryProvider) ?? appRead(videoRepositoryProvider)).relationMod(
                     mid: mid,
                     act: 2,
                     reSrc: 11,

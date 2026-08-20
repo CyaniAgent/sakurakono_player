@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/custom_icon.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_mixin.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
@@ -73,7 +74,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
             ),
             onTap: () {
               if (liveRoomCtr.isLogin) {
-                Get.toNamed(
+                AppNavigator.toNamed(
                   '/liveDmBlockPage',
                   parameters: {
                     'roomId': liveRoomCtr.roomId.toString(),

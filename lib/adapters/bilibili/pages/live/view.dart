@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_card_v.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/button/more_btn.dart';
@@ -148,7 +149,7 @@ class _LivePageState extends State<LivePage>
                       context: context,
                       tooltip: '游戏赛事',
                       icon: const Icon(Icons.gamepad),
-                      onPressed: () => Get.toNamed(
+                      onPressed: () => AppNavigator.toNamed(
                         '/webview',
                         parameters: {
                           'uaType': 'mob',
@@ -164,7 +165,7 @@ class _LivePageState extends State<LivePage>
                       context: context,
                       tooltip: '全部标签',
                       icon: const Icon(Icons.widgets),
-                      onPressed: () => Get.to(const LiveAreaPage()),
+                      onPressed: () => AppNavigator.to(const LiveAreaPage()),
                     ),
                   ],
                 ),
@@ -289,7 +290,7 @@ class _LivePageState extends State<LivePage>
                 ),
               ),
               moreTextButton(
-                onTap: () => Get.to(const LiveFollowPage()),
+                onTap: () => AppNavigator.to(const LiveFollowPage()),
                 color: theme.colorScheme.outline,
               ),
             ],
@@ -324,7 +325,7 @@ class _LivePageState extends State<LivePage>
                   return Align(
                     alignment: const Alignment(0, -0.3),
                     child: GestureDetector(
-                      onTap: () => Get.to(const LiveFollowPage()),
+                      onTap: () => AppNavigator.to(const LiveFollowPage()),
                       child: Container(
                         width: 40,
                         height: 40,
@@ -350,11 +351,11 @@ class _LivePageState extends State<LivePage>
                       onTap: () => PageUtils.toLiveRoom(item.roomid),
                       onLongPress: () {
                         Feedback.forLongPress(context);
-                        Get.toNamed('/member?mid=${item.uid}');
+                        AppNavigator.toNamed('/member?mid=${item.uid}');
                       },
                       onSecondaryTap: PlatformUtils.isMobile
                           ? null
-                          : () => Get.toNamed('/member?mid=${item.uid}'),
+                          : () => AppNavigator.toNamed('/member?mid=${item.uid}'),
                       child: Column(
                         mainAxisSize: .min,
                         children: [

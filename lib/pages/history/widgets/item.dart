@@ -1,11 +1,10 @@
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/progress_bar/video_progress_indicator.dart';
 import 'package:skf/common/widgets/select_mask.dart';
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/models/search_types.dart' show CoreDimension;
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/user_types.dart' show CoreHistoryItemModel;
@@ -18,7 +17,6 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HistoryItem extends StatelessWidget {
@@ -98,7 +96,7 @@ class HistoryItem extends StatelessWidget {
                   int? cid = item.history.cid;
                   CoreDimension? dimension;
                   if (cid == null) {
-                    if (await (ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2cWithDimension(
+                    if (await (ref?.read(searchRepositoryProvider) ?? appRead(searchRepositoryProvider)).ab2cWithDimension(
                           aid: aid,
                           bvid: bvid,
                           part: item.history.page,
@@ -247,7 +245,7 @@ class HistoryItem extends StatelessWidget {
                       business?.contains('article') != true)
                     PopupMenuItem(
                       onTap: () =>
-                          (ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewLater(bvid: item.history.bvid),
+                          (ref?.read(userRepositoryProvider) ?? appRead(userRepositoryProvider)).toViewLater(bvid: item.history.bvid),
                       height: 38,
                       child: const Row(
                         children: [

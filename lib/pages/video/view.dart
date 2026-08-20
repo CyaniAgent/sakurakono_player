@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math';
 
 import 'package:skf/common/assets.dart';
@@ -46,7 +47,7 @@ class VideoDetailPageV extends StatefulWidget {
 
 class _VideoDetailPageVState extends State<VideoDetailPageV>
     with RouteAware, RouteAwareMixin, WidgetsBindingObserver {
-  final heroTag = Get.arguments['heroTag'];
+  final heroTag = AppNavigator.arguments['heroTag'];
 
   late final VideoDetailController videoDetailController;
   late final PlayerController plPlayerController;

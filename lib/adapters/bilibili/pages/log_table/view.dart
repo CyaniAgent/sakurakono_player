@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/log_table/controller.dart';
@@ -14,7 +15,7 @@ class LogPage<T> extends StatefulWidget {
 }
 
 class _LogPageState<T> extends State<LogPage<T>> {
-  final _controller = Get.put<LogController<dynamic, T>>(Get.arguments);
+  final _controller = Get.put<LogController<dynamic, T>>(AppNavigator.arguments);
 
   @override
   Widget build(BuildContext context) {

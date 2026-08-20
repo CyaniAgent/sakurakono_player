@@ -1,4 +1,5 @@
 import 'package:skf/common/assets.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/constants.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/animated_height.dart';
@@ -693,7 +694,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
             text: '@${currentDesc.rawText}',
             style: TextStyle(color: colorSchemePrimary),
             recognizer: NoDeadlineTapGestureRecognizer()
-              ..onTap = () => Get.toNamed('/member?mid=${currentDesc.bizId}'),
+              ..onTap = () => AppNavigator.toNamed('/member?mid=${currentDesc.bizId}'),
           );
         default:
           return const TextSpan();
@@ -736,7 +737,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                     if (!isPortrait && introController.horizontalMemberPage) {
                       widget.onShowMemberPage(mid);
                     } else {
-                      Get.toNamed(
+                      AppNavigator.toNamed(
                         '/member?mid=$mid&from_view_aid=${videoDetailCtr.aid}',
                       );
                     }
@@ -767,7 +768,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
     int? ownerMid,
     Staff item,
   ) {
-    void onTap() => Get.toNamed(
+    void onTap() => AppNavigator.toNamed(
       '/member?mid=${item.mid}&from_view_aid=${videoDetailCtr.aid}',
     );
     return GestureDetector(
@@ -895,7 +896,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
     behavior: .opaque,
     onSecondaryTap:
         PlatformUtils.isDesktop && introController.horizontalMemberPage
-        ? () => Get.toNamed(
+        ? () => AppNavigator.toNamed(
             '/member?mid=${introController.userStat.value.card?.mid}&from_view_aid=${videoDetailCtr.aid}',
           )
         : null,
@@ -1027,15 +1028,15 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                   _ => item.tagName!,
                 },
                 onTap: switch (item.tagType) {
-                  'bgm' => (_) => Get.toNamed(
+                  'bgm' => (_) => AppNavigator.toNamed(
                     '/musicDetail',
                     parameters: {'musicId': item.musicId!},
                   ),
-                  'topic' => (_) => Get.toNamed(
+                  'topic' => (_) => AppNavigator.toNamed(
                     '/dynTopic',
                     parameters: {'id': item.tagId!.toString()},
                   ),
-                  _ => (tagName) => Get.toNamed(
+                  _ => (tagName) => AppNavigator.toNamed(
                     '/searchResult',
                     parameters: {'keyword': tagName},
                   ),

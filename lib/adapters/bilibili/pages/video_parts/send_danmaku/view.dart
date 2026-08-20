@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/danmaku_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
@@ -447,7 +449,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   Future<void> onCustomPublish({List? pictures}) async {
     SmartDialog.showLoading(msg: '发送中...');
     bool isColorful = _color.value == Colors.transparent;
-    final res = await Get.find<DanmakuRepository>().shootDanmaku(
+    final res = await appRead(danmakuRepositoryProvider).shootDanmaku(
       oid: widget.cid,
       bvid: widget.bvid,
       progress: widget.progress,
@@ -460,7 +462,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
       hasPub = true;
-      Get.back();
+      AppNavigator.back();
       SmartDialog.showToast('发送成功');
       VideoDanmaku? extra;
       if (response.dmid case final dmid?) {

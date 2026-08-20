@@ -35,7 +35,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 abstract final class PageUtils {
@@ -50,7 +50,7 @@ abstract final class PageUtils {
     ValueChanged<int>? onPageChanged,
     String tag = '',
   }) {
-    return Get.key.currentState!.push<void>(
+    return AppNavigator.navigatorKey.currentState!.push<void>(
       HeroDialogRoute(
         pageBuilder: (context, animation, secondaryAnimation) => GalleryViewer(
           sources: imgList,
@@ -88,7 +88,7 @@ abstract final class PageUtils {
 
     if (userList.isEmpty && context.mounted) {
       final UserModel? userModel = await Navigator.of(context).push(
-        GetPageRoute(page: () => const ContactPage()),
+      MaterialPageRoute<UserModel>(builder: (_) => const ContactPage()),
       );
       if (userModel != null) {
         userList.add(userModel);
@@ -182,7 +182,7 @@ abstract final class PageUtils {
   }
 
   static void reportVideo(int aid) {
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/webview',
       parameters: {'url': 'https://www.bilibili.com/appeal/?avid=$aid'},
     );
@@ -380,7 +380,7 @@ abstract final class PageUtils {
           final String? url = medialist.jumpUrl;
           if (url != null) {
             if (url.contains('medialist/detail/ml')) {
-              Get.toNamed(
+              AppNavigator.toNamed(
                 '/favDetail',
                 parameters: {
                   'heroTag': '${medialist.cover}',
@@ -441,13 +441,13 @@ abstract final class PageUtils {
       launchURL(url);
     } else {
       if (off) {
-        Get.offNamed(
+        AppNavigator.replaceNamed(
           '/webview',
           parameters: {'url': url},
           arguments: {'inApp': true},
         );
       } else {
-        Get.toNamed(
+        AppNavigator.toNamed(
           '/webview',
           parameters: {'url': url},
           arguments: {'inApp': true},
@@ -482,7 +482,7 @@ abstract final class PageUtils {
       }
     } else {
       if (off) {
-        Get.offNamed(
+        AppNavigator.replaceNamed(
           '/webview',
           parameters: {
             'url': url,
@@ -504,7 +504,7 @@ abstract final class PageUtils {
     if (!context.mounted) {
       return null;
     }
-    return Get.key.currentState!.push(
+    return AppNavigator.navigatorKey.currentState!.push(
       PublishRoute(
         pageBuilder: (context, animation, secondaryAnimation) {
           final isPortrait = context.isPortrait;
@@ -536,7 +536,7 @@ abstract final class PageUtils {
             child: child,
           );
         },
-        settings: RouteSettings(arguments: Get.arguments),
+        settings: RouteSettings(arguments: AppNavigator.arguments),
       ),
     );
   }
@@ -549,7 +549,7 @@ abstract final class PageUtils {
       return;
     }
     if (off) {
-      Get.offNamed('/liveRoom', arguments: roomId);
+      AppNavigator.replaceNamed('/liveRoom', arguments: roomId);
     } else {
       PageUtils.toDupNamed('/liveRoom', arguments: roomId);
     }
@@ -594,13 +594,13 @@ abstract final class PageUtils {
       ...?extraArguments,
     };
     if (off) {
-      return Get.offNamed(
+      return AppNavigator.replaceNamed(
         '/videoV',
         arguments: arguments,
         preventDuplicates: false,
       );
     } else {
-      return Get.toNamed(
+      return AppNavigator.toNamed(
         '/videoV',
         arguments: arguments,
         preventDuplicates: false,
@@ -809,14 +809,14 @@ abstract final class PageUtils {
     bool off = false,
   }) {
     if (off) {
-      Get.offNamed(
+      AppNavigator.replaceNamed(
         page,
         arguments: arguments,
         parameters: parameters,
         preventDuplicates: false,
       );
     } else {
-      Get.toNamed(
+      AppNavigator.toNamed(
         page,
         arguments: arguments,
         parameters: parameters,

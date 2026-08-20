@@ -5,6 +5,9 @@
 // 通过 [VideoHost] 注入。OttoHub 侧见 ottohub/services/otto_video_host.dart。
 
 import 'dart:math' show max, min;
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,8 +90,6 @@ import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/pages/video/controller.dart';
 import 'package:skf/pages/video/video_host.dart';
@@ -638,7 +639,7 @@ class BiliVideoHost implements VideoHost {
     required double maxHeight,
   }) {
     final ctr = Get.find<VideoDetailController>(tag: heroTag);
-    final context = Get.context!;
+    final context = AppNavigator.context!;
     final widgets = <Widget>[];
     if (ctr.enableBlock || ctr.continuePlayingPart) {
       widgets.add(
@@ -856,7 +857,7 @@ class BiliVideoHost implements VideoHost {
               const SizedBox(height: 8),
               Divider(
                 height: 1,
-                color: Theme.of(Get.context!).colorScheme.outline.withValues(
+                color: Theme.of(AppNavigator.context!).colorScheme.outline.withValues(
                   alpha: 0.1,
                 ),
               ),
@@ -972,7 +973,7 @@ class BiliVideoHost implements VideoHost {
   }) async {
     final ctr = Get.find<VideoDetailController>(tag: heroTag);
     final player = ctr.plPlayerController as PlPlayerController;
-    await Get.key.currentState!.push(
+    await AppNavigator.push(
       PublishRoute(
         pageBuilder: (buildContext, animation, secondaryAnimation) {
           final child = SendDanmakuPanel(
@@ -1088,14 +1089,14 @@ class BiliVideoHost implements VideoHost {
               (isFavSource(ctr.args['sourceType']) && ctr.args['isOwner'] == true)
           ? (item, index) async {
               if (isWatchLaterSource(ctr.args['sourceType'])) {
-                final res = await Get.find<UserRepository>().toViewDel(
+                final res = await appRead(userRepositoryProvider).toViewDel(
                   aids: item.aid.toString(),
                 );
                 if (res.isSuccess) {
                   ctr.mediaList.removeAt(index);
                 }
               } else {
-                final res = await Get.find<FavRepository>().favVideo(
+                final res = await appRead(favRepositoryProvider).favVideo(
                   resources: '${item.aid}:${item.type}',
                   delIds: '${ctr.args['mediaId']}',
                 );
@@ -1345,7 +1346,7 @@ class BiliVideoHost implements VideoHost {
     final ctr = Get.find<VideoDetailController>(tag: heroTag);
     assert((cid == null) == (bvid == null));
     if (cid == null) {
-      ctr.showMediaListPanel(Get.context!);
+      ctr.showMediaListPanel(AppNavigator.context!);
       return;
     }
     Widget listSheetContent({bool enableSlide = true}) => EpisodePanel(
@@ -1382,7 +1383,7 @@ class BiliVideoHost implements VideoHost {
           : Get.find<PgcIntroController>(tag: heroTag).onChangeEpisode,
       onClose: Get.back,
       onReverse: () {
-        Get.back();
+        AppNavigator.back();
         onReversePlay(heroTag, isSeason: season != null);
       },
     );
@@ -1390,7 +1391,7 @@ class BiliVideoHost implements VideoHost {
     if (isFullScreen || ctr.showVideoSheet) {
       final child = listSheetContent(enableSlide: false);
       PageUtils.showVideoBottomSheet(
-        Get.context!,
+        AppNavigator.context!,
         child: ctr.plPlayerController.darkVideoPage
             ? Theme(data: ThemeUtils.darkTheme, child: child)
             : child,
@@ -1414,7 +1415,7 @@ class BiliVideoHost implements VideoHost {
     );
     if (player.isFullScreen.value || ctr.showVideoSheet) {
       PageUtils.showVideoBottomSheet(
-        Get.context!,
+        AppNavigator.context!,
         child: player.darkVideoPage
             ? Theme(data: ThemeUtils.darkTheme, child: child)
             : child,

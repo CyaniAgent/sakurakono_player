@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async' show StreamSubscription;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/grpc/bilibili/app/listener/v1.pbenum.dart'
@@ -26,7 +27,6 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 abstract final class PiliScheme {
   static late AppLinks appLinks;
@@ -101,9 +101,7 @@ abstract final class PiliScheme {
       case 'bilibili':
         switch (host) {
           case 'root':
-            Get.key.currentState!.popUntil(
-              (Route<dynamic> route) => route.isFirst,
-            );
+            AppNavigator.popUntilFirst();
             return true;
           case 'pgc':
             // bilibili://pgc/season/ep/123456?h5_awaken_params=random
@@ -207,7 +205,7 @@ abstract final class PiliScheme {
               );
               return true;
             }
-            Get.toNamed('/search');
+            AppNavigator.toNamed('/search');
             return true;
           case 'article':
             // bilibili://article/40679479?jump_opus=1&jump_opus_type=1&opus_type=article&h5awaken=random
@@ -347,7 +345,7 @@ abstract final class PiliScheme {
             }
             return false;
           case 'history':
-            Get.toNamed('/history');
+            AppNavigator.toNamed('/history');
             return true;
           case 'main':
             if (path.startsWith('/favorite')) {
@@ -360,12 +358,12 @@ abstract final class PiliScheme {
                   if (kDebugMode) debugPrint('favorite jump: $e');
                 }
               }
-              Get.toNamed('/fav', arguments: index);
+              AppNavigator.toNamed('/fav', arguments: index);
               return true;
             }
             return false;
           case 'livearea':
-            Get.to(
+            AppNavigator.to(
               Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(title: const Text('直播')),
@@ -374,7 +372,7 @@ abstract final class PiliScheme {
             );
             return true;
           case 'rank':
-            Get.to(
+            AppNavigator.to(
               Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(title: const Text('排行榜')),
@@ -383,13 +381,13 @@ abstract final class PiliScheme {
             );
             return true;
           case 'login':
-            Get.toNamed('/loginPage');
+            AppNavigator.toNamed('/loginPage');
             return true;
           case 'music':
             if (path.startsWith('/playlist/')) {
               final mediaId = uriDigitRegExp.firstMatch(path)?.group(1);
               if (mediaId != null) {
-                Get.toNamed(
+                AppNavigator.toNamed(
                   '/favDetail',
                   parameters: {
                     'mediaId': mediaId,
@@ -401,7 +399,7 @@ abstract final class PiliScheme {
             }
             return false;
           case 'download':
-            Get.toNamed('/download');
+            AppNavigator.toNamed('/download');
             return true;
           default:
             if (!selfHandle) {
@@ -491,8 +489,8 @@ abstract final class PiliScheme {
         if (queryParameters['vote_id'] case final voteIdStr?) {
           final voteId = int.tryParse(voteIdStr);
           if (voteId != null) {
-            if (Get.context != null) {
-              showVoteDialog(Get.context!, voteId);
+            if (AppNavigator.context != null) {
+              showVoteDialog(AppNavigator.context!, voteId);
             }
             return true;
           }
@@ -828,7 +826,7 @@ abstract final class PiliScheme {
         // https://www.bilibili.com/bubble/home/1
         final id = uriDigitRegExp.firstMatch(path)?.group(1);
         if (id != null) {
-          Get.toNamed('/bubble', arguments: {'id': id});
+          AppNavigator.toNamed('/bubble', arguments: {'id': id});
           return true;
         }
         launchURL();

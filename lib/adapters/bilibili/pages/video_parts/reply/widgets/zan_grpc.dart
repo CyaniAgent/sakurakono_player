@@ -1,13 +1,13 @@
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
-import 'package:skf/core/repository/reply_repository.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 class ZanButtonGrpc extends StatelessWidget {
   const ZanButtonGrpc({
@@ -33,7 +33,7 @@ class ZanButtonGrpc extends StatelessWidget {
     final int rpid = replyItem.id.toInt();
     // 1 已点赞 2 不喜欢 0 未操作
     final int action = isDislike ? 0 : 2;
-    final res = await Get.find<ReplyRepository>().hateReply(
+    final res = await appRead(replyRepositoryProvider).hateReply(
       type: replyItem.type.toInt(),
       action: action == 2 ? 1 : 0,
       oid: oid,
@@ -74,7 +74,7 @@ class ZanButtonGrpc extends StatelessWidget {
     final int rpid = replyItem.id.toInt();
     // 1 已点赞 2 不喜欢 0 未操作
     final int action = isLike ? 0 : 1;
-    final res = await Get.find<ReplyRepository>().likeReply(
+    final res = await appRead(replyRepositoryProvider).likeReply(
       type: replyItem.type.toInt(),
       oid: oid,
       rpid: rpid,

@@ -1,4 +1,5 @@
 import 'dart:io' show Platform, Process;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/pages/common/multi_select/base.dart'
@@ -7,7 +8,6 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/route_manager.dart';
 
 class BiliDownloadEntryInfo with MultiSelectData {
   int mediaType;
@@ -128,7 +128,7 @@ class BiliDownloadEntryInfo with MultiSelectData {
               '访问${ownerName != null ? '：$ownerName' : '用户主页'}',
               style: const TextStyle(fontSize: 13),
             ),
-            onTap: () => Get.toNamed('/member?mid=$mid'),
+            onTap: () => AppNavigator.toNamed('/member?mid=$mid'),
           ),
       ],
     ),

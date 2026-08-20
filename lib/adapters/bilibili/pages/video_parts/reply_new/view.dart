@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:io';
 import 'dart:math' show max;
 
@@ -12,7 +15,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
     show ReplyInfo;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
-import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart' show FilePicModel;
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_mention/controller.dart';
@@ -60,7 +62,7 @@ class ReplyPage extends CommonRichTextPubPage {
 
 class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
   final RxBool _syncToDynamic = false.obs;
-  final heroTag = Get.arguments?['heroTag'];
+  final heroTag = AppNavigator.arguments?['heroTag'];
 
   @override
   void dispose() {
@@ -77,7 +79,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
   }
 
   late final darkVideoPage =
-      Get.currentRoute == '/videoV' && Pref.darkVideoPage;
+      AppNavigator.currentRoute == '/videoV' && Pref.darkVideoPage;
   late ThemeData themeData;
 
   @override
@@ -290,7 +292,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
         children: [
           item(
             onTap: () async {
-              final ({String title, String url})? res = await Get.to(
+              final ({String title, String url})? res = await AppNavigator.to(
                 ReplySearchPage(type: widget.replyType, oid: widget.oid),
               );
               if (res != null) {
@@ -308,7 +310,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             // if (isRoot)
             //   item(
             //     onTap: () {
-            //       Get.back();
+            //       AppNavigator.back();
             //       try {
             //         Get.find<VideoDetailController>(tag: heroTag)
             //             .showNoteList(context);
@@ -392,7 +394,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
       }
     }
     String message = editController.rawText;
-    final res = await Get.find<ReplyRepository>().replyAdd(
+    final res = await appRead(replyRepositoryProvider).replyAdd(
       type: widget.replyType,
       oid: widget.oid,
       root: widget.root,
@@ -407,7 +409,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
     if (res case Success(:final response)) {
       hasPub = true;
       SmartDialog.showToast('发送成功');
-      Get.back(result: response);
+      AppNavigator.back(result: response);
     } else {
       res.toast();
     }

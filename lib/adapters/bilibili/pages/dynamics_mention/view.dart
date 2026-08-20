@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math';
 
 import 'package:skf/common/widgets/flutter/draggable_scrollable_sheet.dart';
@@ -32,7 +33,7 @@ class DynMentionPanel extends StatefulWidget {
     ValueChanged<double>? onCachePos,
   }) {
     return showModalBottomSheet(
-      context: Get.context!,
+      context: AppNavigator.context!,
       useSafeArea: true,
       isScrollControlled: true,
       constraints: BoxConstraints(
@@ -210,7 +211,7 @@ class _DynMentionPanelState
                           _controller.showBtn.value = false;
                           return;
                         }
-                        Get.back(result: _controller.mentionList);
+                        AppNavigator.back(result: _controller.mentionList);
                         _controller.showBtn.value = false;
                       },
                       child: const Icon(Icons.check),
@@ -259,7 +260,7 @@ class _DynMentionPanelState
                           final item = group.items![index];
                           return DynMentionItem(
                             item: item,
-                            onTap: () => Get.back(result: item),
+                            onTap: () => AppNavigator.back(result: item),
                             onCheck: (value) =>
                                 _controller.onCheck(value, item),
                           );

@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/pages/search/controller.dart' show DebounceStreamState;
 import 'package:skf/adapters/bilibili/pages/setting_parts/models/extra_settings.dart';
@@ -68,7 +69,7 @@ class _SettingsSearchPageState
                 _textEditingController.clear();
                 _list.clear();
               } else {
-                Get.back();
+                AppNavigator.back();
               }
             },
             icon: const Icon(Icons.clear),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/common/widgets/dialog/report.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
@@ -100,7 +101,7 @@ class BiliDynamicsHost implements DynamicsHost {
   }
 
   @override
-  void openLiveFollowPage() => Get.to(const LiveFollowPage());
+  void openLiveFollowPage() => AppNavigator.to(const LiveFollowPage());
 
   @override
   void toLiveRoom(int? roomId) => PageUtils.toLiveRoom(roomId);
@@ -116,7 +117,7 @@ class BiliDynamicsHost implements DynamicsHost {
 
   @override
   void openLotteryResult(String businessId) {
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/webview',
       parameters: {
         'url':
@@ -191,7 +192,7 @@ class BiliDynamicsHost implements DynamicsHost {
                     style: const TextStyle(fontSize: 14),
                   ),
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     onSetReplySubject(enableSelection ? 2 : 1);
                   },
                 ),
@@ -203,7 +204,7 @@ class BiliDynamicsHost implements DynamicsHost {
                     style: const TextStyle(fontSize: 14),
                   ),
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     onSetReplySubject(enableReply ? 3 : 4);
                   },
                 ),

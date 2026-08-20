@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/list_tile.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
@@ -48,7 +49,7 @@ class DynReactPage extends StatelessWidget {
                       dense: true,
                       safeArea: false,
                       visualDensity: .standard,
-                      onTap: () => Get.toNamed('/member?mid=${item.mid}'),
+                      onTap: () => AppNavigator.toNamed('/member?mid=${item.mid}'),
                       leading: PendantAvatar(item.face!, size: 36),
                       title: Text.rich(
                         TextSpan(

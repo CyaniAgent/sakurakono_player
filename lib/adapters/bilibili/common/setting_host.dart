@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -87,7 +88,7 @@ class BiliSettingHost implements SettingHost {
       );
 
   @override
-  VoidCallback? get searchTap => () => Get.toNamed('/settingsSearch');
+  VoidCallback? get searchTap => () => AppNavigator.toNamed('/settingsSearch');
 
   @override
   Future<void> switchAccountDialog(BuildContext context) async {
@@ -133,7 +134,7 @@ class BiliSettingHost implements SettingHost {
             ),
             TextButton(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 doLogout();
               },
               child: Text(
@@ -148,7 +149,7 @@ class BiliSettingHost implements SettingHost {
                 if (res['status']) {
                   SmartDialog.dismiss();
                   doLogout();
-                  Get.back();
+                  AppNavigator.back();
                 } else {
                   SmartDialog.dismiss();
                   SmartDialog.showToast(res['msg'].toString());

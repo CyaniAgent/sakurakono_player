@@ -1,15 +1,16 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/adapter/adapter_registry.dart';
 import 'package:skf/pages/dynamics/widgets/vote.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 Widget? addWidget(
   BuildContext context, {
@@ -126,7 +127,7 @@ Widget? addWidget(
                                       ? null
                                       : (NoDeadlineTapGestureRecognizer()
                                           ..onTap = () {
-                                            Get.toNamed(
+                                            AppNavigator.toNamed(
                                               '/webview',
                                               parameters: {
                                                 'url': reserve.desc3!.jumpUrl!,
@@ -177,7 +178,7 @@ Widget? addWidget(
                               : btn.disable == 1
                               ? null
                               : () async {
-                                  final res = await Get.find<DynamicsRepository>().dynReserve(
+                                  final res = await appRead(dynamicsRepositoryProvider).dynReserve(
                                     reserveId: '${reserve.rid}',
                                     curBtnStatus: btn.status,
                                     dynamicIdStr: idStr,
@@ -263,7 +264,7 @@ Widget? addWidget(
                                     ? null
                                     : (NoDeadlineTapGestureRecognizer()
                                         ..onTap = () {
-                                          Get.toNamed(
+                                          AppNavigator.toNamed(
                                             '/webview',
                                             parameters: {
                                               'url': content.desc!.jumpUrl!,

@@ -8,6 +8,7 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/fav/fav_type.dart';
@@ -240,7 +241,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
             padding: const EdgeInsets.symmetric(vertical: 2),
             onTap: () {
               if (widget.tabType == HomeTabType.bangumi) {
-                Get.to(const PgcIndexPage());
+                AppNavigator.to(const PgcIndexPage());
               } else {
                 List<String> titles = const [
                   '全部',
@@ -250,7 +251,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                   '综艺',
                 ];
                 List<int> types = const [102, 2, 5, 3, 7];
-                Get.to(
+                AppNavigator.to(
                   Scaffold(
                     resizeToAvoidBottomInset: false,
                     appBar: AppBar(title: const Text('索引')),
@@ -382,7 +383,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: moreTextButton(
                     text: '查看全部',
-                    onTap: () => Get.toNamed(
+                    onTap: () => AppNavigator.toNamed(
                       '/fav',
                       arguments: widget.tabType == HomeTabType.bangumi
                           ? FavTabType.bangumi.index

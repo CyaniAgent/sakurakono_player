@@ -1,7 +1,9 @@
 import 'package:skf/common/widgets/flutter/draggable_scrollable_sheet.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/core/models/dynamics_types.dart';
@@ -420,7 +422,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     if (hasRichText && repostContent != null) {
       richContent.addAll(repostContent);
     }
-    final res = await Get.find<DynamicsRepository>().createDynamic(
+    final res = await appRead(dynamicsRepositoryProvider).createDynamic(
       mid: Accounts.main.mid,
       dynIdStr: widget.item?.idStr ?? widget.dynIdStr,
       rid: widget.rid,
@@ -431,7 +433,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
       hasPub = true;
-      Get.back();
+      AppNavigator.back();
       SmartDialog.showToast('转发成功');
       widget.onSuccess?.call();
       final id = response?['dyn_id'];

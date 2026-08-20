@@ -1,10 +1,10 @@
 import 'dart:io';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/button/toolbar_icon_button.dart';
 import 'package:skf/common/widgets/flutter/text_field/controller.dart';
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
-import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart'
@@ -522,7 +522,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
           imageList.map((img) async {
             switch (img) {
               case FilePicModel e:
-                final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).uploadBfs(
+                final result = await (_ref?.read(msgRepositoryProvider) ?? appRead(msgRepositoryProvider)).uploadBfs(
                   path: e.path,
                   category: 'daily',
                   biz: 'new_dyn',

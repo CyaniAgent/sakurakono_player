@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -30,7 +31,7 @@ abstract class BaseVideoWebState<
   @override
   void initState() {
     super.initState();
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     name = args['name'];
   }
 
@@ -212,7 +213,7 @@ abstract class BaseVideoWebState<
         ),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onFieldSubmitted: (_) {
-          Get.back();
+          AppNavigator.back();
           onSubmit();
         },
       ),

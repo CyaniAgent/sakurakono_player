@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
@@ -315,7 +316,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
     Widget upInfo(int mid, String avatar, String name, {String? role}) =>
         GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => Get.toNamed('/member?mid=$mid'),
+          onTap: () => AppNavigator.toNamed('/member?mid=$mid'),
           child: Row(
             spacing: 8,
             mainAxisSize: MainAxisSize.min,

@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/list_tile.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/keep_alive_wrapper.dart';
@@ -29,7 +30,7 @@ class UpowerRankPage extends StatefulWidget {
     required String name,
     required Object? count,
   }) {
-    return Get.toNamed(
+    return AppNavigator.toNamed(
       '/upowerRank',
       arguments: {
         'mid': mid,
@@ -50,7 +51,7 @@ class _UpowerRankPageState extends State<UpowerRankPage>
   @override
   void initState() {
     super.initState();
-    final params = Get.arguments;
+    final params = AppNavigator.arguments;
     _upMid = params['mid']!.toString();
     if (widget.privilegeType == null) {
       _name = params['name'];
@@ -92,7 +93,7 @@ class _UpowerRankPageState extends State<UpowerRankPage>
           title: Text('$_name的充电排行榜${_count == null ? '' : '($_count)'}'),
           actions: [
             TextButton(
-              onPressed: () => Get.toNamed(
+              onPressed: () => AppNavigator.toNamed(
                 '/webview',
                 parameters: {
                   'url':
@@ -193,7 +194,7 @@ class _UpowerRankPageState extends State<UpowerRankPage>
                   return Material(
                     type: MaterialType.transparency,
                     child: ListTile(
-                      onTap: () => Get.toNamed('/member?mid=${item.mid}'),
+                      onTap: () => AppNavigator.toNamed('/member?mid=${item.mid}'),
                       leading: SizedBox(
                         width: width,
                         child: Center(

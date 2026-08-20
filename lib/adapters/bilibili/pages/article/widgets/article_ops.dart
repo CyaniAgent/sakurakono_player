@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/style.dart';
 import 'package:skf/adapters/bilibili/models_new/article/article_view/ops.dart';
@@ -8,7 +9,6 @@ import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ArticleOpus extends StatelessWidget {
   const ArticleOpus({
@@ -49,7 +49,7 @@ class ArticleOpus extends StatelessWidget {
                       switch (item.attributes?.clazz) {
                         case 'article-card card':
                           if (card.id != null) {
-                            Get.toNamed(
+                            AppNavigator.toNamed(
                               '/articlePage',
                               parameters: {
                                 'id': card.id!.substring(2),

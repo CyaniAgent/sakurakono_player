@@ -1,4 +1,7 @@
 import 'dart:math';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
@@ -9,7 +12,6 @@ import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:skf/common/widgets/sliver/sliver_to_box_adapter.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/reply/reply_option_type.dart';
@@ -86,7 +88,7 @@ class _DynamicDetailPageState
   @override
   void initState() {
     super.initState();
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     final item = args['item'] as CoreDynamicItemModel;
     final id = item.idStr.toString();
     if (args['viewComment'] ?? false) {
@@ -255,7 +257,7 @@ class _DynamicDetailPageState
           const Duration(milliseconds: 500),
           () async {
             if (!mounted) return;
-            final res = await Get.find<DynamicsRepository>().dynamicDetail(id: item.idStr);
+            final res = await appRead(dynamicsRepositoryProvider).dynamicDetail(id: item.idStr);
             if (res case Success(:final response)) {
               if (mounted) {
                 controller.dynItem = response;

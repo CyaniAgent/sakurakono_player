@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
@@ -31,7 +32,7 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
   @override
   final MatchInfoController controller = Get.putOrFind(
     MatchInfoController.new,
-    tag: Get.parameters['cid']!,
+    tag: AppNavigator.parameters['cid']!,
   );
 
   @override
@@ -190,7 +191,7 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
     EasyThrottle.throttle('replyReply', const Duration(milliseconds: 500), () {
       int oid = replyItem.oid.toInt();
       int rpid = replyItem.id.toInt();
-      Get.to(
+      AppNavigator.to(
         Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(

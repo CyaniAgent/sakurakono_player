@@ -1,10 +1,10 @@
 import 'package:skf/common/widgets/badge.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_shop/item.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberShopItem extends StatelessWidget {
   const MemberShopItem({
@@ -26,7 +26,7 @@ class MemberShopItem extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (item.cardUrl case final cardUrl?) {
-            Get.toNamed('/webview', parameters: {'url': cardUrl});
+            AppNavigator.toNamed('/webview', parameters: {'url': cardUrl});
           }
         },
         child: Column(

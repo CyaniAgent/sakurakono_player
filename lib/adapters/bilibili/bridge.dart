@@ -377,7 +377,7 @@ class BiliBridge {
     GetPage(name: '/dynTopicRcmd', page: () => const DynTopicRcmdPage()),
     GetPage(name: '/matchInfo', page: () => const MatchInfoPage()),
     GetPage(name: '/msgLikeDetail', page: () => const LikeDetailPage()),
-    GetPage(name: '/liveDmBlockPage', page: () => LiveDmBlockPage(roomId: Get.parameters['roomId']!)),
+    GetPage(name: '/liveDmBlockPage', page: () => const LiveDmBlockPage(roomId: '')),
     GetPage(name: '/createVote', page: () => const CreateVotePage()),
     GetPage(name: '/musicDetail', page: () => const MusicDetailPage()),
     GetPage(name: '/popularSeries', page: () => const PopularSeriesPage()),
@@ -401,7 +401,14 @@ class BiliBridge {
   static List<GoRoute> buildRoutes() {
     return registerRoutes().map((page) => GoRoute(
       path: page.name,
-      builder: (context, state) => page.page(),
+      builder: (context, state) {
+        // /liveDmBlockPage carries roomId as a go_router query parameter
+        // (GetX Get.parameters is empty under MaterialApp.router); nav passes it via parameters:.
+        if (page.name == '/liveDmBlockPage') {
+          return LiveDmBlockPage(roomId: state.uri.queryParameters['roomId']!);
+        }
+        return page.page();
+      },
     )).toList();
   }
 }

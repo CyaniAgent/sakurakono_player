@@ -1,4 +1,5 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -9,7 +10,6 @@ import 'package:skf/utils/num_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberFavItem extends StatelessWidget {
   const MemberFavItem({super.key, required this.item, this.onDelete});
@@ -34,7 +34,7 @@ class MemberFavItem extends StatelessWidget {
           }
 
           if (item.type == 0 || item.type == 11) {
-            final isDeleted = await Get.toNamed(
+            final isDeleted = await AppNavigator.toNamed(
               '/favDetail',
               parameters: {
                 'mediaId': item.id.toString(),

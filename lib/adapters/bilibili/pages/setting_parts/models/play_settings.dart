@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/pages/main/controller.dart';
@@ -34,7 +35,7 @@ List<SettingsModel> get playSettings => [
       defaultVal: true,
     ),
   NormalModel(
-    onTap: (context, setState) => Get.toNamed('/playSpeedSet'),
+    onTap: (context, setState) => AppNavigator.toNamed('/playSpeedSet'),
     leading: const Icon(Icons.speed_outlined),
     title: '倍速设置',
     subtitle: '设置视频播放速度',
@@ -168,7 +169,7 @@ List<SettingsModel> get playSettings => [
     title: '全屏 SC 大小',
     subtitle: 'SuperChat (醒目留言) 大小设置',
     leading: const Icon(Icons.open_in_full),
-    onTap: (_, _) => Get.to(const FullScreenScSize()),
+    onTap: (_, _) => AppNavigator.to(const FullScreenScSize()),
   ),
   const SwitchModel(
     title: '竖屏扩大展示',

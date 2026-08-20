@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/list_tile.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -101,7 +102,7 @@ class _BubblePageState extends State<BubblePage>
                               dense: true,
                               enabled: !isSelected,
                               onTap: () {
-                                Get.back();
+                                AppNavigator.back();
                                 if (!isSelected) {
                                   _controller.onSort(e.sortType);
                                 }
@@ -203,7 +204,7 @@ class _BubblePageState extends State<BubblePage>
                   safeArea: false,
                   visualDensity: .standard,
                   // PageUtils.pushDynFromId(id: item.dynId);
-                  onTap: () => Get.toNamed(
+                  onTap: () => AppNavigator.toNamed(
                     '/articlePage',
                     parameters: {
                       'id': item.dynId!,

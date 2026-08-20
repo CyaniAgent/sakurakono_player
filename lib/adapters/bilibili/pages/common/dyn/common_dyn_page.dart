@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_reply.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -244,7 +245,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
       }
 
       if (isPortrait) {
-        Get.to(
+        AppNavigator.to(
           replyReplyPage,
           routeName: 'dynamicDetail-Copy',
           arguments: arguments,
@@ -258,7 +259,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
             (context) => replyReplyPage(showBackBtn: false),
           );
         } else {
-          Get.to(
+          AppNavigator.to(
             replyReplyPage,
             routeName: 'dynamicDetail-Copy',
             arguments: arguments,

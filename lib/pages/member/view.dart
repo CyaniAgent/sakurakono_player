@@ -1,4 +1,5 @@
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/style.dart';
@@ -9,7 +10,6 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/pages/member/controller.dart';
 import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/widget/reserve_button.dart';
@@ -195,7 +195,7 @@ class _MemberPageState extends State<MemberPage> {
                     Widget trailing = FilledButton.tonal(
                       onPressed: () async {
                         final isFollow = e.isFollow ?? false;
-                        final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).spaceReserve(
+                        final res = await (_ref?.read(userRepositoryProvider) ?? appRead(userRepositoryProvider)).spaceReserve(
                           sid: e.sid!.toString(),
                           isFollow: isFollow,
                         );
@@ -579,7 +579,7 @@ class _MemberPageState extends State<MemberPage> {
       onShow();
       return;
     }
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userRelation(_mid);
+    final res = await (_ref?.read(userRepositoryProvider) ?? appRead(userRepositoryProvider)).userRelation(_mid);
     if (res case Success(:final response)) {
       if (response.mtime == null) return;
       _cacheFollowTime =

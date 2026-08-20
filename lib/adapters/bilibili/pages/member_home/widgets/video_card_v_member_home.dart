@@ -1,10 +1,10 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_archive/item.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
@@ -49,7 +49,7 @@ class VideoCardVMemberHome extends StatelessWidget {
         int? cid = videoItem.cid;
         Dimension? dimension;
         if (cid == null) {
-          if (await Get.find<SearchRepository>().ab2cWithDimension(
+          if (await appRead(searchRepositoryProvider).ab2cWithDimension(
                 aid: int.tryParse(aid ?? ''),
                 bvid: bvid,
               )

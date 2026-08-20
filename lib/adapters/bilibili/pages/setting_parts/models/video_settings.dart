@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/pages/setting/models/model.dart';
 import 'package:skf/pages/setting/widgets/ordered_multi_select_dialog.dart';
@@ -202,7 +203,7 @@ Future<void> _showLiveCDNDialog(
           ),
         ),
         TextButton(
-          onPressed: () => Get.back(result: host),
+          onPressed: () => AppNavigator.back(result: host),
           child: const Text('确定'),
         ),
       ],
@@ -458,7 +459,7 @@ void _showAutoSyncDialog(BuildContext context, VoidCallback setState) {
             try {
               // validate
               int.parse(autosync);
-              Get.back();
+              AppNavigator.back();
               await GStorage.setting.put(SettingBoxKey.autosync, autosync);
               setState();
             } catch (e) {
@@ -505,7 +506,7 @@ void _showDecimalDialog(
           onPressed: () async {
             try {
               final val = double.parse(value);
-              Get.back();
+              AppNavigator.back();
               await GStorage.setting.put(key, val);
               setState();
             } catch (e) {

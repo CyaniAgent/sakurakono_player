@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:io' show exit, Platform;
 import 'dart:math' as math;
 
@@ -12,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show KeyDownEvent, KeyUpEvent, LogicalKeyboardKey, HardwareKeyboard;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class PlayerFocus extends StatelessWidget {
   const PlayerFocus({
@@ -265,7 +265,7 @@ class PlayerFocus extends StatelessWidget {
 
           case LogicalKeyboardKey.keyG:
             if (introController case final UgcIntroController ugcCtr) {
-              ugcCtr.actionRelationMod(Get.context!);
+              ugcCtr.actionRelationMod(AppNavigator.context!);
             }
             return true;
 

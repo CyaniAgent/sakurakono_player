@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/avatars.dart';
 import 'package:skf/common/widgets/badge.dart';
@@ -10,7 +13,6 @@ import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/global_data.dart';
@@ -55,7 +57,7 @@ class _VotePanelState extends State<VotePanel> {
     super.initState();
     _voteInfo = widget.voteInfo;
     if (isLogin) {
-      Get.find<DynamicsRepository>()
+      appRead(dynamicsRepositoryProvider)
           .followeeVotes(voteId: '${_voteInfo.voteId}')
           .then((res) {
         if (!mounted) return;
@@ -172,7 +174,7 @@ class _VotePanelState extends State<VotePanel> {
                               (e) => ListTile(
                                 dense: true,
                                 onTap: () =>
-                                    Get.toNamed('/member?mid=${e.mid}'),
+                                    AppNavigator.toNamed('/member?mid=${e.mid}'),
                                 leading: NetworkImgLayer(
                                   src: e.face,
                                   width: 40,
@@ -312,7 +314,7 @@ class _VotePanelState extends State<VotePanel> {
   );
 
   Widget _buildPicOptions(int index, ColorScheme colorScheme) {
-    void onLongPress() => Get.key.currentState!.push<void>(
+    void onLongPress() => AppNavigator.push<void>(
       HeroDialogRoute(
         pageBuilder: (_, _, _) => GalleryViewer(
           sources: _voteInfo.options
@@ -552,7 +554,7 @@ Future<void> showVoteDialog(
   int voteId, [
   int? dynamicId,
 ]) async {
-  final voteInfo = await Get.find<DynamicsRepository>().voteInfo(voteId);
+  final voteInfo = await appRead(dynamicsRepositoryProvider).voteInfo(voteId);
   if (context.mounted) {
     if (voteInfo case Success(:final response)) {
       showDialog(
@@ -564,7 +566,7 @@ Future<void> showVoteDialog(
             child: VotePanel(
               voteInfo: response,
               onVote: (votes, anonymous) async => switch (
-                await Get.find<DynamicsRepository>().doVote(
+                await appRead(dynamicsRepositoryProvider).doVote(
                   voteId: voteId,
                   votes: votes.toList(),
                   anonymous: anonymous,

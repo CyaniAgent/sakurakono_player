@@ -1,4 +1,5 @@
 import 'dart:math' show min;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/style.dart';
@@ -58,7 +59,7 @@ class AudioPage extends StatefulWidget {
     Duration? start,
     String? audioUrl,
     int? extraId,
-  }) => Get.toNamed(
+  }) => AppNavigator.toNamed(
     '/audio',
     arguments: {
       'id': ?id,
@@ -274,7 +275,7 @@ class _AudioPageState extends State<AudioPage> {
                               end: 24.0,
                             ),
                             onTap: () {
-                              Get.back();
+                              AppNavigator.back();
                               if (!isCurr) {
                                 _controller.playIndex(
                                   index,
@@ -324,7 +325,7 @@ class _AudioPageState extends State<AudioPage> {
                       dense: true,
                       minTileHeight: 45,
                       onTap: () {
-                        Get.back();
+                        AppNavigator.back();
                         if (!isCurr) {
                           _controller.playIndex(index);
                         }
@@ -550,7 +551,7 @@ class _AudioPageState extends State<AudioPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        Get.back();
+        AppNavigator.back();
         if (!isCurr) {
           _controller.playMode.value = playMode;
           GStorage.setting.put(SettingBoxKey.audioPlayMode, playMode.index);
@@ -626,7 +627,7 @@ class _AudioPageState extends State<AudioPage> {
                 leading: const Icon(Icons.warning_amber_rounded, size: 20),
                 title: const Text('举报', style: TextStyle(fontSize: 14)),
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   PageUtils.reportVideo(_controller.oid.toInt());
                 },
               ),
@@ -636,7 +637,7 @@ class _AudioPageState extends State<AudioPage> {
                   leading: const Icon(Icons.info_outline, size: 20),
                   title: const Text('播放信息', style: TextStyle(fontSize: 14)),
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     HeaderControlState.showPlayerInfo(context, player: player);
                   },
                 ),
@@ -649,7 +650,7 @@ class _AudioPageState extends State<AudioPage> {
                       style: const TextStyle(fontSize: 14),
                     ),
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       showPlayerVolumeDialog(
                         context,
                         () {},
@@ -948,7 +949,7 @@ class _AudioPageState extends State<AudioPage> {
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
                           _controller.player?.pause();
-                          Get.toNamed('/member?mid=${audioItem.owner.mid}');
+                          AppNavigator.toNamed('/member?mid=${audioItem.owner.mid}');
                         },
                         child: Row(
                           spacing: 6,

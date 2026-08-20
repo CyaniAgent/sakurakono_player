@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/widgets/color_palette.dart';
@@ -128,7 +129,7 @@ List<SettingsModel> get styleSettings => [
     leading: const Icon(Icons.calendar_view_week_outlined),
     title: '列表宽度（dp）限制',
     getSubtitle: () =>
-        '当前: 主页${Pref.recommendCardWidth.toInt()}dp 其他${Pref.smallCardWidth.toInt()}dp，屏幕宽度:${MediaQuery.widthOf(Get.context!).toPrecision(2)}dp。宽度越小列数越多。',
+        '当前: 主页${Pref.recommendCardWidth.toInt()}dp 其他${Pref.smallCardWidth.toInt()}dp，屏幕宽度:${MediaQuery.widthOf(AppNavigator.context!).toPrecision(2)}dp。宽度越小列数越多。',
     onTap: _showCardWidthDialog,
   ),
   const SwitchModel(
@@ -291,7 +292,7 @@ List<SettingsModel> get styleSettings => [
     },
   ),
   NormalModel(
-    onTap: (context, setState) => Get.toNamed('/colorSetting'),
+    onTap: (context, setState) => AppNavigator.toNamed('/colorSetting'),
     leading: const Icon(Icons.color_lens_outlined),
     title: '应用主题',
     getSubtitle: () => '当前主题：${Pref.dynamicColor ? '动态取色' : '指定颜色'}',
@@ -320,7 +321,7 @@ List<SettingsModel> get styleSettings => [
   ),
   NormalModel(
     onTap: (context, setState) async {
-      final res = await Get.toNamed('/fontSizeSetting');
+      final res = await AppNavigator.toNamed('/fontSizeSetting');
       if (res != null) {
         setState();
       }
@@ -333,7 +334,7 @@ List<SettingsModel> get styleSettings => [
     },
   ),
   NormalModel(
-    onTap: (context, setState) => Get.toNamed(
+    onTap: (context, setState) => AppNavigator.toNamed(
       '/barSetting',
       arguments: {
         'key': SettingBoxKey.tabBarSort,
@@ -346,7 +347,7 @@ List<SettingsModel> get styleSettings => [
     leading: const Icon(Icons.toc_outlined),
   ),
   NormalModel(
-    onTap: (context, setState) => Get.toNamed(
+    onTap: (context, setState) => AppNavigator.toNamed(
       '/barSetting',
       arguments: {
         'key': SettingBoxKey.navBarSort,
@@ -368,7 +369,7 @@ List<SettingsModel> get styleSettings => [
   ),
   if (Platform.isAndroid)
     NormalModel(
-      onTap: (context, setState) => Get.toNamed('/displayModeSetting'),
+      onTap: (context, setState) => AppNavigator.toNamed('/displayModeSetting'),
       title: '屏幕帧率',
       leading: const Icon(Icons.autofps_select_outlined),
     ),
@@ -592,7 +593,7 @@ void _showSpringDialog(BuildContext context, _) {
       actions: [
         TextButton(
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             GStorage.setting.delete(SettingBoxKey.springDescription);
             SmartDialog.showToast('重置成功，重启生效');
           },
@@ -612,7 +613,7 @@ void _showSpringDialog(BuildContext context, _) {
                 duration2Physical();
               }
               final res = springDescription.map(double.parse).toList();
-              Get.back();
+              AppNavigator.back();
               GStorage.setting.put(SettingBoxKey.springDescription, res);
               SmartDialog.showToast('设置成功，重启生效');
             } catch (e) {

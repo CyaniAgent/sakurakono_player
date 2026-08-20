@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/page/tabs.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/selection_text.dart';
@@ -198,7 +199,7 @@ class _IntroDetailState extends State<PgcIntroPanel>
                   (item) => SearchText(
                     fontSize: 13,
                     text: item.tagName!,
-                    onTap: (tagName) => Get.toNamed(
+                    onTap: (tagName) => AppNavigator.toNamed(
                       '/searchResult',
                       parameters: {'keyword': tagName},
                     ),

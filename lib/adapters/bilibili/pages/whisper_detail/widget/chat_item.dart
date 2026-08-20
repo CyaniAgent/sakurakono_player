@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/constants.dart';
@@ -12,7 +15,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/im/interfaces/v1.pb.dart'
     show EmotionInfo;
 import 'package:skf/adapters/bilibili/grpc/bilibili/im/type.pb.dart' show Msg, MsgType;
 import 'package:skf/core/models/ui/badge_type.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
@@ -26,7 +28,6 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class ChatItem extends StatelessWidget {
   static MsgType msgTypeFromValue(int value) {
@@ -250,7 +251,7 @@ class ChatItem extends StatelessWidget {
   Widget msgTypeArticleCard_12(dynamic content, Color textColor) {
     return GestureDetector(
       behavior: .opaque,
-      onTap: () => Get.toNamed(
+      onTap: () => AppNavigator.toNamed(
         '/articlePage',
         parameters: {
           'id': '${content['rid']}',
@@ -330,7 +331,7 @@ class ChatItem extends StatelessWidget {
                   if (bvid != null) {
                     try {
                       SmartDialog.showLoading();
-                      final res = await Get.find<SearchRepository>().ab2cWithDimension(
+                      final res = await appRead(searchRepositoryProvider).ab2cWithDimension(
                         bvid: bvid,
                       );
                       final cid = res?.cid;
@@ -426,7 +427,7 @@ class ChatItem extends StatelessWidget {
                 try {
                   SmartDialog.showLoading();
                   final bvid = content["bvid"];
-                  final res = await Get.find<SearchRepository>().ab2cWithDimension(
+                  final res = await appRead(searchRepositoryProvider).ab2cWithDimension(
                     bvid: bvid,
                   );
                   final cid = res?.cid;
@@ -528,7 +529,7 @@ class ChatItem extends StatelessWidget {
           }
           bvid ??= IdUtils.av2bv(aid);
           SmartDialog.showLoading();
-          final res = await Get.find<SearchRepository>().ab2cWithDimension(
+          final res = await appRead(searchRepositoryProvider).ab2cWithDimension(
             bvid: bvid,
           );
           final cid = res?.cid;
@@ -548,7 +549,7 @@ class ChatItem extends StatelessWidget {
       // article
       case 6:
         type = '专栏';
-        onTap = () => Get.toNamed(
+        onTap = () => AppNavigator.toNamed(
           '/articlePage',
           parameters: {
             'id': '${content['id']}',

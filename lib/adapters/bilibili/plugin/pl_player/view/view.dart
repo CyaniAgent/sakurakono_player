@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:skf/router/app_navigator.dart';
 import 'dart:ui' as ui;
 
 import 'package:skf/adapters/bilibili/common/constants.dart';
@@ -753,7 +754,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
 
     final success =
         await showDialog<bool>(
-          context: Get.context!,
+          context: AppNavigator.context!,
           builder: (context) => AlertDialog(
             title: const Text('动态截图'),
             content: Column(
@@ -817,7 +818,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
               TextButton(
                 onPressed: () {
                   if (model.segment.first < model.segment.second) {
-                    Get.back(result: true);
+                    AppNavigator.back(result: true);
                   }
                 },
                 child: const Text('确定'),
@@ -1125,7 +1126,7 @@ class _BiliDmTapInteraction implements PlayerDmTapInteraction {
                   MdiIcons.accountOutline,
                   color: Colors.white,
                 ),
-                onTap: () => Get.toNamed('/member?mid=${extra.mid}'),
+                onTap: () => AppNavigator.toNamed('/member?mid=${extra.mid}'),
               ),
               _dmActionItem(
                 const Icon(

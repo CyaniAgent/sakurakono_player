@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_reply.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
@@ -129,7 +130,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
             DialogOption(
               child: const Text('编辑', style: TextStyle(fontSize: 14)),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 showModalBottomSheet(
                   context: context,
                   useSafeArea: true,
@@ -149,7 +150,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
             DialogOption(
               child: const Text('删除', style: TextStyle(fontSize: 14)),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 showConfirmDialog(
                   context: context,
                   title: const Text('删除短评，同时删除评分？'),
@@ -178,7 +179,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
       type: MaterialType.transparency,
       child: InkWell(
         onTap: isLongReview
-            ? () => Get.toNamed(
+            ? () => AppNavigator.toNamed(
                 '/articlePage',
                 parameters: {
                   'id': item.articleId!.toString(),
@@ -197,7 +198,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
             children: [
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => Get.toNamed('/member?mid=${item.author!.mid}'),
+                onTap: () => AppNavigator.toNamed('/member?mid=${item.author!.mid}'),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

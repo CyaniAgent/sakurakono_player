@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -23,7 +24,7 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
     with GridMixin {
   final MusicRecommendController _controller = Get.putOrFind(
     MusicRecommendController.new,
-    tag: (Get.arguments as MusicRecommendArgs).id,
+    tag: (AppNavigator.arguments as MusicRecommendArgs).id,
   );
 
   @override

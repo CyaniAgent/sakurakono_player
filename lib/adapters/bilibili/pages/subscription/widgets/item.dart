@@ -1,4 +1,5 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -8,7 +9,6 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class SubItem extends StatelessWidget {
   final CoreSubItemModel item;
@@ -40,7 +40,7 @@ class SubItem extends StatelessWidget {
             return;
           }
           if (item.type == 11) {
-            Get.toNamed(
+            AppNavigator.toNamed(
               '/favDetail',
               parameters: {
                 'mediaId': item.id!.toString(),

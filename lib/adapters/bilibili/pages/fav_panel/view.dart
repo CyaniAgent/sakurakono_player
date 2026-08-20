@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart';
@@ -110,7 +111,7 @@ class _FavPanelState extends State<FavPanel> {
           title: const Text('添加到收藏夹'),
           actions: [
             TextButton.icon(
-              onPressed: () => Get.toNamed('/createFav')?.then((data) {
+              onPressed: () => AppNavigator.toNamed('/createFav')?.then((data) {
                 if (data is CoreFavFolderInfo && mounted) {
                   widget.ctr.favFolderData.value.list?.insert(
                     1,

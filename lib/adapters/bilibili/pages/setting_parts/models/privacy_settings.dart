@@ -1,4 +1,5 @@
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/pages/setting/models/model.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/api_type.dart';
@@ -13,7 +14,7 @@ List<SettingsModel> get privacySettings => [
         SmartDialog.showToast('登录后查看');
         return;
       }
-      Get.toNamed('/blackListPage');
+      AppNavigator.toNamed('/blackListPage');
     },
     title: '黑名单管理',
     subtitle: '已拉黑用户',

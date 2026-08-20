@@ -1,11 +1,13 @@
 import 'dart:io' show File;
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:skf/utils/extension/file_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -14,7 +16,6 @@ import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -40,7 +41,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
     super.initState();
     _titleController = TextEditingController();
     _introController = TextEditingController();
-    _mediaId = Get.parameters['mediaId'];
+    _mediaId = AppNavigator.parameters['mediaId'];
     if (_mediaId != null) {
       _getFolderInfo();
     }
@@ -48,7 +49,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
 
   void _getFolderInfo() {
     _errMsg = null;
-    Get.find<FavRepository>().favFolderInfo(mediaId: _mediaId!).then((res) {
+    appRead(favRepositoryProvider).favFolderInfo(mediaId: _mediaId!).then((res) {
       if (res case Success(:final response)) {
         _titleController.text = response.title;
         _introController.text = response.intro ?? '';
@@ -82,7 +83,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 SmartDialog.showToast('名称不能为空');
                 return;
               }
-              Get.find<FavRepository>().addOrEditFolder(
+              appRead(favRepositoryProvider).addOrEditFolder(
                 isAdd: _mediaId == null,
                 mediaId: _mediaId,
                 title: _titleController.text,
@@ -93,7 +94,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 if (res case Success(:final response)) {
                   SmartDialog.showToast('${_mediaId != null ? '编辑' : '创建'}成功');
                   if (mounted) {
-                    Get.back(result: response);
+                    AppNavigator.back(result: response);
                   }
                 } else {
                   res.toast();
@@ -152,7 +153,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
             imgPath = croppedFile.path;
           }
         }
-        Get.find<MsgRepository>().uploadImage(
+        appRead(msgRepositoryProvider).uploadImage(
           path: imgPath,
           bucket: 'medialist',
           dir: 'cover',
@@ -202,7 +203,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                             children: [
                               DialogOption(
                                 onPressed: () {
-                                  Get.back();
+                                  AppNavigator.back();
                                   _pickImg(context, theme);
                                 },
                                 child: const Text(
@@ -212,7 +213,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                               ),
                               DialogOption(
                                 onPressed: () {
-                                  Get.back();
+                                  AppNavigator.back();
                                   _cover = null;
                                   (context as Element).markNeedsBuild();
                                 },

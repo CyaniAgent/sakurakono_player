@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
@@ -233,7 +234,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
           return;
         }
 
-        Get.to(
+        AppNavigator.to(
           LiveAreaDetailPage(
             areaId: item.id,
             parentAreaId: item.parentId,
@@ -328,7 +329,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                 return;
               }
 
-              Get.to(
+              AppNavigator.to(
                 LiveAreaDetailPage(
                   areaId: item.id,
                   parentAreaId: item.parentId,

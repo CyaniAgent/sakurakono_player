@@ -1,11 +1,11 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_fav/list.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberFavItem extends StatelessWidget {
   const MemberFavItem({super.key, required this.item});
@@ -22,7 +22,7 @@ class MemberFavItem extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () {
-          Get.toNamed(
+          AppNavigator.toNamed(
             '/favDetail',
             parameters: {
               'mediaId': item.mediaId.toString(),

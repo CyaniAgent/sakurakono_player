@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
@@ -23,8 +24,6 @@ import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:re_highlight/languages/all.dart';
 import 'package:re_highlight/re_highlight.dart';
@@ -78,7 +77,7 @@ class OpusContent extends StatelessWidget {
                 ..onTap = () {
                   switch (rich.type) {
                     case 'RICH_TEXT_NODE_TYPE_AT':
-                      Get.toNamed('/member?mid=${rich.rid}');
+                      AppNavigator.toNamed('/member?mid=${rich.rid}');
                     // case 'RICH_TEXT_NODE_TYPE_TOPIC':
                     default:
                       if (rich.jumpUrl != null) {
@@ -610,7 +609,7 @@ class OpusContent extends StatelessWidget {
                                   children: [
                                     DialogOption(
                                       onPressed: () {
-                                        Get.back();
+                                        AppNavigator.back();
                                         PiliScheme.videoPush(
                                           int.parse(card.oid!),
                                           null,
@@ -620,7 +619,7 @@ class OpusContent extends StatelessWidget {
                                     ),
                                     DialogOption(
                                       onPressed: () {
-                                        Get.back();
+                                        AppNavigator.back();
                                         PageUtils.pushDynFromId(id: card.oid!);
                                       },
                                       child: const Text('动态/专栏'),
@@ -904,7 +903,7 @@ Widget opusCollection(ThemeData theme, ModuleCollection item) {
       color: theme.colorScheme.onInverseSurface,
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
-        onTap: () => Get.toNamed(
+        onTap: () => AppNavigator.toNamed(
           '/articleList',
           parameters: {'id': '${item.id}'},
         ),

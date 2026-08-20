@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/pages/search/controller.dart';
@@ -31,7 +32,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final String _tag = DateTime.now().millisecondsSinceEpoch.toString();
-  final bool _isFromSearch = Get.arguments?['fromSearch'] ?? false;
+  final bool _isFromSearch = AppNavigator.arguments?['fromSearch'] ?? false;
   SSearchController? sSearchController;
 
   @override
@@ -40,20 +41,20 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
 
     // Register GetX bridge so adapter-based SearchPanelController can still
     // resolve via Get.find<SearchResultController>(tag: tag).
-    final keyword = Get.arguments?['keyword'] ?? '';
+    final keyword = AppNavigator.arguments?['keyword'] ?? '';
     final notifier = ref.read(searchResultProvider(_tag).notifier);
     Get.put(SearchResultController(keyword, notifier), tag: _tag);
 
     _tabController = TabController(
       vsync: this,
-      initialIndex: Get.arguments?['initIndex'] ?? 0,
+      initialIndex: AppNavigator.arguments?['initIndex'] ?? 0,
       length: CoreSearchType.values.length,
     );
 
     if (_isFromSearch) {
       try {
         sSearchController = Get.find<SSearchController>(
-          tag: Get.parameters['tag'],
+          tag: AppNavigator.parameters['tag'],
         );
         _tabController.addListener(listener);
       } catch (_) {}
@@ -103,9 +104,9 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
         title: GestureDetector(
           onTap: () {
             if (_isFromSearch) {
-              Get.back();
+              AppNavigator.back();
             } else {
-              Get.offNamed(
+              AppNavigator.replaceNamed(
                 '/search',
                 parameters: {'text': keyword},
               );

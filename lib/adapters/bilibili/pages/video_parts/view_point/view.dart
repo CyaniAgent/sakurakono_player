@@ -1,4 +1,5 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
@@ -131,7 +132,7 @@ class _ViewPointsPageState extends State<ViewPointsPage>
       child: InkWell(
         onTap: segment.from != null
             ? () {
-                Get.back();
+                AppNavigator.back();
                 plPlayerController?.seekTo(
                   Duration(seconds: segment.from!),
                   isSeek: false,

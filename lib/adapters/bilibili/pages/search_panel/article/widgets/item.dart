@@ -1,11 +1,11 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SearchArticleItem extends StatelessWidget {
   const SearchArticleItem({super.key, required this.item});
@@ -26,7 +26,7 @@ class SearchArticleItem extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
-        onTap: () => Get.toNamed(
+        onTap: () => AppNavigator.toNamed(
           '/articlePage',
           parameters: {
             'id': '${item.id}',

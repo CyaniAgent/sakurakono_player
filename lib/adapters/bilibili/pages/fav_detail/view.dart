@@ -1,11 +1,13 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/fab_mixin.dart'
     show NoRightMarginFabLocation;
@@ -35,7 +37,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
   @override
   void initState() {
     super.initState();
-    mediaId = Get.parameters['mediaId']!;
+    mediaId = AppNavigator.parameters['mediaId']!;
     _favDetailController = Get.put(
       FavDetailController(),
       tag: Utils.makeHeroTag(mediaId),
@@ -178,7 +180,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
         tooltip: '搜索',
         onPressed: () {
           final folderInfo = _favDetailController.folderInfo.value;
-          Get.toNamed(
+          AppNavigator.toNamed(
             '/favSearch',
             arguments: {
               'type': 0,
@@ -238,7 +240,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                 ),
                 PopupMenuItem(
                   onTap: () =>
-                      Get.toNamed(
+                      AppNavigator.toNamed(
                         '/createFav',
                         parameters: {'mediaId': mediaId},
                       )?.then((res) {
@@ -282,10 +284,10 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                       context: context,
                       title: const Text('确定删除该收藏夹?'),
                       onConfirm: () =>
-                          Get.find<FavRepository>().deleteFolder(mediaIds: mediaId).then((res) {
+                          appRead(favRepositoryProvider).deleteFolder(mediaIds: mediaId).then((res) {
                             if (res.isSuccess) {
                               SmartDialog.showToast('删除成功');
-                              Get.back(result: true);
+                              AppNavigator.back(result: true);
                             } else {
                               res.toast();
                             }
@@ -430,7 +432,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => Get.toNamed(
+                            onTap: () => AppNavigator.toNamed(
                               '/member?mid=${folderInfo.upper!.mid}',
                             ),
                             child: Text(

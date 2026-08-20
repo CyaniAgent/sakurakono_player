@@ -1,4 +1,8 @@
 import 'dart:async' show Timer;
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:convert' show jsonDecode, utf8;
 import 'dart:io' show Platform, File;
 import 'dart:typed_data' show Uint8List;
@@ -9,10 +13,6 @@ import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/adapters/bilibili/common/widgets/dialog/report.dart';
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/marquee.dart';
-import 'package:skf/core/repository/danmaku_filter_repository.dart';
-import 'package:skf/core/repository/danmaku_repository.dart';
-import 'package:skf/core/repository/live_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/adapters/bilibili/http/init.dart';
@@ -200,7 +200,7 @@ class HeaderControl extends StatefulWidget {
       return false;
     }
     final isLike = !extra.isLike;
-    final res = await Get.find<DanmakuRepository>().danmakuLike(
+    final res = await appRead(danmakuRepositoryProvider).danmakuLike(
       isLike: isLike,
       cid: cid,
       id: extra.id,
@@ -231,7 +231,7 @@ class HeaderControl extends StatefulWidget {
   }
 
   static Future<bool> deleteDanmaku(int id, int cid) async {
-    final res = await Get.find<DanmakuRepository>().danmakuRecall(
+    final res = await appRead(danmakuRepositoryProvider).danmakuRecall(
       cid: cid,
       id: id,
     );
@@ -263,12 +263,12 @@ class HeaderControl extends StatefulWidget {
                 filter,
               );
             }
-Get.find<DanmakuFilterRepository>().danmakuFilterAdd(
+appRead(danmakuFilterRepositoryProvider).danmakuFilterAdd(
               filter: extra.mid,
               type: 2,
             );
           }
-          final r = await Get.find<DanmakuRepository>().danmakuReport(
+          final r = await appRead(danmakuRepositoryProvider).danmakuReport(
             reason: reasonType == 0 ? 11 : reasonType,
             cid: ctr.cid!,
             id: extra.id,
@@ -312,7 +312,7 @@ Get.find<DanmakuFilterRepository>().danmakuFilterAdd(
           //     type: 2,
           //   );
           // }
-          final r = await Get.find<LiveRepository>().liveDmReport(
+          final r = await appRead(liveRepositoryProvider).liveDmReport(
             roomId: roomId,
             mid: extra.mid as int,
             msg: msg,
@@ -391,7 +391,7 @@ class HeaderControlState extends State<HeaderControl>
                 ListTile(
                   dense: true,
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     introController.viewLater();
                   },
                   leading: const Icon(Icons.watch_later_outlined, size: 20),
@@ -401,7 +401,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       videoDetailCtr.showNoteList(context);
                     },
                     leading: const Icon(Icons.note_alt_outlined, size: 20),
@@ -411,7 +411,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       videoDetailCtr.onDownload(this.context);
                     },
                     leading: const Icon(
@@ -424,7 +424,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       ImageUtils.downloadImg([
                         widget.videoDetailCtr.cover.value,
                       ]);
@@ -435,7 +435,7 @@ class HeaderControlState extends State<HeaderControl>
                 ListTile(
                   dense: true,
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     shutdownTimerService.showScheduleExitDialog(
                       this.context,
                       isFullScreen: isFullScreen,
@@ -448,7 +448,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       videoDetailCtr.editPlayUrl();
                     },
                     leading: const Icon(
@@ -460,7 +460,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       videoDetailCtr.queryVideoUrl(fromReset: true);
                     },
                     leading: const Icon(Icons.refresh_outlined, size: 20),
@@ -516,7 +516,7 @@ class HeaderControlState extends State<HeaderControl>
                       style: subTitleStyle,
                     ),
                     onTap: () async {
-                      Get.back();
+                      AppNavigator.back();
                       final result = await showDialog<CDNService>(
                         context: context,
                         builder: (context) => CdnSelectDialog(
@@ -608,7 +608,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       showSetVideoQa();
                     },
                     leading: const Icon(Icons.play_circle_outline, size: 20),
@@ -622,7 +622,7 @@ class HeaderControlState extends State<HeaderControl>
                     ListTile(
                       dense: true,
                       onTap: () {
-                        Get.back();
+                        AppNavigator.back();
                         showSetAudioQa();
                       },
                       leading: const Icon(Icons.album_outlined, size: 20),
@@ -635,7 +635,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       showSetDecodeFormats();
                     },
                     leading: const Icon(Icons.av_timer_outlined, size: 20),
@@ -665,7 +665,7 @@ class HeaderControlState extends State<HeaderControl>
                 ListTile(
                   dense: true,
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     showDanmakuPool();
                   },
                   leading: const Icon(CustomIcons.dm_on, size: 20),
@@ -674,7 +674,7 @@ class HeaderControlState extends State<HeaderControl>
                 ListTile(
                   dense: true,
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     showSetDanmaku();
                   },
                   leading: const Icon(CustomIcons.dm_settings, size: 20),
@@ -683,7 +683,7 @@ class HeaderControlState extends State<HeaderControl>
                 ListTile(
                   dense: true,
                   onTap: () {
-                    Get.back();
+                    AppNavigator.back();
                     showSetSubtitle();
                   },
                   leading: const Icon(Icons.subtitles_outlined, size: 20),
@@ -692,7 +692,7 @@ class HeaderControlState extends State<HeaderControl>
                 ListTile(
                   dense: true,
                   onTap: () async {
-                    Get.back();
+                    AppNavigator.back();
                     try {
                       final result = await FilePicker.pickFile(
                         type: .custom,
@@ -750,7 +750,7 @@ class HeaderControlState extends State<HeaderControl>
                   ListTile(
                     dense: true,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       onExportSubtitle();
                     },
                     leading: const Icon(Icons.download_outlined, size: 20),
@@ -770,7 +770,7 @@ class HeaderControlState extends State<HeaderControl>
                       SmartDialog.showToast('账号未登录');
                       return;
                     }
-                    Get.back();
+                    AppNavigator.back();
                     PageUtils.reportVideo(videoDetailCtr.aid);
                   },
                   leading: const Icon(Icons.error_outline, size: 20),
@@ -954,7 +954,7 @@ class HeaderControlState extends State<HeaderControl>
                         if (isCurr) {
                           return;
                         }
-                        Get.back();
+                        AppNavigator.back();
                         final int quality = item.quality!;
                         final newQa = VideoQuality.fromCode(quality);
                         videoDetailCtr
@@ -1034,7 +1034,7 @@ class HeaderControlState extends State<HeaderControl>
                         if (isCurr) {
                           return;
                         }
-                        Get.back();
+                        AppNavigator.back();
                         final int quality = item.id!;
                         final newQa = AudioQuality.fromCode(quality);
                         videoDetailCtr
@@ -1123,7 +1123,7 @@ class HeaderControlState extends State<HeaderControl>
                             dense: true,
                             onTap: () {
                               if (isCurr) return;
-                              Get.back();
+                              AppNavigator.back();
                               videoDetailCtr
                                 ..currentDecodeFormats = format
                                 ..updatePlayer();
@@ -1208,7 +1208,7 @@ class HeaderControlState extends State<HeaderControl>
             final item = subtitles[i];
             return DialogOption(
               onPressed: () async {
-                Get.back();
+                AppNavigator.back();
                 final url = item.subtitleUrl;
                 if (url == null || url.isEmpty) return;
                 try {
@@ -1219,7 +1219,7 @@ class HeaderControlState extends State<HeaderControl>
                           ? videoDetailCtr.vttSubtitles[i]?.id
                           : null;
                       if (subtitle == null) {
-                        final res = await Get.find<VideoRepository>().vttSubtitles(
+                        final res = await appRead(videoRepositoryProvider).vttSubtitles(
                           item.subtitleUrl!,
                           format: core_subtitle.SubtitleFormat.values.firstWhere(
                             (e) => e.name == format.name,

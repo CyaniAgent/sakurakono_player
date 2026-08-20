@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:io' show File;
 
 import 'package:skf/common/assets.dart';
@@ -11,7 +14,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/im/type.pb.dart' show Msg;
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/emote/view.dart';
@@ -45,7 +47,7 @@ class _WhisperDetailPageState
     extends CommonRichTextPubPageState<WhisperDetailPage> {
   final _whisperDetailController = Get.put(
     WhisperDetailController(),
-    tag: Utils.makeHeroTag(Get.parameters['talkerId']),
+    tag: Utils.makeHeroTag(AppNavigator.parameters['talkerId']),
   );
 
   @override
@@ -65,7 +67,7 @@ class _WhisperDetailPageState
           onTap: () {
             if (_whisperDetailController.mid != null) {
               feedBack();
-              Get.toNamed('/member?mid=${_whisperDetailController.mid}');
+              AppNavigator.toNamed('/member?mid=${_whisperDetailController.mid}');
             }
           },
           child: Row(
@@ -106,7 +108,7 @@ class _WhisperDetailPageState
         actions: [
           IconButton(
             tooltip: '设置',
-            onPressed: () => Get.to(
+            onPressed: () => AppNavigator.to(
               WhisperLinkSettingPage(
                 talkerUid: _whisperDetailController.talkerId,
               ),
@@ -247,7 +249,7 @@ class _WhisperDetailPageState
         content: isOwner
             ? ListTile(
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   _whisperDetailController.sendMsg(
                     message: '${item.msgKey}',
                     onClearText: editController.clear,
@@ -260,7 +262,7 @@ class _WhisperDetailPageState
               )
             : ListTile(
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   autoWrapReportDialog(
                     context,
                     ban: false,
@@ -359,7 +361,7 @@ class _WhisperDetailPageState
                       if (pickedFile != null) {
                         final path = pickedFile.path;
                         SmartDialog.showLoading(msg: '正在上传图片');
-                        final result = await Get.find<MsgRepository>().uploadBfs(
+                        final result = await appRead(msgRepositoryProvider).uploadBfs(
                           path: path,
                           biz: 'im',
                         );

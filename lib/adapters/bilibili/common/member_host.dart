@@ -1,4 +1,7 @@
 import 'dart:io' show Platform;
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +31,6 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/widget/medal_wall.dart';
@@ -142,22 +144,22 @@ class BiliMemberHost implements MemberHost {
   }
 
   @override
-  void openLoginDevices() => Get.to(const CoreLoginDevicesPage());
+  void openLoginDevices() => AppNavigator.to(const CoreLoginDevicesPage());
 
   @override
-  void openLoginLog() => Get.to(
+  void openLoginLog() => AppNavigator.to(
         const LogPage(),
         arguments: LoginLogController(),
       );
 
   @override
-  void openCoinLog() => Get.to(
+  void openCoinLog() => AppNavigator.to(
         const LogPage(),
         arguments: CoinLogController(),
       );
 
   @override
-  void openExpLog() => Get.to(
+  void openExpLog() => AppNavigator.to(
         const LogPage(),
         arguments: ExpLogController(),
       );
@@ -174,7 +176,7 @@ class BiliMemberHost implements MemberHost {
   @override
   Future<void> showLiveMedalWall(int mid) async {
     void onShow(CoreMedalWallData data) {
-      final context = Get.context;
+      final context = AppNavigator.context;
       if (context == null) return;
       showDialog(
         context: context,
@@ -189,7 +191,7 @@ class BiliMemberHost implements MemberHost {
       return;
     }
     SmartDialog.showLoading();
-    final res = await Get.find<LiveRepository>().liveMedalWall(mid: mid);
+    final res = await appRead(liveRepositoryProvider).liveMedalWall(mid: mid);
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
       _medalCache[mid] = (data: response, fetchedAt: DateTime.now());

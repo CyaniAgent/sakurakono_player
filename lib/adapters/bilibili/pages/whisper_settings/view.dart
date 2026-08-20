@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pb.dart'
     show IMSettingType, Setting;
@@ -34,7 +35,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
   void initState() {
     super.initState();
     final type =
-        widget.imSettingType ?? _feedSettingTypeFromArgs(Get.arguments);
+        widget.imSettingType ?? _feedSettingTypeFromArgs(AppNavigator.arguments);
     _controller = Get.put(
       WhisperSettingsController(imSettingType: type),
       tag: type.name,
@@ -73,7 +74,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
     Setting item,
   ) {
     if (item.redirect.settingPage.hasParentSettingType()) {
-      Get.to(
+      AppNavigator.to(
         WhisperSettingsPage(
           imSettingType: item.redirect.settingPage.parentSettingType,
           onUpdate: (value) {
@@ -99,7 +100,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
               return DialogOption(
                 onPressed: () async {
                   if (!e.selected) {
-                    Get.back();
+                    AppNavigator.back();
                     for (final j in item.redirect.windowSelect.item) {
                       j.selected = false;
                     }
@@ -131,9 +132,9 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
       );
     } else if (item.redirect.otherPage.hasUrl()) {
       if (item.redirect.title == '黑名单') {
-        Get.toNamed('/blackListPage');
+        AppNavigator.toNamed('/blackListPage');
       } else if (item.redirect.otherPage.url.startsWith('http')) {
-        Get.toNamed(
+        AppNavigator.toNamed(
           '/webview',
           parameters: {'url': item.redirect.otherPage.url},
         );
@@ -142,9 +143,9 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
       }
     } else if (item.redirect.settingPage.hasUrl()) {
       if (item.redirect.title == '消息屏蔽词') {
-        Get.to(const WhisperBlockPage());
+        AppNavigator.to(const WhisperBlockPage());
       } else if (item.redirect.settingPage.url.startsWith('http')) {
-        Get.toNamed(
+        AppNavigator.toNamed(
           '/webview',
           parameters: {'url': item.redirect.settingPage.url},
         );

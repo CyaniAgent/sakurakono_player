@@ -1,5 +1,7 @@
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
-import 'package:skf/core/repository/member_repository.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/member/tags.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
@@ -40,7 +42,7 @@ class _GroupPanelState extends State<GroupPanel> {
   }
 
   void _queryFollowUpTags() {
-    Get.find<MemberRepository>().followUpTags().then((res) {
+    appRead(memberRepositoryProvider).followUpTags().then((res) {
       if (mounted) {
         loadingState = switch (res) {
               Loading() => LoadingState.loading(),
@@ -58,18 +60,18 @@ class _GroupPanelState extends State<GroupPanel> {
 
   Future<void> onSave() async {
     if (!loadingState.isSuccess) {
-      Get.back();
+      AppNavigator.back();
       return;
     }
     feedBack();
     // 保存
-    final res = await Get.find<MemberRepository>().addUsers(
+    final res = await appRead(memberRepositoryProvider).addUsers(
       widget.mid.toString(),
       tags.isEmpty ? '0' : tags.join(','),
     );
     if (res.isSuccess) {
       SmartDialog.showToast('保存成功');
-      Get.back(result: tags);
+      AppNavigator.back(result: tags);
     } else {
       res.toast();
     }

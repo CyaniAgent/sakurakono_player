@@ -1,4 +1,6 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/utils/extension/dimension_ext.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
@@ -6,7 +8,6 @@ import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/interfaces/v1.pb.dart' show Arc;
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -18,7 +19,6 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SearchArchiveGrpc extends StatelessWidget {
@@ -140,7 +140,7 @@ class SearchArchiveGrpc extends StatelessWidget {
                 ),
                 PopupMenuItem(
                   height: 45,
-                  onTap: () => Get.find<UserRepository>().toViewLater(bvid: bvid),
+                  onTap: () => appRead(userRepositoryProvider).toViewLater(bvid: bvid),
                   child: const Row(
                     spacing: 6,
                     children: [

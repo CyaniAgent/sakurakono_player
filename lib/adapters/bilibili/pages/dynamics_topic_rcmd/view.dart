@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
@@ -48,7 +49,7 @@ class _DynTopicRcmdPageState extends State<DynTopicRcmdPage> {
                 itemBuilder: (context, index) {
                   return DynTopicItem(
                     item: response[index],
-                    onTap: (item) => Get.toNamed(
+                    onTap: (item) => AppNavigator.toNamed(
                       '/dynTopic',
                       parameters: {
                         'id': item.id.toString(),

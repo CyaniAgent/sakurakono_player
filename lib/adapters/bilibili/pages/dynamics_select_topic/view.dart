@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math';
 
 import 'package:skf/common/widgets/flutter/draggable_scrollable_sheet.dart';
@@ -29,7 +30,7 @@ class SelectTopicPanel extends StatefulWidget {
     ValueChanged<double>? onCachePos,
   }) {
     return showModalBottomSheet<CoreTopicItem?>(
-      context: Get.context!,
+      context: AppNavigator.context!,
       useSafeArea: true,
       isScrollControlled: true,
       constraints: BoxConstraints(
@@ -201,7 +202,7 @@ class _SelectTopicPanelState
                   }
                   return DynTopicItem(
                     item: response[index],
-                    onTap: (item) => Get.back(result: item),
+                    onTap: (item) => AppNavigator.back(result: item),
                   );
                 },
                 itemCount: response.length,

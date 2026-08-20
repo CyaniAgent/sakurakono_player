@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/widgets/flutter/list_tile.dart';
@@ -137,7 +138,7 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
                   final item = response[index];
                   return ListTile(
                     dense: true,
-                    onTap: () => Get.toNamed(
+                    onTap: () => AppNavigator.toNamed(
                       '/searchResult',
                       parameters: {
                         'keyword': item.keyword!,

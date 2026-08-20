@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
@@ -45,7 +46,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
   @override
   final ArticleController controller = Get.putOrFind(
     ArticleController.new,
-    tag: Get.parameters['type']! + Get.parameters['id']!,
+    tag: AppNavigator.parameters['type']! + AppNavigator.parameters['id']!,
   );
 
   @override
@@ -589,7 +590,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
     return Padding(
       padding: const .symmetric(vertical: 10),
       child: GestureDetector(
-        onTap: () => Get.toNamed(
+        onTap: () => AppNavigator.toNamed(
           '/member?mid=${controller.summary.author?.mid}',
         ),
         child: SelectionContainer.disabled(

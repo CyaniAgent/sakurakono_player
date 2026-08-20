@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/child/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc_review/child/view.dart';
@@ -124,7 +125,7 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                   DialogOption(
                     child: const Text('写短评', style: TextStyle(fontSize: 14)),
                     onPressed: () {
-                      Get.back();
+                      AppNavigator.back();
                       showModalBottomSheet(
                         context: context,
                         useSafeArea: true,

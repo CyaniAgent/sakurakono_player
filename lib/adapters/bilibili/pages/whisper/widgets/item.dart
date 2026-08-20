@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/assets.dart';
 import 'package:skf/common/widgets/badge.dart';
@@ -11,7 +14,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/app/im/v1.pb.dart'
 import 'package:skf/adapters/bilibili/grpc/im.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_secondary/view.dart';
-import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -21,7 +23,6 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class WhisperSessionItem extends StatelessWidget {
   const WhisperSessionItem({
@@ -41,7 +42,7 @@ class WhisperSessionItem extends StatelessWidget {
     final talkerUid = item.id.privateId.talkerUid;
     final res = await ImGrpc.sessionDetail(talkerId: talkerUid, sessionType: 1);
     if (res case Success(:final response)) {
-      final res = await Get.find<MsgRepository>().ackSessionMsg(
+      final res = await appRead(msgRepositoryProvider).ackSessionMsg(
         talkerId: talkerUid.toInt(),
         ackSeqno: response.ackSeqno.toInt(),
       );
@@ -89,7 +90,7 @@ class WhisperSessionItem extends StatelessWidget {
           children: [
             DialogOption(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 onSetTop(item.isPinned, item.id);
               },
               child: Text(item.isPinned ? '移除置顶' : '置顶'),
@@ -98,21 +99,21 @@ class WhisperSessionItem extends StatelessWidget {
               if (kDebugMode || item.hasUnread())
                 DialogOption(
                   onPressed: () {
-                    Get.back();
+                    AppNavigator.back();
                     _updateAck(context);
                   },
                   child: const Text('标为已读'),
                 ),
               DialogOption(
                 onPressed: () {
-                  Get.back();
+                  AppNavigator.back();
                   onSetMute(item.isMuted, item.id.privateId.talkerUid);
                 },
                 child: Text('${item.isMuted ? '关闭' : '开启'}免打扰'),
               ),
               DialogOption(
                 onPressed: () {
-                  Get.back();
+                  AppNavigator.back();
                   showConfirmDialog(
                     context: context,
                     title: const Text('确定删除该对话？'),
@@ -187,7 +188,7 @@ class WhisperSessionItem extends StatelessWidget {
           }
         }
         if (item.id.privateId.hasTalkerUid()) {
-          Get.toNamed(
+          AppNavigator.toNamed(
             '/whisperDetail',
             arguments: {
               'talkerId': item.id.privateId.talkerUid.toInt(),
@@ -215,7 +216,7 @@ class WhisperSessionItem extends StatelessWidget {
             _ => null,
           };
           if (sessionPageType != null) {
-            Get.to(
+            AppNavigator.to(
               WhisperSecPage(
                 name: item.sessionInfo.sessionName,
                 sessionPageType: sessionPageType,
@@ -230,7 +231,7 @@ class WhisperSessionItem extends StatelessWidget {
         if (item.id.hasSystemId()) {
           switch (item.id.systemId.type) {
             case .SESSION_TYPE_SYSTEM:
-              Get.toNamed('/sysMsg');
+              AppNavigator.toNamed('/sysMsg');
             case .SESSION_TYPE_AI_FOLD:
             case .SESSION_TYPE_CUSTOMER_ACCOUNT:
             case .SESSION_TYPE_CUSTOMER_FOLD:
@@ -263,7 +264,7 @@ class WhisperSessionItem extends StatelessWidget {
           return GestureDetector(
             onTap: item.sessionInfo.avatar.hasMid()
                 ? () =>
-                      Get.toNamed('/member?mid=${item.sessionInfo.avatar.mid}')
+                      AppNavigator.toNamed('/member?mid=${item.sessionInfo.avatar.mid}')
                 : null,
             child: PendantAvatar(
               avatar,

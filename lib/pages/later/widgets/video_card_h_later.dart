@@ -1,4 +1,5 @@
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
@@ -6,7 +7,6 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/progress_bar/video_progress_indicator.dart';
 import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/core/models/user_types.dart' show CoreLaterItemModel;
@@ -17,7 +17,6 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 
 // 视频卡片 - 水平布局
 class VideoCardHLater extends StatelessWidget {
@@ -73,7 +72,7 @@ class VideoCardHLater extends StatelessWidget {
                 try {
                   final cid =
                       videoItem.cid ??
-                      await (ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2c(
+                      await (ref?.read(searchRepositoryProvider) ?? appRead(searchRepositoryProvider)).ab2c(
                         aid: videoItem.aid,
                         bvid: videoItem.bvid,
                       );

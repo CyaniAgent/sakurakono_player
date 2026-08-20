@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicItemModel;
 import 'package:skf/core/result/loading_state.dart';
@@ -32,7 +33,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
   @override
   void initState() {
     super.initState();
-    mid = widget.mid ?? int.parse(Get.parameters['mid']!);
+    mid = widget.mid ?? int.parse(AppNavigator.parameters['mid']!);
     final String heroTag = Utils.makeHeroTag(mid);
     _memberDynamicController = Get.put(
       MemberDynamicsController(mid),

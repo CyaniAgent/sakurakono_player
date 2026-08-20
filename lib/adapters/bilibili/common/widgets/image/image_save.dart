@@ -1,4 +1,5 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
@@ -7,7 +8,6 @@ import 'package:skf/utils/image_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 void imageSaveDialog({
   required String? title,
@@ -15,7 +15,7 @@ void imageSaveDialog({
   dynamic aid,
   String? bvid,
 }) {
-  final double imgWidth = MediaQuery.sizeOf(Get.context!).shortestSide - 16;
+  final double imgWidth = MediaQuery.sizeOf(AppNavigator.context!).shortestSide - 16;
   SmartDialog.show(
     animationType: SmartAnimationType.centerScale_otherSlide,
     builder: (context) {

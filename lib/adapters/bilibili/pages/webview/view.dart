@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/adapters/bilibili/http/browser_ua.dart';
@@ -36,7 +37,7 @@ class WebviewPage extends StatefulWidget {
 }
 
 class _WebviewPageState extends State<WebviewPage> {
-  late final String _url = widget.url ?? Get.parameters['url'] ?? '';
+  late final String _url = widget.url ?? AppNavigator.parameters['url'] ?? '';
   late final String userAgent;
   final RxString title = ''.obs;
   final RxDouble progress = 1.0.obs;
@@ -55,12 +56,12 @@ class _WebviewPageState extends State<WebviewPage> {
     super.initState();
     userAgent =
         widget.userAgent ??
-        switch (Get.parameters['uaType']) {
+        switch (AppNavigator.parameters['uaType']) {
           'pc' => BrowserUa.pc,
           'mob' => BrowserUa.mob,
           _ => BrowserUa.platform,
         };
-    if (Get.arguments case final Map map) {
+    if (AppNavigator.arguments case final Map map) {
       _inApp = map['inApp'] ?? false;
       _off = map['off'] ?? false;
     }
@@ -137,7 +138,7 @@ class _WebviewPageState extends State<WebviewPage> {
                         if (await _webViewController?.canGoBack() == true) {
                           _webViewController?.goBack();
                         } else {
-                          Get.back();
+                          AppNavigator.back();
                         }
                         break;
                       case WebviewMenuItem.resetCookie:
@@ -191,7 +192,7 @@ class _WebviewPageState extends State<WebviewPage> {
               ..addJavaScriptHandler(
                 handlerName: 'finishButtonClicked',
                 callback: (args) {
-                  Get.back();
+                  AppNavigator.back();
                 },
               )
               ..addJavaScriptHandler(
@@ -213,7 +214,7 @@ class _WebviewPageState extends State<WebviewPage> {
           onTitleChanged: (controller, title) {
             this.title.value = title ?? '';
           },
-          onCloseWindow: (controller) => Get.back(),
+          onCloseWindow: (controller) => AppNavigator.back(),
           onLoadStop: (controller, uri) {
             final url = uri.toString();
             if (url.startsWith('https://www.bilibili.com/h5/note-app')) {
@@ -282,7 +283,7 @@ class _WebviewPageState extends State<WebviewPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.back();
+                              AppNavigator.back();
                               PageUtils.launchURL(request.url.toString());
                             },
                             child: Text('确定 ($fileSize)'),

@@ -1,4 +1,7 @@
 import 'dart:math';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/context_menu/reply_menu_helper.dart';
 import 'package:skf/common/assets.dart';
@@ -16,7 +19,6 @@ import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo, ReplyControl, Content, Url, ReplyControl_VoteOption;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/pages/dynamics/widgets/vote.dart';
@@ -143,7 +145,7 @@ class ReplyItemGrpc extends StatelessWidget {
     Widget header = GestureDetector(
       onTap: () {
         feedBack();
-        Get.toNamed('/member?mid=${replyItem.mid}');
+        AppNavigator.toNamed('/member?mid=${replyItem.mid}');
       },
       child: ExtraHitTestWidget(
         width: 46,
@@ -432,7 +434,7 @@ class ReplyItemGrpc extends StatelessWidget {
               return;
             }
             isProcessing = true;
-            final res = await Get.find<ReplyRepository>().translateReply(
+            final res = await appRead(replyRepositoryProvider).translateReply(
               type: replyItem.type.toInt(),
               oid: replyItem.oid.toInt(),
               rpid: replyItem.id.toInt(),
@@ -631,7 +633,7 @@ class ReplyItemGrpc extends StatelessWidget {
                             recognizer: NoDeadlineTapGestureRecognizer()
                               ..onTap = () {
                                 feedBack();
-                                Get.toNamed(
+                                AppNavigator.toNamed(
                                   '/member?mid=${childReply.member.mid}',
                                 );
                               },
@@ -778,7 +780,7 @@ class ReplyItemGrpc extends StatelessWidget {
                   String? cvid =
                       match?.group(1) ?? match?.group(2) ?? match?.group(3);
                   if (cvid != null) {
-                    Get.toNamed(
+                    AppNavigator.toNamed(
                       '/articlePage',
                       parameters: {
                         'id': cvid,
@@ -791,7 +793,7 @@ class ReplyItemGrpc extends StatelessWidget {
                 }
               } else {
                 if (url.extra.isWordSearch) {
-                  Get.toNamed(
+                  AppNavigator.toNamed(
                     '/searchResult',
                     parameters: {'keyword': url.title},
                   );
@@ -843,7 +845,7 @@ class ReplyItemGrpc extends StatelessWidget {
               style: TextStyle(color: colorScheme.primary),
               recognizer: NoDeadlineTapGestureRecognizer()
                 ..onTap = () =>
-                    Get.toNamed('/member?mid=${content.atNameToMid[name]}'),
+                    AppNavigator.toNamed('/member?mid=${content.atNameToMid[name]}'),
             ),
           );
         } else if (_voteRegExp.hasMatch(matchStr)) {
@@ -861,7 +863,7 @@ class ReplyItemGrpc extends StatelessWidget {
           bool isValid = false;
           try {
             final ctr = Get.find<VideoDetailController>(
-              tag: getTag?.call() ?? Get.arguments['heroTag'],
+              tag: getTag?.call() ?? AppNavigator.arguments['heroTag'],
             );
             isValid =
                 DurationUtils.parseDuration(matchStr) * 1000 <=
@@ -880,7 +882,7 @@ class ReplyItemGrpc extends StatelessWidget {
                         try {
                           SmartDialog.showToast('跳转至：$matchStr');
                           Get.find<VideoDetailController>(
-                            tag: Get.arguments['heroTag'],
+                            tag: AppNavigator.arguments['heroTag'],
                           ).plPlayerController.seekTo(
                             Duration(
                               seconds: DurationUtils.parseDuration(matchStr),
@@ -907,7 +909,7 @@ class ReplyItemGrpc extends StatelessWidget {
                 style: TextStyle(color: colorScheme.primary),
                 recognizer: NoDeadlineTapGestureRecognizer()
                   ..onTap = () {
-                    Get.toNamed(
+                    AppNavigator.toNamed(
                       '/searchResult',
                       parameters: {'keyword': topic},
                     );
@@ -956,7 +958,7 @@ class ReplyItemGrpc extends StatelessWidget {
         recognizer = NoDeadlineTapGestureRecognizer()
           ..onTap = () => hasClickUrl
               ? PiliScheme.routePushFromUrl(content.richText.note.clickUrl)
-              : Get.toNamed(
+              : AppNavigator.toNamed(
                   '/articlePage',
                   parameters: {
                     'id': content.richText.opus.opusId.toString(),
@@ -1019,7 +1021,7 @@ class ReplyItemGrpc extends StatelessWidget {
           if (kDebugMode && GStorage.reply != null) ...[
             ListTile(
               onTap: () {
-                Get.back();
+                AppNavigator.back();
                 GStorage.reply!.put(
                   item.id.toString(),
                   (item.deepCopy()
@@ -1036,7 +1038,7 @@ class ReplyItemGrpc extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                Get.back();
+                AppNavigator.back();
                 onDelete();
                 GStorage.reply!.delete(item.id.toString());
               },
@@ -1047,7 +1049,7 @@ class ReplyItemGrpc extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                Get.back();
+                AppNavigator.back();
                 final oid = item.oid.toInt();
                 final data =
                     (item.deepCopy()
@@ -1068,7 +1070,7 @@ class ReplyItemGrpc extends StatelessWidget {
           if (ownerMid == upMid || ownerMid == item.member.mid)
             ListTile(
               onTap: () async {
-                Get.back();
+                AppNavigator.back();
                 bool? isDelete = await showDialog<bool>(
                   context: context,
                   builder: (context) {
@@ -1094,7 +1096,7 @@ class ReplyItemGrpc extends StatelessWidget {
                       ),
                       actions: [
                         TextButton(
-                          onPressed: () => Get.back(result: false),
+                          onPressed: () => AppNavigator.back(result: false),
                           child: Text(
                             '取消',
                             style: TextStyle(
@@ -1103,7 +1105,7 @@ class ReplyItemGrpc extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () => Get.back(result: true),
+                          onPressed: () => AppNavigator.back(result: true),
                           child: const Text('确定'),
                         ),
                       ],
@@ -1114,7 +1116,7 @@ class ReplyItemGrpc extends StatelessWidget {
                   return;
                 }
                 SmartDialog.showLoading(msg: '删除中...');
-                final res = await Get.find<ReplyRepository>().replyDel(
+                final res = await appRead(replyRepositoryProvider).replyDel(
                   type: item.type.toInt(),
                   oid: item.oid.toInt(),
                   rpid: item.id.toInt(),
@@ -1134,12 +1136,12 @@ class ReplyItemGrpc extends StatelessWidget {
           if (ownerMid != Int64.ZERO)
             ListTile(
               onTap: () {
-                Get.back();
+                AppNavigator.back();
                 autoWrapReportDialog(
                   context,
                   ReportOptions.commentReport,
                   (reasonType, reasonDesc, banUid) async {
-                    final res = await Get.find<ReplyRepository>().report(
+                    final res = await appRead(replyRepositoryProvider).report(
                       rpid: item.id.toString(),
                       oid: item.oid.toString(),
                       reasonType: reasonType,
@@ -1160,7 +1162,7 @@ class ReplyItemGrpc extends StatelessWidget {
           if (replyLevel == 1 && !isSubReply && ownerMid == upMid)
             ListTile(
               onTap: () {
-                Get.back();
+                AppNavigator.back();
                 onToggleTop?.call(item);
               },
               minLeadingWidth: 0,
@@ -1172,7 +1174,7 @@ class ReplyItemGrpc extends StatelessWidget {
             ),
           ListTile(
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               Utils.copyText(message);
             },
             minLeadingWidth: 0,
@@ -1181,7 +1183,7 @@ class ReplyItemGrpc extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               showReplyCopyDialog(
                 context,
                 message,
@@ -1199,7 +1201,7 @@ class ReplyItemGrpc extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               SavePanel.toSavePanel(upMid: upMid, item: item);
             },
             minLeadingWidth: 0,
@@ -1209,7 +1211,7 @@ class ReplyItemGrpc extends StatelessWidget {
           if (kDebugMode || item.mid == ownerMid)
             ListTile(
               onTap: () {
-                Get.back();
+                AppNavigator.back();
                 onCheckReply?.call(item);
               },
               minLeadingWidth: 0,

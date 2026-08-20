@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math';
 import 'dart:ui';
 
@@ -587,7 +588,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () =>
-                      Get.toNamed('/member?mid=${roomInfoH5.roomInfo?.uid}'),
+                      AppNavigator.toNamed('/member?mid=${roomInfoH5.roomInfo?.uid}'),
                   child: Row(
                     spacing: 10,
                     mainAxisSize: .min,

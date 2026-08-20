@@ -1,4 +1,7 @@
 import 'dart:math' show max;
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
@@ -9,7 +12,6 @@ import 'package:skf/common/widgets/flutter/text_field/controller.dart';
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/core/utils/pair.dart';
 import 'package:skf/common/widgets/time_picker.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/models/common/reply/reply_option_type.dart';
@@ -743,7 +745,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
     if (_isEdit) {
       final editConfig = widget.editConfig!;
-      final res = await Get.find<DynamicsRepository>().editDyn(
+      final res = await appRead(dynamicsRepositoryProvider).editDyn(
         dynId: editConfig.dynId,
         repostDynId: editConfig.repostDynId,
         rawText: hasRichText ? null : editController.text,
@@ -757,7 +759,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       SmartDialog.dismiss();
       if (res.isSuccess) {
         hasPub = true;
-        Get.back();
+        AppNavigator.back();
         SmartDialog.showToast('发布成功');
         widget.onSuccess?.call();
       } else {
@@ -767,7 +769,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
     }
 
     final reserveCard = _reserveCard.value;
-    final res = await Get.find<DynamicsRepository>().createDynamic(
+    final res = await appRead(dynamicsRepositoryProvider).createDynamic(
       mid: Accounts.main.mid,
       rawText: hasRichText ? null : editController.text,
       pics: pictures,
@@ -793,7 +795,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
     SmartDialog.dismiss();
     if (res case Success(:final response)) {
       hasPub = true;
-      Get.back();
+      AppNavigator.back();
       SmartDialog.showToast('发布成功');
       final id = response?['dyn_id'];
       RequestUtils.insertCreatedDyn(id);

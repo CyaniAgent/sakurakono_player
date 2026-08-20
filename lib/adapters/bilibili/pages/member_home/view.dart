@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/button/more_btn.dart';
@@ -337,7 +338,7 @@ class _MemberHomeState extends State<MemberHome>
                   _ctr.tabController?.animateTo(index);
                 } else {
                   if (param == 'coinArchive') {
-                    Get.to(
+                    AppNavigator.to(
                       MemberCoinArcPage(
                         mid: _ctr.mid,
                         name: _ctr.username,
@@ -347,7 +348,7 @@ class _MemberHomeState extends State<MemberHome>
                   }
 
                   if (param == 'likeArchive') {
-                    Get.to(
+                    AppNavigator.to(
                       MemberLikeArcPage(
                         mid: _ctr.mid,
                         name: _ctr.username,

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
-import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/live_emote/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_emote/view.dart';
@@ -170,7 +172,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
       }
       message = buffer.toString();
     }
-    final res = await Get.find<LiveRepository>().sendLiveMsg(
+    final res = await appRead(liveRepositoryProvider).sendLiveMsg(
       roomId: liveRoomController.roomId,
       msg: message,
       dmType: dmType,
@@ -180,7 +182,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
     );
     if (res.isSuccess) {
       hasPub = true;
-      Get.back();
+      AppNavigator.back();
       liveRoomController
         ..savedDanmaku?.clear()
         ..savedDanmaku = null;

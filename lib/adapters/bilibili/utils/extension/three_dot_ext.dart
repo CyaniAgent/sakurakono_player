@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/grpc/bilibili/app/im/v1.pb.dart'
     show ThreeDotItem, ThreeDotItemType, IMSettingType;
 import 'package:skf/adapters/bilibili/pages/common/common_whisper_controller.dart';
@@ -6,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/contact/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_settings/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 extension ThreeDotItemTypeExt on ThreeDotItemType {
@@ -59,7 +59,7 @@ extension ThreeDotItemTypeExt on ThreeDotItemType {
           onConfirm: controller.onDeleteList,
         );
       case ThreeDotItemType.THREE_DOT_ITEM_TYPE_MSG_SETTING:
-        Get.to(
+        AppNavigator.to(
           const WhisperSettingsPage(
             imSettingType: IMSettingType.SETTING_TYPE_NEED_ALL,
           ),
@@ -68,7 +68,7 @@ extension ThreeDotItemTypeExt on ThreeDotItemType {
         dynamic talkerId = RegExp(r'/(\d{3,})').firstMatch(item.url)?.group(1);
         if (talkerId != null) {
           talkerId = int.parse(talkerId);
-          Get.toNamed(
+          AppNavigator.toNamed(
             '/whisperDetail',
             arguments: {
               'talkerId': talkerId,
@@ -84,7 +84,7 @@ extension ThreeDotItemTypeExt on ThreeDotItemType {
           );
         }
       case ThreeDotItemType.THREE_DOT_ITEM_TYPE_CONTACTS:
-        Get.to(const ContactPage(isFromSelect: false));
+        AppNavigator.to(const ContactPage(isFromSelect: false));
       default:
         // Unhandled three-dot item — show a user-facing fallback toast.
         SmartDialog.showToast('暂不支持：${item.title}');

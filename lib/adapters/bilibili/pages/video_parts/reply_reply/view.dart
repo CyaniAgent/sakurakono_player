@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_reply.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/colored_box_transition.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
@@ -57,7 +58,7 @@ class VideoReplyReplyPanel extends CommonSlidePage {
     Uri? uri,
   }) {
     final rpId = rpIdStr == null ? null : int.tryParse(rpIdStr);
-    return Get.to(
+    return AppNavigator.to(
       arguments: {
         'oid': oid,
         'rpid': rootId,

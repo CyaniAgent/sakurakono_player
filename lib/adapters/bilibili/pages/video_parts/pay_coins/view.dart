@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math' as math;
 import 'dart:math' show max;
 
@@ -37,7 +38,7 @@ class PayCoinsPage extends StatefulWidget {
     required bool hasCoin,
     required bool hasCopyright,
   }) {
-    Get.key.currentState!.push(
+    AppNavigator.push(
       PublishRoute(
         pageBuilder: (buildContext, animation, secondaryAnimation) {
           return PayCoinsPage(
@@ -529,7 +530,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
         }
         _boxAnimController.forward().whenComplete(_boxAnimController.reverse);
         _coinController.forward().whenComplete(() {
-          Get.back();
+          AppNavigator.back();
           widget.onPayCoin(_pageIndex.value + 1, _coinWithLike.value);
         });
       });

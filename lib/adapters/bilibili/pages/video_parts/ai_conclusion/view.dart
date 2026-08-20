@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_ai_conclusion/model_result.dart';
 import 'package:skf/pages/common/slide/common_slide_page.dart';
 import 'package:skf/pages/video/controller.dart';
@@ -100,7 +101,7 @@ class AiConclusionPanel extends CommonSlidePage {
                                             ..onTap = () {
                                               try {
                                                 Get.find<VideoDetailController>(
-                                                  tag: Get.arguments['heroTag'],
+                                                  tag: AppNavigator.arguments['heroTag'],
                                                 ).plPlayerController.seekTo(
                                                   Duration(
                                                     seconds: item.timestamp!,

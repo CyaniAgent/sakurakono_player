@@ -1,12 +1,13 @@
 import 'package:skf/common/widgets/reorder_mixin.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/fav/video/controller.dart';
 import 'package:skf/pages/fav/video/widgets/item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class FavFolderSortPage extends StatefulWidget {
   const FavFolderSortPage({super.key, required this.favController});
@@ -34,14 +35,14 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
         actions: [
           TextButton(
             onPressed: () async {
-              final res = await Get.find<FavRepository>().sortFavFolder(
+              final res = await appRead(favRepositoryProvider).sortFavFolder(
                 sort: sortList.map((item) => item.id).join(','),
               );
               if (res.isSuccess) {
                 SmartDialog.showToast('排序完成');
                 _favController.loadingState.value = Success(sortList);
                 if (mounted) {
-                  Get.back();
+                  AppNavigator.back();
                 }
               } else {
                 res.toast();

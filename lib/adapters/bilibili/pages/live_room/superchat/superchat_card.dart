@@ -1,4 +1,5 @@
 import 'dart:async' show Timer;
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/selection_text.dart';
@@ -104,7 +105,7 @@ class _SuperChatCardState extends State<SuperChatCard> {
       items: [
         PopupMenuItem(
           height: 38,
-          onTap: () => Get.toNamed('/member?mid=${item.uid}'),
+          onTap: () => AppNavigator.toNamed('/member?mid=${item.uid}'),
           child: Text(
             '访问: ${item.userInfo.uname}',
             style: const TextStyle(fontSize: 13),

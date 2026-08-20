@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -24,7 +25,7 @@ class SubDetailPage extends StatefulWidget {
     String? heroTag,
     CoreSubItemModel? subInfo,
   }) {
-    Get.toNamed(
+    AppNavigator.toNamed(
       '/subDetail',
       arguments: {
         'id': id,
@@ -43,7 +44,7 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
     super.initState();
     _subDetailController = Get.put(
       SubDetailController(),
-      tag: Utils.makeHeroTag(Get.parameters['id']),
+      tag: Utils.makeHeroTag(AppNavigator.parameters['id']),
     );
   }
 
@@ -189,7 +190,7 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
                     ),
                     GestureDetector(
                       onTap: () =>
-                          Get.toNamed('/member?mid=${info.upper!.mid}'),
+                          AppNavigator.toNamed('/member?mid=${info.upper!.mid}'),
                       child: Text(
                         info.upper!.name!,
                         style: TextStyle(color: theme.colorScheme.primary),

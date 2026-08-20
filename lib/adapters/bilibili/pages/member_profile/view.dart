@@ -1,4 +1,5 @@
 import 'dart:io' show File;
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/common/constants.dart';
 
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -274,7 +275,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       trailing: current == sex ? const Icon(size: 22, Icons.check) : null,
       onTap: () {
-        Get.back();
+        AppNavigator.back();
         _update(type: ProfileType.sex, datum: sex);
       },
     );
@@ -404,7 +405,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               setState(() {});
             }
             if (type == ProfileType.uname || type == ProfileType.sign) {
-              Get.back();
+              AppNavigator.back();
             }
           } else {
             SmartDialog.showToast(res.data['message']);

@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/list_tile.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -23,7 +24,7 @@ class MemberGuard extends StatefulWidget {
     required String name,
     required Object? count,
   }) {
-    return Get.toNamed(
+    return AppNavigator.toNamed(
       '/memberGuard',
       arguments: {
         'ruid': mid,
@@ -42,7 +43,7 @@ class _MemberGuardState extends State<MemberGuard> {
   @override
   void initState() {
     super.initState();
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     _userName = args['name'];
     _count = args['count'];
     _controller = Get.put(
@@ -93,7 +94,7 @@ class _MemberGuardState extends State<MemberGuard> {
                     return ListTile(
                       safeArea: false,
                       visualDensity: .comfortable,
-                      onTap: () => Get.toNamed('/member?mid=${item.uid}'),
+                      onTap: () => AppNavigator.toNamed('/member?mid=${item.uid}'),
                       leading: _avatar(item.face, 32, item.guardLevel),
                       title: Text(
                         item.username,
@@ -114,7 +115,7 @@ class _MemberGuardState extends State<MemberGuard> {
   Widget _buildTopItem(CoreGuardItem item, double size) {
     final child = GestureDetector(
       behavior: .opaque,
-      onTap: () => Get.toNamed('/member?mid=${item.uid}'),
+      onTap: () => AppNavigator.toNamed('/member?mid=${item.uid}'),
       child: Padding(
         padding: const .symmetric(vertical: 10.0),
         child: Column(

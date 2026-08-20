@@ -1,4 +1,5 @@
 import 'dart:async' show Timer;
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/widgets/flutter/vertical_slider.dart';
@@ -172,7 +173,7 @@ class _VolumeButtonState extends State<VolumeButton> {
     final offset = renderBox.localToGlobal(
       renderBox.size.topCenter(const Offset(0, -6)),
     );
-    Get.key.currentState!.push(
+    AppNavigator.push(
       DialogRoute(
         context: context,
         useSafeArea: false,

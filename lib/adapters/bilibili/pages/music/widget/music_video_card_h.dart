@@ -1,10 +1,11 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/marquee.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
 import 'package:skf/adapters/bilibili/models_new/music/bgm_recommend_list.dart';
@@ -14,7 +15,6 @@ import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MusicVideoCardH extends StatelessWidget {
   final BgmRecommend videoItem;
@@ -38,7 +38,7 @@ class MusicVideoCardH extends StatelessWidget {
           int? cid = videoItem.cid;
           Dimension? dimension;
           if (cid == null) {
-            if (await Get.find<SearchRepository>().ab2cWithDimension(bvid: videoItem.bvid)
+            if (await appRead(searchRepositoryProvider).ab2cWithDimension(bvid: videoItem.bvid)
                 case final res?) {
               cid = res.cid;
               dimension = ModelConverters.dimension(res.dimension);

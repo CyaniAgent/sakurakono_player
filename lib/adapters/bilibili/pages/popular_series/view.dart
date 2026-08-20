@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
@@ -153,7 +154,7 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
                     minTileHeight: 44,
                     enabled: !isCurr,
                     onTap: () {
-                      Get.back();
+                      AppNavigator.back();
                       if (!isCurr) {
                         _controller
                           ..number = item.number!

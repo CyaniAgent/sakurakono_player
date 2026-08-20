@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/self_sized_horizontal_list.dart';
 import 'package:skf/core/models/ui/image_type.dart';
@@ -284,7 +285,7 @@ class _SharePanelState extends State<SharePanel> {
     );
     SmartDialog.dismiss();
     if (res.every((e) => e)) {
-      Get.back();
+      AppNavigator.back();
       SmartDialog.showToast('分享成功');
     } else if (res.every((e) => !e)) {
       SmartDialog.showToast('分享失败');

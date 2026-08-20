@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/custom_tooltip.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
@@ -47,7 +48,7 @@ class _EmotePanelState extends State<EmotePanel>
     late final color = ElevationOverlay.colorWithOverlay(
       theme.colorScheme.surface,
       theme.hoverColor,
-      Get.currentRoute.startsWith('/whisperDetail') ? 8 : 2,
+      AppNavigator.currentRoute.startsWith('/whisperDetail') ? 8 : 2,
     );
     return switch (loadingState) {
       Loading() => m3eLoading,
@@ -178,7 +179,7 @@ class _EmotePanelState extends State<EmotePanel>
                           iconSize: 20,
                           iconColor: theme.colorScheme.onSurfaceVariant
                               .withValues(alpha: 0.8),
-                          onPressed: () => Get.toNamed(
+                          onPressed: () => AppNavigator.toNamed(
                             '/webview',
                             parameters: {
                               'url':

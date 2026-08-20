@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math' show max;
 
 import 'package:skf/common/widgets/custom_icon.dart';
@@ -10,7 +13,6 @@ import 'package:skf/common/widgets/image_grid/image_grid_view.dart'
     show ImageGridView, ImageModel;
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/adapters/bilibili/grpc/reply.dart';
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/audio_normalization.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart'
@@ -78,7 +80,7 @@ List<SettingsModel> get extraSettings => [
     switchModel: SwitchModel.split(
       defaultVal: false,
       setKey: SettingBoxKey.enableSponsorBlock,
-      onTap: (context) => Get.toNamed('/sponsorBlock'),
+      onTap: (context) => AppNavigator.toNamed('/sponsorBlock'),
     ),
   ),
   PopupModel<SkipType>(
@@ -684,7 +686,7 @@ Future<void> audioNormalization(
             ),
             TextButton(
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 GStorage.setting.put(key, param);
                 if (!fallback &&
                     PlPlayerController.loudnormRegExp.hasMatch(param)) {
@@ -716,14 +718,14 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
       children: [
         DialogOption(
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             Utils.copyText(downloadPath);
           },
           child: const Text('复制', style: TextStyle(fontSize: 14)),
         ),
         DialogOption(
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             final defPath = defDownloadPath;
             if (downloadPath == defPath) return;
             downloadPath = defPath;
@@ -735,7 +737,7 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
         ),
         DialogOption(
           onPressed: () async {
-            Get.back();
+            AppNavigator.back();
             final path = await FilePicker.getDirectoryPath();
             if (path == null || path == downloadPath) return;
             downloadPath = path;
@@ -776,7 +778,7 @@ void _showDynDialog(BuildContext context) {
           onPressed: () {
             try {
               final val = int.parse(dynamicPeriod);
-              Get.back();
+              AppNavigator.back();
               GStorage.setting.put(SettingBoxKey.dynamicPeriod, val);
               Get.find<MainControllerNotifier>().dynamicPeriod = val * 60 * 1000;
             } catch (e) {
@@ -816,7 +818,7 @@ void _showReplyLengthDialog(BuildContext context, VoidCallback setState) {
           onPressed: () async {
             try {
               final val = int.parse(replyLengthLimit);
-              Get.back();
+              AppNavigator.back();
               ReplyItemGrpc.replyLengthLimit = val == 0 ? null : val;
               await GStorage.setting.put(SettingBoxKey.replyLengthLimit, val);
               setState();
@@ -859,7 +861,7 @@ void _showDmHeightDialog(BuildContext context, VoidCallback setState) {
                 1.0,
                 double.parse(danmakuLineHeight).toPrecision(1),
               );
-              Get.back();
+              AppNavigator.back();
               await GStorage.setting.put(SettingBoxKey.danmakuLineHeight, val);
               setState();
             } catch (e) {
@@ -898,7 +900,7 @@ void _showTouchSlopDialog(BuildContext context, VoidCallback setState) {
           onPressed: () async {
             try {
               final val = double.parse(initialValue);
-              Get.back();
+              AppNavigator.back();
               touchSlopH = val;
               await GStorage.setting.put(SettingBoxKey.touchSlopH, val);
               setState();
@@ -992,7 +994,7 @@ Future<void> _showSuperResolutionDialog(
 
 Future<void> _showFavDialog(BuildContext context) async {
   if (Accounts.main.isLogin) {
-    final res = await Get.find<FavRepository>().allFavFolders(Accounts.main.mid);
+    final res = await appRead(favRepositoryProvider).allFavFolders(Accounts.main.mid);
     if (res case Success(:final response)) {
       final list = response.list;
       if (list == null || list.isEmpty) {
@@ -1009,7 +1011,7 @@ Future<void> _showFavDialog(BuildContext context) async {
           content: SingleChildScrollView(
             child: RadioGroup(
               onChanged: (value) {
-                Get.back();
+                AppNavigator.back();
                 GStorage.setting.put(SettingBoxKey.quickFavId, value);
                 SmartDialog.showToast('设置成功');
               },
@@ -1185,7 +1187,7 @@ void _showProxyDialog(BuildContext context) {
         ),
         TextButton(
           onPressed: () {
-            Get.back();
+            AppNavigator.back();
             GStorage.setting.put(
               SettingBoxKey.systemProxyHost,
               systemProxyHost,
@@ -1227,7 +1229,7 @@ void _showCacheDialog(BuildContext context, VoidCallback setState) {
           onPressed: () async {
             try {
               final val = num.parse(valueStr);
-              Get.back();
+              AppNavigator.back();
               await GStorage.setting.put(
                 SettingBoxKey.maxCacheSize,
                 val * 1024 * 1024,

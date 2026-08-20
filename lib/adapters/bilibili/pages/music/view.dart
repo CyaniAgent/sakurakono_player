@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math';
 
 import 'package:skf/common/widgets/badge.dart';
@@ -11,7 +14,6 @@ import 'package:skf/common/widgets/selection_text.dart';
 import 'package:skf/common/widgets/sliver/sliver_to_box_adapter.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/music_types.dart';
-import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
@@ -47,7 +49,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
   @override
   final CoreMusicDetailController controller = Get.putOrFind(
     CoreMusicDetailController.new,
-    tag: Get.parameters['musicId']!,
+    tag: AppNavigator.parameters['musicId']!,
   );
 
   @override
@@ -327,7 +329,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                             return;
                           }
                           final hasLike = item.wishListen ?? false;
-                          final res = await Get.find<MusicRepository>().wishUpdate(
+                          final res = await appRead(musicRepositoryProvider).wishUpdate(
                             controller.musicId,
                             hasLike,
                           );
@@ -377,7 +379,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
     child = GestureDetector(
       onTap: artist.mid == null || artist.mid == 0
           ? () => Utils.copyText(artist.name!)
-          : () => Get.toNamed(
+          : () => AppNavigator.toNamed(
               '/member',
               parameters: {'mid': artist.mid!.toString()},
             ),
@@ -574,7 +576,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                   _buildRank(
                     item.musicRelation,
                     '使用稿件量',
-                    () => Get.to(
+                    () => AppNavigator.to(
                       const MusicRecommendPage(),
                       arguments: (id: controller.musicId, item: item),
                     ),

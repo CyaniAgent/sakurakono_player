@@ -1,10 +1,11 @@
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
+import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/image_grid/image_grid_view.dart';
 import 'package:skf/common/widgets/image_viewer/gallery_viewer.dart';
 import 'package:skf/common/widgets/image_viewer/hero_dialog_route.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart'
     show CoreSourceModel;
@@ -16,7 +17,6 @@ import 'package:skf/utils/global_data.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 const _linkFoldedText = '网页链接';
 
@@ -78,7 +78,7 @@ TextSpan? richNode(
                 text: '${spanChildren.isNotEmpty ? ' ' : ''}${i.text}',
                 style: style,
                 recognizer: NoDeadlineTapGestureRecognizer()
-                  ..onTap = () => Get.toNamed('/member?mid=${i.rid}'),
+                  ..onTap = () => AppNavigator.toNamed('/member?mid=${i.rid}'),
               ),
             );
             break;
@@ -89,7 +89,7 @@ TextSpan? richNode(
                 text: i.origText,
                 style: style,
                 recognizer: NoDeadlineTapGestureRecognizer()
-                  ..onTap = () => Get.toNamed(
+                  ..onTap = () => AppNavigator.toNamed(
                     '/searchResult',
                     parameters: {
                       'keyword': i.origText!.substring(
@@ -239,7 +239,7 @@ TextSpan? richNode(
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () async {
                       try {
-                        final res = await Get.find<SearchRepository>()
+                        final res = await appRead(searchRepositoryProvider)
                             .ab2cWithDimension(
                           bvid: i.rid,
                         );
@@ -286,7 +286,7 @@ TextSpan? richNode(
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () {
                       void onView(List<CoreOpusPicModel> list) {
-                        Get.key.currentState!.push<void>(
+                        AppNavigator.push<void>(
                           HeroDialogRoute(
                             pageBuilder: (_, _, _) => GalleryViewer(
                               sources: list
@@ -303,7 +303,7 @@ TextSpan? richNode(
                         return;
                       }
 
-                      Get.find<DynamicsRepository>().dynPic(i.rid).then((res) {
+                      appRead(dynamicsRepositoryProvider).dynPic(i.rid).then((res) {
                         if (res case Success(:final response)) {
                           final pics = response;
                           i.pics = pics;

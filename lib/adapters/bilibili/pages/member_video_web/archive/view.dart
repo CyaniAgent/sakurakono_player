@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/self_sized_horizontal_list.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/adapters/bilibili/models/common/member/archive_order_type_web.dart';
 import 'package:skf/adapters/bilibili/models_new/member/search_archive/data.dart';
@@ -20,7 +21,7 @@ class MemberVideoWeb extends StatefulWidget {
     required Object mid,
     required String name,
   }) {
-    return Get.toNamed(
+    return AppNavigator.toNamed(
       '/videoWeb',
       arguments: {
         'mid': mid,

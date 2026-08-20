@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/dialog/export_import.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/view_sliver_safe_area.dart';
@@ -159,7 +160,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
             dense: true,
             title: const Text('导出至剪贴板', style: style),
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               exportToClipBoard(onExport: _onExport);
             },
           ),
@@ -167,7 +168,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
             dense: true,
             title: const Text('导出文件至本地', style: style),
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               exportToLocalFile(
                 onExport: _onExport,
                 localFileName: () => 'reply',
@@ -203,7 +204,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
             dense: true,
             title: const Text('从剪贴板导入', style: style),
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               importFromClipBoard<List<dynamic>>(
                 context,
                 title: '评论',
@@ -217,7 +218,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
             dense: true,
             title: const Text('从本地文件导入', style: style),
             onTap: () {
-              Get.back();
+              AppNavigator.back();
               importFromLocalFile<List<dynamic>>(onImport: _onImport);
             },
           ),

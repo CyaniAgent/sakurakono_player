@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math';
 
 import 'package:skf/common/assets.dart';
@@ -174,7 +175,7 @@ class _PagesPanelState extends State<PagesPanel> {
                         return;
                       }
                       if (widget.showEpisodes == null) {
-                        Get.back();
+                        AppNavigator.back();
                       }
                       widget.ugcIntroController.onChangeEpisode(
                         item

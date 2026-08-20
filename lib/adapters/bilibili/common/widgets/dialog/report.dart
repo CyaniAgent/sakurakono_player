@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/checkbox_text.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/radio_widget.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/utils/extension/string_ext.dart';
@@ -113,7 +114,7 @@ Future<void> autoWrapReportDialog(
               final res = await onSuccess(reasonType!, reasonDesc, banUid);
               SmartDialog.dismiss();
               if (res.isSuccess) {
-                Get.back();
+                AppNavigator.back();
                 SmartDialog.showToast('举报成功');
               } else {
                 res.toast();

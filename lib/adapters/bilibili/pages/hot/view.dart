@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dart';
@@ -85,7 +86,7 @@ class _HotPageState extends State<HotPage>
                           if (index != -1) {
                             homeController.tabController.animateTo(index);
                           } else {
-                            Get.to(
+                            AppNavigator.to(
                               Scaffold(
                                 resizeToAvoidBottomInset: false,
                                 appBar: AppBar(title: const Text('排行榜')),
@@ -100,13 +101,13 @@ class _HotPageState extends State<HotPage>
                       iconUrl:
                           'https://i0.hdslb.com/bfs/archive/552ebe8c4794aeef30ebd1568b59ad35f15e21ad.png',
                       title: '每周必看',
-                      onTap: () => Get.toNamed('/popularSeries'),
+                      onTap: () => AppNavigator.toNamed('/popularSeries'),
                     ),
                     _buildEntranceItem(
                       iconUrl:
                           'https://i0.hdslb.com/bfs/archive/3693ec9335b78ca57353ac0734f36a46f3d179a9.png',
                       title: '入站必刷',
-                      onTap: () => Get.toNamed('/popularPrecious'),
+                      onTap: () => AppNavigator.toNamed('/popularPrecious'),
                     ),
                   ],
                 ),

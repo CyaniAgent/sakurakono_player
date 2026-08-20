@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:skf/router/app_navigator.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/style.dart';
@@ -418,7 +419,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
                                       onTap: isCurrUrl
                                           ? null
                                           : () {
-                                              Get.back();
+                                              AppNavigator.back();
                                               controller.initLiveUrl(
                                                 streamIndex: si,
                                                 formatIndex: fi,

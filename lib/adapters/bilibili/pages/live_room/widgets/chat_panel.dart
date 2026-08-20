@@ -1,8 +1,10 @@
 import 'package:skf/common/widgets/flutter/popup_menu.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
@@ -118,7 +120,7 @@ class LiveRoomChatPanel extends StatelessWidget {
                                   ),
                                   recognizer: NoDeadlineTapGestureRecognizer()
                                     ..onTap = () =>
-                                        Get.toNamed('/member?mid=${reply.mid}'),
+                                        AppNavigator.toNamed('/member?mid=${reply.mid}'),
                                 ),
                               _buildMsg(devicePixelRatio, item),
                             ],
@@ -361,7 +363,7 @@ class LiveRoomChatPanel extends StatelessWidget {
         ),
         PopupMenuItem(
           height: 38,
-          onTap: () => Get.toNamed('/member?mid=${item.extra.mid}'),
+          onTap: () => AppNavigator.toNamed('/member?mid=${item.extra.mid}'),
           child: const Text(
             '去TA的个人空间',
             style: TextStyle(fontSize: 13),
@@ -379,7 +381,7 @@ class LiveRoomChatPanel extends StatelessWidget {
           height: 38,
           onTap: () async {
             if (!liveRoomController.isLogin) return;
-            final res = await Get.find<LiveRepository>().liveShieldUser(
+            final res = await appRead(liveRepositoryProvider).liveShieldUser(
               uid: item.extra.mid as int,
               roomid: roomId,
               type: 1,

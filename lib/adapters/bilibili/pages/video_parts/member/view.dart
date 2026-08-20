@@ -1,4 +1,5 @@
 import 'package:skf/common/skeleton/video_card_h.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -197,7 +198,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                           videoItem: ModelConverters.spaceArchiveItem(videoItem),
                           bvid: _bvid,
                           onTap: () {
-                            Get.back();
+                            AppNavigator.back();
                             widget.ugcIntroController.onChangeEpisode(
                               BaseEpisodeItem(
                                 bvid: videoItem.bvid,
@@ -310,7 +311,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
               ),
               onPressed: () {
                 if (widget.mid == account.mid) {
-                  Get.toNamed('/editProfile');
+                  AppNavigator.toNamed('/editProfile');
                 } else {
                   if (!account.isLogin) {
                     SmartDialog.showToast('账号未登录');
@@ -346,7 +347,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                 tapTargetSize: .shrinkWrap,
                 visualDensity: const VisualDensity(vertical: -2),
               ),
-              onPressed: () => Get.toNamed('/member?mid=${widget.mid}'),
+              onPressed: () => AppNavigator.toNamed('/member?mid=${widget.mid}'),
               child: const Text(
                 '查看主页',
                 maxLines: 1,

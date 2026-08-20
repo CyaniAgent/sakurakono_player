@@ -1,4 +1,5 @@
 import 'package:skf/common/style.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
@@ -64,7 +65,7 @@ class FavVideoCardH extends StatelessWidget {
             ? () => ctr!.onSelect(item)
             : () {
                 if (!const [0, 16].contains(item.attr)) {
-                  Get.toNamed('/member?mid=${item.upper?.mid}');
+                  AppNavigator.toNamed('/member?mid=${item.upper?.mid}');
                   return;
                 }
 
@@ -232,7 +233,7 @@ class FavVideoCardH extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.back();
+                          AppNavigator.back();
                           ctr!.onCancelFav(index!, item.id!, item.type!);
                         },
                         child: const Text('确定取消'),

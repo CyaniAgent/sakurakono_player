@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/custom_icon.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/adapters/bilibili/http/video.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
@@ -95,7 +96,7 @@ class VideoPopupMenu extends StatelessWidget {
                   _VideoCustomAction(
                     '访问：${videoItem.owner.name}',
                     const Icon(MdiIcons.accountCircleOutline, size: 16),
-                    () => Get.toNamed('/member?mid=${videoItem.owner.mid}'),
+                    () => AppNavigator.toNamed('/member?mid=${videoItem.owner.mid}'),
                   ),
                   _VideoCustomAction(
                     '不感兴趣',
@@ -124,7 +125,7 @@ class VideoPopupMenu extends StatelessWidget {
                           return SearchText(
                             text: r?.name ?? f?.name ?? '未知',
                             onTap: (_) async {
-                              Get.back();
+                              AppNavigator.back();
                               SmartDialog.showLoading(msg: '正在提交');
                               final res = await VideoHttp.feedDislike(
                                 reasonId: r?.id,
@@ -190,7 +191,7 @@ class VideoPopupMenu extends StatelessWidget {
                                       SmartDialog.showToast(
                                         res.isSuccess ? "成功" : res.toString(),
                                       );
-                                      Get.back();
+                                      AppNavigator.back();
                                     },
                                     style: FilledButton.styleFrom(
                                       visualDensity: VisualDensity.compact,
@@ -217,7 +218,7 @@ class VideoPopupMenu extends StatelessWidget {
                                 children: [
                                   FilledButton.tonal(
                                     onPressed: () async {
-                                      Get.back();
+                                      AppNavigator.back();
                                       SmartDialog.showLoading(msg: '正在提交');
                                       final res = await VideoHttp.dislikeVideo(
                                         bvid: videoItem.bvid!,
@@ -238,7 +239,7 @@ class VideoPopupMenu extends StatelessWidget {
                                   ),
                                   FilledButton.tonal(
                                     onPressed: () async {
-                                      Get.back();
+                                      AppNavigator.back();
                                       SmartDialog.showLoading(msg: '正在提交');
                                       final res = await VideoHttp.dislikeVideo(
                                         bvid: videoItem.bvid!,
@@ -286,7 +287,7 @@ class VideoPopupMenu extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () async {
-                                Get.back();
+                                AppNavigator.back();
                                 final res = await VideoHttp.relationMod(
                                   mid: videoItem.owner.mid!,
                                   act: 5,

@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/button/icon_button.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -49,7 +50,7 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
         title: Text(widget.parentName),
         actions: [
           IconButton(
-            onPressed: () => Get.to(const LiveSearchPage()),
+            onPressed: () => AppNavigator.to(const LiveSearchPage()),
             icon: const Icon(Icons.search),
           ),
           const SizedBox(width: 16),
@@ -236,7 +237,7 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
                         theme: theme,
                         item: list[index],
                         onTap: () {
-                          Get.back();
+                          AppNavigator.back();
                           _controller.tabController?.index = index;
                         },
                       );

@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
@@ -24,7 +25,7 @@ class ArticleListPage extends StatefulWidget {
 class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
   final _controller = Get.put(
     ArticleListController(),
-    tag: Get.parameters['id']!,
+    tag: AppNavigator.parameters['id']!,
   );
 
   late EdgeInsets padding;
@@ -139,7 +140,7 @@ class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () =>
-                          Get.toNamed('/member?mid=${_controller.author!.mid}'),
+                          AppNavigator.toNamed('/member?mid=${_controller.author!.mid}'),
                       child: Row(
                         spacing: 10,
                         mainAxisSize: MainAxisSize.min,

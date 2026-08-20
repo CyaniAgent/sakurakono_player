@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:skf/router/app_navigator.dart';
 import 'dart:io';
 
 import 'package:skf/build_config.dart';
@@ -72,7 +73,7 @@ class _AboutPageState extends State<AboutPage> {
       content: TextField(
         autofocus: true,
         onSubmitted: (value) {
-          Get.back();
+          AppNavigator.back();
           if (value.isNotEmpty) {
             PageUtils.handleWebview(value, inApp: true);
           }
@@ -192,7 +193,7 @@ Commit Hash: ${BuildConfig.commitHash}''',
             trailing: Icon(Icons.arrow_forward, size: 16, color: outline),
           ),
           ListTile(
-            onTap: () => Get.toNamed('/logs'),
+            onTap: () => AppNavigator.toNamed('/logs'),
             onLongPress: LoggerUtils.clearLogs,
             onSecondaryTap: PlatformUtils.isMobile
                 ? null
@@ -279,7 +280,7 @@ Commit Hash: ${BuildConfig.commitHash}''',
                   children: [
                     DialogOption(
                       onPressed: () async {
-                        Get.back();
+                        AppNavigator.back();
                         await Future.wait([
                           GStorage.setting.clear(),
                           GStorage.video.clear(),
@@ -290,7 +291,7 @@ Commit Hash: ${BuildConfig.commitHash}''',
                     ),
                     DialogOption(
                       onPressed: () async {
-                        Get.back();
+                        AppNavigator.back();
                         await GStorage.clear();
                         SmartDialog.showToast('重置成功');
                       },

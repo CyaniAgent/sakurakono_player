@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
@@ -217,7 +218,7 @@ class _Item extends StatelessWidget {
       }
     }
     return InkWell(
-      onTap: () => Get.toNamed('/member?mid=${item.uid}'),
+      onTap: () => AppNavigator.toNamed('/member?mid=${item.uid}'),
       child: Padding(
         padding: const .only(left: 10, top: 9, bottom: 8, right: 16),
         child: Row(

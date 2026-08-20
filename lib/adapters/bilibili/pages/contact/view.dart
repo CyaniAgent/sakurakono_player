@@ -1,4 +1,5 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/pages/fan/view.dart';
 import 'package:skf/pages/follow/child/child_view.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/view.dart';
@@ -34,7 +35,7 @@ class _ContactPageState extends State<ContactPage>
   }
 
   void onSelect(UserModel userModel) {
-    Get.back(result: userModel);
+    AppNavigator.back(result: userModel);
   }
 
   @override
@@ -62,7 +63,7 @@ class _ContactPageState extends State<ContactPage>
                 ),
               );
               if (userModel != null) {
-                Get.back(result: userModel);
+                AppNavigator.back(result: userModel);
               }
             },
             icon: const Icon(Icons.search),

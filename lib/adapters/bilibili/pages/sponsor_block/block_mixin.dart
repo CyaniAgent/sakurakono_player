@@ -1,11 +1,13 @@
 import 'dart:async' show StreamSubscription, Timer;
+import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'dart:math' as math;
 
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/sponsor_block_repository.dart';
 import 'package:skf/adapters/bilibili/models/common/sponsor_block/segment_model.dart';
 import 'package:skf/adapters/bilibili/models_new/sponsor_block/segment_item.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
@@ -66,7 +68,7 @@ mixin BlockMixin {
   }) async {
     resetBlock();
 
-    final result = await Get.find<SponsorBlockRepository>().getSkipSegments(
+    final result = await appRead(sponsorBlockRepositoryProvider).getSkipSegments(
       bvid: bvid,
       cid: cid,
     );
@@ -252,7 +254,7 @@ mixin BlockMixin {
       _showBlockToast('已跳过${item.segmentType.shortTitle}片段');
     }
     if (isBlock && Pref.blockTrack) {
-      Get.find<SponsorBlockRepository>().viewedVideoSponsorTime(item.uuid);
+      appRead(sponsorBlockRepositoryProvider).viewedVideoSponsorTime(item.uuid);
     }
   }
 
@@ -290,7 +292,7 @@ mixin BlockMixin {
 
   void _showVoteDialog(SegmentModel segment) {
     showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (context) => SimpleDialog(
         clipBehavior: .hardEdge,
         contentPadding: const .symmetric(vertical: 10),
@@ -298,21 +300,21 @@ mixin BlockMixin {
           DialogOption(
             child: const Text('赞成票', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               _doVote(segment.uuid, 1);
             },
           ),
           DialogOption(
             child: const Text('反对票', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               _doVote(segment.uuid, 0);
             },
           ),
           DialogOption(
             child: const Text('更改类别', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               _showCategoryDialog(segment);
             },
           ),
@@ -321,14 +323,14 @@ mixin BlockMixin {
     );
   }
 
-  void _doVote(String uuid, int type) => Get.find<SponsorBlockRepository>().voteOnSponsorTime(
+  void _doVote(String uuid, int type) => appRead(sponsorBlockRepositoryProvider).voteOnSponsorTime(
     uuid: uuid,
     type: type,
   ).then((i) => SmartDialog.showToast(i.isSuccess ? '投票成功' : '投票失败: $i'));
 
   void _showCategoryDialog(SegmentModel segment) {
     showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (context) => SimpleDialog(
         clipBehavior: .hardEdge,
         contentPadding: const .symmetric(vertical: 10),
@@ -337,8 +339,8 @@ mixin BlockMixin {
               (item) => ListTile(
                 dense: true,
                 onTap: () {
-                  Get.back();
-                  Get.find<SponsorBlockRepository>().voteOnSponsorTime(
+                  AppNavigator.back();
+                  appRead(sponsorBlockRepositoryProvider).voteOnSponsorTime(
                     uuid: segment.uuid,
                     category: CoreSegmentType.values.firstWhere(
                       (t) => t.name == item.name,
@@ -380,7 +382,7 @@ mixin BlockMixin {
 
   void showSBDetail() {
     showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (context) => SimpleDialog(
         clipBehavior: .hardEdge,
         contentPadding: const .symmetric(vertical: 10),
@@ -388,7 +390,7 @@ mixin BlockMixin {
             .map(
               (item) => ListTile(
                 onTap: () {
-                  Get.back();
+                  AppNavigator.back();
                   if (isBlock) {
                     _showVoteDialog(item);
                   }
@@ -437,7 +439,7 @@ mixin BlockMixin {
                               ? '跳至此片段'
                               : '跳过此片段',
                           onPressed: () {
-                            Get.back();
+                            AppNavigator.back();
                             onSkip(
                               item,
                               isSkip: item.skipType != SkipType.showOnly,

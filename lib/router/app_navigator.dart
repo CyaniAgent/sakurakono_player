@@ -11,7 +11,7 @@ abstract final class AppNavigator {
   /// 全局根 context（navigatorKey.currentContext，应用挂载后可用）。
   static BuildContext? get context => navigatorKey.currentContext;
 
-  /// 当前路由路径（如 '/videoV'）。等效 `Get.currentRoute`。
+  /// 当前路由路径（如 '/videoV'）。等效 `AppNavigator.currentRoute`。
   static String get currentRoute {
     final ctx = navigatorKey.currentContext;
     if (ctx == null) return '/';
@@ -132,18 +132,19 @@ abstract final class AppNavigator {
     dynamic page, {
     dynamic arguments,
     bool preventDuplicates = true,
+    String? routeName,
   }) {
     final navigator = navigatorKey.currentState;
     if (navigator == null) return null;
     return navigator.push<T>(
       MaterialPageRoute(
         builder: (_) => page as Widget,
-        settings: RouteSettings(arguments: arguments),
+    settings: RouteSettings(name: routeName, arguments: arguments),
       ),
     );
   }
 
-  /// 直推 Route 对象（如 HeroDialogRoute）。等效 `Get.key.currentState!.push`。
+  /// 直推 Route 对象（如 HeroDialogRoute）。等效 `AppNavigator.push`。
   static Future<T?>? push<T>(Route<T> route) {
     return navigatorKey.currentState?.push<T>(route);
   }
