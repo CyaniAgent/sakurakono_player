@@ -83,7 +83,7 @@ class _MainReplyPageState extends State<MainReplyPage>
               slivers: [
                 buildReplyHeader(colorScheme),
                 Obx(
-                  () => _buildBody(colorScheme, _controller.loadingState.value),
+                  () => _buildBody(colorScheme, _controller.loadingState),
                 ),
               ],
             ),

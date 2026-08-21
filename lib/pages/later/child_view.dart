@@ -60,7 +60,7 @@ class _LaterViewChildPageState extends ConsumerState<LaterViewChildPage>
               bottom: MediaQuery.viewPaddingOf(context).bottom + 85,
             ),
             sliver: Obx(
-              () => _buildBody(_laterController.loadingState.value),
+              () => _buildBody(_laterController.loadingState),
             ),
           ),
         ],

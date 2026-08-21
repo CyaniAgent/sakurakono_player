@@ -235,7 +235,7 @@ class _DynamicDetailPageState
       }
     }
     ReplyOptionType? replyOption;
-    if (controller.loadingState.value case Error(:final code)) {
+    if (controller.loadingState case Error(:final code)) {
       if (code == 12061 || code == 12002) {
         replyOption = .close;
       }
@@ -356,7 +356,7 @@ class _DynamicDetailPageState
       physics: ReloadScrollPhysics(controller: controller),
       slivers: [
         buildReplyHeader(isPortrait),
-        Obx(() => replyList(controller.loadingState.value)),
+        Obx(() => replyList(controller.loadingState)),
       ],
     );
     final child = tabBarView(

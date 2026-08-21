@@ -23,7 +23,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
   FavDetailController get _favDetailController => widget.favDetailController;
 
   late List<CoreFavDetailItemModel> sortList = List<CoreFavDetailItemModel>.from(
-    _favDetailController.loadingState.value.data!,
+    _favDetailController.loadingState.data!,
   );
   List<String> sort = <String>[];
 
@@ -33,7 +33,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
     }
     _favDetailController.onLoadMore().whenComplete(() {
       try {
-        if (_favDetailController.loadingState.value case Success(
+        if (_favDetailController.loadingState case Success(
           :final response,
         )) {
           if (response == null || sortList.length >= response.length) return;
@@ -65,7 +65,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
               ).then((res) {
                 if (res.isSuccess) {
                   SmartDialog.showToast('排序完成');
-                  _favDetailController.loadingState.value = Success(sortList);
+                  _favDetailController.loadingState = Success(sortList);
                   if (mounted) {
                     AppNavigator.back();
                   }

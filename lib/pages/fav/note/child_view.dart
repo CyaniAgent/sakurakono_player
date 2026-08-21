@@ -52,7 +52,7 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
               SliverPadding(
                 padding: EdgeInsets.only(bottom: padding.bottom + 100),
                 sliver: Obx(
-                  () => _buildBody(_favNoteController.loadingState.value),
+                  () => _buildBody(_favNoteController.loadingState),
                 ),
               ),
             ],

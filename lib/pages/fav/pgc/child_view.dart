@@ -60,7 +60,7 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
               SliverPadding(
                 padding: EdgeInsets.only(bottom: padding.bottom + 100),
                 sliver: Obx(
-                  () => _buildBody(_favPgcController.loadingState.value),
+                  () => _buildBody(_favPgcController.loadingState),
                 ),
               ),
             ],

@@ -207,7 +207,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
             _sortWidget(theme.colorScheme),
           ],
           Obx(
-            () => _buildBody(theme.colorScheme, _controller.loadingState.value),
+            () => _buildBody(theme.colorScheme, _controller.loadingState),
           ),
         ],
       ),

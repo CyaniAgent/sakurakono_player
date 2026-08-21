@@ -132,7 +132,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                   child: _buildChart(response, maxWidth),
                 ),
                 buildReplyHeader(),
-                Obx(() => replyList(controller.loadingState.value)),
+                Obx(() => replyList(controller.loadingState)),
               ],
             ),
           );
@@ -184,7 +184,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                         slivers: [
                           buildReplyHeader(),
                           Obx(
-                            () => replyList(controller.loadingState.value),
+                            () => replyList(controller.loadingState),
                           ),
                         ],
                       ),

@@ -88,34 +88,7 @@ mixin BaseLaterController
 
 class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItemModel>
     with BaseLaterController {
-  LaterController(this.laterViewType, {this.actions});
-  final LaterViewType laterViewType;
-
-  /// 导航契约（适配器注入），null 时对应导航动作禁用。
-  final LaterActions? actions;
-
-  late final int mid = (_ref?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId) ?? 0;
-
-  final RxBool asc = false.obs;
-
-
-  @override
-  Future<LoadingState<CoreLaterData>> customGetData() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).seeYouLater(
-    page: page,
-    viewed: laterViewType.type,
-    asc: asc.value,
-  );
-    return switch (result) {
-      Loading _ => LoadingState.loading(),
-      Success(:final response) => Success(response),
-      Error(:final errMsg, :final code) => Error(errMsg, code: code),
-    };
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
+  LaterController(this.laterViewType, {this.actions}) {
     ever(enableMultiSelect, (bool val) {
       _ref?.read(laterBaseProvider.notifier).setEnableMultiSelect(val);
     });
@@ -124,7 +97,24 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
     });
     queryData();
   }
+  final RxBool asc = false.obs;
+  late final int mid = (_ref?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId) ?? 0;
+  final LaterActions? actions;
+  final LaterViewType laterViewType;
 
+  @override
+  Future<LoadingState<CoreLaterData>> customGetData() async {
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).seeYouLater(
+      page: page,
+      viewed: laterViewType.type,
+      asc: asc.value,
+    );
+    return switch (result) {
+      Loading _ => LoadingState.loading(),
+      Success(:final response) => Success(response),
+      Error(:final errMsg, :final code) => Error(errMsg, code: code),
+    };
+  }
   @override
   List<CoreLaterItemModel>? getDataList(response) {
     _ref?.read(laterBaseProvider.notifier).updateCount(laterViewType.index, response.count ?? 0);
@@ -170,7 +160,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
 
   // 稍后再看播放全部
   void toViewPlayAll() {
-    if (loadingState.value case Success(:final response)) {
+    if (loadingState case Success(:final response)) {
       if (response == null || response.isEmpty) return;
 
       for (CoreLaterItemModel item in response) {

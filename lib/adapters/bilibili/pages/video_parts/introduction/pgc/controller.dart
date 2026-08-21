@@ -266,7 +266,7 @@ class PgcIntroController extends CommonIntroController {
         try {
           final replyCtr = Get.find<VideoReplyController>(tag: heroTag)
             ..aid = aid;
-          if (replyCtr.loadingState.value is! Loading) {
+          if (replyCtr.loadingState is! Loading) {
             replyCtr.onReload();
           }
         } catch (_) {}

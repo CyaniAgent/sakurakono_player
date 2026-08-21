@@ -13,13 +13,17 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 class HistoryController
     extends MultiSelectController<CoreHistoryData, CoreHistoryItemModel>
-    with GetSingleTickerProviderStateMixin {
-  HistoryController(this.type);
+    implements TickerProvider {
+  HistoryController(this.type) {
+    historyStatus();
+    queryData();
+  }
 
   Object? get account => null;
 
@@ -37,11 +41,7 @@ class HistoryController
   void attachRef(WidgetRef ref) { _ref = ref; }
 
   @override
-  void onInit() {
-    super.onInit();
-    historyStatus();
-    queryData();
-  }
+  Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
 
   @override
   Future<void> onRefresh() {
@@ -93,7 +93,7 @@ class HistoryController
 
   // 删除已看历史记录
   void onDelViewedHistory() {
-    final viewedList = loadingState.value.dataOrNull
+    final viewedList = loadingState.dataOrNull
         ?.where((e) => e.progress == -1)
         .toSet();
     if (viewedList != null && viewedList.isNotEmpty) {
@@ -147,9 +147,9 @@ class HistoryController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     tabController?.dispose();
-    super.onClose();
+    super.dispose();
   }
 
   @override

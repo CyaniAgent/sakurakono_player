@@ -1,9 +1,9 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show MainListReply, VoteCard, ReplyInfo;
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
-mixin ReplyVoteMixin<R> on CommonListController<R, ReplyInfo> {
+mixin ReplyVoteMixin<R> on CommonListControllerRiverpod<R, ReplyInfo> {
   VoteCard? voteCard;
 
   @override

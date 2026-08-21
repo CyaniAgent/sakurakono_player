@@ -12,7 +12,9 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavPgcController
     extends MultiSelectController<CoreFavPgcData, CoreFavPgcItemModel> {
-  FavPgcController(this.type, this.followStatus);
+  FavPgcController(this.type, this.followStatus) {
+    queryData();
+  }
   final int type;
   final int followStatus;
 
@@ -22,11 +24,6 @@ class FavPgcController
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   final RxBool allSelected = false.obs;
@@ -67,9 +64,8 @@ class FavPgcController
   Future<void> pgcDel(int index, seasonId) async {
     final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcDel(seasonId: seasonId);
     if (result case Success(:final response)) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      loadingState.data!.removeAt(index);
+      notifyListeners();
       SmartDialog.showToast(response);
     } else {
       SmartDialog.showToast(result.toString());
@@ -90,13 +86,13 @@ class FavPgcController
     if (res case Success(:final response)) {
       try {
         final ctr = Get.find<FavPgcController>(tag: '$type$followStatus');
-        if (ctr.loadingState.value case Success(:final response)) {
+        if (ctr.loadingState case Success(:final response)) {
           response?.insertAll(
             0,
             removeList.map((item) => item..checked = false),
           );
           ctr
-            ..loadingState.refresh()
+            ..notifyListeners()
             ..allSelected.value = false;
         }
       } catch (e) {
@@ -115,15 +111,15 @@ class FavPgcController
       status: followStatus,
     );
     if (res case Success(:final response)) {
-      List<CoreFavPgcItemModel> list = loadingState.value.data!;
+      List<CoreFavPgcItemModel> list = loadingState.data!;
       final item = list.removeAt(index);
-      loadingState.refresh();
+      notifyListeners();
       try {
         final ctr = Get.find<FavPgcController>(tag: '$type$followStatus');
-        if (ctr.loadingState.value case Success(:final response)) {
+        if (ctr.loadingState case Success(:final response)) {
           response?.insert(0, item);
           ctr
-            ..loadingState.refresh()
+            ..notifyListeners()
             ..allSelected.value = false;
         }
       } catch (e) {

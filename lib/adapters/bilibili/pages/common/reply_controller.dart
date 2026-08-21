@@ -5,7 +5,7 @@ import 'package:skf/core/models/reply_types.dart' show CoreMode, CoreMainListRep
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show CursorReply, ReplyInfo, SubjectControl;
 import 'package:skf/adapters/bilibili/grpc/bilibili/pagination.pb.dart' show FeedPaginationReply;
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_new/view.dart';
 import 'package:skf/utils/feed_back.dart';
@@ -20,7 +20,12 @@ import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 abstract class ReplyController<R>
-    extends CommonListController<R, ReplyInfo> {
+    extends CommonListControllerRiverpod<R, ReplyInfo> {
+  ReplyController() {
+    final cacheSortType = BiliPref.replySortType;
+    sortType = cacheSortType.obs;
+    mode = cacheSortType == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
+  }
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   final RxInt count = (-1).obs;
@@ -46,13 +51,6 @@ abstract class ReplyController<R>
       _enableCommAntifraud || _biliSendCommAntifraud;
   dynamic get sourceId;
 
-  @override
-  void onInit() {
-    super.onInit();
-    final cacheSortType = BiliPref.replySortType;
-    sortType = cacheSortType.obs;
-    mode = cacheSortType == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
-  }
 
   @override
   void checkIsEnd(int length) {
@@ -142,7 +140,7 @@ abstract class ReplyController<R>
     int? oid,
     int? replyType,
   }) {
-    if (loadingState.value case Error(:final errMsg, :final code)) {
+    if (loadingState case Error(:final errMsg, :final code)) {
       if (errMsg != null && (code == 12061 || code == 12002)) {
         SmartDialog.showToast(errMsg);
         return;
@@ -188,9 +186,9 @@ abstract class ReplyController<R>
           (replyInfo) {
             if (replyInfo is ReplyInfo) {
               savedReplies.remove(key);
-              if (loadingState.value case Success(:final response)) {
+              if (loadingState case Success(:final response)) {
                 if (response == null) {
-                  loadingState.value = Success([replyInfo]);
+                  loadingState = Success([replyInfo]);
                 } else {
                   if (oid != null) {
                     response.insert(hasUpTop ? 1 : 0, replyInfo);
@@ -199,10 +197,10 @@ abstract class ReplyController<R>
                       ..count += 1
                       ..replies.add(replyInfo);
                   }
-                  loadingState.refresh();
+                  notifyListeners();
                 }
               } else {
-                loadingState.value = Success([replyInfo]);
+                loadingState = Success([replyInfo]);
               }
               count.value += 1;
 
@@ -217,14 +215,14 @@ abstract class ReplyController<R>
 
   void onRemove(int index, ReplyInfo item, int? subIndex) {
     if (subIndex == null) {
-      loadingState.value.data!.removeAt(index);
+      loadingState.data!.removeAt(index);
     } else {
       item
         ..count -= 1
         ..replies.removeAt(subIndex);
     }
     count.value -= 1;
-    loadingState.refresh();
+    notifyListeners();
   }
 
   void onCheckReply(ReplyInfo replyInfo, {required bool isManual}) {
@@ -252,12 +250,12 @@ abstract class ReplyController<R>
     if (res.isSuccess) {
       item.replyControl.isUpTop = !isUpTop;
       if (!isUpTop && index != 0) {
-        final list = loadingState.value.data!;
+        final list = loadingState.data!;
         list
           ..first.replyControl.isUpTop = false
           ..insert(0, list.removeAt(index));
       }
-      loadingState.refresh();
+      notifyListeners();
       SmartDialog.showToast('置顶成功');
     } else {
       res.toast();
@@ -265,8 +263,8 @@ abstract class ReplyController<R>
   }
 
   @override
-  void onClose() {
+  void dispose() {
     savedReplies.clear();
-    super.onClose();
+    super.dispose();
   }
 }

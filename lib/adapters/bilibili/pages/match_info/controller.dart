@@ -21,9 +21,7 @@ class MatchInfoController extends CommonDynController {
   final Rx<LoadingState<CoreMatchContest?>> infoState =
       LoadingState<CoreMatchContest?>.loading().obs;
 
-  @override
-  void onInit() {
-    super.onInit();
+  MatchInfoController() {
     getMatchInfo();
   }
 

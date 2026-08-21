@@ -56,18 +56,14 @@ class ArticleController extends CommonDynController {
       .map((e) => CoreSourceModel(url: e.pic!.pics!.first.url!))
       .toList();
 
-  @override
-  void onInit() {
-    super.onInit();
+  ArticleController() {
     final params = Get.parameters;
     id = params['id']!;
     type = params['type']!;
 
     // to opus
     if (type == 'read') {
-      UrlUtils.parseRedirectUrl('https://www.bilibili.com/read/cv/').then((
-        url,
-      ) {
+      UrlUtils.parseRedirectUrl('https://www.bilibili.com/read/cv/').then((url) {
         if (url != null) {
           final opusId = PiliScheme.uriDigitRegExp.firstMatch(url)?.group(1);
           if (opusId != null) {
@@ -123,7 +119,7 @@ class ArticleController extends CommonDynController {
         ..title ??= response.modules?.moduleTag?.text;
       return true;
     } else {
-      loadingState.value = switch (res) {
+      loadingState = switch (res) {
         Error(:final errMsg, :final code) => Error(errMsg, code: code),
         _ => const Error(null),
       };
@@ -145,7 +141,7 @@ class ArticleController extends CommonDynController {
       }
       return true;
     } else {
-      loadingState.value = switch (res) {
+      loadingState = switch (res) {
         Error(:final errMsg, :final code) => Error(errMsg, code: code),
         _ => const Error(null),
       };

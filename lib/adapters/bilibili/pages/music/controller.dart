@@ -24,9 +24,7 @@ class CoreMusicDetailController extends CommonDynController {
   String get shareUrl =>
       'https://music.bilibili.com/h5/music-detail?music_id=$musicId';
 
-  @override
-  void onInit() {
-    super.onInit();
+  CoreMusicDetailController() {
     musicId = Get.parameters['musicId']!;
     getCoreMusicDetail();
   }

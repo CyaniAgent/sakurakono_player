@@ -81,7 +81,7 @@ class _LaterPageState extends ConsumerState<LaterPage>
         floatingActionButton: Padding(
           padding: const .only(right: kFloatingActionButtonMargin),
           child: Obx(
-            () => currCtr().loadingState.value.isSuccess
+            () => currCtr().loadingState.isSuccess
                 ? AnimatedSlide(
                     offset: ref.read(laterBaseProvider).isPlayAll
                         ? Offset.zero

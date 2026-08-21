@@ -72,7 +72,7 @@ abstract class BaseVideoWebState<
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
               sliver: Obx(
-                () => buildBody(colorScheme, controller.loadingState.value),
+                () => buildBody(colorScheme, controller.loadingState),
               ),
             ),
           ],

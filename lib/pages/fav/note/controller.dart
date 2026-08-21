@@ -15,15 +15,12 @@ class FavNoteController
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
-  FavNoteController(this.isPublish);
+  FavNoteController(this.isPublish) {
+    queryData();
+  }
 
   final bool isPublish;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   final RxBool allSelected = false.obs;

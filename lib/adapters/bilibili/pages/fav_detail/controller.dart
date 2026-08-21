@@ -4,7 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_sort/view.dart';
@@ -96,13 +96,9 @@ class FavDetailController
     GStorage.setting.put(SettingBoxKey.enablePlayAll, isPlayAll);
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-
+  FavDetailController() {
     mediaId = int.parse(Get.parameters['mediaId']!);
     heroTag = Get.parameters['heroTag']!;
-
     queryData();
   }
 
@@ -156,7 +152,7 @@ class FavDetailController
   }
 
   void toViewPlayAll() {
-    if (loadingState.value case Success(:final response)) {
+    if (loadingState case Success(:final response)) {
       if (response == null || response.isEmpty) return;
 
       for (CoreFavDetailItemModel element in response) {
@@ -206,7 +202,7 @@ class FavDetailController
   }
 
   void onSort() {
-    if (loadingState.value case Success(:final response)) {
+    if (loadingState case Success(:final response)) {
       if (response != null && response.isNotEmpty) {
         if (folderInfo.value.mediaCount > 1000) {
           SmartDialog.showToast('内容太多啦！超过1000不支持排序');

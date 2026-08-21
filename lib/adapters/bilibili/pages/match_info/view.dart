@@ -51,7 +51,7 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
             slivers: [
               Obx(() => _buildInfo(controller.infoState.value)),
               buildReplyHeader(),
-              Obx(() => replyList(controller.loadingState.value)),
+              Obx(() => replyList(controller.loadingState)),
             ],
           ),
         ),

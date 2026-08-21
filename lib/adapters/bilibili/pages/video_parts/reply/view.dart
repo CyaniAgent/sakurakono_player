@@ -51,7 +51,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
   void initState() {
     super.initState();
     _videoReplyController = Get.find<VideoReplyController>(tag: heroTag);
-    if (_videoReplyController.loadingState.value is Loading) {
+    if (_videoReplyController.loadingState is Loading) {
       _videoReplyController.queryData();
     }
   }
@@ -126,7 +126,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                     }),
                   ),
                 ),
-                Obx(() => _buildBody(_videoReplyController.loadingState.value)),
+                Obx(() => _buildBody(_videoReplyController.loadingState)),
               ],
             ),
             Positioned(

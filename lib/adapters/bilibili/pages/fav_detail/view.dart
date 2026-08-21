@@ -116,7 +116,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                       () => _buildBody(
                         enableMultiSelect,
                         theme,
-                        _favDetailController.loadingState.value,
+                        _favDetailController.loadingState,
                       ),
                     ),
                   ),
@@ -391,7 +391,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                         top: 6,
                         child: Obx(() {
                           if (_favDetailController.isOwner ||
-                              _favDetailController.loadingState.value
+                              _favDetailController.loadingState
                                   is! Success) {
                             return const SizedBox.shrink();
                           }

@@ -1,11 +1,11 @@
 import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 
 const int ps = 30;
 
-abstract class BaseVideoWebCtr<R, T, V> extends CommonListController<R, T>
+abstract class BaseVideoWebCtr<R, T, V> extends CommonListControllerRiverpod<R, T>
     with ReloadMixin {
   final int mid = Get.arguments['mid'] as int;
 
@@ -13,9 +13,7 @@ abstract class BaseVideoWebCtr<R, T, V> extends CommonListController<R, T>
   int? count;
   Rx<V> get order;
 
-  @override
-  void onInit() {
-    super.onInit();
+  BaseVideoWebCtr() {
     queryData();
   }
 
@@ -38,7 +36,7 @@ abstract class BaseVideoWebCtr<R, T, V> extends CommonListController<R, T>
     isEnd = false;
     reload = true;
     this.page = page;
-    loadingState.value = LoadingState.loading();
+    loadingState = LoadingState.loading();
     queryData();
   }
 

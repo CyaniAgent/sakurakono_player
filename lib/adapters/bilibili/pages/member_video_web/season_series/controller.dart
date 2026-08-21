@@ -10,17 +10,15 @@ class MemberSSWebCtr
     extends BaseVideoWebCtr<CoreSeasonWebData, CoreSeasonArchive, CoreArchiveSortTypeApp> {
   @override
   final Rx<CoreArchiveSortTypeApp> order = Rx(CoreArchiveSortTypeApp.desc);
-  late final CoreWebSsType _type;
-  late final Object _id;
+  late CoreWebSsType _type;
+  late Object _id;
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
 
-  @override
-  void onInit() {
+  MemberSSWebCtr() {
     final args = Get.arguments;
     _type = args['type'];
     _id = args['id'];
-    super.onInit();
   }
 
   @override

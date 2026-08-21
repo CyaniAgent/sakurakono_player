@@ -18,13 +18,10 @@ class MainReplyController extends ReplyController<CoreMainListReply> {
   @override
   int get sourceId => oid;
 
-  @override
-  void onInit() {
-    super.onInit();
+  MainReplyController() {
     final args = Get.arguments;
     oid = args['oid'];
     replyType = args['replyType'];
-
     queryData();
   }
 

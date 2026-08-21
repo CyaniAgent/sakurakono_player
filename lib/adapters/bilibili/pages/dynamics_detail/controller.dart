@@ -18,13 +18,12 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   @override
   late int replyType;
   late CoreDynamicItemModel dynItem;
+  bool _disposed = false;
 
   @override
   dynamic get sourceId => replyType == 1 ? IdUtils.av2bv(oid) : oid;
 
-  @override
-  void onInit() {
-    super.onInit();
+  DynamicDetailController() {
     dynItem = Get.arguments['item'] as CoreDynamicItemModel;
     final commentType = dynItem.basic?.commentType;
     final commentIdStr = dynItem.basic?.commentIdStr;
@@ -77,11 +76,17 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
     );
     if (res.isSuccess) {
       Future.delayed(const Duration(milliseconds: 500), () {
-        if (!isClosed) {
+        if (!_disposed) {
           onReload();
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   @override

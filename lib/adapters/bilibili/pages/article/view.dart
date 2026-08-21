@@ -94,7 +94,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
               ),
               SelectionContainer.disabled(child: buildReplyHeader()),
               SelectionContainer.disabled(
-                child: Obx(() => replyList(controller.loadingState.value)),
+                child: Obx(() => replyList(controller.loadingState)),
               ),
             ],
           ),
@@ -148,7 +148,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     buildReplyHeader(),
-                    Obx(() => replyList(controller.loadingState.value)),
+                    Obx(() => replyList(controller.loadingState)),
                   ],
                 ),
               ),

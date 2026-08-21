@@ -18,8 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class VideoReplyReplyController extends ReplyController
-    with GetSingleTickerProviderStateMixin {
+class VideoReplyReplyController extends ReplyController {
   VideoReplyReplyController({
     required this.hasRoot,
     required this.id,
@@ -27,7 +26,10 @@ class VideoReplyReplyController extends ReplyController
     required this.rpid,
     required this.dialog,
     required this.replyType,
-  });
+  }) {
+    mode = CoreMode.mainListTime;
+    queryData();
+  }
   final int? dialog;
   int? id;
   // 视频aid 请求时使用的oid
@@ -49,20 +51,18 @@ class VideoReplyReplyController extends ReplyController
   AnimationController? _controller;
   AnimationController get animController => _controller ??= AnimationController(
     duration: const Duration(milliseconds: 1000),
-    vsync: this,
+    vsync: _tickerProvider,
   );
 
+  final _TickerProvider _tickerProvider = _TickerProvider();
+
   late final horizontalPreview = Pref.horizontalPreview;
+
+  void didChangeDependencies(BuildContext context) {}
 
   @override
   dynamic get sourceId => replyType == 1 ? IdUtils.av2bv(oid) : oid;
 
-  @override
-  void onInit() {
-    super.onInit();
-    mode = CoreMode.mainListTime;
-    queryData();
-  }
 
   @override
   List<ReplyInfo>? getDataList(response) {
@@ -94,7 +94,7 @@ class VideoReplyReplyController extends ReplyController
   }
 
   bool setIndexById(Int64 id64, [List<ReplyInfo>? replies]) {
-    final index = (replies ?? loadingState.value.data!).indexWhere(
+    final index = (replies ?? loadingState.data!).indexWhere(
       (item) => item.id == id64,
     );
     if (index != -1) {
@@ -152,7 +152,7 @@ class VideoReplyReplyController extends ReplyController
 
   @override
   Future<void> onReload() {
-    if (loadingState.value.isSuccess) {
+    if (loadingState.isSuccess) {
       index.value = null;
     }
     return super.onReload();
@@ -204,9 +204,8 @@ class VideoReplyReplyController extends ReplyController
             savedReplies.remove(key);
 
             count.value += 1;
-            loadingState
-              ..value.dataOrNull?.insert(index! + 1, replyInfo)
-              ..refresh();
+            loadingState.dataOrNull?.insert(index! + 1, replyInfo);
+            notifyListeners();
             if (enableCommAntifraud) {
               onCheckReply(replyInfo, isManual: false);
             }
@@ -215,9 +214,28 @@ class VideoReplyReplyController extends ReplyController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     _controller?.dispose();
     _controller = null;
+    _tickerProvider.dispose();
     super.dispose();
+  }
+}
+
+class _TickerProvider implements TickerProvider {
+  final List<Ticker> _tickers = [];
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    final ticker = Ticker(onTick);
+    _tickers.add(ticker);
+    return ticker;
+  }
+
+  void dispose() {
+    for (final ticker in _tickers) {
+      ticker.dispose();
+    }
+    _tickers.clear();
   }
 }

@@ -80,7 +80,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
               bottom: padding.bottom + 100,
             ),
             sliver: Obx(
-              () => _buildBody(_historyController.loadingState.value),
+              () => _buildBody(_historyController.loadingState),
             ),
           ),
         ],
@@ -185,13 +185,13 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
               onTap: () => ref.read(historyBaseProvider.notifier).onClearHistory(
                 context,
                 () {
-                  _historyController.loadingState.value = const Success(null);
+                  _historyController.loadingState = const Success(null);
                   if (_historyController.tabController != null) {
                     for (final item in _historyController.tabs) {
                       try {
                         Get.find<HistoryController>(
                           tag: item.type,
-                        ).loadingState.value = const Success(
+                        ).loadingState = const Success(
                           null,
                         );
                       } catch (_) {}
