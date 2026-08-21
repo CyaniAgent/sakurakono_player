@@ -61,7 +61,7 @@ class _MemberLikeArcPageState extends State<MemberLikeArcPage> {
                 right: Style.safeSpace + padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: Obx(() => _buildBody(_ctr.loadingState.value as LoadingState<List<CoinLikeArcItem>?>)),
+              sliver: ListenableBuilder(listenable: _ctr, builder: (_, _) => _buildBody(_ctr.loadingState as LoadingState<List<CoinLikeArcItem>?>)),
             ),
           ],
         ),

@@ -80,7 +80,7 @@ class _MemberOpusState extends State<MemberOpus>
                     right: Style.safeSpace,
                     bottom: bottom + 100,
                   ),
-                  sliver: Obx(() => _buildBody(_controller.loadingState.value as LoadingState<List<SpaceOpusItemModel>?>)),
+                  sliver: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState as LoadingState<List<SpaceOpusItemModel>?>)),
                 ),
               ],
             ),

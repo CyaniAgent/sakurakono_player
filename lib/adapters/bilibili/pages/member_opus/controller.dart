@@ -2,7 +2,7 @@ import 'package:skf/core/models/space_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space/tab2.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/member/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,11 +10,18 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
 
 class MemberOpusController
-    extends CommonListController<CoreOpusSpaceFlowResp, dynamic> {
+    extends CommonListControllerRiverpod<CoreOpusSpaceFlowResp, dynamic> {
   MemberOpusController({
     required this.heroTag,
     required this.mid,
-  });
+  }) {
+    filter = Get.find<MemberController>(tag: heroTag).tab2
+        ?.firstWhereOrNull((e) => e.param == 'contribute')
+        ?.items
+        ?.firstWhereOrNull((e) => e.param == 'opus')
+        ?.filter;
+    queryData();
+  }
 
   final String? heroTag;
   final int mid;
@@ -29,17 +36,6 @@ class MemberOpusController
     tabName: "图文",
   ).obs;
   List<SpaceTabFilter>? filter;
-
-  @override
-  void onInit() {
-    super.onInit();
-    filter = Get.find<MemberController>(tag: heroTag).tab2
-        ?.firstWhereOrNull((e) => e.param == 'contribute')
-        ?.items
-        ?.firstWhereOrNull((e) => e.param == 'opus')
-        ?.filter;
-    queryData();
-  }
 
   @override
   Future<void> onRefresh() {
