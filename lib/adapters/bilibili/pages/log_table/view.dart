@@ -31,7 +31,10 @@ class _LogPageState<T> extends State<LogPage<T>> {
               right: 10 + padding.right,
               bottom: padding.bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(_controller.loadingState),
+            ),
           ),
         ],
       ).constraintWidth(constraints: const BoxConstraints(maxWidth: 680)),

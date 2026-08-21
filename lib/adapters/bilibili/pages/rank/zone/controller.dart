@@ -3,21 +3,17 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
-class ZoneController extends CommonListController {
+class ZoneController extends CommonListControllerRiverpod<dynamic, dynamic> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  ZoneController({this.rid, this.seasonType});
+  ZoneController({this.rid, this.seasonType}) {
+    queryData();
+  }
 
   int? rid;
   int? seasonType;
-
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   Future<LoadingState> customGetData() async {

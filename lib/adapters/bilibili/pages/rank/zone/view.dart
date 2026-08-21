@@ -46,7 +46,10 @@ class _ZonePageState extends State<ZonePage>
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.only(top: 7, bottom: 100),
-            sliver: Obx(() => _buildBody(controller.loadingState.value)),
+            sliver: ListenableBuilder(
+              listenable: controller,
+              builder: (_, __) => _buildBody(controller.loadingState),
+            ),
           ),
         ],
       ),
@@ -65,9 +68,13 @@ class _ZonePageState extends State<ZonePage>
                   if (item is HotVideoItemModel) {
                     return VideoCardH(
                       videoItem: item,
-                      onRemove: () => controller.loadingState
-                        ..value.data!.removeAt(index)
-                        ..refresh(),
+                      onRemove: () {
+                        final current = controller.loadingState;
+                        if (current case Success(:final response)) {
+                          response!.removeAt(index);
+                          controller.loadingState = current;
+                        }
+                      },
                     );
                   }
                   return PgcRankItem(item: item);

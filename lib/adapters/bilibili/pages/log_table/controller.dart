@@ -1,9 +1,7 @@
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
-abstract class LogController<R, T> extends CommonListController<R, T> {
-  @override
-  void onInit() {
-    super.onInit();
+abstract class LogController<R, T> extends CommonListControllerRiverpod<R, T> {
+  LogController() {
     queryData();
   }
 
