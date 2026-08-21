@@ -58,9 +58,10 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
       ),
       body: Padding(
         padding: EdgeInsets.only(left: padding.left, right: padding.right),
-        child: Obx(
-          () =>
-              _buildBody(theme, padding.bottom, _controller.loadingState.value),
+        child: ListenableBuilder(
+          listenable: _controller,
+          builder: (_, _) =>
+              _buildBody(theme, padding.bottom, _controller.loadingState),
         ),
       ),
     );

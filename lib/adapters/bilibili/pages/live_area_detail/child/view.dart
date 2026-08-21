@@ -58,8 +58,9 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
               top: Style.safeSpace,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],

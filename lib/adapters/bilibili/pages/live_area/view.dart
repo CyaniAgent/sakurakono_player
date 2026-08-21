@@ -57,11 +57,12 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
             if (_controller.isLogin)
               Obx(() => _buildFavWidget(theme, _controller.favState.value)),
             Expanded(
-              child: Obx(
-                () => _buildBody(
+              child: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, _) => _buildBody(
                   theme,
                   padding.bottom,
-                  _controller.loadingState.value,
+                  _controller.loadingState,
                 ),
               ),
             ),

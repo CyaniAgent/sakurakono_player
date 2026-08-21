@@ -4,14 +4,13 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LiveAreaChildController
-    extends CommonListController<CoreLiveSecondData, CoreCardLiveItem> {
-  LiveAreaChildController(this.areaId, this.parentAreaId);
+    extends CommonListControllerRiverpod<CoreLiveSecondData, CoreCardLiveItem> {
   final dynamic areaId;
   final dynamic parentAreaId;
   Ref? _ref;
@@ -25,9 +24,7 @@ class LiveAreaChildController
   final RxInt tagIndex = 0.obs;
   List<CoreLiveSecondTag>? newTags;
 
-  @override
-  void onInit() {
-    super.onInit();
+  LiveAreaChildController(this.areaId, this.parentAreaId) {
     queryData();
   }
 

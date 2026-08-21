@@ -5,14 +5,16 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart' show TabController;
+import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreAreaList>
-    with GetSingleTickerProviderStateMixin {
+class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>?, CoreAreaList>
+    implements TickerProvider {
+  Ticker? _ticker;
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   late final isLogin = Accounts.main.isLogin;
@@ -23,8 +25,13 @@ class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreA
   TabController? tabController;
 
   @override
-  void onInit() {
-    super.onInit();
+  Ticker createTicker(TickerCallback onTick) {
+    assert(_ticker == null, 'Only one Ticker per controller');
+    _ticker = Ticker(onTick);
+    return _ticker!;
+  }
+
+  LiveAreaController() {
     if (isLogin) {
       queryFavTags();
     }
@@ -101,9 +108,10 @@ class LiveAreaController extends CommonListController<List<CoreAreaList>?, CoreA
   }
 
   @override
-  void onClose() {
+  void dispose() {
+    _ticker?.dispose();
     tabController?.dispose();
     tabController = null;
-    super.onClose();
+    super.dispose();
   }
 }

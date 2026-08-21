@@ -4,16 +4,17 @@ import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart' show TabController;
+import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LiveAreaDetailController
-    extends CommonListController<List<CoreAreaItem>?, CoreAreaItem>
-    with GetSingleTickerProviderStateMixin {
-  LiveAreaDetailController(this.areaId, this.parentAreaId);
+    extends CommonListControllerRiverpod<List<CoreAreaItem>?, CoreAreaItem>
+    implements TickerProvider {
+  Ticker? _ticker;
   final dynamic areaId;
   final dynamic parentAreaId;
   Ref? _ref;
@@ -23,10 +24,15 @@ class LiveAreaDetailController
 
   bool showFirstFrame = false;
 
-  @override
-  void onInit() {
-    super.onInit();
+  LiveAreaDetailController(this.areaId, this.parentAreaId) {
     queryData();
+  }
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    assert(_ticker == null, 'Only one Ticker per controller');
+    _ticker = Ticker(onTick);
+    return _ticker!;
   }
 
   @override
@@ -54,9 +60,10 @@ class LiveAreaDetailController
   }
 
   @override
-  void onClose() {
+  void dispose() {
+    _ticker?.dispose();
     tabController?.dispose();
     tabController = null;
-    super.onClose();
+    super.dispose();
   }
 }
