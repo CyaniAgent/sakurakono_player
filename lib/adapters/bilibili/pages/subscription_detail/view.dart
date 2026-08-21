@@ -68,8 +68,9 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
                 right: padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(_subDetailController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _subDetailController,
+                builder: (_, __) => _buildBody(_subDetailController.loadingState),
               ),
             ),
           ],
@@ -106,16 +107,19 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
   Widget _appBar(ThemeData theme, EdgeInsets padding) {
     final info = _subDetailController.subInfo;
     if (info != null) return _buildAppBar(theme, padding, info);
-    return Obx(() {
-      return switch (_subDetailController.loadingState.value) {
-        Loading() || Error() => const SliverAppBar(),
-        Success() => _buildAppBar(
-          theme,
-          padding,
-          _subDetailController.subInfo!,
-        ),
-      };
-    });
+    return ListenableBuilder(
+      listenable: _subDetailController,
+      builder: (_, __) {
+        return switch (_subDetailController.loadingState) {
+          Loading() || Error() => const SliverAppBar(),
+          Success() => _buildAppBar(
+            theme,
+            padding,
+            _subDetailController.subInfo!,
+          ),
+        };
+      },
+    );
   }
 
   Widget _buildAppBar(ThemeData theme, EdgeInsets padding, CoreSubItemModel info) {

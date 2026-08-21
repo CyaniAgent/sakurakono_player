@@ -5,26 +5,24 @@ import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
-class SubController extends CommonListController<CoreSubData, CoreSubItemModel> {
+class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubItemModel> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   late final account = Accounts.main;
 
-  @override
-  void onInit() {
-    super.onInit();
+  SubController() {
     queryData();
   }
 
   @override
   Future<void> queryData([bool isRefresh = true]) {
     if (!account.isLogin) {
-      loadingState.value = const Error('账号未登录');
+      loadingState = const Error('账号未登录');
       return Future.syncValue(null);
     }
     return super.queryData(isRefresh);
@@ -52,9 +50,10 @@ class SubController extends CommonListController<CoreSubData, CoreSubItemModel> 
                 type: subFolderItem.type!,
               );
               if (res.isSuccess) {
-                loadingState
-                  ..value.data!.remove(subFolderItem)
-                  ..refresh();
+                if (loadingState case Success(:final response)) {
+                  response?.remove(subFolderItem);
+                  loadingState = loadingState;
+                }
                 SmartDialog.showToast('取消订阅成功');
               } else {
                 SmartDialog.showToast(res.toString());

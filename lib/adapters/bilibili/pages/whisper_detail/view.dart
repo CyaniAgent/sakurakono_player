@@ -132,9 +132,10 @@ class _WhisperDetailPageState
                 behavior: HitTestBehavior.opaque,
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: Obx(
-                    () =>
-                        _buildBody(_whisperDetailController.loadingState.value),
+                  child: ListenableBuilder(
+                    listenable: _whisperDetailController,
+                    builder: (_, __) =>
+                        _buildBody(_whisperDetailController.loadingState),
                   ),
                 ),
               ),

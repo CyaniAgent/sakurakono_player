@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/grpc/im.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/feed_back.dart';
@@ -19,7 +19,7 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
-class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
+class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg, Msg> {
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
@@ -36,9 +36,7 @@ class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
   //表情转换图片规则
   List<EmotionInfo>? eInfos;
 
-  @override
-  void onInit() {
-    super.onInit();
+  WhisperDetailController() {
     final args = Get.arguments;
     talkerId = args['talkerId'];
     name = args['name'];
@@ -130,9 +128,10 @@ class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
     SmartDialog.dismiss();
     if (res.isSuccess) {
       if (msgType == 5) {
-        loadingState
-          ..value.data![index!].msgStatus = 1
-          ..refresh();
+        if (loadingState case Success(:final response)) {
+          response?[index!].msgStatus = 1;
+          loadingState = loadingState;
+        }
         SmartDialog.showToast('撤回成功');
       } else {
         onRefresh();
