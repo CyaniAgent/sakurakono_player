@@ -31,7 +31,7 @@ class LiveRoomChatPanel extends StatelessWidget {
   final bool isPP;
   final ValueChanged<CoreDanmakuMsg> onAtUser;
 
-  bool get disableAutoScroll => liveRoomController.disableAutoScroll.value;
+  bool get disableAutoScroll => liveRoomController.disableAutoScroll;
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +239,7 @@ class LiveRoomChatPanel extends StatelessWidget {
             }),
           ),
         Obx(
-          () => liveRoomController.disableAutoScroll.value
+          () => liveRoomController.disableAutoScroll
               ? Positioned(
                   right: 12,
                   bottom: 0,
@@ -337,7 +337,7 @@ class LiveRoomChatPanel extends StatelessWidget {
         4; // padding
     final autoScroll =
         liveRoomController.autoScroll &&
-        !liveRoomController.disableAutoScroll.value;
+        !liveRoomController.disableAutoScroll;
     if (autoScroll) {
       liveRoomController.autoScroll = false;
     }

@@ -79,16 +79,16 @@ extension _ListOrderExt on ListOrder {
   String get title => const ['无序', '正序', '倒序', '随机'][value];
 }
 
-class _AudioPageState extends State<AudioPage> {
-  final _controller = Get.put(
-    AudioController(),
+class _AudioPageState extends State<AudioPage>
+    with SingleTickerProviderStateMixin {
+  late final _controller = Get.put(
+    AudioController(this),
     tag: Utils.generateRandomString(8),
   );
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _controller.didChangeDependencies(context);
   }
 
   @override
@@ -175,13 +175,16 @@ class _AudioPageState extends State<AudioPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Obx(() {
-                          final audioItem = _controller.audioItem.value;
-                          if (audioItem != null) {
-                            return _buildActions(audioItem);
-                          }
-                          return const SizedBox.shrink();
-                        }),
+                        ListenableBuilder(
+                          listenable: _controller,
+                          builder: (_, __) {
+                            final audioItem = _controller.audioItem;
+                            if (audioItem != null) {
+                              return _buildActions(audioItem);
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
                         const SizedBox(height: 25),
                         _buildProgressBar(colorScheme),
                         _buildDuration(colorScheme),
@@ -546,14 +549,14 @@ class _AudioPageState extends State<AudioPage> {
     required ColorScheme colorScheme,
     required PlayRepeat playMode,
   }) {
-    final isCurr = playMode == _controller.playMode.value;
+    final isCurr = playMode == _controller.playMode;
     final color = isCurr ? colorScheme.primary : colorScheme.outline;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
         AppNavigator.back();
         if (!isCurr) {
-          _controller.playMode.value = playMode;
+          _controller.playMode = playMode;
           GStorage.setting.put(SettingBoxKey.audioPlayMode, playMode.index);
         }
       },
@@ -760,11 +763,11 @@ class _AudioPageState extends State<AudioPage> {
   void _onDragStart(ThumbDragDetails details) {
     _controller
       ..isDragging = true
-      ..position.value = details.seconds;
+      ..position = details.seconds;
   }
 
   void _onDragUpdate(ThumbDragDetails details) {
-    _controller.position.value = details.seconds;
+    _controller.position = details.seconds;
   }
 
   void _onSeek(int milliseconds) {
@@ -779,10 +782,11 @@ class _AudioPageState extends State<AudioPage> {
     final baseBarColor = colorScheme.isDark
         ? const Color(0x33FFFFFF)
         : const Color(0x33999999);
-    Widget child = Obx(
-      () => ProgressBar(
-        progress: _controller.position.value,
-        total: _controller.duration.value,
+    Widget child = ListenableBuilder(
+      listenable: _controller,
+      builder: (_, __) => ProgressBar(
+        progress: _controller.position,
+        total: _controller.duration,
         baseBarColor: baseBarColor,
         progressBarColor: primary,
         bufferedBarColor: Colors.transparent,
@@ -838,24 +842,30 @@ class _AudioPageState extends State<AudioPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Obx(() {
-              final position = _controller.position.value;
-              if (_controller.player != null) {
-                return Text(
-                  DurationUtils.formatDuration(position),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-            Obx(() {
-              final duration = _controller.duration.value;
-              if (_controller.player != null) {
-                return Text(
-                  DurationUtils.formatDuration(duration),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) {
+                final position = _controller.position;
+                if (_controller.player != null) {
+                  return Text(
+                    DurationUtils.formatDuration(position),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) {
+                final duration = _controller.duration;
+                if (_controller.player != null) {
+                  return Text(
+                    DurationUtils.formatDuration(duration),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ],
         ),
       ),
@@ -866,12 +876,13 @@ class _AudioPageState extends State<AudioPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Obx(
-          () => IconButton(
+        ListenableBuilder(
+          listenable: _controller,
+          builder: (_, __) => IconButton(
             onPressed: _showPlaySettings,
             icon: Icon(
               size: 26,
-              _controller.playMode.value.icon,
+              _controller.playMode.icon,
             ),
           ),
         ),
@@ -909,116 +920,119 @@ class _AudioPageState extends State<AudioPage> {
   }
 
   Widget _buildInfo(ColorScheme colorScheme, bool isPortrait) {
-    return Obx(() {
-      final audioItem = _controller.audioItem.value;
-      if (audioItem != null) {
-        final cover = audioItem.arc.cover.http2https;
-        return Column(
-          children: [
-            Expanded(
-              child: Center(
-                child: ListView(
-                  key: const PageStorageKey(_AudioPageState),
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  children: [
-                    Center(
-                      child: GestureDetector(
-                        onTap: () => PageUtils.imageView(
-                          imgList: [CoreSourceModel(url: cover)],
-                        ),
-                        child: fromHero(
-                          tag: cover,
-                          child: NetworkImgLayer(
-                            src: cover,
-                            width: 170,
-                            height: 170,
-                            cacheWidth: false,
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (_, __) {
+        final audioItem = _controller.audioItem;
+        if (audioItem != null) {
+          final cover = audioItem.arc.cover.http2https;
+          return Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: ListView(
+                    key: const PageStorageKey(_AudioPageState),
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    children: [
+                      Center(
+                        child: GestureDetector(
+                          onTap: () => PageUtils.imageView(
+                            imgList: [CoreSourceModel(url: cover)],
+                          ),
+                          child: fromHero(
+                            tag: cover,
+                            child: NetworkImgLayer(
+                              src: cover,
+                              width: 170,
+                              height: 170,
+                              cacheWidth: false,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    SelectionText(
-                      audioItem.arc.title,
-                      style: const TextStyle(height: 1.7, fontSize: 16),
-                    ),
-                    const SizedBox(height: 12),
-                    if (audioItem.owner.hasName()) ...[
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          _controller.player?.pause();
-                          AppNavigator.toNamed('/member?mid=${audioItem.owner.mid}');
-                        },
-                        child: Row(
-                          spacing: 6,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (audioItem.owner.hasAvatar())
-                              NetworkImgLayer(
-                                src: audioItem.owner.avatar,
-                                width: 22,
-                                height: 22,
-                                type: CoreImageType.avatar,
-                              ),
-                            Text(
-                              audioItem.owner.name,
-                            ),
-                          ],
-                        ),
+                      const SizedBox(height: 12),
+                      SelectionText(
+                        audioItem.arc.title,
+                        style: const TextStyle(height: 1.7, fontSize: 16),
                       ),
-                      const SizedBox(height: 10),
-                    ],
-                    Row(
-                      children: [
-                        Icon(
-                          size: 14,
-                          Icons.headphones_outlined,
-                          color: colorScheme.outline,
-                        ),
-                        Text.rich(
-                          TextSpan(
+                      const SizedBox(height: 12),
+                      if (audioItem.owner.hasName()) ...[
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            _controller.player?.pause();
+                            AppNavigator.toNamed('/member?mid=${audioItem.owner.mid}');
+                          },
+                          child: Row(
+                            spacing: 6,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              TextSpan(
-                                text:
-                                    ' ${NumUtils.numFormat(audioItem.stat.view)}   '
-                                    '${DateFormatUtils.dateFormat(audioItem.arc.publish.toInt(), long: DateFormatUtils.longFormatD)}   ',
-                              ),
-                              TextSpan(
-                                text: audioItem.arc.displayedOid,
-                                style: TextStyle(color: colorScheme.secondary),
-                                recognizer: NoDeadlineTapGestureRecognizer()
-                                  ..onTap = () => Utils.copyText(
-                                    audioItem.arc.displayedOid,
-                                  ),
+                              if (audioItem.owner.hasAvatar())
+                                NetworkImgLayer(
+                                  src: audioItem.owner.avatar,
+                                  width: 22,
+                                  height: 22,
+                                  type: CoreImageType.avatar,
+                                ),
+                              Text(
+                                audioItem.owner.name,
                               ),
                             ],
                           ),
-                          style: TextStyle(
-                            fontSize: 13,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                      Row(
+                        children: [
+                          Icon(
+                            size: 14,
+                            Icons.headphones_outlined,
                             color: colorScheme.outline,
                           ),
-                        ),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      ' ${NumUtils.numFormat(audioItem.stat.view)}   '
+                                      '${DateFormatUtils.dateFormat(audioItem.arc.publish.toInt(), long: DateFormatUtils.longFormatD)}   ',
+                                ),
+                                TextSpan(
+                                  text: audioItem.arc.displayedOid,
+                                  style: TextStyle(color: colorScheme.secondary),
+                                  recognizer: NoDeadlineTapGestureRecognizer()
+                                    ..onTap = () => Utils.copyText(
+                                      audioItem.arc.displayedOid,
+                                    ),
+                                ),
+                              ],
+                            ),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: colorScheme.outline,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (audioItem.arc.hasDesc()) ...[
+                        const SizedBox(height: 10),
+                        SelectionText(audioItem.arc.desc),
                       ],
-                    ),
-                    if (audioItem.arc.hasDesc()) ...[
-                      const SizedBox(height: 10),
-                      SelectionText(audioItem.arc.desc),
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-            if (isPortrait) ...[
-              const SizedBox(height: 10),
-              _buildActions(audioItem),
+              if (isPortrait) ...[
+                const SizedBox(height: 10),
+                _buildActions(audioItem),
+              ],
             ],
-          ],
-        );
-      }
-      return const SizedBox.shrink();
-    });
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 }
 

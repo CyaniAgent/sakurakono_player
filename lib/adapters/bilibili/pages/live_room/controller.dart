@@ -42,10 +42,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-class LiveRoomController extends GetxController {
+class LiveRoomController extends ChangeNotifier {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  LiveRoomController(this.heroTag);
   final String heroTag;
 
   int roomId = Get.arguments;
@@ -55,17 +54,17 @@ class LiveRoomController extends GetxController {
     isLive: true,
   );
 
-  final isLoaded = false.obs;
-  final roomInfoH5 = Rxn<CoreRoomInfoH5Data>();
+  bool isLoaded = false;
+  CoreRoomInfoH5Data? roomInfoH5;
 
-  final liveTime = Rxn<int>();
+  int? liveTime;
   Timer? liveTimeTimer;
 
   void startLiveTimer() {
-    if (liveTime.value != null) {
+    if (liveTime != null) {
       liveTimeTimer ??= Timer.periodic(
         const Duration(minutes: 5),
-        (_) => liveTime.refresh(),
+        (_) { liveTime = liveTime; notifyListeners(); },
       );
     }
   }
@@ -75,46 +74,49 @@ class LiveRoomController extends GetxController {
     liveTimeTimer = null;
   }
 
-  Widget get timeWidget => Obx(() {
-    final liveTime = this.liveTime.value;
-    String text = '';
-    if (liveTime != null) {
-      final duration = DurationUtils.formatDurationBetween(
-        liveTime * 1000,
-        DateTime.now().millisecondsSinceEpoch,
+  Widget get timeWidget => ListenableBuilder(
+    listenable: this,
+    builder: (_, __) {
+      final liveTime = this.liveTime;
+      String text = '';
+      if (liveTime != null) {
+        final duration = DurationUtils.formatDurationBetween(
+          liveTime * 1000,
+          DateTime.now().millisecondsSinceEpoch,
+        );
+        text += duration.isEmpty ? '刚刚开播' : '开播$duration';
+      }
+      if (text.isEmpty) {
+        return const SizedBox.shrink();
+      }
+      return Text(
+        text,
+        style: const TextStyle(
+          fontSize: 12,
+          color: Colors.white,
+        ),
       );
-      text += duration.isEmpty ? '刚刚开播' : '开播$duration';
-    }
-    if (text.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-      ),
-    );
-  });
+    },
+  );
 
   // dm
   CoreLiveDmInfoData? dmInfo;
   List<RichTextItem>? savedDanmaku;
   int builtLength = 0;
-  final messages = <dynamic>[].obs;
+  List<dynamic> messages = [];
   bool get shouldRefresh => builtLength != messages.length;
-  late final fsSC = Rxn<CoreSuperChatItem>();
-  late final RxList<CoreSuperChatItem> superChatMsg = <CoreSuperChatItem>[].obs;
-  final disableAutoScroll = false.obs;
+  CoreSuperChatItem? fsSC;
+  List<CoreSuperChatItem> superChatMsg = [];
+  bool disableAutoScroll = false;
   bool autoScroll = true;
   LiveMessageStream? _msgCoreStream;
   late final ScrollController scrollController;
-  late final RxInt pageIndex = 0.obs;
+  int pageIndex = 0;
   PageController? pageController;
 
   int? currentQn = PlatformUtils.isMobile ? null : Pref.liveQuality;
-  final currentQnDesc = ''.obs;
-  final RxBool isPortrait = false.obs;
+  String currentQnDesc = '';
+  bool isPortrait = false;
   late List<({int code, String desc})> acceptQnList = [];
 
   late final bool isLogin;
@@ -129,34 +131,37 @@ class LiveRoomController extends GetxController {
 
   final headerKey = GlobalKey<TimeBatteryMixin>();
 
-  final RxString title = ''.obs;
+  String title = '';
 
-  final RxnString onlineCount = RxnString();
+  String? onlineCount;
 
-  final RxnString watchedShow = RxnString();
-  Widget get watchedWidget => Obx(() {
-    if (watchedShow.value case final watchedShow?) {
-      return Text(
-        watchedShow,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.white,
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  });
+  String? watchedShow;
+  Widget get watchedWidget => ListenableBuilder(
+    listenable: this,
+    builder: (_, __) {
+      if (watchedShow case final watchedShow?) {
+        return Text(
+          watchedShow,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.white,
+          ),
+        );
+      }
+      return const SizedBox.shrink();
+    },
+  );
 
   StreamSubscription? _sizeSub;
 
   void _onSizeChanged((int, int) value) {
     final isVertical = value.$2 > value.$1;
-    isPortrait.value = isVertical;
+    isPortrait = isVertical;
     plPlayerController.isVertical = isVertical;
   }
 
   void _startSizeSub() {
-    if (isPortrait.value) return;
+    if (isPortrait) return;
     _stopSizeSub();
     _sizeSub = plPlayerController.videoPlayerController?.stream.size.listen(
       _onSizeChanged,
@@ -168,9 +173,7 @@ class LiveRoomController extends GetxController {
     _sizeSub = null;
   }
 
-  @override
-  void onInit() {
-    super.onInit();
+  LiveRoomController(this.heroTag) {
     scrollController = ScrollController()..addListener(listener);
     final account = Accounts.main;
     isLogin = account.isLogin;
@@ -196,7 +199,7 @@ class LiveRoomController extends GetxController {
       NetworkSource(videoSource: videoUrl!, audioSource: null),
       isLive: true,
       autoplay: autoplay,
-      isVertical: isPortrait.value,
+      isVertical: isPortrait,
       autoFullScreenFlag: autoFullScreenFlag,
     );
   }
@@ -224,9 +227,9 @@ class LiveRoomController extends GetxController {
       if (response.roomId case final roomId?) {
         this.roomId = roomId;
       }
-      liveTime.value = response.liveTime;
+      liveTime = response.liveTime;
       startLiveTimer();
-      isPortrait.value = response.isPortrait ?? false;
+      isPortrait = response.isPortrait ?? false;
       stream = playurl.stream;
       _initCoreStreamIndex();
       await initLiveUrl(
@@ -235,7 +238,8 @@ class LiveRoomController extends GetxController {
         codecIndex: codecIndex,
         liveUrlIndex: liveUrlIndex,
       );
-      isLoaded.value = true;
+      isLoaded = true;
+      notifyListeners();
     } else {
       _showDialog(res.toString());
     }
@@ -299,7 +303,7 @@ class LiveRoomController extends GetxController {
         desc: LiveQuality.fromCode(e)?.desc ?? e.toString(),
       );
     }).toList();
-    currentQnDesc.value =
+    currentQnDesc =
         LiveQuality.fromCode(currentQn)?.desc ?? currentQn.toString();
     videoUrl = VideoUtils.getLiveCdnUrl(item, index: liveUrlIndex);
     return playerInit()?.whenComplete(_startSizeSub);
@@ -308,9 +312,10 @@ class LiveRoomController extends GetxController {
   Future<void> queryLiveInfoH5() async {
     final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomInfoH5(roomId: roomId);
     if (res case Success(:final response)) {
-      roomInfoH5.value = response;
-      title.value = response.roomInfo?.title ?? '';
-      watchedShow.value = response.watchedShow?.textLarge;
+      roomInfoH5 = response;
+      title = response.roomInfo?.title ?? '';
+      watchedShow = response.watchedShow?.textLarge;
+      notifyListeners();
       videoPlayerServiceHandler?.onVideoDetailChange(response, roomId, heroTag);
     } else {
       SmartDialog.showToast(res.toString());
@@ -367,9 +372,9 @@ class LiveRoomController extends GetxController {
   }
 
   void handleJumpToBottom() {
-    disableAutoScroll.value = false;
+    disableAutoScroll = false;
     if (shouldRefresh) {
-      messages.refresh();
+      notifyListeners();
       WidgetsBinding.instance.addPostFrameCallback(_jumpToBottom);
     } else {
       _jumpToBottom();
@@ -437,11 +442,11 @@ class LiveRoomController extends GetxController {
   void listener() {
     final userScrollDirection = scrollController.position.userScrollDirection;
     if (userScrollDirection == .forward) {
-      disableAutoScroll.value = true;
+        disableAutoScroll = true;
     } else if (userScrollDirection == .reverse) {
       final pos = scrollController.position;
-      if (pos.maxScrollExtent - pos.pixels <= 100 && disableAutoScroll.value) {
-        disableAutoScroll.value = false;
+      if (pos.maxScrollExtent - pos.pixels <= 100 && disableAutoScroll) {
+        disableAutoScroll = false;
         refreshMsgIfNeeded();
       }
     }
@@ -449,14 +454,12 @@ class LiveRoomController extends GetxController {
 
   void refreshMsgIfNeeded() {
     if (shouldRefresh) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        messages.refresh();
-      });
+      notifyListeners();
     }
   }
 
   @override
-  void onClose() {
+  void dispose() {
     _stopSizeSub();
     closeLiveMsg();
     cancelLikeTimer();
@@ -466,14 +469,14 @@ class LiveRoomController extends GetxController {
     messages.clear();
     if (showSuperChat) {
       superChatMsg.clear();
-      fsSC.value = null;
+      fsSC = null;
     }
     scrollController
       ..removeListener(listener)
       ..dispose();
     pageController?.dispose();
     danmakuController = null;
-    super.onClose();
+    super.dispose();
   }
 
   // 修改画质
@@ -482,7 +485,7 @@ class LiveRoomController extends GetxController {
       return null;
     }
     currentQn = qn;
-    currentQnDesc.value =
+    currentQnDesc =
         LiveQuality.fromCode(currentQn)?.desc ?? currentQn.toString();
     return queryLiveUrl();
   }
@@ -509,14 +512,13 @@ class LiveRoomController extends GetxController {
       if (item != null && plPlayerController.enableShowLiveDanmaku.value) {
         danmakuController?.addDanmaku(item);
       }
-      if (autoScroll && !disableAutoScroll.value) {
+      if (autoScroll && !disableAutoScroll) {
         messages.add(msg);
-        scrollToBottom();
         return;
       }
     }
 
-    messages.addOnly(msg);
+    if (!messages.contains(msg)) messages.add(msg);
   }
 
   @pragma('vm:notify-debugger-on-exception')
@@ -592,7 +594,7 @@ class LiveRoomController extends GetxController {
           superChatMsg.insert(0, item);
           if (plPlayerController.showDanmaku &&
               (isFullScreen || plPlayerController.isDesktopPip)) {
-            fsSC.value = item.copyWith(
+            fsSC = item.copyWith(
               endTime: math.min(
                 item.endTime,
                 DateTime.now().millisecondsSinceEpoch ~/ 1000 + 10,
@@ -623,13 +625,13 @@ class LiveRoomController extends GetxController {
         //     }
         //   }
         case 'WATCHED_CHANGE':
-          watchedShow.value = obj['data']['text_large'];
+          watchedShow = obj['data']['text_large'];
           break;
         case 'ONLINE_RANK_COUNT':
-          onlineCount.value = NumUtils.numFormat(obj['data']['count']);
+          onlineCount = NumUtils.numFormat(obj['data']['count']);
           break;
         case 'ROOM_CHANGE':
-          title.value = obj['data']['title'];
+          title = obj['data']['title'];
           break;
       }
     } catch (e, s) {
@@ -639,7 +641,7 @@ class LiveRoomController extends GetxController {
     }
   }
 
-  final RxInt likeClickTime = 0.obs;
+  int likeClickTime = 0;
   Timer? likeClickTimer;
 
   void cancelLikeTimer() {
@@ -649,7 +651,8 @@ class LiveRoomController extends GetxController {
 
   void onLikeTapDown([_]) {
     cancelLikeTimer();
-    likeClickTime.value++;
+    likeClickTime++;
+    notifyListeners();
   }
 
   void onLikeTapUp([_]) {
@@ -661,21 +664,22 @@ class LiveRoomController extends GetxController {
 
   Future<void> onLike() async {
     if (!isLogin) {
-      likeClickTime.value = 0;
+      likeClickTime = 0;
       return;
     }
     final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveLikeReport(
-      clickTime: likeClickTime.value,
+      clickTime: likeClickTime,
       roomId: roomId,
       uid: mid,
-      anchorId: roomInfoH5.value?.roomInfo?.uid,
+      anchorId: roomInfoH5?.roomInfo?.uid,
     );
     if (res.isSuccess) {
       SmartDialog.showToast('点赞成功');
     } else {
       SmartDialog.showToast(res.toString());
     }
-    likeClickTime.value = 0;
+    likeClickTime = 0;
+    notifyListeners();
   }
 
   void onSendDanmaku([bool fromEmote = false]) {

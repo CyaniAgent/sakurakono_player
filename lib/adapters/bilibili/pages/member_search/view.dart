@@ -14,9 +14,10 @@ class MemberSearchPage extends StatefulWidget {
   State<MemberSearchPage> createState() => _MemberSearchPageState();
 }
 
-class _MemberSearchPageState extends State<MemberSearchPage> {
-  final _controller = Get.put(
-    MemberSearchController(),
+class _MemberSearchPageState extends State<MemberSearchPage>
+    with SingleTickerProviderStateMixin {
+  late final _controller = Get.put(
+    MemberSearchController(this),
     tag: Utils.generateRandomString(8),
   );
 
@@ -52,7 +53,7 @@ class _MemberSearchPageState extends State<MemberSearchPage> {
           onSubmitted: (value) => _controller.submit(),
           onChanged: (value) {
             if (value.isEmpty) {
-              _controller.hasData.value = false;
+              _controller.hasData = false;
             }
           },
         ),
@@ -61,22 +62,26 @@ class _MemberSearchPageState extends State<MemberSearchPage> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Obx(() {
-              return Opacity(
-                opacity: _controller.hasData.value ? 1 : 0,
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) {
+                return Opacity(
+                opacity: _controller.hasData ? 1 : 0,
                 child: Column(
                   children: [
                     TabBar(
                       controller: _controller.tabController,
                       tabs: [
-                        Obx(
-                          () => Tab(
+                        ListenableBuilder(
+                          listenable: _controller,
+                          builder: (_, __) => Tab(
                             text:
                                 '视频 ${_controller.counts[0] != -1 ? _controller.counts[0] : ''}',
                           ),
                         ),
-                        Obx(
-                          () => Tab(
+                        ListenableBuilder(
+                          listenable: _controller,
+                          builder: (_, __) => Tab(
                             text:
                                 '动态 ${_controller.counts[1] != -1 ? _controller.counts[1] : ''}',
                           ),
@@ -110,9 +115,11 @@ class _MemberSearchPageState extends State<MemberSearchPage> {
                   ],
                 ),
               );
-            }),
-            Obx(
-              () => _controller.hasData.value
+              },
+            ),
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _controller.hasData
                   ? const SizedBox.shrink()
                   : Align(
                       alignment: const Alignment(0, -0.5),

@@ -53,9 +53,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:media_kit/media_kit.dart';
 
-class AudioController extends GetxController
+class AudioController extends ChangeNotifier
     with
-        GetTickerProviderStateMixin,
         TripleMixin,
         FavMixin,
         BlockConfigMixin,
@@ -71,16 +70,17 @@ class AudioController extends GetxController
   @override
   late final bool isUgc = itemType == 1;
 
-  final audioItem = Rxn<DetailItem>();
+  DetailItem? audioItem;
 
   bool _hasInit = false;
+  bool isClosed = false;
   @override
   Player? player;
   late int cacheAudioQa;
 
   late bool isDragging = false;
-  final RxInt position = RxInt(0);
-  final RxInt duration = RxInt(0);
+  int position = 0;
+  int duration = 0;
 
   late final AnimationController animController;
 
@@ -91,7 +91,7 @@ class AudioController extends GetxController
 
   late double speed = 1.0;
 
-  late final Rx<PlayRepeat> playMode = PlayRepeat.values[Pref.audioPlayMode].obs;
+  late PlayRepeat playMode = PlayRepeat.values[Pref.audioPlayMode];
 
   @override
   late final isLogin = Accounts.main.isLogin;
@@ -106,11 +106,11 @@ class AudioController extends GetxController
   CoreAudioListOrder order = CoreAudioListOrder.orderNormal;
 
   double? _lastVolume;
-  late final RxDouble desktopVolume = RxDouble(Pref.desktopVolume);
+  late double desktopVolume = Pref.desktopVolume;
 
   void toggleVolume() {
     if (_lastVolume == null) {
-      _lastVolume = desktopVolume.value;
+      _lastVolume = desktopVolume;
       setVolume(0, clearLastVolme: false);
     } else {
       setVolume(_lastVolume!);
@@ -121,22 +121,20 @@ class AudioController extends GetxController
     if (clearLastVolme) {
       _lastVolume = null;
     }
-    desktopVolume.value = volume;
+    desktopVolume = volume;
     player?.setVolume(volume * 100);
   }
 
   void syncVolume([_]) {
-    final volume = desktopVolume.value;
+    final volume = desktopVolume;
     PlPlayerController.instance
       ?..volume.value = volume
       ..videoPlayerController?.setVolume(volume * 100);
     GStorage.setting.put(SettingBoxKey.desktopVolume, volume.toPrecision(3));
   }
 
-  @override
-  void onInit() {
-    attachTicker(this);
-    super.onInit();
+  AudioController(TickerProvider vsync) {
+    attachTicker(vsync);
     final args = Get.arguments;
     oid = Int64(args['oid']);
     final id = args['id'];
@@ -175,7 +173,7 @@ class AudioController extends GetxController
       ..onSeek = onSeek;
 
     animController = AnimationController(
-      vsync: this,
+      vsync: vsync,
       duration: const Duration(milliseconds: 200),
     );
 
@@ -203,7 +201,7 @@ class AudioController extends GetxController
   }
 
   void _updateCurrItem(DetailItem item) {
-    audioItem.value = item;
+    audioItem = item;
     hasLike.value = item.stat.hasLike_7;
     coinNum.value = item.stat.hasCoin_8 ? 2 : 0;
     hasFav.value = item.stat.hasFav;
@@ -296,7 +294,7 @@ class AudioController extends GetxController
         if (audios.isEmpty) {
           return;
         }
-        position.value = 0;
+        position = 0;
         final audio = audios.findClosestTarget(
           (e) => e.id <= cacheAudioQa,
           (a, b) => a.id > b.id ? a : b,
@@ -309,7 +307,7 @@ class AudioController extends GetxController
           return;
         }
         final durl = durls.first;
-        position.value = 0;
+        position = 0;
         _onOpenMedia(VideoUtils.getCdnUrl(durl.playUrls));
       }
     }
@@ -339,7 +337,7 @@ class AudioController extends GetxController
       configuration: PlayerConfiguration(
         options: {
           'volume': PlatformUtils.isDesktop
-              ? (desktopVolume.value * 100).toString()
+              ? (desktopVolume * 100).toString()
               : Pref.playerVolume.toString(),
           'volume-max': kMaxVolume.toString(),
           ...Pref.initBuffer(),
@@ -356,14 +354,14 @@ class AudioController extends GetxController
       stream.position.listen((position) {
         if (isDragging) return;
         final seconds = position.inSeconds;
-        if (seconds != this.position.value) {
-          this.position.value = seconds;
+        if (seconds != this.position) {
+          this.position = seconds;
           _videoDetailController?.playedTime = position;
           videoPlayerServiceHandler?.onPositionChange(position);
         }
       }),
       stream.duration.listen((duration) {
-        this.duration.value = duration.inSeconds;
+        this.duration = duration.inSeconds;
       }),
       stream.playing.listen((playing) {
         final PlayerStatus playerStatus;
@@ -387,7 +385,7 @@ class AudioController extends GetxController
           if (shutdownTimerService.isWaiting) {
             shutdownTimerService.handleWaiting();
           } else {
-            switch (playMode.value) {
+            switch (playMode) {
               case PlayRepeat.pause:
                 break;
               case PlayRepeat.listOrder:
@@ -432,10 +430,10 @@ class AudioController extends GetxController
     if (res case Success(:final response)) {
       hasLike.value = newVal;
       try {
-        audioItem.value!.stat
+        audioItem!.stat
           ..hasLike_7 = newVal
           ..like += newVal ? 1 : -1;
-        audioItem.refresh();
+        notifyListeners();
       } catch (_) {}
       SmartDialog.showToast(response.message ?? '');
     } else {
@@ -460,10 +458,10 @@ class AudioController extends GetxController
         coinNum.value = 2;
         GlobalData().afterCoin(2);
         try {
-          audioItem.value!.stat
+          audioItem!.stat
             ..hasCoin_8 = true
             ..coin += 2;
-          audioItem.refresh();
+          notifyListeners();
         } catch (_) {}
       }
       hasFav.value = true;
@@ -478,7 +476,7 @@ class AudioController extends GetxController
   }
 
   @override
-  int get copyright => audioItem.value?.arc.copyright ?? 1;
+  int get copyright => audioItem?.arc.copyright ?? 1;
 
   @override
   Future<void> onPayCoin(int coin, bool coinWithLike) async {
@@ -496,7 +494,7 @@ class AudioController extends GetxController
       }
       coinNum.value += coin;
       try {
-        final stat = audioItem.value!.stat
+        final stat = audioItem!.stat
           ..hasCoin_8 = true
           ..coin += coin;
         if (updateLike) {
@@ -504,7 +502,7 @@ class AudioController extends GetxController
             ..hasLike_7 = true
             ..like += 1;
         }
-        audioItem.refresh();
+        notifyListeners();
       } catch (_) {}
       GlobalData().afterCoin(coin);
     } else {
@@ -565,7 +563,7 @@ class AudioController extends GetxController
               child: const Text('分享视频', style: TextStyle(fontSize: 14)),
               onPressed: () {
                 Get.back();
-                if (audioItem.value case DetailItem(
+                if (audioItem case DetailItem(
                   :final arc,
                   :final owner,
                 )) {
@@ -582,7 +580,7 @@ class AudioController extends GetxController
               child: const Text('分享至动态', style: TextStyle(fontSize: 14)),
               onPressed: () {
                 Get.back();
-                if (audioItem.value case DetailItem(
+                if (audioItem case DetailItem(
                   :final arc,
                   :final owner,
                 )) {
@@ -606,7 +604,7 @@ class AudioController extends GetxController
               child: const Text('分享至消息', style: TextStyle(fontSize: 14)),
               onPressed: () {
                 Get.back();
-                if (audioItem.value case DetailItem(
+                if (audioItem case DetailItem(
                   :final arc,
                   :final owner,
                 )) {
@@ -651,7 +649,7 @@ class AudioController extends GetxController
 
   bool playNext({bool nextPart = false}) {
     if (nextPart) {
-      if (audioItem.value case DetailItem(:final parts)) {
+      if (audioItem case DetailItem(:final parts)) {
         if (parts.length > 1) {
           final subId = this.subId.firstOrNull;
           final nextIndex = parts.indexWhere((e) => e.subId == subId) + 1;
@@ -713,10 +711,10 @@ class AudioController extends GetxController
   @override
   void updateFavCount(int count) {
     try {
-      audioItem.value!.stat
+      audioItem!.stat
         ..hasFav = count > 0
         ..favourite += count;
-      audioItem.refresh();
+      notifyListeners();
     } catch (_) {}
   }
 
@@ -765,7 +763,8 @@ class AudioController extends GetxController
   bool get preInitPlayer => true;
 
   @override
-  void onClose() {
+  void dispose() {
+    isClosed = true;
     shutdownTimerService
       ..onPause = null
       ..isPlaying = null
@@ -782,7 +781,7 @@ class AudioController extends GetxController
     player = null;
     animController.dispose();
     disposeTriple();
-    super.onClose();
+    super.dispose();
   }
 }
 

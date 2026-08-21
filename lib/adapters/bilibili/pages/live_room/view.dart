@@ -120,7 +120,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     addObserverMobile(this);
     if (!plPlayerController.isLive) {
       plPlayerController.isLive = true;
-      _liveRoomController.isLoaded.refresh();
+      _liveRoomController.notifyListeners();
     }
     plPlayerController.danmakuController =
         _liveRoomController.danmakuController;
@@ -251,14 +251,14 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     bool needDm = true,
   }) {
     if (!isFullScreen && !plPlayerController.isDesktopPip) {
-      _liveRoomController.fsSC.value = null;
+      _liveRoomController.fsSC = null;
     }
     _liveRoomController.isFullScreen = isFullScreen;
     Widget player = Obx(
       key: playerKey,
       () {
-        if (_liveRoomController.isLoaded.value && plPlayerController.isLive) {
-          final roomInfoH5 = _liveRoomController.roomInfoH5.value;
+        if (_liveRoomController.isLoaded && plPlayerController.isLive) {
+          final roomInfoH5 = _liveRoomController.roomInfoH5;
           return PLVideoPlayer(
             maxWidth: width,
             maxHeight: height,
@@ -333,7 +333,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                     },
                   });
                   _liveRoomController
-                    ..fsSC.value = item
+                    ..fsSC = item
                     ..addDm(item);
                 },
                 child: const Text('add superchat'),
@@ -344,7 +344,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               top: 90,
               child: TextButton(
                 onPressed: () {
-                  _liveRoomController.fsSC.value = null;
+                  _liveRoomController.fsSC = null;
                 },
                 child: const Text('remove superchat'),
               ),
@@ -355,7 +355,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             bottom: 25,
             width: fullScreenSCWidth,
             child: Obx(() {
-              final item = _liveRoomController.fsSC.value;
+              final item = _liveRoomController.fsSC;
               if (item == null) {
                 return const SizedBox.shrink();
               }
@@ -366,7 +366,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                   children: [
                     SuperChatCard(
                       item: item,
-                      onRemove: () => _liveRoomController.fsSC.value = null,
+                      onRemove: () => _liveRoomController.fsSC = null,
                       onReport: () => _liveRoomController.reportSC(item),
                     ),
                     Positioned(
@@ -378,7 +378,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                         bgColor: const Color(0xEEFFFFFF),
                         iconColor: Colors.black54,
                         icon: const Icon(Icons.clear),
-                        onPressed: () => _liveRoomController.fsSC.value = null,
+                        onPressed: () => _liveRoomController.fsSC = null,
                       ),
                     ),
                   ],
@@ -411,7 +411,6 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               () {
                 final appBackground = _liveRoomController
                     .roomInfoH5
-                    .value
                     ?.roomInfo
                     ?.appBackground;
                 Widget child;
@@ -448,7 +447,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             body: isPortrait
                 ? Obx(
                     () {
-                      if (_liveRoomController.isPortrait.value) {
+                      if (_liveRoomController.isPortrait) {
                         return _buildPP(isFullScreen);
                       }
                       return _buildPH(isFullScreen);
@@ -535,7 +534,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
   Widget get onlineWidget => GestureDetector(
     onTap: _showRank,
     child: Obx(() {
-      if (_liveRoomController.onlineCount.value case final onlineCount?) {
+      if (_liveRoomController.onlineCount case final onlineCount?) {
         return Text(
           '高能观众($onlineCount)',
           style: const TextStyle(
@@ -581,7 +580,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
           : Obx(
               () {
                 CoreRoomInfoH5Data? roomInfoH5 =
-                    _liveRoomController.roomInfoH5.value;
+                    _liveRoomController.roomInfoH5;
                 if (roomInfoH5 == null) {
                   return const SizedBox.shrink();
                 }
@@ -683,12 +682,12 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                   ],
                 ),
               ),
-              if (_liveRoomController.roomInfoH5.value != null)
+              if (_liveRoomController.roomInfoH5 != null)
                 PopupMenuItem(
                   onTap: () {
                     try {
                       CoreRoomInfoH5Data roomInfo =
-                          _liveRoomController.roomInfoH5.value!;
+                          _liveRoomController.roomInfoH5!;
                       PageUtils.pmShare(
                         this.context,
                         content: {
@@ -794,7 +793,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               key: pageKey,
               controller: _liveRoomController.pageController,
               physics: clampingScrollPhysics,
-              onPageChanged: _liveRoomController.pageIndex.call,
+              onPageChanged: (index) { _liveRoomController.pageIndex = index; },
               horizontalDragGestureRecognizer:
                   CustomHorizontalDragGestureRecognizer.new,
               children: [
@@ -897,7 +896,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                             top: -12,
                             child: Obx(() {
                               final likeClickTime =
-                                  _liveRoomController.likeClickTime.value;
+                                  _liveRoomController.likeClickTime;
                               if (likeClickTime == 0) {
                                 return const SizedBox.shrink();
                               }
@@ -957,7 +956,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             child: Obx(
               () => _BorderIndicator(
                 radius: const Radius.circular(20),
-                isLeft: _liveRoomController.pageIndex.value == 0,
+                isLeft: _liveRoomController.pageIndex == 0,
               ),
             ),
           ),

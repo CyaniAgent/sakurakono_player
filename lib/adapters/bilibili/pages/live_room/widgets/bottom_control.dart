@@ -188,7 +188,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
-                  liveRoomCtr.currentQnDesc.value,
+                  liveRoomCtr.currentQnDesc,
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),

@@ -76,7 +76,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
     child = Obx(
       key: titleKey,
       () => MarqueeText(
-        liveController.title.value,
+        liveController.title,
         spacing: 30,
         velocity: 30,
         strutStyle: const StrutStyle(fontSize: 15, leading: 0),

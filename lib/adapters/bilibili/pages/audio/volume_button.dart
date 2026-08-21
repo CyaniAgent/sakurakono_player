@@ -70,7 +70,7 @@ class _VolumeButtonState extends State<VolumeButton> {
         controller: _controller,
         overlayChildBuilder: _overlayChildBuilder,
         child: Obx(() {
-          final volume = widget.controller.desktopVolume.value;
+          final volume = widget.controller.desktopVolume;
           return InkWell(
             onTapUp: _onTapUp,
             customBorder: const CircleBorder(),
@@ -129,7 +129,7 @@ class _VolumeButtonState extends State<VolumeButton> {
             ),
             child: Obx(
               () {
-                final volume = widget.controller.desktopVolume.value;
+                final volume = widget.controller.desktopVolume;
                 return Column(
                   spacing: 2,
                   mainAxisSize: .min,

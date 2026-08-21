@@ -5,8 +5,7 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MemberSearchController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class MemberSearchController extends ChangeNotifier {
   late final FocusNode focusNode;
   late final TabController tabController;
   late final TextEditingController editingController;
@@ -14,18 +13,16 @@ class MemberSearchController extends GetxController
   final mid = Get.parameters['mid']!;
   final uname = Get.parameters['uname'];
 
-  final RxBool hasData = false.obs;
-  final RxList<int> counts = <int>[-1, -1].obs;
+  bool hasData = false;
+  List<int> counts = [-1, -1];
 
   late final MemberSearchChildController arcCtr;
   late final MemberSearchChildController dynCtr;
 
-  @override
-  void onInit() {
-    super.onInit();
+  MemberSearchController(TickerProvider vsync) {
     focusNode = FocusNode();
     editingController = TextEditingController();
-    tabController = TabController(vsync: this, length: 2);
+    tabController = TabController(vsync: vsync, length: 2);
     arcCtr = Get.put(
       MemberSearchChildController(this, MemberSearchType.archive),
       tag: Utils.generateRandomString(8),
@@ -39,8 +36,9 @@ class MemberSearchController extends GetxController
   void onClear() {
     if (editingController.value.text.isNotEmpty) {
       editingController.clear();
-      counts.value = <int>[-1, -1];
-      hasData.value = false;
+      counts = [-1, -1];
+      hasData = false;
+      notifyListeners();
       focusNode.requestFocus();
     } else {
       Get.back();
@@ -49,7 +47,8 @@ class MemberSearchController extends GetxController
 
   void submit() {
     if (editingController.text.isNotEmpty) {
-      hasData.value = true;
+      hasData = true;
+      notifyListeners();
       arcCtr
         ..scrollController.jumpToTop()
         ..onReload();
@@ -60,10 +59,10 @@ class MemberSearchController extends GetxController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     focusNode.dispose();
     tabController.dispose();
     editingController.dispose();
-    super.onClose();
+    super.dispose();
   }
 }

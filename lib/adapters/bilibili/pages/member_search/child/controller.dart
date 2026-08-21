@@ -42,6 +42,7 @@ class MemberSearchChildController extends CommonListControllerRiverpod {
       case MemberSearchType.archive:
         SearchArchiveReply data = response;
         controller.counts[searchType.index] = data.total.toInt();
+        controller.notifyListeners();
         return data.archives;
       case MemberSearchType.dynamic:
         CoreDynamicsDataModel data = response;
@@ -50,6 +51,7 @@ class MemberSearchChildController extends CommonListControllerRiverpod {
           isEnd = true;
         }
         controller.counts[searchType.index] = data.total ?? 0;
+        controller.notifyListeners();
         return data.items;
     }
   }
