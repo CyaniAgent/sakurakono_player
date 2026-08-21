@@ -45,8 +45,9 @@ class _FavTopicPageState extends State<FavTopicPage>
               top: Style.safeSpace,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],

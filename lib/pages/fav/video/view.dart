@@ -40,8 +40,9 @@ class _FavVideoPageState extends State<FavVideoPage>
               top: 7,
               bottom: 100 + MediaQuery.viewPaddingOf(context).bottom,
             ),
-            sliver: Obx(
-              () => _buildBody(_favController.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _favController,
+              builder: (_, __) => _buildBody(_favController.loadingState),
             ),
           ),
         ],
@@ -79,9 +80,8 @@ class _FavVideoPageState extends State<FavVideoPage>
                         },
                       );
                       if (res == true) {
-                        _favController.loadingState
-                          ..value.data!.removeAt(index)
-                          ..refresh();
+                        _favController.loadingState.data!.removeAt(index);
+                        _favController.loadingState = _favController.loadingState;
                       }
                     },
                   );

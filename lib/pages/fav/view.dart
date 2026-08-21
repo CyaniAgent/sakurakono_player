@@ -66,12 +66,12 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                       (data) {
                         if (data != null) {
                           final list =
-                              _favController.loadingState.value.dataOrNull;
+                              _favController.loadingState.dataOrNull;
                           if (list != null && list.isNotEmpty) {
                             list.insert(1, data);
-                            _favController.loadingState.refresh();
+                            _favController.loadingState = _favController.loadingState;
                           } else {
-                            _favController.loadingState.value = Success([data]);
+                            _favController.loadingState = Success([data]);
                           }
                         }
                       },
@@ -85,7 +85,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
             () => _showVideoFavMenu.value
                 ? IconButton(
                     onPressed: () {
-                      if (_favController.loadingState.value.isSuccess) {
+                      if (_favController.loadingState.isSuccess) {
                         if (!_favController.isEnd) {
                           SmartDialog.showToast('加载全部收藏夹再排序');
                           return;
@@ -104,7 +104,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
             () => _showVideoFavMenu.value
                 ? IconButton(
                     onPressed: () {
-                      if (_favController.loadingState.value case Success(
+                      if (_favController.loadingState case Success(
                         :final response,
                       )) {
                         try {

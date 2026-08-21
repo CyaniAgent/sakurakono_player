@@ -40,8 +40,9 @@ class _FavCheesePageState extends State<FavCheesePage>
               top: 7,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],

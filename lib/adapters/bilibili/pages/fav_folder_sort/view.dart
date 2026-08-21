@@ -23,7 +23,7 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
   FavController get _favController => widget.favController;
 
   late List<CoreFavFolderInfo> sortList = List<CoreFavFolderInfo>.from(
-    _favController.loadingState.value.data!,
+    _favController.loadingState.data!,
   );
 
   @override
@@ -40,7 +40,7 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
               );
               if (res.isSuccess) {
                 SmartDialog.showToast('排序完成');
-                _favController.loadingState.value = Success(sortList);
+                _favController.loadingState = Success(sortList);
                 if (mounted) {
                   AppNavigator.back();
                 }

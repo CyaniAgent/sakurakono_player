@@ -4,11 +4,14 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavTopicController
-    extends CommonListController<CoreFavTopicData, CoreFavTopicItem> {
+    extends CommonListControllerRiverpod<CoreFavTopicData, CoreFavTopicItem> {
+  FavTopicController() {
+    queryData();
+  }
 
   Ref? _ref;
 
@@ -17,11 +20,6 @@ class FavTopicController
   void attachRef(Ref ref) { _ref = ref; }
   int? total;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   void checkIsEnd(int length) {
@@ -55,9 +53,8 @@ class FavTopicController
   Future<void> onDeleteTopic(int index, dynamic id) async {
     final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavTopic(id);
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      loadingState.data!.removeAt(index);
+      notifyListeners();
       SmartDialog.showToast('已取消收藏');
     } else {
       SmartDialog.showToast(res.toString());

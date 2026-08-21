@@ -4,10 +4,13 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 class FavController
-    extends CommonListController<CoreFavFolderData, CoreFavFolderInfo> {
+    extends CommonListControllerRiverpod<CoreFavFolderData, CoreFavFolderInfo> {
+  FavController() {
+    queryData();
+  }
   Ref? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
@@ -18,16 +21,11 @@ class FavController
 
   late final int mid = Get.find<AccountProvider>().userId ?? 0;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   Future<void> queryData([bool isRefresh = true]) {
     if (!isLogin) {
-      loadingState.value = const Error('账号未登录');
+      loadingState = const Error('账号未登录');
       return Future.syncValue(null);
     }
     return super.queryData(isRefresh);

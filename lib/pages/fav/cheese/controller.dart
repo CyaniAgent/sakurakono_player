@@ -4,12 +4,15 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavCheeseController
-    extends CommonListController<CoreSpaceCheeseData, CoreSpaceCheeseItem> {
+    extends CommonListControllerRiverpod<CoreSpaceCheeseData, CoreSpaceCheeseItem> {
+  FavCheeseController() {
+    queryData();
+  }
   Ref? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
@@ -18,11 +21,6 @@ class FavCheeseController
 
   late final int mid = (_ref?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId) ?? 0;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   List<CoreSpaceCheeseItem>? getDataList(CoreSpaceCheeseData response) {
@@ -43,9 +41,8 @@ class FavCheeseController
   Future<void> onRemove(int index, int sid) async {
     final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavPugv(sid);
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      loadingState.data!.removeAt(index);
+      notifyListeners();
       SmartDialog.showToast('已取消收藏');
     } else {
       SmartDialog.showToast(res.toString());

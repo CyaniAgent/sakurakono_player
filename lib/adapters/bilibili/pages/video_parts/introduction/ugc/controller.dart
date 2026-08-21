@@ -780,7 +780,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       return false;
     }
 
-    if (relatedCtr.loadingState.value case Success(:final response)) {
+    if (relatedCtr.loadingState case Success(:final response)) {
       final firstItem = response?.firstOrNull;
       if (firstItem == null) {
         SmartDialog.showToast('暂无相关视频，停止连播');
