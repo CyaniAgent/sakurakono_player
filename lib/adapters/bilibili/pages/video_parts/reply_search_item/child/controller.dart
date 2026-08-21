@@ -7,11 +7,11 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show SearchItemCursorReply;
 import 'package:skf/adapters/bilibili/models/common/reply/reply_search_type.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/controller.dart';
 
 class ReplySearchChildController
-    extends CommonListController<CoreSearchItemReply, Object?> {
+    extends CommonListControllerRiverpod<CoreSearchItemReply, Object?> {
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }

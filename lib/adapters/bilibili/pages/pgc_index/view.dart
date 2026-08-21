@@ -91,7 +91,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                     top: 12,
                     bottom: padding.bottom + 100,
                   ),
-                  sliver: Obx(() => _buildList(_ctr.loadingState.value)),
+                  sliver: ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildList(_ctr.loadingState)),
                 ),
               ],
             ),

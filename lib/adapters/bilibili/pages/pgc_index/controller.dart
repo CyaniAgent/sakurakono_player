@@ -5,14 +5,15 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/pgc_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class PgcIndexController
-    extends CommonListController<CorePgcIndexResult, CorePgcIndexItem> {
+    extends CommonListControllerRiverpod<CorePgcIndexResult, CorePgcIndexItem> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  PgcIndexController(this.indexType);
-  int? indexType;
+  PgcIndexController(this.indexType) {
+    getPgcIndexCondition();
+  }
   Rx<LoadingState<CorePgcIndexConditionData>> conditionState =
       LoadingState<CorePgcIndexConditionData>.loading().obs;
 
@@ -20,11 +21,6 @@ class PgcIndexController
 
   RxMap<String, dynamic> indexParams = <String, dynamic>{}.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    getPgcIndexCondition();
-  }
 
   Future<void> getPgcIndexCondition() async {
     final res = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcIndexCondition(

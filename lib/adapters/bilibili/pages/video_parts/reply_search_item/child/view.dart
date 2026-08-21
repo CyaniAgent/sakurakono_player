@@ -42,11 +42,9 @@ class _ReplySearchChildPageState extends State<ReplySearchChildPage>
               top: 7,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: StreamBuilder<LoadingState<List<Object?>?>?>(
-              stream: _controller.loadingState.stream,
-              initialData: _controller.loadingState.value,
-              builder: (context, snapshot) =>
-                  _buildBody(snapshot.data!),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(_controller.loadingState),
             ),
           ),
         ],

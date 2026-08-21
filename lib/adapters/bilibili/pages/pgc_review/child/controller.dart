@@ -5,15 +5,16 @@ import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class PgcReviewController
-    extends CommonListController<CorePgcReviewData, CorePgcReviewItemModel> {
+    extends CommonListControllerRiverpod<CorePgcReviewData, CorePgcReviewItemModel> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  PgcReviewController({required this.type, required this.mediaId});
-
+  PgcReviewController({required this.type, required this.mediaId}) {
+    queryData();
+  }
   final CorePgcReviewType type;
   final String mediaId;
 
@@ -21,11 +22,6 @@ class PgcReviewController
   String? next;
   final sortType = PgcReviewSortType.def.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   Future<void> onRefresh() {
@@ -82,7 +78,7 @@ class PgcReviewController
       if (!isLike) {
         item.stat?.disliked = 0;
       }
-      loadingState.refresh();
+      notifyListeners();
     } else {
       res.toast();
     }
@@ -105,7 +101,7 @@ class PgcReviewController
         }
         item.stat?.liked = 0;
       }
-      loadingState.refresh();
+      notifyListeners();
     } else {
       res.toast();
     }
@@ -117,9 +113,8 @@ class PgcReviewController
       reviewId: '$reviewId',
     );
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      (loadingState as Success).response!.removeAt(index);
+      notifyListeners();
       SmartDialog.showToast('删除成功');
     } else {
       res.toast();
