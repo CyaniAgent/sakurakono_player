@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:skf/common/widgets/appbar/appbar.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
@@ -38,7 +36,6 @@ class DownloadDetailPage extends StatefulWidget {
 
 class _DownloadDetailPageState extends State<DownloadDetailPage>
     with BaseMultiSelectMixin<CoreDownloadEntryInfo>, GridMixin {
-  StreamSubscription? _sub;
   final _downloadItems = RxList<CoreDownloadEntryInfo>();
   final _controller = Get.find<DownloadPageController>();
   final _downloadActions = DownloadActions.of();
@@ -51,16 +48,11 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
   void initState() {
     super.initState();
     _loadList();
-    _sub = _controller.flag.listen((_) {
-      _loadList();
-    });
+    _controller.addListener(_loadList);
   }
 
-  Future<void> _closeSub() async {
-    if (_sub != null) {
-      await _sub?.cancel();
-      _sub = null;
-    }
+  void _closeSub() {
+    _controller.removeListener(_loadList);
   }
 
   @override
@@ -160,7 +152,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                           showTitle: false,
                           onDelete: () async {
                             if (_downloadItems.length == 1) {
-                              await _closeSub();
+                              _closeSub();
                               await _downloadActions.deletePage(
                                 pageDirPath: entry.pageDirPath,
                               );
@@ -200,8 +192,8 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
         SmartDialog.showLoading();
         final allChecked = this.allChecked.toList();
         final isDeleteAll = allChecked.length == _downloadItems.length;
+        if (isDeleteAll) _closeSub();
         await Future.wait([
-          if (isDeleteAll) _closeSub(),
           GStorage.watchProgress.deleteAll(
             allChecked.map((e) => e.cid.toString()),
           ),
@@ -212,7 +204,6 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
               refresh: false,
             ),
         ]);
-        _downloadActions.refreshFlagListeners();
         if (isDeleteAll) {
           SmartDialog.dismiss();
           if (mounted) {

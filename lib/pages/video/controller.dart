@@ -40,11 +40,15 @@ import 'package:media_kit/media_kit.dart' hide Subtitle;
 ///
 /// 播放器/弹幕/回复/简介/下载等 B站 专属能力通过 [VideoHost] 注入，
 /// 数据层使用 core [VideoRepository] 等仓库接口。
-class VideoDetailController extends GetxController
-    with GetTickerProviderStateMixin {
+class VideoDetailController extends ChangeNotifier {
   /// 路由传参
 
   Ref? _ref;
+  final TickerProvider? _vsync;
+  bool _isDisposed = false;
+  bool get isClosed => _isDisposed;
+
+  VideoDetailController({TickerProvider? vsync}) : _vsync = vsync;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
@@ -155,7 +159,7 @@ class VideoDetailController extends GetxController
   AnimationController? animController;
   AnimationController get animationController =>
       animController ??= (AnimationController(
-        vsync: this,
+        vsync: _vsync!,
         duration: const Duration(milliseconds: 200),
       )..addListener(_animListener));
 
@@ -320,9 +324,7 @@ class VideoDetailController extends GetxController
     _setVideoHeight();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
+  void initController() {
     args = AppNavigator.arguments;
     videoType = coreVideoTypeFromArgs(args['videoType']);
     if (videoType == CoreVideoType.pgc) {
@@ -356,7 +358,7 @@ class VideoDetailController extends GetxController
 
     tabCtr = TabController(
       length: 2,
-      vsync: this,
+      vsync: _vsync!,
       initialIndex: Pref.defaultShowComment ? 1 : 0,
     );
   }
@@ -923,7 +925,8 @@ class VideoDetailController extends GetxController
   }
 
   @override
-  void onClose() {
+  void dispose() {
+    _isDisposed = true;
     block.dispose();
     cid.close();
     if (isFileSource) {
@@ -938,7 +941,7 @@ class VideoDetailController extends GetxController
       ..dispose();
     subtitles.clear();
     vttSubtitles.clear();
-    super.onClose();
+    super.dispose();
   }
 
   void onReset({bool isStein = false}) {

@@ -8,37 +8,39 @@ import 'package:skf/utils/storage.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 
-class DownloadPageController extends GetxController
+class DownloadPageController extends ChangeNotifier
     with BaseMultiSelectMixin<DownloadPageInfo> {
+  bool _isDisposed = false;
+  bool get isClosed => _isDisposed;
+
   final _downloadActions = DownloadActions.of();
-  final pages = RxList<DownloadPageInfo>();
-  final flag = RxInt(0);
+  final pages = <DownloadPageInfo>[];
+  int flag = 0;
 
   @override
   List<DownloadPageInfo> get list => pages;
   @override
-  void notifyStateChanged() => pages.refresh();
+  void notifyStateChanged() => notifyListeners();
 
-  @override
-  void onInit() {
-    super.onInit();
+  DownloadPageController() {
     _loadList();
     _downloadActions.addFlagListener(_loadList);
   }
 
   @override
-  void onClose() {
+  void dispose() {
     _downloadActions.removeFlagListener(_loadList);
-    super.onClose();
+    super.dispose();
   }
 
   Future<void> _loadList() async {
     await _downloadActions.waitForInitialization;
-    if (isClosed) return;
+    if (_isDisposed) return;
     if (_downloadActions.downloadList.isEmpty) {
       pages.clear();
+      notifyListeners();
       return;
     }
     final list = <DownloadPageInfo>[];
@@ -68,8 +70,11 @@ class DownloadPageController extends GetxController
         );
       }
     }
-    pages.value = list;
-    flag.value++;
+    pages
+      ..clear()
+      ..addAll(list);
+    flag++;
+    notifyListeners();
   }
 
   @override

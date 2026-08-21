@@ -46,7 +46,7 @@ class VideoDetailPageV extends StatefulWidget {
 }
 
 class _VideoDetailPageVState extends State<VideoDetailPageV>
-    with RouteAware, RouteAwareMixin, WidgetsBindingObserver {
+    with RouteAware, RouteAwareMixin, WidgetsBindingObserver, TickerProviderStateMixin {
   final heroTag = AppNavigator.arguments['heroTag'];
 
   late final VideoDetailController videoDetailController;
@@ -85,7 +85,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     // 每页访问获取播放器实例（已销毁则重建），必须先于 setPlayCallBack
     plPlayerController = host.playerHost.acquirePlayer();
     host.playerHost.setPlayCallBack(playCallBack);
-    videoDetailController = Get.put(VideoDetailController(), tag: heroTag);
+    videoDetailController = Get.put(VideoDetailController(vsync: this), tag: heroTag);
+    videoDetailController.initController();
 
     if (videoDetailController.removeSafeArea) {
       hideSystemBar();
@@ -242,6 +243,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
   @override
   void dispose() {
+    videoDetailController.dispose();
     plPlayerController
       ..removeStatusLister(playerListener)
       ..removePositionListener(positionListener);
@@ -1202,7 +1204,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     if (videoDetailController.tabCtr.length != tabs.length) {
       videoDetailController.tabCtr.dispose();
       videoDetailController.tabCtr = TabController(
-        vsync: videoDetailController,
+        vsync: this,
         length: tabs.length,
         initialIndex: tabs.isEmpty
             ? 0

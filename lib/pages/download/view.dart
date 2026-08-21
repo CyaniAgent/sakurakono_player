@@ -41,6 +41,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
 
   @override
   void dispose() {
+    _controller.dispose();
     _progress.dispose();
     super.dispose();
   }
@@ -156,7 +157,9 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                   }
                   return const SliverToBoxAdapter();
                 }),
-                Obx(() {
+              ListenableBuilder(
+                listenable: _controller,
+                builder: (context, _) {
                   if (_controller.pages.isNotEmpty) {
                     return SliverMainAxisGroup(
                       slivers: [
@@ -208,7 +211,8 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                     return const SliverToBoxAdapter();
                   }
                   return const HttpError();
-                }),
+                },
+              ),
                 SliverToBoxAdapter(
                   child: SizedBox(height: padding.bottom + 100),
                 ),
