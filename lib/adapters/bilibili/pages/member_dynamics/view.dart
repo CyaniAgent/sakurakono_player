@@ -68,8 +68,9 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
         SliverPadding(
           padding: EdgeInsets.only(bottom: padding.bottom + 100),
           sliver: buildPage(
-            Obx(
-              () => _buildContent(_memberDynamicController.loadingState.value),
+            ListenableBuilder(
+              listenable: _memberDynamicController,
+              builder: (_, __) => _buildContent(_memberDynamicController.loadingState),
             ),
           ),
         ),

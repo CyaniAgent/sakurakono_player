@@ -7,22 +7,19 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class MemberAudioController
-    extends CommonListController<CoreSpaceAudioData, CoreSpaceAudioItem> {
-  MemberAudioController(this.mid);
+    extends CommonListControllerRiverpod<CoreSpaceAudioData, CoreSpaceAudioItem> {
+  MemberAudioController(this.mid) {
+    queryData();
+  }
 
   final int mid;
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   int? totalSize;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   void checkIsEnd(int length) {
@@ -51,7 +48,7 @@ class MemberAudioController
   }
 
   void toViewPlayAll() {
-    final item = loadingState.value.data!.first;
+    final item = loadingState.data!.first;
     AudioPage.toAudioPage(
       itemType: 3,
       id: item.uid!,

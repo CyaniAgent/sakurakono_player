@@ -51,8 +51,9 @@ class _MemberAudioState extends State<MemberAudio>
             padding: EdgeInsets.only(
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(
-              () => _buildBody(colorScheme, _controller.loadingState.value as LoadingState<List<SpaceAudioItem>?>),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(colorScheme, _controller.loadingState as LoadingState<List<SpaceAudioItem>?>),
             ),
           ),
         ],

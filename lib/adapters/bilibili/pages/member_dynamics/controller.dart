@@ -7,22 +7,19 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class MemberDynamicsController
-    extends CommonListController<CoreDynamicsDataModel, CoreDynamicItemModel> {
-  MemberDynamicsController(this.mid);
+    extends CommonListControllerRiverpod<CoreDynamicsDataModel, CoreDynamicItemModel> {
+  MemberDynamicsController(this.mid) {
+    queryData();
+  }
   int mid;
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   String offset = '';
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   Future<void> onRefresh() {
@@ -63,10 +60,9 @@ class MemberDynamicsController
   Future<void> onRemove(dynamic dynamicId) async {
     final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
-      loadingState
-        ..value.data!
-            .removeWhere((item) => (item).idStr == dynamicId)
-        ..refresh();
+      loadingState.data!
+          .removeWhere((item) => (item).idStr == dynamicId);
+      notifyListeners();
       SmartDialog.showToast('删除成功');
     } else {
       res.toast();
@@ -78,12 +74,12 @@ class MemberDynamicsController
         ? (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).rmTop(dynamicId: dynamicId)
         : (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).setTop(dynamicId: dynamicId));
     if (res.isSuccess) {
-      final list = loadingState.value.data!;
+      final list = loadingState.data!;
       list[0].modules!
         ..moduleTag = null
         ..moduleAuthor?.isTop = false;
       if (isTop) {
-        loadingState.refresh();
+        notifyListeners();
         SmartDialog.showToast('取消置顶成功');
       } else {
         final item = list.firstWhere((item) => item.idStr == dynamicId);
@@ -93,7 +89,7 @@ class MemberDynamicsController
         list
           ..remove(item)
           ..insert(0, item);
-        loadingState.refresh();
+        notifyListeners();
         SmartDialog.showToast('置顶成功');
       }
     } else {

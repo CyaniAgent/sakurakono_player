@@ -7,16 +7,18 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
 
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class MemberFavoriteCtr
-    extends CommonDataController<List<CoreSpaceFavData>?, List<CoreSpaceFavData>?> {
+    extends CommonControllerRiverpod<List<CoreSpaceFavData>?, List<CoreSpaceFavData>?> {
   MemberFavoriteCtr({
     required this.mid,
-  });
+  }) {
+    queryData();
+  }
 
   final int mid;
 
@@ -33,6 +35,15 @@ class MemberFavoriteCtr
   final RxBool subEnd = true.obs;
   final Rx<CoreSpaceFavData> subState = CoreSpaceFavData().obs;
 
+  LoadingState<List<CoreSpaceFavData>?> _loadingState =
+      LoadingState<List<CoreSpaceFavData>?>.loading();
+  @override
+  LoadingState<List<CoreSpaceFavData>?> get loadingState => _loadingState;
+  set loadingState(LoadingState<List<CoreSpaceFavData>?> value) {
+    _loadingState = value;
+    notifyListeners();
+  }
+
   bool isExpand(bool isFav) {
     return isFav ? _favExpand : _subExpand;
   }
@@ -48,17 +59,35 @@ class MemberFavoriteCtr
 
   bool flag = false;
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   Future<void> onRefresh() {
     favPage = 2;
     subPage = 2;
     return super.onRefresh();
+  }
+
+  @override
+  Future<void> queryData([bool isRefresh = true]) async {
+    if (isLoading) return;
+    isLoading = true;
+    final LoadingState<List<CoreSpaceFavData>?> res = await customGetData();
+    if (res is Success<List<CoreSpaceFavData>?>) {
+      if (!customHandleResponse(isRefresh, res)) {
+        loadingState = res;
+      }
+    } else {
+      if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
+        loadingState = res as Error;
+      }
+    }
+    isLoading = false;
+  }
+
+  @override
+  Future<void> onReload() {
+    loadingState = LoadingState<List<CoreSpaceFavData>?>.loading();
+    return super.onReload();
   }
 
   @override
@@ -80,7 +109,7 @@ class MemberFavoriteCtr
     } catch (e) {
       if (kDebugMode) debugPrint(e.toString());
     }
-    loadingState.value = response;
+    loadingState = response;
     return true;
   }
 
