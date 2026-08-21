@@ -4,19 +4,15 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class MemberCoinArcController
-    extends CommonListController<CoreCoinLikeArcData, CoreCoinLikeArcItem> {
+    extends CommonListControllerRiverpod<CoreCoinLikeArcData, CoreCoinLikeArcItem> {
   final dynamic mid;
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  MemberCoinArcController({this.mid});
-
-  @override
-  void onInit() {
-    super.onInit();
+  MemberCoinArcController({this.mid}) {
     queryData();
   }
 

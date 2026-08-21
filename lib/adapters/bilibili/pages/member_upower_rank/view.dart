@@ -79,8 +79,9 @@ class _UpowerRankPageState extends State<UpowerRankPage>
         slivers: [
           SliverPadding(
             padding: EdgeInsets.only(bottom: padding.bottom + 100),
-            sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value as LoadingState<List<UpowerRankInfo>?>),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(theme, _controller.loadingState as LoadingState<List<UpowerRankInfo>?>),
             ),
           ),
         ],
