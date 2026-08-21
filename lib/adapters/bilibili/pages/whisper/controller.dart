@@ -32,9 +32,7 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
   Rx<List<ThreeDotItem>?> threeDotItems = Rx<List<ThreeDotItem>?>(null);
   Rx<List<ThreeDotItem>?> outsideItem = Rx<List<ThreeDotItem>?>(null);
 
-  @override
-  void onInit() {
-    super.onInit();
+  WhisperController() {
     msgFeedTopItems = [
       const (
         name: "回复我的",

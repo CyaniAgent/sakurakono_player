@@ -2,13 +2,13 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LikeDetailController
-    extends CommonListController<CoreMsgLikeDetailData, CoreMsgLikeDetailItem> {
+    extends CommonListControllerRiverpod<CoreMsgLikeDetailData, CoreMsgLikeDetailItem> {
   late final String cardId;
   late final String? uri;
   late final int counts;
@@ -21,9 +21,7 @@ class LikeDetailController
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
 
-  @override
-  void onInit() {
-    super.onInit();
+  LikeDetailController() {
     final args = AppNavigator.arguments;
     cardId = args['id'];
     uri = args['uri'];

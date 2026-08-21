@@ -81,7 +81,7 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+              sliver: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
             ),
           ],
         ),

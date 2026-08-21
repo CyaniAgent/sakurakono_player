@@ -3,7 +3,7 @@ import 'package:skf/core/models/im_types.dart';
 import 'package:skf/core/repository/im_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +11,7 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 abstract class CommonWhisperController<R>
-    extends CommonListController<R, Session> {
+    extends CommonListControllerRiverpod<R, Session> {
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
@@ -20,9 +20,8 @@ abstract class CommonWhisperController<R>
   Future<void> onRemove(int index, int talkerId) async {
     final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).removeMsg(talkerId);
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      loadingState.data!.removeAt(index);
+      notifyListeners();
       SmartDialog.showToast('删除成功');
     } else {
       res.toast();
@@ -40,12 +39,12 @@ abstract class CommonWhisperController<R>
         : await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).pinSession(sessionId: sessionId);
 
     if (res.isSuccess) {
-      List<Session> list = loadingState.value.data!;
+      List<Session> list = loadingState.data!;
       item.isPinned = isTop ? false : true;
       if (!isTop) {
         list.insert(0, list.removeAt(index));
       }
-      loadingState.refresh();
+      notifyListeners();
       SmartDialog.showToast('${isTop ? '移除' : ''}置顶成功');
     } else {
       res.toast();
@@ -60,7 +59,7 @@ abstract class CommonWhisperController<R>
     );
     if (res.isSuccess) {
       item.isMuted = !isMuted;
-      loadingState.refresh();
+      notifyListeners();
       SmartDialog.showToast('设置成功');
     } else {
       res.toast();
@@ -70,14 +69,14 @@ abstract class CommonWhisperController<R>
   Future<void> onClearUnread() async {
     final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).clearUnread(pageType: sessionPageType);
     if (res.isSuccess) {
-      if (loadingState.value case Success(:final response)) {
+      if (loadingState case Success(:final response)) {
         if (response != null && response.isNotEmpty) {
           for (final item in response) {
             if (item.hasUnread()) {
               item.clearUnread();
             }
           }
-          loadingState.refresh();
+          notifyListeners();
         }
       }
       SmartDialog.showToast('已标记为已读');
@@ -89,7 +88,7 @@ abstract class CommonWhisperController<R>
   Future<void> onDeleteList() async {
     final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).deleteSessionList(pageType: sessionPageType);
     if (res.isSuccess) {
-      loadingState.value = const Success(null);
+      loadingState = const Success(null);
     } else {
       res.toast();
     }

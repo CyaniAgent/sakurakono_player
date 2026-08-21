@@ -45,18 +45,13 @@ class WhisperSecController
     extends CommonWhisperController<SessionSecondaryReply> {
   WhisperSecController({
     required SessionPageType sessionPageType,
-  }) : sessionPageType = _toCoreSessionPageType(sessionPageType);
-
+  }) : sessionPageType = _toCoreSessionPageType(sessionPageType) {
+    queryData();
+  }
   PbMap<int, Offset>? offset;
   @override
   final CoreImSessionPageType sessionPageType;
   Rx<List<ThreeDotItem>?> threeDotItems = Rx<List<ThreeDotItem>?>(null);
-
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   Future<void> onRefresh() {
