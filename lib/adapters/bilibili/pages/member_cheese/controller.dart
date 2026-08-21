@@ -4,22 +4,18 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class MemberCheeseController
-    extends CommonListController<CoreSpaceCheeseData, CoreSpaceCheeseItem> {
-  MemberCheeseController(this.mid);
+    extends CommonListControllerRiverpod<CoreSpaceCheeseData, CoreSpaceCheeseItem> {
+  MemberCheeseController(this.mid) {
+    queryData();
+  }
 
   final int mid;
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   List<CoreSpaceCheeseItem>? getDataList(CoreSpaceCheeseData response) {
