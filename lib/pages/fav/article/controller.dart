@@ -4,20 +4,19 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavArticleController
-    extends CommonListController<CoreFavArticleData, CoreFavArticleItemModel> {
+    extends CommonListControllerRiverpod<CoreFavArticleData, CoreFavArticleItemModel> {
 
   Ref? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
+
+  FavArticleController() {
     queryData();
   }
 
@@ -42,9 +41,10 @@ class FavArticleController
   Future<void> onRemove(int index, String id) async {
     final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).communityAction(opusId: id, action: 4);
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      if (loadingState case Success(:final response)) {
+        response!.removeAt(index);
+      }
+      notifyListeners();
       SmartDialog.showToast('已取消收藏');
     } else {
       SmartDialog.showToast(res.toString());

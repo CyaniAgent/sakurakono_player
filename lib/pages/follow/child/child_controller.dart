@@ -6,7 +6,7 @@ import 'package:skf/core/repository/follow_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/follow_models.dart' show FollowOrderType;
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/follow/controller.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
@@ -16,8 +16,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 class FollowChildController
-    extends CommonListController<CoreFollowData, CoreFollowItemModel> {
-  FollowChildController(this._followState, this._notifier, this.mid, this.tagid);
+    extends CommonListControllerRiverpod<CoreFollowData, CoreFollowItemModel> {
+  FollowChildController(this._followState, this._notifier, this.mid, this.tagid) {
+    queryData();
+    if (loadSameFollow) {
+      _loadSameFollow();
+    }
+  }
   final FollowState? _followState;
   final FollowControllerNotifier? _notifier;
   final int? tagid;
@@ -41,14 +46,6 @@ class FollowChildController
     GStorage.setting.put(SettingBoxKey.followOrderType, type.index);
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-    if (loadSameFollow) {
-      _loadSameFollow();
-    }
-  }
 
   @override
   List<CoreFollowItemModel>? getDataList(CoreFollowData response) {

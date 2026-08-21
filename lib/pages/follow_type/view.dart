@@ -9,7 +9,6 @@ import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
-import 'package:get/get.dart';
 
 abstract class FollowTypePageState<T extends StatefulWidget> extends State<T> {
   FollowTypeController get controller;
@@ -29,8 +28,9 @@ abstract class FollowTypePageState<T extends StatefulWidget> extends State<T> {
           // controller: controller.scrollController,
           slivers: [
             ViewSliverSafeArea(
-              sliver: Obx(
-                () => _buildBody(theme, controller.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: controller,
+                builder: (_, _) => _buildBody(theme, controller.loadingState),
               ),
             ),
           ],

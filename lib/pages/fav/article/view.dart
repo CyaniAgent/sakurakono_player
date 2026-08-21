@@ -39,8 +39,9 @@ class _FavArticlePageState extends State<FavArticlePage>
               top: 7,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(
-              () => _buildBody(_favArticleController.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _favArticleController,
+              builder: (_, _) => _buildBody(_favArticleController.loadingState),
             ),
           ),
         ],

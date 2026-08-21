@@ -105,8 +105,9 @@ class _FollowChildPageState extends State<FollowChildPage>
               ),
             SliverPadding(
               padding: EdgeInsets.only(bottom: padding.bottom + 100),
-              sliver: Obx(
-                () => _buildBody(_followController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _followController,
+                builder: (_, _) => _buildBody(_followController.loadingState),
               ),
             ),
           ],
@@ -183,7 +184,7 @@ class _FollowChildPageState extends State<FollowChildPage>
                     onSelect: widget.onSelect,
                     afterMod: (attr) {
                       item.attribute = attr == 0 ? -1 : 0;
-                      _followController.loadingState.refresh();
+                      _followController.loadingState = _followController.loadingState;
                     },
                   );
                 },
