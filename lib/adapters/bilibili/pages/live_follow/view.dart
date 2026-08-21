@@ -44,7 +44,10 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
                 right: Style.safeSpace + padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+              sliver: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _buildBody(_controller.loadingState),
+              ),
             ),
           ],
         ),

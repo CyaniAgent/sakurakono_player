@@ -4,19 +4,25 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models_new/emote/package.dart'; // ignore: adapter import (no core equivalent for Package)
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 
-class EmotePanelController extends CommonListController<List<Package>?, Package>
-    with GetSingleTickerProviderStateMixin {
+class EmotePanelController extends CommonListControllerRiverpod<List<Package>?, Package>
+    implements TickerProvider {
+  Ticker? _ticker;
+  EmotePanelController() {
+    queryData();
+  }
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   TabController? tabController;
 
   @override
-  void onInit() {
-    super.onInit();
-    queryData();
+  Ticker createTicker(TickerCallback onTick) {
+    assert(_ticker == null, 'Only one Ticker per controller');
+    _ticker = Ticker(onTick);
+    return _ticker!;
   }
 
   @override
@@ -27,7 +33,7 @@ class EmotePanelController extends CommonListController<List<Package>?, Package>
         vsync: this,
       );
     }
-    loadingState.value = response;
+    loadingState = response;
     return true;
   }
 
@@ -43,8 +49,9 @@ class EmotePanelController extends CommonListController<List<Package>?, Package>
   }
 
   @override
-  void onClose() {
+  void dispose() {
+    _ticker?.dispose();
     tabController?.dispose();
-    super.onClose();
+    super.dispose();
   }
 }

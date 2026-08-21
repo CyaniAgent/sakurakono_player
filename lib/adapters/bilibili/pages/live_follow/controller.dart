@@ -5,18 +5,16 @@ import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 
 class LiveFollowController
-    extends CommonListController<CoreLiveFollowData, CoreLiveFollowItem> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
+    extends CommonListControllerRiverpod<CoreLiveFollowData, CoreLiveFollowItem> {
+  LiveFollowController() {
     queryData();
   }
+  Ref? _ref;
+  void attachRef(Ref ref) { _ref = ref; }
 
   final count = RxnInt();
 

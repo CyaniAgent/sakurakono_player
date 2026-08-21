@@ -36,8 +36,9 @@ class _EmotePanelState extends State<EmotePanel>
   Widget build(BuildContext context) {
     super.build(context);
     final ThemeData theme = Theme.of(context);
-    return Obx(
-      () => _buildBody(theme, _emotePanelController.loadingState.value),
+    return ListenableBuilder(
+      listenable: _emotePanelController,
+      builder: (_, __) => _buildBody(theme, _emotePanelController.loadingState),
     );
   }
 
