@@ -8,14 +8,14 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/dimension.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/utils/extension/dimension_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 
 class MemberVideoCtr
-    extends CommonListController<CoreSpaceArchiveData, CoreSpaceArchiveItem>
+    extends CommonListControllerRiverpod<CoreSpaceArchiveData, CoreSpaceArchiveItem>
     with ReloadMixin {
   MemberVideoCtr({
     required this.type,
@@ -24,7 +24,13 @@ class MemberVideoCtr
     required this.seriesId,
     this.username,
     this.title,
-  }) : isVideo = type == CoreContributeType.video;
+  }) : isVideo = type == CoreContributeType.video {
+    if (isVideo) {
+      fromViewAid = Get.parameters['from_view_aid'];
+    }
+    page = 0;
+    queryData();
+  }
 
   final CoreContributeType type;
   final bool isVideo;
@@ -66,15 +72,6 @@ class MemberVideoCtr
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    if (isVideo) {
-      fromViewAid = Get.parameters['from_view_aid'];
-    }
-    page = 0;
-    queryData();
-  }
 
   @override
   bool customHandleResponse(
@@ -95,7 +92,7 @@ class MemberVideoCtr
     }
     count = type == CoreContributeType.season ? data.item?.length : data.count;
     if (page != 0) {
-      if (loadingState.value case Success(:final response)) {
+      if (loadingState case Success(:final response)) {
         data.item ??= <CoreSpaceArchiveItem>[];
         if (isLoadPrevious) {
           data.item!.addAll(response!);
@@ -107,7 +104,7 @@ class MemberVideoCtr
     firstAid = data.item?.firstOrNull?.param;
     lastAid = data.item?.lastOrNull?.param;
     isLoadPrevious = false;
-    loadingState.value = Success(data.item);
+    loadingState = Success(data.item);
     return true;
   }
 
@@ -192,7 +189,7 @@ class MemberVideoCtr
       return;
     }
 
-    if (loadingState.value case Success(:final response)) {
+    if (loadingState case Success(:final response)) {
       if (response == null || response.isEmpty) return;
 
       for (CoreSpaceArchiveItem element in response) {

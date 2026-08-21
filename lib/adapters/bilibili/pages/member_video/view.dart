@@ -92,10 +92,10 @@ class _MemberVideoState extends State<MemberVideo>
     final padding = MediaQuery.viewPaddingOf(context);
     final child = refreshIndicator(
       onRefresh: () async {
-        final count = _controller.loadingState.value.dataOrNull?.length;
+        final count = _controller.loadingState.dataOrNull?.length;
         await _controller.onRefresh();
         if (_controller.isLocating.value && mounted) {
-          final newCount = _controller.loadingState.value.dataOrNull?.length;
+          final newCount = _controller.loadingState.dataOrNull?.length;
           if (count != null && newCount != null && newCount > count) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
               _jumpToIndex(newCount - count);
@@ -108,8 +108,9 @@ class _MemberVideoState extends State<MemberVideo>
         slivers: [
           SliverPadding(
             padding: EdgeInsets.only(bottom: padding.bottom + 100),
-            sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],
@@ -147,7 +148,7 @@ class _MemberVideoState extends State<MemberVideo>
                             final fromViewAid = _controller.fromViewAid;
                             _controller.isLocating.value = true;
                             final locatedIndex =
-                                _controller.loadingState.value.dataOrNull
+                                _controller.loadingState.dataOrNull
                                     ?.indexWhere(
                                       (i) => i.param == fromViewAid,
                                     ) ??
@@ -157,7 +158,7 @@ class _MemberVideoState extends State<MemberVideo>
                                 ..lastAid = fromViewAid
                                 ..reload = true
                                 ..page = 0
-                                ..loadingState.value = LoadingState.loading()
+                                ..loadingState = LoadingState.loading()
                                 ..queryData();
                             } else {
                               _jumpToIndex(locatedIndex);

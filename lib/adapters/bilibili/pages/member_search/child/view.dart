@@ -9,7 +9,6 @@ import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
 
@@ -46,11 +45,15 @@ class _MemberSearchChildPageState extends State<MemberSearchChildPage>
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
             sliver: switch (widget.searchType) {
-              MemberSearchType.archive => Obx(
-                () => _buildBody(_controller.loadingState.value),
+              MemberSearchType.archive => ListenableBuilder(
+                listenable: _controller,
+                builder: (_, _) => _buildBody(_controller.loadingState),
               ),
               MemberSearchType.dynamic => buildPage(
-                Obx(() => _buildBody(_controller.loadingState.value)),
+                ListenableBuilder(
+                  listenable: _controller,
+                  builder: (_, _) => _buildBody(_controller.loadingState),
+                ),
               ),
             },
           ),

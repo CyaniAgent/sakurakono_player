@@ -64,7 +64,7 @@ class _MemberGuardState extends State<MemberGuard> {
         child: CustomScrollView(
           slivers: [
             ViewSliverSafeArea(
-              sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+              sliver: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState)),
             ),
           ],
         ),
