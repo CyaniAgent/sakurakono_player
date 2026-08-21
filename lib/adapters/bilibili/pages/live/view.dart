@@ -67,7 +67,7 @@ class _LivePageState extends State<LivePage>
               sliver: SliverMainAxisGroup(
                 slivers: [
                   Obx(() => _buildTop(theme, controller.topState.value)),
-                  Obx(() => _buildBody(theme, controller.loadingState.value)),
+                  ListenableBuilder(listenable: controller, builder: (_, __) => _buildBody(theme, controller.loadingState)),
                 ],
               ),
             ),

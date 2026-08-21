@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/controller.dart';
 
 class LiveSearchChildController
-    extends CommonListController<CoreLiveSearchData, dynamic> {
+    extends CommonListControllerRiverpod<CoreLiveSearchData, dynamic> {
   LiveSearchChildController(this.notifier, this.searchType);
 
   final LiveSearchNotifier notifier;

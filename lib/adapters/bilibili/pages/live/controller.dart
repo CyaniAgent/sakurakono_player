@@ -6,20 +6,15 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/pages/common/common_list_controller.dart';
-import 'package:skf/core/account/account_mixin.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
 import 'package:get/get.dart';
 
-class LiveController extends CommonListController with AccountMixin {
+class LiveController extends CommonListControllerRiverpod {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
+  LiveController() { queryData(); }
 
   int? count;
 
@@ -162,12 +157,11 @@ class LiveController extends CommonListController with AccountMixin {
     queryData();
   }
 
-  @override
   void onChangeAccount(bool isLogin) => onReload();
 
   @override
-  void onClose() {
+  void dispose() {
     followController.dispose();
-    super.onClose();
+    super.dispose();
   }
 }

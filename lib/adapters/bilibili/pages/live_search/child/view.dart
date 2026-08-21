@@ -12,7 +12,6 @@ import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 
 class LiveSearchChildPage extends ConsumerStatefulWidget {
   const LiveSearchChildPage({
@@ -49,7 +48,7 @@ class _LiveSearchChildPageState extends ConsumerState<LiveSearchChildPage>
               right: padding,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+            sliver: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
           ),
         ],
       ),

@@ -5,23 +5,26 @@ import 'package:skf/core/repository/live_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/live_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:get/get.dart';
 
 class LiveEmotePanelController
-    extends CommonListController<List<CoreLiveEmoteDatum>?, CoreLiveEmoteDatum>
-    with GetSingleTickerProviderStateMixin {
+    extends CommonListControllerRiverpod<List<CoreLiveEmoteDatum>?, CoreLiveEmoteDatum>
+    implements TickerProvider {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  LiveEmotePanelController(this.roomId);
+  LiveEmotePanelController(this.roomId) {
+    queryData();
+  }
   final int roomId;
   TabController? tabController;
 
   @override
-  void onInit() {
-    super.onInit();
-    queryData();
+  Ticker createTicker(TickerCallback onTick) {
+    final ticker = Ticker(onTick);
+    return ticker;
   }
 
   @override
@@ -35,7 +38,7 @@ class LiveEmotePanelController
         vsync: this,
       );
     }
-    loadingState.value = response;
+    loadingState = response;
     return true;
   }
 
@@ -50,8 +53,8 @@ class LiveEmotePanelController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     tabController?.dispose();
-    super.onClose();
+    super.dispose();
   }
 }
