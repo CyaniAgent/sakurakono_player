@@ -142,7 +142,7 @@ Map<String, dynamic> _$ManageBlogItemToJson(ManageBlogItem instance) =>
       'collection': ?instance.collection,
       'collection_sort_order': ?instance.collectionSortOrder,
       'channel_id': ?instance.channelId,
-      'channel_detail': ?instance.channelDetail,
+      'channel_detail': ?instance.channelDetail?.toJson(),
     };
 
 ManageVideoItem _$ManageVideoItemFromJson(Map<String, dynamic> json) =>
@@ -182,7 +182,7 @@ Map<String, dynamic> _$ManageVideoItemToJson(ManageVideoItem instance) =>
       'collection': ?instance.collection,
       'collection_sort_order': ?instance.collectionSortOrder,
       'channel_id': ?instance.channelId,
-      'channel_detail': ?instance.channelDetail,
+      'channel_detail': ?instance.channelDetail?.toJson(),
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(

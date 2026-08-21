@@ -48,5 +48,5 @@ CollectionDetail _$CollectionDetailFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$CollectionDetailToJson(CollectionDetail instance) =>
     <String, dynamic>{
       'collection': instance.collection,
-      'video_list': instance.videoList,
+      'video_list': instance.videoList.map((e) => e.toJson()).toList(),
     };

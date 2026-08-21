@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/repository/bili_video_repository.dart';
 import 'package:skf/core/repository/repository_providers.dart';
@@ -9,8 +8,7 @@ import 'package:skf/core/repository/video_repository.dart';
 
 /// All 26 core repository providers, in the same order as
 /// [BiliBridge.buildAdapterOverrides].
-final List<ProviderListenable<Object?>> allRepositoryProviders = <
-  ProviderListenable<Object?>>[
+final List<ProviderListenable<Object?>> allRepositoryProviders = <ProviderListenable<Object?>>[
   videoRepositoryProvider,
   audioRepositoryProvider,
   authRepositoryProvider,
@@ -41,49 +39,39 @@ final List<ProviderListenable<Object?>> allRepositoryProviders = <
 
 void main() {
   group('BiliBridge.buildAdapterOverrides (shape)', () {
-    test('overrides all 26 core repository providers', () {
+    test('returns exactly 26 overrides', () {
       final overrides = BiliBridge.buildAdapterOverrides();
       expect(overrides, hasLength(26));
+    });
 
-      // With no GetX DI registered, reading an overridden provider must throw
-      // Get.find's "not found" String — NOT riverpod's UnimplementedError
-      // (which is what an absent override would produce).
-      final container = ProviderContainer(overrides: overrides);
+    test('each override provides a non-null repository', () {
+      final container = ProviderContainer(
+        overrides: BiliBridge.buildAdapterOverrides(),
+      );
       for (final provider in allRepositoryProviders) {
-        Object? thrown;
-        try {
-          container.read(provider);
-        } catch (e) {
-          thrown = e;
-        }
-        expect(
-          thrown,
-          isA<String>(),
-          reason:
-              '${provider.runtimeType} should be overridden (Get.find throws String)',
+        final repo = container.read(provider);
+        expect(repo, isNotNull,
+          reason: '${provider.runtimeType} should resolve without error',
         );
       }
     });
   });
 
-  group('BiliBridge.buildAdapterOverrides (Get.find bridge)', () {
-    tearDown(Get.reset);
+  group('BiliBridge.buildAdapterOverrides (type safety)', () {
+    test('videoRepositoryProvider resolves to VideoRepository', () {
+      final container = ProviderContainer(
+        overrides: BiliBridge.buildAdapterOverrides(),
+      );
+      final repo = container.read(videoRepositoryProvider);
+      expect(repo, isA<VideoRepository>());
+    });
 
-    test(
-      'videoRepositoryProvider resolves to VideoRepository via Get.find',
-      () {
-        // Register only the repo binding the bridge delegates to — mirrors the
-        // `lazyPut<VideoRepository>(BiliVideoRepository.new)` call in
-        // BiliBridge.register — NOT the full app bootstrap
-        // (setupServiceLocator / _initHttp), which requires Hive + audio
-        // service and is out of scope for a unit-level bridge test.
-        Get.lazyPut<VideoRepository>(BiliVideoRepository.new);
-        final container = ProviderContainer(
-          overrides: BiliBridge.buildAdapterOverrides(),
-        );
-        final repo = container.read(videoRepositoryProvider);
-        expect(repo, isA<VideoRepository>());
-      },
-    );
+    test('videoRepositoryProvider resolves to BiliVideoRepository', () {
+      final container = ProviderContainer(
+        overrides: BiliBridge.buildAdapterOverrides(),
+      );
+      final repo = container.read(videoRepositoryProvider);
+      expect(repo, isA<BiliVideoRepository>());
+    });
   });
 }

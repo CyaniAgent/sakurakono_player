@@ -19,7 +19,7 @@ BlockListData _$BlockListDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$BlockListDataToJson(BlockListData instance) =>
     <String, dynamic>{
-      'list': instance.list,
+      'list': instance.list.map((e) => e.toJson()).toList(),
       'total': instance.total,
       'page': instance.page,
       'page_size': instance.pageSize,

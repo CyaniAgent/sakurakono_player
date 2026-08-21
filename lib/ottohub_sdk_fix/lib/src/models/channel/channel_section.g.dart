@@ -50,7 +50,7 @@ Map<String, dynamic> _$ChannelSectionToJson(ChannelSection instance) =>
       'created_at': instance.createdAt,
       'updated_at': ?instance.updatedAt,
       'is_deleted': ?instance.isDeleted,
-      'content_count': ?instance.contentCount,
+      'content_count': ?instance.contentCount?.toJson(),
     };
 
 SectionCountStats _$SectionCountStatsFromJson(Map<String, dynamic> json) =>
@@ -83,7 +83,7 @@ Map<String, dynamic> _$SectionStatsToJson(SectionStats instance) =>
       'channel_section_id': instance.channelSectionId,
       'channel_id': instance.channelId,
       'section_name': instance.sectionName,
-      'video': instance.video,
-      'blog': instance.blog,
-      'total': instance.total,
+      'video': instance.video.toJson(),
+      'blog': instance.blog.toJson(),
+      'total': instance.total.toJson(),
     };

@@ -1,21 +1,18 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'blacklist_item.freezed.dart';
+part 'blacklist_item.g.dart';
+
 /// Core blacklist item model — adapter-independent.
-class CoreBlackListItem {
-  int? mid;
-  int? mtime;
-  String? uname;
-  String? face;
+@freezed
+abstract class CoreBlackListItem with _$CoreBlackListItem {
+  const factory CoreBlackListItem({
+    int? mid,
+    int? mtime,
+    String? uname,
+    String? face,
+  }) = _CoreBlackListItem;
 
-  CoreBlackListItem({
-    this.mid,
-    this.mtime,
-    this.uname,
-    this.face,
-  });
-
-  factory CoreBlackListItem.fromJson(Map<String, dynamic> json) => CoreBlackListItem(
-    mid: json['mid'] as int?,
-    mtime: json['mtime'] as int?,
-    uname: json['uname'] as String?,
-    face: json['face'] as String?,
-  );
+  factory CoreBlackListItem.fromJson(Map<String, dynamic> json) =>
+      _$CoreBlackListItemFromJson(json);
 }

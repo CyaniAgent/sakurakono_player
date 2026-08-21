@@ -13,4 +13,6 @@ UserListData _$UserListDataFromJson(Map<String, dynamic> json) => UserListData(
 );
 
 Map<String, dynamic> _$UserListDataToJson(UserListData instance) =>
-    <String, dynamic>{'user_list': instance.userList};
+    <String, dynamic>{
+      'user_list': instance.userList.map((e) => e.toJson()).toList(),
+    };

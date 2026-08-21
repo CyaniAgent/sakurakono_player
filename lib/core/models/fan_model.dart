@@ -1,16 +1,16 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'fan_model.freezed.dart';
+
 /// Core active follower model — adapter-independent.
 ///
 /// Represents a single follower sorted by latest activity time.
-class CoreActiveFollower {
-  final int uid;
-  final String username;
-  final String avatarUrl;
-  final String latestActivityTime;
-
-  CoreActiveFollower({
-    required this.uid,
-    required this.username,
-    required this.avatarUrl,
-    required this.latestActivityTime,
-  });
+  @freezed
+abstract class CoreActiveFollower with _$CoreActiveFollower {
+  const factory CoreActiveFollower({
+    required int uid,
+    required String username,
+    required String avatarUrl,
+    required String latestActivityTime,
+  }) = _CoreActiveFollower;
 }

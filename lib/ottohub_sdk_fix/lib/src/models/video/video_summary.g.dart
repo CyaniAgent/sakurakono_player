@@ -55,5 +55,5 @@ Map<String, dynamic> _$VideoSummaryToJson(
     instance.collectionSortOrder,
   ),
   'channel_id': const StringToNullableIntConverter().toJson(instance.channelId),
-  'channel_detail': instance.channelDetail,
+  'channel_detail': instance.channelDetail?.toJson(),
 };

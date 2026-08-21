@@ -74,7 +74,7 @@ Map<String, dynamic> _$ModerationLogToJson(ModerationLog instance) =>
       'is_unread': instance.isUnread,
       'created_at': instance.createdAt,
       'view_role': ?instance.viewRole,
-      'target_detail': ?instance.targetDetail,
+      'target_detail': ?instance.targetDetail?.toJson(),
     };
 
 ModerationLogListData _$ModerationLogListDataFromJson(
@@ -98,5 +98,5 @@ Map<String, dynamic> _$ModerationLogListDataToJson(
   'is_audit': instance.isAudit,
   'offset': instance.offset,
   'num': instance.num,
-  'logs': instance.logs,
+  'logs': instance.logs.map((e) => e.toJson()).toList(),
 };

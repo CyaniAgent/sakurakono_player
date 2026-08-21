@@ -6,7 +6,11 @@
 /// Bilibili-specific UI and platform code.
 library;
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:skf/core/models/ui/multi_select_data.dart';
+
+part 'download_types.freezed.dart';
+part 'download_types.g.dart';
 
 // ---------------------------------------------------------------------------
 // CoreDownloadEntryInfo
@@ -246,24 +250,15 @@ class CorePageInfo {
 // CoreSourceInfo
 // ---------------------------------------------------------------------------
 
-class CoreSourceInfo {
-  final int avId;
-  final int cid;
+@freezed
+abstract class CoreSourceInfo with _$CoreSourceInfo {
+  const factory CoreSourceInfo({
+    required int avId,
+    required int cid,
+  }) = _CoreSourceInfo;
 
-  CoreSourceInfo({
-    required this.avId,
-    required this.cid,
-  });
-
-  factory CoreSourceInfo.fromJson(Map<String, dynamic> json) => CoreSourceInfo(
-    avId: json['av_id'] as int,
-    cid: json['cid'] as int,
-  );
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-    'av_id': avId,
-    'cid': cid,
-  };
+  factory CoreSourceInfo.fromJson(Map<String, dynamic> json) =>
+      _$CoreSourceInfoFromJson(json);
 }
 
 // ---------------------------------------------------------------------------
@@ -491,65 +486,31 @@ class CoreType1 extends CoreDownloadMediaInfo {
   };
 }
 
-class CoreType1PlayerCodecConfig {
-  final String player;
-  final bool useIjkMediaCodec;
-
-  CoreType1PlayerCodecConfig({
-    required this.player,
-    required this.useIjkMediaCodec,
-  });
+@freezed
+abstract class CoreType1PlayerCodecConfig with _$CoreType1PlayerCodecConfig {
+  const factory CoreType1PlayerCodecConfig({
+    required String player,
+    required bool useIjkMediaCodec,
+  }) = _CoreType1PlayerCodecConfig;
 
   factory CoreType1PlayerCodecConfig.fromJson(Map<String, dynamic> json) =>
-      CoreType1PlayerCodecConfig(
-        player: json['player'] as String,
-        useIjkMediaCodec: json['use_ijk_media_codec'] as bool,
-      );
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-    'player': player,
-    'use_ijk_media_codec': useIjkMediaCodec,
-  };
+      _$CoreType1PlayerCodecConfigFromJson(json);
 }
 
-class CoreType1Segment {
-  final List<String> backupUrls;
-  final int bytes;
-  final int duration;
-  final String md5;
-  final String metaUrl;
-  final int order;
-  final String url;
+@freezed
+abstract class CoreType1Segment with _$CoreType1Segment {
+  const factory CoreType1Segment({
+    required List<String> backupUrls,
+    required int bytes,
+    @Default(0) int duration,
+    required String md5,
+    required String metaUrl,
+    required int order,
+    required String url,
+  }) = _CoreType1Segment;
 
-  CoreType1Segment({
-    required this.backupUrls,
-    required this.bytes,
-    this.duration = 0,
-    required this.md5,
-    required this.metaUrl,
-    required this.order,
-    required this.url,
-  });
-
-  factory CoreType1Segment.fromJson(Map<String, dynamic> json) => CoreType1Segment(
-    backupUrls: List<String>.from(json['backup_urls']),
-    bytes: json['bytes'] as int,
-    duration: json['duration'] as int,
-    md5: json['md5'] as String,
-    metaUrl: json['meta_url'] as String,
-    order: json['order'] as int,
-    url: json['url'] as String,
-  );
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-    'backup_urls': backupUrls,
-    'bytes': bytes,
-    'duration': duration,
-    'md5': md5,
-    'meta_url': metaUrl,
-    'order': order,
-    'url': url,
-  };
+  factory CoreType1Segment.fromJson(Map<String, dynamic> json) =>
+      _$CoreType1SegmentFromJson(json);
 }
 
 class CoreType2 extends CoreDownloadMediaInfo {

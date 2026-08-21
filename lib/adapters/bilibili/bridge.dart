@@ -1,20 +1,15 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skf/adapters/bilibili/services/bili_account_provider.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule_adapter.dart';
 import 'package:skf/adapters/bilibili/models/user/info.dart';
-import 'package:skf/adapters/bilibili/services/account_service.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account_type_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/cookie_jar_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/adapters/riverpod_adapter_overrides.dart';
-import 'package:skf/core/account/account_provider.dart';
-import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
@@ -22,20 +17,13 @@ import 'package:skf/pages/blacklist/view.dart';
 import 'package:skf/adapters/bilibili/pages/bubble/view.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/dlna/view.dart';
-import 'package:skf/adapters/bilibili/common/download_actions.dart';
-import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/download/view.dart';
 import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_vote/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_detail/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic_rcmd/view.dart';
-import 'package:skf/adapters/bilibili/common/dynamics_host.dart';
-import 'package:skf/adapters/bilibili/common/mine_actions.dart';
-import 'package:skf/adapters/bilibili/common/setting_host.dart';
-import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/pages/fan/view.dart';
-import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/fav/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_create/view.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/view.dart';
@@ -47,7 +35,6 @@ import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/pages/history/view.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
 import 'package:skf/pages/home/view.dart';
-import 'package:skf/pages/home/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/utils/fav_actions.dart';
 import 'package:skf/adapters/bilibili/utils/history_actions.dart';
@@ -59,8 +46,6 @@ import 'package:skf/adapters/bilibili/pages/live_room/view.dart';
 import 'package:skf/adapters/bilibili/pages/login/view.dart';
 import 'package:skf/adapters/bilibili/pages/main_reply/view.dart';
 import 'package:skf/adapters/bilibili/pages/match_info/view.dart';
-import 'package:skf/adapters/bilibili/common/member_host.dart';
-import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_dynamics/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_guard/view.dart';
@@ -76,9 +61,6 @@ import 'package:skf/pages/msg_feed_top/reply_me/view.dart';
 import 'package:skf/adapters/bilibili/pages/msg_feed_top/sys_msg/view.dart';
 import 'package:skf/adapters/bilibili/pages/music/view.dart';
 import 'package:skf/adapters/bilibili/pages/my_reply/view.dart';
-import 'package:skf/adapters/bilibili/common/main_host.dart';
-import 'package:skf/pages/main/main_host.dart';
-import 'package:skf/pages/main/controller.dart';
 import 'package:skf/adapters/bilibili/pages/popular_precious/view.dart';
 import 'package:skf/adapters/bilibili/pages/popular_series/view.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/builder.dart';
@@ -91,15 +73,12 @@ import 'package:skf/pages/setting/pages/display_mode.dart';
 import 'package:skf/pages/setting/pages/font_size_select.dart';
 import 'package:skf/adapters/bilibili/pages/setting_parts/pages/logs.dart';
 import 'package:skf/pages/setting/pages/play_speed_set.dart';
-import 'package:skf/pages/setting/setting_host.dart';
 import 'package:skf/pages/setting/view.dart';
 import 'package:skf/adapters/bilibili/pages/settings_search/view.dart';
 import 'package:skf/adapters/bilibili/pages/space_setting/view.dart';
 import 'package:skf/adapters/bilibili/pages/sponsor_block/view.dart';
 import 'package:skf/adapters/bilibili/pages/subscription/view.dart';
 import 'package:skf/adapters/bilibili/pages/subscription_detail/view.dart';
-import 'package:skf/adapters/bilibili/common/video_host.dart';
-import 'package:skf/pages/video/video_host.dart';
 import 'package:skf/pages/video/view.dart';
 import 'package:skf/adapters/bilibili/pages/webview/view.dart';
 import 'package:skf/adapters/bilibili/pages/whisper/view.dart';
@@ -131,35 +110,8 @@ import 'package:skf/adapters/bilibili/repository/bili_sponsor_block_repository.d
 import 'package:skf/adapters/bilibili/repository/bili_user_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_validate_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_video_repository.dart';
-import 'package:skf/core/repository/app_repository.dart';
-import 'package:skf/core/repository/audio_repository.dart';
-import 'package:skf/core/repository/auth_repository.dart';
-import 'package:skf/core/repository/black_repository.dart';
-import 'package:skf/core/repository/danmaku_filter_repository.dart';
-import 'package:skf/core/repository/danmaku_repository.dart';
-import 'package:skf/core/repository/download_repository.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
-import 'package:skf/core/repository/fan_repository.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/follow_repository.dart';
-import 'package:skf/core/repository/im_repository.dart';
-import 'package:skf/core/repository/live_repository.dart';
-import 'package:skf/core/repository/match_repository.dart';
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/msg_repository.dart';
-import 'package:skf/core/repository/music_repository.dart';
-import 'package:skf/core/repository/pgc_repository.dart';
-import 'package:skf/core/repository/progress_repository.dart';
-import 'package:skf/core/repository/reply_repository.dart';
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:skf/core/repository/space_repository.dart';
-import 'package:skf/core/repository/sponsor_block_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/core/repository/validate_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
-import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 
 class BiliBridge {
@@ -185,57 +137,7 @@ class BiliBridge {
     _initialized = true;
 
     initHive();
-    Get
-      ..lazyPut<AccountProvider>(BiliAccountProvider.new)
-      ..lazyPut(AccountService.new)
-      ..lazyPut(DownloadService.new)
-      // Repositories
-      ..lazyPut<VideoRepository>(BiliVideoRepository.new)
-      ..lazyPut<UserRepository>(BiliUserRepository.new)
-      ..lazyPut<AuthRepository>(BiliAuthRepository.new)
-      ..lazyPut<BiliSearchRepository>(BiliSearchRepository.new)
-      ..lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>())
-      ..lazyPut<ReplyRepository>(BiliReplyRepository.new)
-      ..lazyPut<FavRepository>(BiliFavRepository.new)
-      ..lazyPut<DynamicsRepository>(BiliDynamicsRepository.new)
-      ..lazyPut<MemberRepository>(BiliMemberRepository.new)
-      ..lazyPut<LiveRepository>(BiliLiveRepository.new)
-      ..lazyPut<MsgRepository>(BiliMsgRepository.new)
-      ..lazyPut<ImRepository>(BiliImRepository.new)
-      ..lazyPut<DanmakuRepository>(BiliDanmakuRepository.new)
-      ..lazyPut<MusicRepository>(BiliMusicRepository.new)
-      ..lazyPut<DanmakuFilterRepository>(BiliDanmakuFilterRepository.new)
-      ..lazyPut<FollowRepository>(BiliFollowRepository.new)
-      ..lazyPut<AudioRepository>(BiliAudioRepository.new)
-      ..lazyPut<FanRepository>(BiliFanRepository.new)
-      ..lazyPut<BlackRepository>(BiliBlackRepository.new)
-      ..lazyPut<MatchRepository>(BiliMatchRepository.new)
-      ..lazyPut<SpaceRepository>(BiliSpaceRepository.new)
-      ..lazyPut<DownloadRepository>(BiliDownloadRepository.new)
-      ..lazyPut<PgcRepository>(BiliPgcRepository.new)
-      ..lazyPut<SponsorBlockRepository>(BiliSponsorBlockRepository.new)
-      ..lazyPut<ValidateRepository>(BiliValidateRepository.new)
-      ..lazyPut<ProgressRepository>(BiliProgressRepository.new)
-      ..lazyPut<AppRepository>(BiliAppRepository.new)
-      // Generic page bar-state bridges: interface -> Riverpod notifiers
-      ..lazyPut<MainControllerNotifier>(MainControllerNotifier.new)
-      ..lazyPut<HomeBarState>(() => Get.find<HomeControllerNotifier>())
-      ..lazyPut<HomeControllerNotifier>(HomeControllerNotifier.new)
-      ..lazyPut<MainBarState>(() => Get.find<MainControllerNotifier>())
-      // Main shell host (tabs, home subtabs, dyn badge, scheme, update)
-      ..lazyPut<MainHost>(BiliMainHost.new)
-      // Dynamics page host (tab pages, deep dialogs, URL routing)
-      ..lazyPut<DynamicsHost>(BiliDynamicsHost.new)
-      // Mine page host (menu items, account ops, header actions)
-      ..lazyPut<MineActions>(BiliMineActions.new)
-      // Member page host (sub-page tabs, deep dialogs, URL routing)
-      ..lazyPut<MemberHost>(BiliMemberHost.new)
-      // Download page host (download service + local playback navigation)
-      ..lazyPut<DownloadActions>(BiliDownloadActions.new)
-      // Video page host (player extras, danmaku, reply, intro panels, sheets)
-      ..lazyPut<VideoHost>(BiliVideoHost.new)
-      // Setting page host (menu items, account ops, play-input dispatch)
-      ..lazyPut<SettingHost>(BiliSettingHost.new);
+    initHive();
     setupServiceLocator();
     _initHttp();
     adapterOverrides = buildAdapterOverrides();
@@ -247,37 +149,37 @@ class BiliBridge {
     RequestUtils.syncHistoryStatus();
   }
 
-  /// 构建 26 个核心 repository provider 的 Riverpod overrides。
-  /// 使用 overrideWith（延迟闭包）——Get.find 在首次读取时才执行，
-  /// 确保 activate() 与 GetX DI 完成后才解析。
+  /// Build Riverpod provider overrides for all 26 core repositories.
+  /// Each override directly constructs the Bilibili implementation —
+  /// no GetX intermediary needed.
   static List<Override> buildAdapterOverrides() {
     return <Override>[
-      videoRepositoryProvider.overrideWith((ref) => Get.find<VideoRepository>()),
-      audioRepositoryProvider.overrideWith((ref) => Get.find<AudioRepository>()),
-      authRepositoryProvider.overrideWith((ref) => Get.find<AuthRepository>()),
-      userRepositoryProvider.overrideWith((ref) => Get.find<UserRepository>()),
-      memberRepositoryProvider.overrideWith((ref) => Get.find<MemberRepository>()),
-      dynamicsRepositoryProvider.overrideWith((ref) => Get.find<DynamicsRepository>()),
-      followRepositoryProvider.overrideWith((ref) => Get.find<FollowRepository>()),
-      fanRepositoryProvider.overrideWith((ref) => Get.find<FanRepository>()),
-      favRepositoryProvider.overrideWith((ref) => Get.find<FavRepository>()),
-      danmakuRepositoryProvider.overrideWith((ref) => Get.find<DanmakuRepository>()),
-      replyRepositoryProvider.overrideWith((ref) => Get.find<ReplyRepository>()),
-      searchRepositoryProvider.overrideWith((ref) => Get.find<SearchRepository>()),
-      imRepositoryProvider.overrideWith((ref) => Get.find<ImRepository>()),
-      pgcRepositoryProvider.overrideWith((ref) => Get.find<PgcRepository>()),
-      progressRepositoryProvider.overrideWith((ref) => Get.find<ProgressRepository>()),
-      sponsorBlockRepositoryProvider.overrideWith((ref) => Get.find<SponsorBlockRepository>()),
-      validateRepositoryProvider.overrideWith((ref) => Get.find<ValidateRepository>()),
-      liveRepositoryProvider.overrideWith((ref) => Get.find<LiveRepository>()),
-      matchRepositoryProvider.overrideWith((ref) => Get.find<MatchRepository>()),
-      musicRepositoryProvider.overrideWith((ref) => Get.find<MusicRepository>()),
-      downloadRepositoryProvider.overrideWith((ref) => Get.find<DownloadRepository>()),
-      spaceRepositoryProvider.overrideWith((ref) => Get.find<SpaceRepository>()),
-      appRepositoryProvider.overrideWith((ref) => Get.find<AppRepository>()),
-      danmakuFilterRepositoryProvider.overrideWith((ref) => Get.find<DanmakuFilterRepository>()),
-      msgRepositoryProvider.overrideWith((ref) => Get.find<MsgRepository>()),
-      blackRepositoryProvider.overrideWith((ref) => Get.find<BlackRepository>()),
+      videoRepositoryProvider.overrideWith((ref) => BiliVideoRepository()),
+      audioRepositoryProvider.overrideWith((ref) => BiliAudioRepository()),
+      authRepositoryProvider.overrideWith((ref) => BiliAuthRepository()),
+      userRepositoryProvider.overrideWith((ref) => BiliUserRepository()),
+      memberRepositoryProvider.overrideWith((ref) => BiliMemberRepository()),
+      dynamicsRepositoryProvider.overrideWith((ref) => BiliDynamicsRepository()),
+      followRepositoryProvider.overrideWith((ref) => BiliFollowRepository()),
+      fanRepositoryProvider.overrideWith((ref) => BiliFanRepository()),
+      favRepositoryProvider.overrideWith((ref) => BiliFavRepository()),
+      danmakuRepositoryProvider.overrideWith((ref) => BiliDanmakuRepository()),
+      replyRepositoryProvider.overrideWith((ref) => BiliReplyRepository()),
+      searchRepositoryProvider.overrideWith((ref) => BiliSearchRepository()),
+      imRepositoryProvider.overrideWith((ref) => BiliImRepository()),
+      pgcRepositoryProvider.overrideWith((ref) => BiliPgcRepository()),
+      progressRepositoryProvider.overrideWith((ref) => BiliProgressRepository()),
+      sponsorBlockRepositoryProvider.overrideWith((ref) => BiliSponsorBlockRepository()),
+      validateRepositoryProvider.overrideWith((ref) => BiliValidateRepository()),
+      liveRepositoryProvider.overrideWith((ref) => BiliLiveRepository()),
+      matchRepositoryProvider.overrideWith((ref) => BiliMatchRepository()),
+      musicRepositoryProvider.overrideWith((ref) => BiliMusicRepository()),
+      downloadRepositoryProvider.overrideWith((ref) => BiliDownloadRepository()),
+      spaceRepositoryProvider.overrideWith((ref) => BiliSpaceRepository()),
+      appRepositoryProvider.overrideWith((ref) => BiliAppRepository()),
+      danmakuFilterRepositoryProvider.overrideWith((ref) => BiliDanmakuFilterRepository()),
+      msgRepositoryProvider.overrideWith((ref) => BiliMsgRepository()),
+      blackRepositoryProvider.overrideWith((ref) => BiliBlackRepository()),
     ];
   }
 

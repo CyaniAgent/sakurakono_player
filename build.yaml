@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          unions: sealed
+          equal: true
+          toStringOverride: true
+      json_serializable:
+        options:
+          explicit_to_json: true

@@ -24,7 +24,7 @@ VideoListData _$VideoListDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$VideoListDataToJson(VideoListData instance) =>
     <String, dynamic>{
-      'video_list': instance.videoList,
+      'video_list': instance.videoList.map((e) => e.toJson()).toList(),
       'total_count': const StringToNullableIntConverter().toJson(
         instance.totalCount,
       ),

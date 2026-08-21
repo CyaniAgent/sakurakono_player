@@ -77,7 +77,7 @@ Map<String, dynamic> _$BlogDetailToJson(BlogDetail instance) =>
       'if_favorite': ?instance.ifFavorite,
       'thumbnails': ?instance.thumbnails,
       'channel_id': ?instance.channelId,
-      'channel_detail': ?instance.channelDetail,
+      'channel_detail': ?instance.channelDetail?.toJson(),
     };
 
 BlogAuditItem _$BlogAuditItemFromJson(Map<String, dynamic> json) =>

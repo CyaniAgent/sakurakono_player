@@ -14,4 +14,6 @@ TimelineListData _$TimelineListDataFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$TimelineListDataToJson(TimelineListData instance) =>
-    <String, dynamic>{'timeline_list': instance.timelineList};
+    <String, dynamic>{
+      'timeline_list': instance.timelineList.map((e) => e.toJson()).toList(),
+    };

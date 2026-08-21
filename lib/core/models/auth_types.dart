@@ -4,43 +4,40 @@
 /// data, used by [AuthRepository] and its implementations.
 library;
 
-/// Data about a logged-in device.
-class CoreLoginDevicesData {
-  List<CoreLoginDevice>? devices;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CoreLoginDevicesData({this.devices});
+part 'auth_types.freezed.dart';
+
+/// Data about a logged-in device.
+@freezed
+abstract class CoreLoginDevicesData with _$CoreLoginDevicesData {
+  const factory CoreLoginDevicesData({
+    List<CoreLoginDevice>? devices,
+  }) = _CoreLoginDevicesData;
 }
 
 /// A single login device entry.
-class CoreLoginDevice {
-  String? deviceName;
-  bool? isCurrentDevice;
-  String? latestLoginAt;
-  String? source;
-
-  CoreLoginDevice({
-    this.deviceName,
-    this.isCurrentDevice,
-    this.latestLoginAt,
-    this.source,
-  });
+@freezed
+abstract class CoreLoginDevice with _$CoreLoginDevice {
+  const factory CoreLoginDevice({
+    String? deviceName,
+    bool? isCurrentDevice,
+    String? latestLoginAt,
+    String? source,
+  }) = _CoreLoginDevice;
 }
 
 /// Core representation of an account.
 ///
 /// Adapter implementations map to/from the adapter's sealed Account hierarchy.
-class CoreAccount {
-  final bool isLogin;
-  final int mid;
-  final String? accessKey;
-  final bool activated;
-
-  const CoreAccount({
-    this.isLogin = false,
-    this.mid = 0,
-    this.accessKey,
-    this.activated = false,
-  });
+@freezed
+abstract class CoreAccount with _$CoreAccount {
+  const factory CoreAccount({
+    @Default(false) bool isLogin,
+    @Default(0) int mid,
+    String? accessKey,
+    @Default(false) bool activated,
+  }) = _CoreAccount;
 }
 
 /// Status of a QR-code login poll.
@@ -103,14 +100,11 @@ class CoreQrLoginResult {
 }
 
 /// Generic outcome of a login attempt.
-class CoreLoginResult {
-  final bool success;
-  final String? message;
-  final CoreAccount? account;
-
-  const CoreLoginResult({
-    required this.success,
-    this.message,
-    this.account,
-  });
+@freezed
+abstract class CoreLoginResult with _$CoreLoginResult {
+  const factory CoreLoginResult({
+    required bool success,
+    String? message,
+    CoreAccount? account,
+  }) = _CoreLoginResult;
 }
