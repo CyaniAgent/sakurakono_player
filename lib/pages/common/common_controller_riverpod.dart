@@ -1,35 +1,10 @@
 import 'dart:async';
 
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/widgets.dart' show ScrollController, ChangeNotifier;
+import 'package:skf/pages/common/common_controller.dart' show ScrollOrRefreshMixin;
+export 'package:skf/pages/common/common_controller.dart' show ScrollOrRefreshMixin;
 
-/// Mixin that provides scroll-to-top or refresh behavior.
-///
-/// Mirrors the GetX [ScrollOrRefreshMixin] from common_controller.dart
-/// but without any GetX dependency.
-mixin ScrollOrRefreshMixin {
-  ScrollController get scrollController;
-
-  void animateToTop() => scrollController.animToTop();
-
-  Future<void> onRefresh();
-
-  void toTopOrRefresh() {
-    if (scrollController.hasClients) {
-      if (scrollController.position.pixels == 0) {
-        EasyThrottle.throttle(
-          'topOrRefresh',
-          const Duration(milliseconds: 500),
-          onRefresh,
-        );
-      } else {
-        animateToTop();
-      }
-    }
-  }
-}
 
 /// Riverpod-compatible base class replacing `CommonController<R, T>`.
 ///

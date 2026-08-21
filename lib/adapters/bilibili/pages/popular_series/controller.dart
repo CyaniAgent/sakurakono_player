@@ -4,11 +4,11 @@ import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 
 class PopularSeriesController
-    extends CommonListController<CorePopularSeriesOneData, CoreHotVideoItemModel>
+    extends CommonListControllerRiverpod<CorePopularSeriesOneData, CoreHotVideoItemModel>
     with ReloadMixin {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
@@ -18,9 +18,7 @@ class PopularSeriesController
   String? reminder;
   List<CorePopularSeriesListItem>? seriesList;
 
-  @override
-  void onInit() {
-    super.onInit();
+  PopularSeriesController() {
     _getSeriesList();
   }
 
@@ -32,10 +30,10 @@ class PopularSeriesController
         seriesList = response;
         queryData();
       } else {
-        loadingState.value = const Success(null);
+        loadingState = const Success(null);
       }
     } else if (res case Error(:final errMsg, :final code)) {
-      loadingState.value = Error(errMsg, code: code);
+      loadingState = Error(errMsg, code: code);
     }
   }
 

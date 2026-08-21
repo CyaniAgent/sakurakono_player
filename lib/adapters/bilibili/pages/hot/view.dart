@@ -115,8 +115,9 @@ class _HotPageState extends State<HotPage>
             ),
           SliverPadding(
             padding: const EdgeInsets.only(top: 7, bottom: 100),
-            sliver: Obx(
-              () => _buildBody(controller.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: controller,
+              builder: (_, __) => _buildBody(controller.loadingState),
             ),
           ),
         ],
@@ -137,9 +138,10 @@ class _HotPageState extends State<HotPage>
                   }
                   return VideoCardH(
                     videoItem: ModelConverters.hotVideoItem(response[index]),
-                    onRemove: () => controller.loadingState
-                      ..value.data!.removeAt(index)
-                      ..refresh(),
+                    onRemove: () {
+                      response.removeAt(index);
+                      controller.loadingState = Success(response);
+                    },
                   );
                 },
                 itemCount: response.length,

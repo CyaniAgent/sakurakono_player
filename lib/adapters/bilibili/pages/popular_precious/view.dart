@@ -35,7 +35,10 @@ class _PopularPreciousPageState extends State<PopularPreciousPage>
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             ViewSliverSafeArea(
-              sliver: Obx(() => _buildBody(_controller.loadingState.value)),
+              sliver: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _buildBody(_controller.loadingState),
+              ),
             ),
           ],
         ),
