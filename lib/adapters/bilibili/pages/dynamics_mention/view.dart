@@ -68,7 +68,7 @@ class _DynMentionPanelState
   @override
   void initState() {
     super.initState();
-    if (_controller.loadingState.value is Error) {
+    if (_controller.loadingState is Error) {
       _controller.onReload();
     }
   }
@@ -184,8 +184,9 @@ class _DynMentionPanelState
                 child: CustomScrollView(
                   controller: widget.scrollController,
                   slivers: [
-                    Obx(
-                      () => _buildBody(theme, _controller.loadingState.value),
+                    ListenableBuilder(
+                      listenable: _controller,
+                      builder: (_, __) => _buildBody(theme, _controller.loadingState),
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(height: padding + viewInset + 100),

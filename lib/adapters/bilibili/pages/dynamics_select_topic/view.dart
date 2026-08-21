@@ -65,7 +65,7 @@ class _SelectTopicPanelState
   @override
   void initState() {
     super.initState();
-    if (_controller.loadingState.value is Error) {
+    if (_controller.loadingState is Error) {
       _controller.onReload();
     }
   }
@@ -176,7 +176,10 @@ class _SelectTopicPanelState
               }
               return false;
             },
-            child: Obx(() => _buildBody(theme, _controller.loadingState.value)),
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(theme, _controller.loadingState),
+            ),
           ),
         ),
       ],
