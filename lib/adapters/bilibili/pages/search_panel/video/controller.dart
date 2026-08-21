@@ -20,21 +20,17 @@ class SearchVideoController
     required super.keyword,
     required super.searchType,
     required super.tag,
-  });
-
-  late bool hasJump2Video = false;
-
-  @override
-  void onInit() {
-    super.onInit();
+  }) {
     videoDurationType = VideoDurationType.all;
     videoZoneType = VideoZoneType.all;
     DateTime now = DateTime.now();
     pubBeginDate = DateTime(now.year, now.month, 1, 0, 0, 0);
     pubEndDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
-
     jump2Video();
   }
+
+  late bool hasJump2Video = false;
+
 
   @override
   List<SearchVideoItemModel>? getDataList(SearchVideoData response) {

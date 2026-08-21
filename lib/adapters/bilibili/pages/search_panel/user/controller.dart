@@ -14,14 +14,11 @@ class SearchUserController
     required super.keyword,
     required super.searchType,
     required super.tag,
-  });
-
-  @override
-  void onInit() {
-    super.onInit();
+  }) {
     userType = UserType.all.obs;
     userOrderType = UserOrderType.def.obs;
   }
+
 
   void onShowFilterDialog(BuildContext context) {
     showModalBottomSheet(

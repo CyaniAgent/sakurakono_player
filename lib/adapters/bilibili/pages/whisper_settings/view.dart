@@ -43,6 +43,12 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
@@ -50,7 +56,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
       appBar: AppBar(
         title: Obx(() => Text(_controller.title.value)),
       ),
-      body: Obx(() => _buildBody(theme, _controller.loadingState.value)),
+      body: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(theme, _controller.loadingState)),
     );
   }
 
@@ -79,8 +85,8 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
           imSettingType: item.redirect.settingPage.parentSettingType,
           onUpdate: (value) {
             _controller.loadingState
-              ..value.data[key]?.redirect.settingPage.subSettings.addAll(value)
-              ..refresh();
+              .data[key]?.redirect.settingPage.subSettings.addAll(value);
+            _controller.loadingState = _controller.loadingState;
           },
         ),
         preventDuplicates: false,
@@ -106,7 +112,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
                     }
                     item.redirect.selectedSummary = e.text;
                     e.selected = true;
-                    _controller.loadingState.refresh();
+                    _controller.loadingState = _controller.loadingState;
                     final settings = {key: item};
                     final res = await _controller.onSet(settings);
                     if (!res) {
@@ -114,7 +120,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
                         j.selected = j.text == selected;
                       }
                       item.redirect.selectedSummary = selected!;
-                      _controller.loadingState.refresh();
+                      _controller.loadingState = _controller.loadingState;
                     }
                   }
                 },

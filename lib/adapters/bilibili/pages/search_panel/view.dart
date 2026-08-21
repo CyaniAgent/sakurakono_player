@@ -5,7 +5,6 @@ import 'package:skf/core/models/search_types.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 abstract class CommonSearchPanel extends StatefulWidget {
   const CommonSearchPanel({
@@ -35,6 +34,7 @@ abstract class CommonSearchPanelState<
   @override
   void dispose() {
     controller.cancelListener();
+    controller.dispose();
     super.dispose();
   }
 
@@ -53,7 +53,7 @@ abstract class CommonSearchPanelState<
             padding: EdgeInsets.only(
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: Obx(() => _buildBody(theme, controller.loadingState.value)),
+            sliver: ListenableBuilder(listenable: controller, builder: (_, __) => _buildBody(theme, controller.loadingState)),
           ),
         ],
       ),

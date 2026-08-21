@@ -18,15 +18,12 @@ class SearchAllController
     required super.keyword,
     required super.searchType,
     required super.tag,
-  });
+  }) {
+    jump2Video();
+  }
 
   late bool hasJump2Video = false;
 
-  @override
-  void onInit() {
-    super.onInit();
-    jump2Video();
-  }
 
   @override
   List? getDataList(response) {

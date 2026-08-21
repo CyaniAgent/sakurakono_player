@@ -9,18 +9,28 @@ import 'package:skf/adapters/bilibili/models/common/search/user_search_type.dart
 import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/repository/bili_search_repository.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/search_result/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class SearchPanelController<R extends SearchNumData<T>, T>
-    extends CommonListController<R, T> {
+    extends CommonListControllerRiverpod<R, T> {
   SearchPanelController({
     required this.keyword,
     required this.searchType,
     required this.tag,
-  });
+  }) {
+    try {
+      searchResultController = Get.find<SearchResultController>(tag: tag);
+      _listener = searchResultController!.toTopIndex.listen((index) {
+        if (index == searchType.index) {
+          scrollController.animToTop();
+        }
+      });
+    } catch (_) {}
+    queryData();
+  }
   final String tag;
   final String keyword;
   final CoreSearchType searchType;
@@ -63,19 +73,6 @@ class SearchPanelController<R extends SearchNumData<T>, T>
     _listener?.cancel();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    try {
-      searchResultController = Get.find<SearchResultController>(tag: tag);
-      _listener = searchResultController!.toTopIndex.listen((index) {
-        if (index == searchType.index) {
-          scrollController.animToTop();
-        }
-      });
-    } catch (_) {}
-    queryData();
-  }
 
   @override
   List<T>? getDataList(R response) {

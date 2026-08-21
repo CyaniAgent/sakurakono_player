@@ -2,7 +2,7 @@ import 'package:skf/core/models/im_types.dart';
 import 'package:skf/core/repository/im_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,13 +10,11 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class WhisperBlockController
     extends
-        CommonListController<CoreImKeywordBlockingListReply, CoreImKeywordBlockingItem> {
+        CommonListControllerRiverpod<CoreImKeywordBlockingListReply, CoreImKeywordBlockingItem> {
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
+  WhisperBlockController() {
     queryData();
   }
 
@@ -46,9 +44,8 @@ class WhisperBlockController
     final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingAdd(keyword);
     if (res.isSuccess) {
       Get.back();
-      loadingState
-        ..value.data!.add(CoreImKeywordBlockingItem(keyword: keyword, id: 0))
-        ..refresh();
+      loadingState.data!.add(CoreImKeywordBlockingItem(keyword: keyword, id: 0));
+      notifyListeners();
       count.value += 1;
       SmartDialog.showToast('添加成功');
     } else {
@@ -59,9 +56,8 @@ class WhisperBlockController
   Future<void> onRemove(CoreImKeywordBlockingItem item) async {
     final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingDelete(item.keyword);
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.remove(item)
-        ..refresh();
+      loadingState.data!.remove(item);
+      notifyListeners();
       count.value -= 1;
       SmartDialog.showToast('删除成功');
     } else {

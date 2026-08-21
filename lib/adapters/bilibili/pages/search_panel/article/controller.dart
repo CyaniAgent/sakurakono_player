@@ -14,14 +14,11 @@ class SearchArticleController
     required super.keyword,
     required super.searchType,
     required super.tag,
-  });
-
-  @override
-  void onInit() {
-    super.onInit();
+  }) {
     articleZoneType = ArticleZoneType.all.obs;
     jump2Article();
   }
+
 
   void jump2Article() {
     String? cvid = RegExp(

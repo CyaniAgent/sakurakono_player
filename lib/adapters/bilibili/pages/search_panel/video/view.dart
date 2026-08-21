@@ -111,9 +111,10 @@ class _SearchVideoPanelState
         }
         return VideoCardH(
           videoItem: list[index],
-          onRemove: () => controller.loadingState
-            ..value.data!.removeAt(index)
-            ..refresh(),
+          onRemove: () {
+            controller.loadingState.data!.removeAt(index);
+            controller.loadingState = controller.loadingState;
+          },
         );
       },
       itemCount: list.length,

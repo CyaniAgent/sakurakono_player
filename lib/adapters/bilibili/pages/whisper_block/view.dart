@@ -28,8 +28,14 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text('消息屏蔽词')),
-      body: Obx(() => _buildBody(theme, _controller.loadingState.value)),
+      body: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(theme, _controller.loadingState)),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Widget _buildBody(
