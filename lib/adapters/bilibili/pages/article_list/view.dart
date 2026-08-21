@@ -48,8 +48,9 @@ class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
                 right: padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(theme, _controller.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _buildBody(theme, _controller.loadingState),
               ),
             ),
           ],

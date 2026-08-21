@@ -31,8 +31,9 @@ class CoreLoginDevicesPageState extends State<CoreLoginDevicesPage> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             ViewSliverSafeArea(
-              sliver: Obx(
-                () => _buildBody(colorScheme, _controller.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _buildBody(colorScheme, _controller.loadingState),
               ),
             ),
           ],

@@ -5,16 +5,14 @@ import 'package:skf/core/repository/auth_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/auth_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class CoreLoginDevicesController
-    extends CommonListController<CoreLoginDevicesData, CoreLoginDevice> {
+    extends CommonListControllerRiverpod<CoreLoginDevicesData, CoreLoginDevice> {
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
+  CoreLoginDevicesController() {
     queryData();
   }
 
