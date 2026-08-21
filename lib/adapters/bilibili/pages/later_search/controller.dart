@@ -22,12 +22,10 @@ class LaterSearchController
   void attachRef(ProviderContainer ref) { _ref = ref; }
   dynamic count;
 
-  @override
-  void onInit() {
+  LaterSearchController() {
     final args = Get.arguments;
     mid = args['mid'];
     count = args['count'];
-    super.onInit();
   }
 
   @override

@@ -1,8 +1,9 @@
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 
-abstract class CommonSearchController<R, T> extends CommonListController<R, T> {
+abstract class CommonSearchController<R, T> extends CommonListControllerRiverpod<R, T> {
   final editController = TextEditingController();
   final focusNode = FocusNode();
 
@@ -22,10 +23,18 @@ abstract class CommonSearchController<R, T> extends CommonListController<R, T> {
     return super.onRefresh();
   }
 
+  List<T>? get dataList {
+    final state = loadingState;
+    if (state case Success(:final response)) return response;
+    return null;
+  }
+
+  void notifyStateChanged() => notifyListeners();
+
   @override
-  void onClose() {
+  void dispose() {
     editController.dispose();
     focusNode.dispose();
-    super.onClose();
+    super.dispose();
   }
 }

@@ -7,8 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/later/later_view_type.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart'
-    show CommonListController;
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/pages/later/base_controller.dart';
@@ -21,9 +19,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 mixin BaseLaterController
     on
-        CommonListController<CoreLaterData, CoreLaterItemModel>,
-        CommonMultiSelectMixin<CoreLaterItemModel>,
-        DeleteItemMixin<CoreLaterData, CoreLaterItemModel> {
+        DeleteItemMixin<CoreLaterItemModel> {
   ValueChanged<int>? updateCount;
 
   ProviderContainer? _ref;
@@ -77,9 +73,8 @@ mixin BaseLaterController
               AppNavigator.back();
               final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewDel(aids: aid.toString());
               if (res.isSuccess) {
-                loadingState
-                  ..value.data!.removeAt(index)
-                  ..refresh();
+                dataList!.removeAt(index);
+                notifyStateChanged();
                 updateCount?.call(1);
               }
             },

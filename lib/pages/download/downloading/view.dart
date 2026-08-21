@@ -26,9 +26,9 @@ class _DownloadingPageState extends State<DownloadingPage>
   final _downloadActions = DownloadActions.of();
   late final _waitDownloadQueue = _downloadActions.waitDownloadQueue;
   @override
-  RxList<CoreDownloadEntryInfo> get list => _waitDownloadQueue;
+  List<CoreDownloadEntryInfo> get list => _waitDownloadQueue;
   @override
-  RxList<CoreDownloadEntryInfo> get state => _waitDownloadQueue;
+  void notifyStateChanged() => setState(() {});
 
   @override
   Widget build(BuildContext context) {

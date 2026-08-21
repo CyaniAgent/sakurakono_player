@@ -42,8 +42,9 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
         physics: const AlwaysScrollableScrollPhysics(),
         controller: controller.scrollController,
         slivers: [
-          ViewSliverSafeArea(
-            sliver: Obx(() => _buildBody(controller.loadingState.value)),
+          ListenableBuilder(
+            listenable: controller,
+            builder: (_, __) => _buildBody(controller.loadingState),
           ),
         ],
       ),
@@ -75,7 +76,7 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
             tooltip: '清空',
             icon: const Icon(Icons.clear, size: 22),
             onPressed: () => controller
-              ..loadingState.value = LoadingState.loading()
+              ..loadingState = LoadingState.loading()
               ..onClear()
               ..focusNode.requestFocus(),
           ),

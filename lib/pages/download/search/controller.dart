@@ -9,7 +9,6 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class DownloadSearchController
     extends
@@ -21,9 +20,9 @@ class DownloadSearchController
   final _downloadActions = DownloadActions.of();
 
   @override
-  List<CoreDownloadEntryInfo> get list => loadingState.value.data!;
+  List<CoreDownloadEntryInfo> get list => loadingState.data!;
   @override
-  Rx<LoadingState<List<CoreDownloadEntryInfo>?>> get state => loadingState;
+  void notifyStateChanged() => notifyListeners();
 
   @override
   Future<LoadingState<List<CoreDownloadEntryInfo>>> customGetData() async {
@@ -40,9 +39,8 @@ class DownloadSearchController
   }
 
   void onRemoveSingle(int index, CoreDownloadEntryInfo entry) {
-    loadingState
-      ..value.data!.removeAt(index)
-      ..refresh();
+    loadingState.data!.removeAt(index);
+    notifyListeners();
     _downloadActions.deleteDownload(
       entry: entry,
       removeList: true,
@@ -66,9 +64,8 @@ class DownloadSearchController
             refresh: false,
           );
         }
-        loadingState
-          ..value.data!.removeWhere(allChecked.contains)
-          ..refresh();
+        loadingState.data!.removeWhere(allChecked.contains);
+        notifyListeners();
         _downloadActions.refreshFlagListeners();
         if (enableMultiSelect.value) {
           rxCount.value = 0;

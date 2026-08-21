@@ -44,9 +44,8 @@ class HistorySearchController
       account: account,
     );
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      dataList!.removeAt(index);
+      notifyStateChanged();
       SmartDialog.showToast('已删除');
     } else {
       SmartDialog.showToast(res.toString());

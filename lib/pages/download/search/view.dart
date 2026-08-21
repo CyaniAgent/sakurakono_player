@@ -40,7 +40,7 @@ class _DownloadSearchPageState
     IconButton(
       tooltip: '多选',
       onPressed: () {
-        if (controller.loadingState.value is! Success) {
+        if (controller.loadingState is! Success) {
           return;
         }
         if (controller.enableMultiSelect.value) {

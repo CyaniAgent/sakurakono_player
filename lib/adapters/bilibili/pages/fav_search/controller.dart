@@ -26,15 +26,13 @@ class FavSearchController
   late dynamic count;
   late dynamic title;
 
-  @override
-  void onInit() {
+  FavSearchController() {
     final args = Get.arguments;
     type = args['type'];
     mediaId = args['mediaId'];
     isOwner = args['isOwner'];
     count = args['count'];
     title = args['title'];
-    super.onInit();
   }
 
   final Rx<CoreFavOrderType> order = CoreFavOrderType.mtime.obs;

@@ -1,7 +1,5 @@
 import 'package:skf/core/models/ui/multi_select_controller.dart';
-import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/multi_select_data.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:get/get.dart';
 
 export 'package:skf/core/models/ui/multi_select_data.dart';
@@ -30,7 +28,7 @@ mixin BaseMultiSelectMixin<T extends MultiSelectData>
   @override
   final RxBool enableMultiSelect = false.obs;
 
-  RxObjectMixin get state;
+  void notifyStateChanged();
   List<T> get list;
 
   Iterable<T> get allChecked => list.where((v) => v.checked);
@@ -40,7 +38,7 @@ mixin BaseMultiSelectMixin<T extends MultiSelectData>
     for (final item in list) {
       item.checked = checked;
     }
-    state.refresh();
+    notifyStateChanged();
     rxCount.value = checked ? list.length : 0;
     if (disableSelect && !checked) {
       enableMultiSelect.value = false;
@@ -55,7 +53,7 @@ mixin BaseMultiSelectMixin<T extends MultiSelectData>
     } else {
       rxCount.value--;
     }
-    state.refresh();
+    notifyStateChanged();
     if (checkedCount == 0) {
       enableMultiSelect.value = false;
     }
@@ -68,25 +66,26 @@ mixin CommonMultiSelectMixin<T extends MultiSelectData>
   late final RxBool enableMultiSelect = false.obs;
   RxBool? get allSelected => null;
 
-  Rx<LoadingState<List<T>?>> get loadingState;
+  List<T>? get dataList;
+  void notifyStateChanged();
   late final RxInt rxCount = 0.obs;
 
   @override
   int get checkedCount => rxCount.value;
 
   Iterable<T> get allChecked =>
-      loadingState.value.data!.where((v) => v.checked);
+      dataList!.where((v) => v.checked);
 
   @override
   void onSelect(T item) {
-    List<T> list = loadingState.value.data!;
+    List<T> list = dataList!;
     item.checked = !item.checked;
     if (item.checked) {
       rxCount.value++;
     } else {
       rxCount.value--;
     }
-    loadingState.refresh();
+    notifyStateChanged();
     if (checkedCount == 0) {
       enableMultiSelect.value = false;
     } else {
@@ -96,14 +95,13 @@ mixin CommonMultiSelectMixin<T extends MultiSelectData>
 
   @override
   void handleSelect({bool checked = false, bool disableSelect = true}) {
-    if (loadingState.value case Success(:final response)) {
-      if (response != null && response.isNotEmpty) {
-        for (final item in response) {
-          item.checked = checked;
-        }
-        loadingState.refresh();
-        rxCount.value = checked ? response.length : 0;
+    final response = dataList;
+    if (response != null && response.isNotEmpty) {
+      for (final item in response) {
+        item.checked = checked;
       }
+      notifyStateChanged();
+      rxCount.value = checked ? response.length : 0;
     }
     if (disableSelect && !checked) {
       enableMultiSelect.value = false;
@@ -111,10 +109,12 @@ mixin CommonMultiSelectMixin<T extends MultiSelectData>
   }
 }
 
-mixin DeleteItemMixin<R, T extends MultiSelectData>
-    on CommonListController<R, T>, CommonMultiSelectMixin<T> {
+mixin DeleteItemMixin<T extends MultiSelectData>
+    on CommonMultiSelectMixin<T> {
+  bool get isEnd;
+  Future<void> onReload();
   Future<void> afterDelete(Set<T> removeList) async {
-    final list = loadingState.value.data!;
+    final list = dataList!;
     if (removeList.length == list.length) {
       list.clear();
     } else if (removeList.length == 1) {
@@ -123,7 +123,7 @@ mixin DeleteItemMixin<R, T extends MultiSelectData>
       list.removeWhere(removeList.contains);
     }
     if (list.isNotEmpty || isEnd) {
-      loadingState.refresh();
+      notifyStateChanged();
     } else {
       onReload();
     }

@@ -480,9 +480,8 @@ abstract final class RequestUtils {
                         if (res.isSuccess) {
                           ctr.handleSelect(checked: false);
                           if (!isCopy) {
-                            ctr.loadingState
-                              ..value.data!.removeWhere(removeList.contains)
-                              ..refresh();
+                            ctr.dataList!.removeWhere(removeList.contains);
+                            ctr.notifyStateChanged();
                           }
                           SmartDialog.dismiss();
                           SmartDialog.showToast('${isCopy ? '复制' : '移动'}成功');

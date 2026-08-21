@@ -43,9 +43,9 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
   final _controller = Get.find<DownloadPageController>();
   final _downloadActions = DownloadActions.of();
   @override
-  RxList<CoreDownloadEntryInfo> get list => _downloadItems;
+  List<CoreDownloadEntryInfo> get list => _downloadItems;
   @override
-  RxList<CoreDownloadEntryInfo> get state => _downloadItems;
+  void notifyStateChanged() => setState(() {});
 
   @override
   void initState() {

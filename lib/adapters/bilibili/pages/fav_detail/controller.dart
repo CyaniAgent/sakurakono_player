@@ -21,8 +21,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 
 mixin BaseFavController
     on
-        CommonListController<CoreFavDetailData, CoreFavDetailItemModel>,
-        DeleteItemMixin<CoreFavDetailData, CoreFavDetailItemModel> {
+        DeleteItemMixin<CoreFavDetailItemModel> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   bool get isOwner;
@@ -38,9 +37,8 @@ mixin BaseFavController
       delIds: mediaId.toString(),
     );
     if (res.isSuccess) {
-      loadingState
-        ..value.data!.removeAt(index)
-        ..refresh();
+      dataList!.removeAt(index);
+      notifyStateChanged();
       updateCount?.call(1);
       SmartDialog.showToast('取消收藏');
     } else {
