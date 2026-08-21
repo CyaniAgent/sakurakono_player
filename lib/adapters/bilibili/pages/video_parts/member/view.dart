@@ -63,7 +63,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
       tag: widget.videoDetailController.heroTag,
     );
     _bvid = widget.videoDetailController.bvid;
-    if (_controller.loadingState.value
+    if (_controller.loadingState
         case Success<List<CoreSpaceArchiveItem>?> res) {
       final index = res.response?.indexWhere((e) => e.bvid == _bvid) ?? -1;
       if (index != -1) {
@@ -77,8 +77,9 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Obx(
-      () => _buildUserPage(theme, _controller.userState.value),
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (_, __) => _buildUserPage(theme, _controller.userState),
     );
   }
 
@@ -99,10 +100,11 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                     padding: EdgeInsets.only(
                       bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
                     ),
-                    sliver: Obx(
-                      () => _buildVideoList(
+                    sliver: ListenableBuilder(
+                      listenable: _controller,
+                      builder: (_, __) => _buildVideoList(
                         theme,
-                        _controller.loadingState.value,
+                        _controller.loadingState,
                       ),
                     ),
                   ),
@@ -116,7 +118,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
         controller: _controller.scrollController,
         errMsg: errMsg,
         onReload: () {
-          _controller.userState.value = LoadingState<CoreMemberInfoModel>.loading();
+          _controller.userState = LoadingState<CoreMemberInfoModel>.loading();
           _controller.getUserInfo();
         },
       ),
@@ -266,8 +268,9 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
         ],
       ),
       const SizedBox(height: 4),
-      Obx(
-        () => Row(
+      ListenableBuilder(
+        listenable: _controller,
+        builder: (_, __) => Row(
           children: UserInfoType.values
               .map(
                 (e) => _buildChildInfo(
@@ -323,8 +326,8 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                     isFollow: coreMemberInfoModel.isFollowed ?? false,
                     afterMod: (attribute) {
                       _controller
-                        ..userState.value.data.isFollowed = attribute != 0
-                        ..userState.refresh();
+                        ..userState.data.isFollowed = attribute != 0
+                        ..notifyListeners();
                     },
                   );
                 }

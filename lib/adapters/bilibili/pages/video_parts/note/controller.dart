@@ -3,33 +3,35 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 
 class NoteListPageCtr
-    extends CommonListController<CoreVideoNoteData, Map<String, dynamic>> {
+    extends CommonListControllerRiverpod<CoreVideoNoteData, Map<String, dynamic>> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  NoteListPageCtr({required this.oid});
-  final int oid;
-
-  RxInt count = (-1).obs;
-
-  @override
-  void onInit() {
-    super.onInit();
+  NoteListPageCtr({required this.oid}) {
     queryData();
   }
+  final int oid;
+
+  int _count = -1;
+  int get count => _count;
+  set count(int value) {
+    _count = value;
+    notifyListeners();
+  }
+
 
   @override
   List<Map<String, dynamic>>? getDataList(CoreVideoNoteData response) {
-    count.value = response.page?['total'] as int? ?? -1;
+    count = response.page?['total'] as int? ?? -1;
     return response.list;
   }
 
   @override
   void checkIsEnd(int length) {
-    final count = this.count.value;
+    final count = this.count;
     if (count != -1 && length >= count) {
       isEnd = true;
     }

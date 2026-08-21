@@ -32,7 +32,7 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel> with GridMixin {
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.only(top: 7, bottom: 100),
-      sliver: Obx(() => _buildBody(_relatedController.loadingState.value)),
+      sliver: ListenableBuilder(listenable: _relatedController, builder: (_, __) => _buildBody(_relatedController.loadingState)),
     );
   }
 
@@ -46,9 +46,10 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel> with GridMixin {
                 itemBuilder: (context, index) {
                   return VideoCardH(
                     videoItem: ModelConverters.hotVideoItem(response[index]),
-                    onRemove: () => _relatedController.loadingState
-                      ..value.data!.removeAt(index)
-                      ..refresh(),
+                    onRemove: () {
+                      _relatedController.loadingState.data!.removeAt(index);
+                      _relatedController.loadingState = _relatedController.loadingState;
+                    },
                   );
                 },
                 itemCount: response.length,

@@ -4,33 +4,35 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 
 class HorizontalMemberPageController
-    extends CommonListController<CoreSpaceArchiveData, CoreSpaceArchiveItem> {
+    extends CommonListControllerRiverpod<CoreSpaceArchiveData, CoreSpaceArchiveItem> {
 
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  HorizontalMemberPageController({this.mid, required this.currAid});
-
-  dynamic mid;
-
-  final Rx<LoadingState<CoreMemberInfoModel>> userState =
-      LoadingState<CoreMemberInfoModel>.loading().obs;
-  final RxMap userStat = {}.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
+  HorizontalMemberPageController({this.mid, required this.currAid}) {
     getUserInfo();
     queryData();
   }
 
+  dynamic mid;
+
+  LoadingState<CoreMemberInfoModel> _userState = LoadingState<CoreMemberInfoModel>.loading();
+  LoadingState<CoreMemberInfoModel> get userState => _userState;
+  set userState(LoadingState<CoreMemberInfoModel> value) {
+    _userState = value;
+    notifyListeners();
+  }
+
+  final Map userStat = {};
+
+
   Future<void> getUserInfo() async {
     final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberInfo(mid: mid);
-    userState.value = switch (res) {
+    userState = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
@@ -45,6 +47,7 @@ class HorizontalMemberPageController
     final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberStat(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
+      notifyListeners();
     }
   }
 
@@ -55,6 +58,7 @@ class HorizontalMemberPageController
     final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberView(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
+      notifyListeners();
     }
   }
 
@@ -70,17 +74,17 @@ class HorizontalMemberPageController
       }
     }
     if (isLoadPrevious) {
-      if (loadingState.value case Success(:final response)) {
+      if (loadingState case Success(:final response)) {
         (data.item ??= <CoreSpaceArchiveItem>[]).addAll(response!);
       }
     } else if (!isRefresh) {
-      if (loadingState.value case Success(:final response)) {
+      if (loadingState case Success(:final response)) {
         (data.item ??= <CoreSpaceArchiveItem>[]).insertAll(0, response!);
       }
     }
     firstAid = data.item?.firstOrNull?.param;
     lastAid = data.item?.lastOrNull?.param;
-    loadingState.value = Success(data.item);
+    loadingState = Success(data.item);
     isLoadPrevious = false;
     page++;
     return true;

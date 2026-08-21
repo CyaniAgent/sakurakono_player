@@ -69,10 +69,13 @@ class _NoteListPageState extends State<NoteListPage>
               titleSpacing: 16,
               toolbarHeight: 45,
               backgroundColor: Colors.transparent,
-              title: Obx(() {
-                final count = _controller.count.value;
-                return Text('笔记${count == -1 ? '' : '($count)'}');
-              }),
+              title: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) {
+                  final count = _controller.count;
+                  return Text('笔记${count == -1 ? '' : '($count)'}');
+                },
+              ),
               shape: Border(
                 bottom: BorderSide(
                   color: theme.colorScheme.outline.withValues(alpha: 0.1),
@@ -115,8 +118,9 @@ class _NoteListPageState extends State<NoteListPage>
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.only(bottom: 100),
-            sliver: Obx(
-              () => _buildBody(theme, _controller.loadingState.value),
+            sliver: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],
