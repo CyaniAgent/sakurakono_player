@@ -4,17 +4,15 @@ import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class SearchTrendingController
-    extends CommonListController<CoreSearchTrendingData, CoreSearchTrendingItemModel> {
+    extends CommonListControllerRiverpod<CoreSearchTrendingData, CoreSearchTrendingItemModel> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   int topCount = 0;
 
-  @override
-  void onInit() {
-    super.onInit();
+  SearchTrendingController() {
     queryData();
   }
 

@@ -106,8 +106,9 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
                   ),
                   SliverPadding(
                     padding: EdgeInsets.only(bottom: padding.bottom + 100),
-                    sliver: Obx(
-                      () => _buildBody(theme, _controller.loadingState.value),
+                    sliver: ListenableBuilder(
+                      listenable: _controller,
+                      builder: (_, __) => _buildBody(theme, _controller.loadingState),
                     ),
                   ),
                 ],
