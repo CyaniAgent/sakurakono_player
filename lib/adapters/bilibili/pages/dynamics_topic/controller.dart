@@ -6,14 +6,14 @@ import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class DynTopicController
-    extends CommonListController<CoreTopicCardList?, CoreTopicCardItem> {
+    extends CommonListControllerRiverpod<CoreTopicCardList?, CoreTopicCardItem> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   final topicId = Get.parameters['id']!;
@@ -33,9 +33,7 @@ class DynTopicController
 
   late final isLogin = Accounts.main.isLogin;
 
-  @override
-  void onInit() {
-    super.onInit();
+  DynTopicController() {
     queryTop();
     queryData();
   }
@@ -152,10 +150,10 @@ class DynTopicController
     final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicFold(topicId: topicId, sortBy: sortBy);
     if (result case Success(:final response)) {
       if (response?.items case final items? when items.isNotEmpty) {
-        loadingState.value.data!
+        loadingState.data!
           ..removeLast()
           ..addAll(items);
-        loadingState.refresh();
+        notifyListeners();
       }
     }
   }

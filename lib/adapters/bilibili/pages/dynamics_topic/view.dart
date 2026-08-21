@@ -145,7 +145,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                       bottom: padding.bottom + 100,
                     ),
                     sliver: buildPage(
-                      Obx(() => _buildBody(_controller.loadingState.value)),
+                      ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
                     ),
                   ),
                 ],

@@ -5,15 +5,13 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class DynTopicRcmdController
-    extends CommonListController<List<CoreTopicItem>?, CoreTopicItem> {
+    extends CommonListControllerRiverpod<List<CoreTopicItem>?, CoreTopicItem> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
+  DynTopicRcmdController() {
     queryData();
   }
 

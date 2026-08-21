@@ -304,12 +304,12 @@ abstract final class RequestUtils {
         final res = await DynamicsHttp.dynamicDetail(id: id);
         if (res case final Success<CoreDynamicItemModel> e) {
           final ctr = Get.find<DynamicsTabController>(tag: 'all');
-          if (ctr.loadingState.value case Success(:final response?)) {
+          if (ctr.loadingState case Success(:final response?)) {
             response.insert(0, e.response);
-            ctr.loadingState.refresh();
+            ctr.refreshState();
             return;
           }
-          ctr.loadingState.value = Success([e.response]);
+          ctr.loadingState = Success([e.response]);
         }
       } catch (e) {
         if (kDebugMode) debugPrint('create dyn $e');
