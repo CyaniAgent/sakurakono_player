@@ -46,8 +46,9 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
                 right: padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(_controller.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _buildBody(_controller.loadingState),
               ),
             ),
           ],
@@ -98,15 +99,18 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleMedium,
               ),
-              Obx(() {
-                final count = _controller.loadingState.value.dataOrNull?.length;
-                return count == null
-                    ? const SizedBox.shrink()
-                    : Text(
-                        '共$count条视频',
-                        style: theme.textTheme.labelMedium,
-                      );
-              }),
+              ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) {
+                  final count = _controller.loadingState.dataOrNull?.length;
+                  return count == null
+                      ? const SizedBox.shrink()
+                      : Text(
+                          '共$count条视频',
+                          style: theme.textTheme.labelMedium,
+                        );
+                },
+              ),
             ],
           ),
         ],

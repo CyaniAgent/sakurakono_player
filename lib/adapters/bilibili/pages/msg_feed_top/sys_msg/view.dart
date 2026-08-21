@@ -44,8 +44,9 @@ class _SysMsgPageState extends State<SysMsgPage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(theme, _sysMsgController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _sysMsgController,
+                builder: (_, __) => _buildBody(theme, _sysMsgController.loadingState),
               ),
             ),
           ],

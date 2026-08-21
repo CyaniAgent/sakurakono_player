@@ -4,20 +4,18 @@ import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/music_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 typedef MusicRecommendArgs = ({String id, CoreMusicDetail item});
 
 class MusicRecommendController
-    extends CommonListController<List<CoreBgmRecommend>?, CoreBgmRecommend> {
+    extends CommonListControllerRiverpod<List<CoreBgmRecommend>?, CoreBgmRecommend> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   late final String musicId;
   late final CoreMusicDetail musicDetail;
 
-  @override
-  void onInit() {
-    super.onInit();
+  MusicRecommendController() {
     final MusicRecommendArgs args = Get.arguments;
     musicId = args.id;
     musicDetail = args.item;

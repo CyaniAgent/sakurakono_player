@@ -8,30 +8,25 @@ import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
-import 'package:skf/core/account/account_mixin.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
 
 class PgcController
-    extends CommonListController<List<CorePgcIndexItem>?, CorePgcIndexItem>
-    with AccountMixin {
+    extends CommonListControllerRiverpod<List<CorePgcIndexItem>?, CorePgcIndexItem> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  PgcController({required this.tabType})
-    : indexType = tabType == HomeTabType.cinema ? 102 : null;
-
   final HomeTabType tabType;
   final int? indexType;
-
   late final showPgcTimeline =
       tabType == HomeTabType.bangumi && Pref.showPgcTimeline;
 
-  @override
-  void onInit() {
-    super.onInit();
+  AccountProvider get accountService => Get.find<AccountProvider>();
 
+  PgcController({required this.tabType}) : indexType = tabType == HomeTabType.cinema ? 102 : null {
+    accountService.onAuthStateChanged({});
     queryData();
     queryPgcFollow();
     if (showPgcTimeline) {
@@ -150,12 +145,11 @@ class PgcController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     followController.dispose();
-    super.onClose();
+    super.dispose();
   }
 
-  @override
   void onChangeAccount(bool isLogin) {
     if (isLogin) {
       _refreshPgcFollow();

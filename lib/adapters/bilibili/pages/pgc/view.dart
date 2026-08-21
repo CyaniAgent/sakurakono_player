@@ -216,8 +216,9 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
         right: Style.safeSpace,
         bottom: 100,
       ),
-      sliver: Obx(
-        () => _buildRcmdBody(controller.loadingState.value),
+      sliver: ListenableBuilder(
+        listenable: controller,
+        builder: (_, __) => _buildRcmdBody(controller.loadingState),
       ),
     ),
   ];
