@@ -25,7 +25,7 @@ class _BlackListPageState extends State<BlackListPage> {
 
   @override
   void dispose() {
-    if (_blackListController.loadingState.value case Success(:final response)) {
+    if (_blackListController.loadingState case Success(:final response)) {
       final blackMids = response?.map((e) => e.mid!).toSet() ?? {};
       GlobalData().blackMids = blackMids;
       Pref.blackMids = blackMids;
@@ -54,8 +54,9 @@ class _BlackListPageState extends State<BlackListPage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(_blackListController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _blackListController,
+                builder: (_, _) => _buildBody(_blackListController.loadingState),
               ),
             ),
           ],

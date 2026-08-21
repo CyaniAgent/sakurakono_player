@@ -4,7 +4,7 @@ import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/blacklist_data.dart';
 import 'package:skf/core/models/blacklist_item.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
@@ -13,7 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class BlackListController
-    extends CommonListController<CoreBlackListData, CoreBlackListItem> {
+    extends CommonListControllerRiverpod<CoreBlackListData, CoreBlackListItem> {
+  BlackListController() {
+    queryData();
+  }
   RxInt total = (-1).obs;
 
   Ref? _ref;
@@ -21,12 +24,6 @@ class BlackListController
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
-
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   List<CoreBlackListItem>? getDataList(CoreBlackListData response) {
@@ -48,9 +45,8 @@ class BlackListController
       onConfirm: () async {
         final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(mid: mid, act: 6, reSrc: 11);
         if (result.isSuccess) {
-          loadingState
-            ..value.data!.removeAt(index)
-            ..refresh();
+          loadingState.data!.removeAt(index);
+          notifyListeners();
           total.value -= 1;
           SmartDialog.showToast('移除成功');
         }

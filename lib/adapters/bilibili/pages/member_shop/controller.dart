@@ -4,21 +4,18 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class MemberShopController
-    extends CommonListController<CoreSpaceShopData, CoreSpaceShopItem> {
-  MemberShopController(this.mid);
+    extends CommonListControllerRiverpod<CoreSpaceShopData, CoreSpaceShopItem> {
+  MemberShopController(this.mid) {
+    queryData();
+  }
 
   final int mid;
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   bool? showMoreTab;
   String? clickUrl;

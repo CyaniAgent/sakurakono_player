@@ -2,13 +2,13 @@ import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 class DynReactController
-    extends CommonListController<CoreDynReactionData, CoreDynReactionItem> {
+    extends CommonListControllerRiverpod<CoreDynReactionData, CoreDynReactionItem> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   DynReactController(this.id, {int count = -1}) : count = RxInt(count);

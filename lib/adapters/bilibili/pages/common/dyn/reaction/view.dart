@@ -9,7 +9,6 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/reaction/controller.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
 
 class DynReactPage extends StatelessWidget {
   const DynReactPage({
@@ -26,7 +25,7 @@ class DynReactPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (controller.loadingState.value == .loading()) {
+    if (controller.loadingState == .loading()) {
       controller.queryData();
     }
     Widget buildBody(
@@ -84,7 +83,7 @@ class DynReactPage extends StatelessWidget {
           padding: .only(
             bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
           ),
-          sliver: Obx(() => buildBody(theme, controller.loadingState.value)),
+          sliver: ListenableBuilder(listenable: controller, builder: (_, _) => buildBody(theme, controller.loadingState)),
         ),
       ],
     );
