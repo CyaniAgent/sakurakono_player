@@ -57,8 +57,9 @@ class _AtMePageState extends State<AtMePage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(theme, _atMeController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _atMeController,
+                builder: (_, __) => _buildBody(theme, _atMeController.loadingState),
               ),
             ),
           ],

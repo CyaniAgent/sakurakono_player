@@ -57,8 +57,9 @@ class _ReplyMePageState extends State<ReplyMePage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(theme, _replyMeController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _replyMeController,
+                builder: (_, __) => _buildBody(theme, _replyMeController.loadingState),
               ),
             ),
           ],

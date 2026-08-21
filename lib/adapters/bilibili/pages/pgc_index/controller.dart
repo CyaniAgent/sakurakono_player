@@ -11,6 +11,7 @@ class PgcIndexController
     extends CommonListControllerRiverpod<CorePgcIndexResult, CorePgcIndexItem> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
+  final int? indexType;
   PgcIndexController(this.indexType) {
     getPgcIndexCondition();
   }

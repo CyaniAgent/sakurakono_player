@@ -59,8 +59,9 @@ class _LikeMePageState extends State<LikeMePage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(
-                () => _buildBody(theme, _likeMeController.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _likeMeController,
+                builder: (_, __) => _buildBody(theme, _likeMeController.loadingState),
               ),
             ),
           ],

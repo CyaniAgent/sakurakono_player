@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
-import 'package:skf/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,7 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 class LikeMeController
     extends
-        CommonDataController<
+        CommonControllerRiverpod<
           CoreMsgLikeData,
           Pair<List<CoreMsgLikeItem>, List<CoreMsgLikeItem>>
         > {
@@ -19,25 +19,40 @@ class LikeMeController
   int? cursorTime;
 
   bool isEnd = false;
-
   Ref? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
 
+  LoadingState _loadingState = LoadingState.loading();
   @override
-  void onInit() {
-    super.onInit();
+  LoadingState get loadingState => _loadingState;
+  set loadingState(LoadingState value) {
+    _loadingState = value;
+    notifyListeners();
+  }
+
+  LikeMeController() {
     queryData();
   }
 
   @override
-  Future<void> queryData([bool isRefresh = true]) {
-    if (!isRefresh && isEnd) {
-      return Future.syncValue(null);
+  Future<void> queryData([bool isRefresh = true]) async {
+    if (!isRefresh && isEnd) return;
+    if (isLoading) return;
+    isLoading = true;
+    final res = await customGetData();
+    if (res case Success(:final response)) {
+      if (!customHandleResponse(isRefresh, res)) {
+        loadingState = Success(response);
+      }
+    } else {
+      if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
+        loadingState = res as Error;
+      }
     }
-    return super.queryData(isRefresh);
+    isLoading = false;
   }
 
   @override
@@ -52,12 +67,12 @@ class LikeMeController
     List<CoreMsgLikeItem> latest = data.latest?.items ?? <CoreMsgLikeItem>[];
     List<CoreMsgLikeItem> total = data.total?.items ?? <CoreMsgLikeItem>[];
     if (!isRefresh) {
-      if (loadingState.value case Success(:final response)) {
+      if (loadingState case Success(:final response)) {
         latest.insertAll(0, response.first);
         total.insertAll(0, response.second);
       }
     }
-    loadingState.value = Success(Pair(first: latest, second: total));
+    loadingState = Success(Pair(first: latest, second: total));
     return true;
   }
 
@@ -83,13 +98,13 @@ class LikeMeController
       final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).delMsgfeed(0, id);
       if (res.isSuccess) {
         Pair<List<CoreMsgLikeItem>, List<CoreMsgLikeItem>> pair =
-            loadingState.value.data;
+            loadingState.data;
         if (isLatest) {
           pair.first.removeAt(index);
         } else {
           pair.second.removeAt(index);
         }
-        loadingState.refresh();
+        notifyListeners();
         SmartDialog.showToast('删除成功');
       } else {
         res.toast();
@@ -105,7 +120,7 @@ class LikeMeController
     );
     if (res.isSuccess) {
       item.noticeState = noticeState;
-      loadingState.refresh();
+      notifyListeners();
       SmartDialog.showToast('设置成功');
     } else {
       res.toast();

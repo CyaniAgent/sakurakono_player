@@ -1,13 +1,13 @@
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
-import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
-class AtMeController     extends CommonListController<CoreMsgAtData, CoreMsgAtItem> {
+class AtMeController extends CommonListControllerRiverpod<CoreMsgAtData, CoreMsgAtItem> {
   int? cursor;
   int? cursorTime;
 
@@ -17,9 +17,7 @@ class AtMeController     extends CommonListController<CoreMsgAtData, CoreMsgAtIt
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
 
-  @override
-  void onInit() {
-    super.onInit();
+  AtMeController() {
     queryData();
   }
 
@@ -55,9 +53,8 @@ class AtMeController     extends CommonListController<CoreMsgAtData, CoreMsgAtIt
     try {
       final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).delMsgfeed(2, id);
       if (res.isSuccess) {
-        loadingState
-          ..value.data!.removeAt(index)
-          ..refresh();
+        loadingState.data!.removeAt(index);
+        notifyListeners();
         SmartDialog.showToast('删除成功');
       } else {
         res.toast();
