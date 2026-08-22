@@ -97,7 +97,12 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
     });
     queryData();
   }
-  final RxBool asc = false.obs;
+  bool _asc = false;
+  bool get asc => _asc;
+  set asc(bool value) {
+    _asc = value;
+    notifyListeners();
+  }
   late final int mid = (_ref?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId) ?? 0;
   final LaterActions? actions;
   final LaterViewType laterViewType;
@@ -107,7 +112,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
     final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).seeYouLater(
       page: page,
       viewed: laterViewType.type,
-      asc: asc.value,
+      asc: asc,
     );
     return switch (result) {
       Loading _ => LoadingState.loading(),
@@ -179,7 +184,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
                 'count': _ref?.read(laterBaseProvider).counts[LaterViewType.all.index],
                 'favTitle': '稍后再看',
                 'mediaId': mid,
-                'desc': asc.value,
+                'desc': asc,
               },
             ),
           );

@@ -80,8 +80,9 @@ class _LaterPageState extends ConsumerState<LaterPage>
         floatingActionButtonLocation: const NoRightMarginFabLocation(),
         floatingActionButton: Padding(
           padding: const .only(right: kFloatingActionButtonMargin),
-          child: Obx(
-            () => currCtr().loadingState.isSuccess
+          child: ListenableBuilder(
+              listenable: currCtr(),
+              builder: (context, _) => currCtr().loadingState.isSuccess
                 ? AnimatedSlide(
                     offset: ref.read(laterBaseProvider).isPlayAll
                         ? Offset.zero
@@ -218,12 +219,12 @@ class _LaterPageState extends ConsumerState<LaterPage>
           Builder(
             key: _sortKey,
             builder: (context) {
-              final value = currCtr().asc.value;
+              final value = currCtr().asc;
               return PopupMenuButton(
                 initialValue: value,
                 tooltip: '排序',
                 onSelected: (value) => currCtr()
-                  ..asc.value = value
+                  ..asc = value
                   ..onReload(),
                 borderRadius: const .all(.circular(20)),
                 child: Padding(

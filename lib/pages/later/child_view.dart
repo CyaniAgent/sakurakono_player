@@ -100,7 +100,7 @@ class _LaterViewChildPageState extends ConsumerState<LaterViewChildPage>
                             'count': ref.read(laterBaseProvider).counts[LaterViewType.all.index],
                             'favTitle': '稍后再看',
                             'mediaId': _laterController.mid,
-                            'desc': _laterController.asc.value,
+                            'desc': _laterController.asc,
                             'isContinuePlaying': index != 0,
                           },
                         ),
