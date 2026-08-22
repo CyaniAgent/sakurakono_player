@@ -8,7 +8,6 @@ import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/controller.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
@@ -103,10 +102,11 @@ class _HomePageState extends CommonPageState<HomePage>
       ],
     );
     if (_homeController.hideTopBar) {
-      if (_mainController.barOffset case final barOffset?) {
-        return Obx(
-          () {
-            final offset = barOffset.value;
+      if (_mainController.barOffset != null) {
+        return ListenableBuilder(
+          listenable: _mainController,
+          builder: (_, __) {
+            final offset = _mainController.barOffset!;
             return CustomHeightWidget(
               offset: Offset(0, -offset),
               height: Style.topBarHeight - offset,
@@ -118,21 +118,24 @@ class _HomePageState extends CommonPageState<HomePage>
           },
         );
       }
-      if (_homeController.showTopBar case final showTopBar?) {
-        return Obx(() {
-          final showSearchBar = showTopBar.value;
-          return AnimatedOpacity(
-            opacity: showSearchBar ? 1 : 0,
-            duration: const Duration(milliseconds: 300),
-            child: AnimatedContainer(
-              curve: Curves.easeInOutCubicEmphasized,
-              duration: const Duration(milliseconds: 500),
-              height: showSearchBar ? Style.topBarHeight : 0,
-              padding: padding,
-              child: child,
-            ),
-          );
-        });
+      if (_homeController.showTopBar != null) {
+        return ListenableBuilder(
+          listenable: _homeController,
+          builder: (_, __) {
+            final showSearchBar = _homeController.showTopBar!;
+            return AnimatedOpacity(
+              opacity: showSearchBar ? 1 : 0,
+              duration: const Duration(milliseconds: 300),
+              child: AnimatedContainer(
+                curve: Curves.easeInOutCubicEmphasized,
+                duration: const Duration(milliseconds: 500),
+                height: showSearchBar ? Style.topBarHeight : 0,
+                padding: padding,
+                child: child,
+              ),
+            );
+          },
+        );
       }
     }
     return Container(
@@ -158,7 +161,7 @@ class _HomePageState extends CommonPageState<HomePage>
             onTap: () => AppNavigator.toNamed(
               '/search',
               parameters: _homeController.enableSearchWord
-                  ? {'hintText': _homeController.defaultSearch.value}
+                  ? {'hintText': _homeController.defaultSearch}
                   : null,
             ),
             child: Row(
@@ -171,9 +174,10 @@ class _HomePageState extends CommonPageState<HomePage>
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Obx(
-                    () => Text(
-                      _homeController.defaultSearch.value,
+                  child: ListenableBuilder(
+                    listenable: _homeController,
+                    builder: (_, __) => Text(
+                      _homeController.defaultSearch,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: theme.colorScheme.outline),
@@ -196,8 +200,9 @@ Widget userAvatar({
 }) {
   return Semantics(
     label: "我的",
-    child: Obx(
-      () {
+    child: ListenableBuilder(
+      listenable: mainController,
+      builder: (_, __) {
         if (mainController.accountService.isLogin) {
           return Stack(
             clipBehavior: .none,
@@ -269,16 +274,17 @@ Widget userAvatar({
 }
 
 Widget msgBadge(MainControllerNotifier mainController) {
-  return Obx(
-    () {
+  return ListenableBuilder(
+    listenable: mainController,
+    builder: (_, __) {
       if (mainController.accountService.isLogin) {
-        final count = mainController.msgUnReadCount.value;
+        final count = mainController.msgUnReadCount;
         final isNumBadge = mainController.msgBadgeMode == .number;
         return IconButton(
           tooltip: '消息',
           onPressed: () {
             mainController
-              ..msgUnReadCount.value = ''
+              ..msgUnReadCount = ''
               ..lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
             AppNavigator.toNamed('/whisper');
           },

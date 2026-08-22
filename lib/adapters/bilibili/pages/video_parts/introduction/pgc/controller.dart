@@ -89,9 +89,9 @@ class PgcIntroController extends CommonIntroController {
       if (hasFav) {
         stat?.favorite = max(1, stat.favorite);
       }
-      this.hasLike.value = hasLike;
-      coinNum.value = response.coinNumber!;
-      this.hasFav.value = hasFav;
+      this.hasLike = hasLike;
+      coinNum = response.coinNumber!;
+      this.hasFav = hasFav;
     } else {
       SmartDialog.showToast(result.toString());
     }
@@ -104,12 +104,12 @@ class PgcIntroController extends CommonIntroController {
       SmartDialog.showToast('\u8d26\u53f7\u672a\u767b\u5f55');
       return;
     }
-    final newVal = !hasLike.value;
+    final newVal = !hasLike;
     final result = await Get.find<VideoRepository>().likeVideo(bvid: bvid, type: newVal);
     if (result case Success(:final response)) {
       SmartDialog.showToast(newVal ? response : '\u53d6\u6d88\u8d5e');
       pgcItem.stat?.like += newVal ? 1 : -1;
-      hasLike.value = newVal;
+      hasLike = newVal;
     } else {
       SmartDialog.showToast(result.toString());
     }
@@ -276,8 +276,8 @@ class PgcIntroController extends CommonIntroController {
         queryPgcLikeCoinFav();
       }
 
-      hasLater.value = VideoHost.of().isWatchLaterSource(videoDetailCtr.args['sourceType']);
-      this.cid.value = cid;
+      hasLater = VideoHost.of().isWatchLaterSource(videoDetailCtr.args['sourceType']);
+      this.cid = cid;
       queryOnlineTotal();
       queryVideoIntro(episode as EpisodeItem);
       return true;
@@ -377,25 +377,25 @@ class PgcIntroController extends CommonIntroController {
       SmartDialog.showToast('\u8d26\u53f7\u672a\u767b\u5f55');
       return;
     }
-    if (hasLike.value && hasCoin && hasFav.value) {
+    if (hasLike && hasCoin && hasFav) {
       SmartDialog.showToast('\u5df2\u4e09\u8fde');
       return;
     }
     final result = await Get.find<VideoRepository>().pgcTriple(epId: '${epId!}', seasonId: seasonId?.toString());
     if (result case Success(:final response)) {
       late final stat = pgcItem.stat;
-      if (response.like == 1 && !hasLike.value) {
+      if (response.like == 1 && !hasLike) {
         stat?.like++;
-        hasLike.value = true;
+        hasLike = true;
       }
       if (response.coin == 1 && !hasCoin) {
         stat?.coin += 2;
-        coinNum.value = 2;
+        coinNum = 2;
         GlobalData().afterCoin(2);
       }
-      if (response.favorite == 1 && !hasFav.value) {
+      if (response.favorite == 1 && !hasFav) {
         stat?.favorite++;
-        hasFav.value = true;
+        hasFav = true;
       }
       if (!hasCoin) {
         SmartDialog.showToast('\u6295\u5e01\u5931\u8d25');
@@ -417,13 +417,13 @@ class PgcIntroController extends CommonIntroController {
 
   @override
   void queryVideoIntro([EpisodeItem? episode]) {
-    episode ??= pgcItem.episodes!.firstWhere((e) => e.cid == cid.value);
+    episode ??= pgcItem.episodes!.firstWhere((e) => e.cid == cid);
     videoDetail
-      ..value.title = episode.showTitle
-      ..refresh();
+      ..title = episode.showTitle;
+    notifyListeners();
     videoPlayerServiceHandler?.onVideoDetailChange(
       episode,
-      cid.value,
+      cid,
       heroTag,
       artist: pgcItem.title,
     );

@@ -26,63 +26,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 
-// ---------------------------------------------------------------------------
-// Riverpod StateNotifier pattern
-// ---------------------------------------------------------------------------
-
-/// Immutable state snapshot for the main shell controller.
-class MainState {
-  const MainState({
-    this.selectedIndex = 0,
-    this.navigationBars = const [],
-    this.dynCount = 0,
-    this.msgUnReadCount = '',
-    this.useBottomNav = false,
-    this.barOffset,
-    this.showBottomBar,
-    this.isPlaying = false,
-  });
-
-  final int selectedIndex;
-  final List<MainTab> navigationBars;
-  final int dynCount;
-  final String msgUnReadCount;
-  final bool useBottomNav;
-  final double? barOffset;
-  final bool? showBottomBar;
-  final bool isPlaying;
-
-  MainState copyWith({
-    int? selectedIndex,
-    List<MainTab>? navigationBars,
-    int? dynCount,
-    String? msgUnReadCount,
-    bool? useBottomNav,
-    double? barOffset,
-    bool clearBarOffset = false,
-    bool? showBottomBar,
-    bool clearShowBottomBar = false,
-    bool? isPlaying,
-  }) => MainState(
-    selectedIndex: selectedIndex ?? this.selectedIndex,
-    navigationBars: navigationBars ?? this.navigationBars,
-    dynCount: dynCount ?? this.dynCount,
-    msgUnReadCount: msgUnReadCount ?? this.msgUnReadCount,
-    useBottomNav: useBottomNav ?? this.useBottomNav,
-    barOffset: clearBarOffset ? null : (barOffset ?? this.barOffset),
-    showBottomBar: clearShowBottomBar ? null : (showBottomBar ?? this.showBottomBar),
-    isPlaying: isPlaying ?? this.isPlaying,
-  );
-}
-
-/// Riverpod StateNotifier managing the main shell tab navigation state.
+/// Riverpod ChangeNotifier managing the main shell tab navigation state.
 ///
-/// Mirrors the essential state from the GetX [MainController] without
-/// any GetX dependency. PageController/TabController lifecycle is managed
+/// Implements [MainBarState] so the generic page layer stays free of
+/// adapter imports. PageController/TabController lifecycle is managed
 /// by the view (ConsumerStatefulWidget provides the TickerProvider).
-class MainControllerNotifier extends StateNotifier<MainState>
+class MainControllerNotifier extends ChangeNotifier
     implements MainBarState {
-  MainControllerNotifier() : super(const MainState()) {
+  MainControllerNotifier() {
     _init();
   }
 
@@ -114,17 +65,58 @@ class MainControllerNotifier extends StateNotifier<MainState>
   late int lastCheckUnreadAt = 0;
 
   // -- MainBarState implementation --
+  double? _barOffset;
   @override
-  RxDouble? barOffset;
+  double? get barOffset => _barOffset;
   @override
-  RxBool? showBottomBar;
+  set barOffset(double? value) {
+    if (_barOffset != value) {
+      _barOffset = value;
+      notifyListeners();
+    }
+  }
+
+  bool? _showBottomBar;
+  @override
+  bool? get showBottomBar => _showBottomBar;
+  @override
+  set showBottomBar(bool? value) {
+    if (_showBottomBar != value) {
+      _showBottomBar = value;
+      notifyListeners();
+    }
+  }
+
   @override
   bool useBottomNav = false;
 
-  // -- Reactive state for Obx widgets --
-  final RxInt selectedIndex = 0.obs;
-  final RxInt dynCount = 0.obs;
-  late final RxString msgUnReadCount = ''.obs;
+  // -- Reactive state for ListenableBuilder widgets --
+  int _selectedIndex = 0;
+  int get selectedIndex => _selectedIndex;
+  set selectedIndex(int value) {
+    if (_selectedIndex != value) {
+      _selectedIndex = value;
+      notifyListeners();
+    }
+  }
+
+  int _dynCount = 0;
+  int get dynCount => _dynCount;
+  set dynCount(int value) {
+    if (_dynCount != value) {
+      _dynCount = value;
+      notifyListeners();
+    }
+  }
+
+  String _msgUnReadCount = '';
+  String get msgUnReadCount => _msgUnReadCount;
+  set msgUnReadCount(String value) {
+    if (_msgUnReadCount != value) {
+      _msgUnReadCount = value;
+      notifyListeners();
+    }
+  }
 
   // -- Tab/Page controller --
   late dynamic controller;
@@ -152,9 +144,9 @@ class MainControllerNotifier extends StateNotifier<MainState>
     if (hideBottomBar) {
       switch (barHideType) {
         case BarHideType.instant:
-          showBottomBar = RxBool(true);
+          showBottomBar = true;
         case BarHideType.sync:
-          barOffset = RxDouble(0.0);
+          barOffset = 0.0;
       }
     }
 
@@ -223,7 +215,7 @@ class MainControllerNotifier extends StateNotifier<MainState>
 
   Future<void> queryUnreadMsg([bool isChangeType = false]) async {
     if (!hasHome || msgUnReadTypes.isEmpty || msgBadgeMode == DynamicBadgeMode.hidden) {
-      msgUnReadCount.value = '';
+      msgUnReadCount = '';
       return;
     }
     final res = await Future.wait([_msgUnread(), _msgFeedUnread()]);
@@ -233,8 +225,8 @@ class MainControllerNotifier extends StateNotifier<MainState>
         : count > 99
         ? '99+'
         : count.toString();
-    if (msgUnReadCount.value != countStr || isChangeType) {
-      msgUnReadCount.value = countStr;
+    if (msgUnReadCount != countStr || isChangeType) {
+      msgUnReadCount = countStr;
     }
   }
 
@@ -247,7 +239,7 @@ class MainControllerNotifier extends StateNotifier<MainState>
 
   void setDynCount([int count = 0]) {
     if (!hasDyn) return;
-    dynCount.value = count;
+    dynCount = count;
   }
 
   void checkUnreadDynamic() {
@@ -268,7 +260,7 @@ class MainControllerNotifier extends StateNotifier<MainState>
       _navigationBars = navBarSort.map((i) => _host.tabs[i]).toList();
     }
     final defPage = Pref.defaultHomePageIndex;
-    selectedIndex.value = defPage.clamp(0, _navigationBars.length - 1);
+    _selectedIndex = defPage.clamp(0, _navigationBars.length - 1);
   }
 
   // -- Tab selection --
@@ -276,10 +268,10 @@ class MainControllerNotifier extends StateNotifier<MainState>
   /// Callback invoked by the view after the PageController/TabController
   /// has been animated/jumped. The notifier only updates state here.
   void onTabChanged(int index) {
-    if (index == state.selectedIndex) {
+    if (index == _selectedIndex) {
       // Same tab tapped — handled externally (scroll-to-top / refresh).
     } else {
-      selectedIndex.value = index;
+      selectedIndex = index;
     }
   }
 
@@ -299,8 +291,8 @@ class MainControllerNotifier extends StateNotifier<MainState>
   void setIndex(int value) {
     feedBack();
     final currentNav = navigationBars[value];
-    if (value != selectedIndex.value) {
-      selectedIndex.value = value;
+    if (value != _selectedIndex) {
+      selectedIndex = value;
       if (mainTabBarView) {
         (controller as TabController).animateTo(value);
       } else {
@@ -340,7 +332,7 @@ class MainControllerNotifier extends StateNotifier<MainState>
   void checkDefaultSearch([bool shouldCheck = false]) {
     if (hasHome && homeController.state.enableSearchWord) {
       if (shouldCheck &&
-          navigationBars[selectedIndex.value].id != MainTabIds.home) {
+          navigationBars[_selectedIndex].id != MainTabIds.home) {
         return;
       }
       int now = DateTime.now().millisecondsSinceEpoch;
@@ -357,7 +349,7 @@ class MainControllerNotifier extends StateNotifier<MainState>
         hasHome &&
         msgBadgeMode != DynamicBadgeMode.hidden) {
       if (shouldCheck &&
-          navigationBars[selectedIndex.value].id != MainTabIds.home) {
+          navigationBars[_selectedIndex].id != MainTabIds.home) {
         return;
       }
       int now = DateTime.now().millisecondsSinceEpoch;
@@ -370,7 +362,7 @@ class MainControllerNotifier extends StateNotifier<MainState>
 
   void setSearchBar() {
     if (hasHome) {
-      homeController.showTopBar?.value = true;
+      homeController.showTopBar = true;
     }
   }
 
@@ -394,6 +386,6 @@ class MainControllerNotifier extends StateNotifier<MainState>
 }
 
 final mainControllerProvider =
-    StateNotifierProvider<MainControllerNotifier, MainState>((ref) {
+    ChangeNotifierProvider<MainControllerNotifier>((ref) {
   return MainControllerNotifier();
 });

@@ -412,7 +412,7 @@ class BiliVideoBlockNotifier extends StateNotifier<BiliVideoBlockState>
                     final ugcIntroController = Get.find<UgcIntroController>(
                       tag: _ctr.heroTag,
                     );
-                    final part = ugcIntroController.videoDetail.value.pages![item];
+                    final part = ugcIntroController.videoDetail.pages![item];
                     ugcIntroController.onChangeEpisode(part);
                     SmartDialog.showToast('已跳至第${item + 1}P');
                   } catch (e) {
@@ -815,7 +815,7 @@ class BiliVideoHost implements VideoHost {
   Widget buildSeasonPanel({required String heroTag}) {
     final ctr = Get.find<VideoDetailController>(tag: heroTag);
     final ugcIntroCtr = Get.find<UgcIntroController>(tag: heroTag);
-    final videoDetail = ugcIntroCtr.videoDetail.value;
+    final videoDetail = ugcIntroCtr.videoDetail;
     return KeepAliveWrapper(
       child: Column(
         children: [
@@ -867,7 +867,7 @@ class BiliVideoHost implements VideoHost {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Obx(
                 () => SeasonPanel(
-                  key: ValueKey(ugcIntroCtr.videoDetail.value),
+                  key: ValueKey(ugcIntroCtr.videoDetail),
                   heroTag: heroTag,
                   canTap: false,
                   showEpisodes: () => showEpisodes(heroTag),
@@ -891,7 +891,6 @@ class BiliVideoHost implements VideoHost {
                   cid: ctr.seasonCid ?? 0,
                   isReversed: ugcIntroCtr
                       .videoDetail
-                      .value
                       .ugcSeason!
                       .sections![ctr.seasonIndex.value]
                       .isReversed,
@@ -953,7 +952,7 @@ class BiliVideoHost implements VideoHost {
     if (ctr.isFileSource || isPortrait || !ctr.isUgc) {
       return false;
     }
-    final videoDetail = Get.find<UgcIntroController>(tag: heroTag).videoDetail.value;
+    final videoDetail = Get.find<UgcIntroController>(tag: heroTag).videoDetail;
     return ctr.plPlayerController.horizontalSeasonPanel &&
         (videoDetail.ugcSeason != null ||
             ((videoDetail.pages?.length ?? 0) > 1));
@@ -1020,7 +1019,7 @@ class BiliVideoHost implements VideoHost {
       if (ctr.isUgc) {
         Get.find<UgcIntroController>(tag: heroTag)
           ..cancelTimer()
-          ..videoDetail.close();
+          ..videoDetail;
       } else {
         Get.find<PgcIntroController>(tag: heroTag).cancelTimer();
       }
@@ -1134,7 +1133,7 @@ class BiliVideoHost implements VideoHost {
     try {
       title = Get.find<UgcIntroController>(
         tag: heroTag,
-      ).videoDetail.value.title;
+      ).videoDetail.title;
     } catch (_) {}
     final child = NoteListPage(
       oid: ctr.aid,
@@ -1174,7 +1173,7 @@ class BiliVideoHost implements VideoHost {
     if (ctr.isUgc) {
       try {
         ugcIntroController = Get.find<UgcIntroController>(tag: heroTag);
-        videoDetail = ugcIntroController.videoDetail.value;
+        videoDetail = ugcIntroController.videoDetail;
         if (videoDetail.ugcSeason?.sections case final sections?) {
           episodes = <ugc.BaseEpisodeItem>[];
           for (final i in sections) {
@@ -1268,7 +1267,7 @@ class BiliVideoHost implements VideoHost {
     } else if (ctr.isUgc) {
       try {
         final introCtr = Get.find<UgcIntroController>(tag: heroTag);
-        id = introCtr.videoDetail.value.ugcSeason?.id;
+        id = introCtr.videoDetail.ugcSeason?.id;
         if (id != null) {
           extraId = 8;
           from = PlaylistSource.MEDIA_LIST;
@@ -1373,11 +1372,10 @@ class BiliVideoHost implements VideoHost {
           : season != null
           ? Get.find<UgcIntroController>(tag: heroTag)
                 .videoDetail
-                .value
                 .ugcSeason!
                 .sections![ctr.seasonIndex.value]
                 .isReversed
-          : Get.find<UgcIntroController>(tag: heroTag).videoDetail.value.isPageReversed,
+          : Get.find<UgcIntroController>(tag: heroTag).videoDetail.isPageReversed,
       isSupportReverse: ctr.isUgc,
       onChangeEpisode: ctr.isUgc
           ? Get.find<UgcIntroController>(tag: heroTag).onChangeEpisode
@@ -1487,7 +1485,7 @@ class BiliVideoHost implements VideoHost {
 
     final videoDetail = Get.find<UgcIntroController>(
       tag: heroTag,
-    ).videoDetail.value;
+    ).videoDetail;
     if (isSeason) {
       final item = videoDetail
           .ugcSeason!
@@ -1503,7 +1501,6 @@ class BiliVideoHost implements VideoHost {
       } else {
         final episode = Get.find<UgcIntroController>(tag: heroTag)
             .videoDetail
-            .value
             .ugcSeason!
             .sections![ctr.seasonIndex.value]
             .episodes!
@@ -1642,7 +1639,6 @@ class BiliVideoHost implements VideoHost {
     try {
       final part = Get.find<UgcIntroController>(tag: heroTag)
           .videoDetail
-          .value
           .pages
           ?.firstWhereOrNull((e) => e.cid == cid);
       final dimension = part?.dimension;
@@ -1685,7 +1681,6 @@ class BiliVideoHost implements VideoHost {
     try {
       final pages = Get.find<UgcIntroController>(tag: heroTag)
           .videoDetail
-          .value
           .pages;
       if (pages != null && pages.length > 1) {
         final index = pages.indexWhere((item) => item.cid == lastPlayCid);
@@ -1701,7 +1696,6 @@ class BiliVideoHost implements VideoHost {
     try {
       return Get.find<UgcIntroController>(tag: heroTag)
           .videoDetail
-          .value
           .rights
           ?.isSteinGate == 1;
     } catch (_) {
@@ -1714,13 +1708,11 @@ class BiliVideoHost implements VideoHost {
     try {
       return Get.find<UgcIntroController>(tag: heroTag)
           .videoDetail
-          .value
           .title;
     } catch (_) {
       try {
         return Get.find<PgcIntroController>(tag: heroTag)
             .videoDetail
-            .value
             .title;
       } catch (_) {
         return null;

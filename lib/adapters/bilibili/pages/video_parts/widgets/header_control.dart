@@ -1251,9 +1251,9 @@ class HeaderControlState extends State<HeaderControl>
                         ),
                       );
                   }
-                  final videoDetail = introController.videoDetail.value;
+                  final videoDetail = introController.videoDetail;
                   final name =
-                      '${videoDetail.title}-${videoDetail.owner?.name}(${videoDetail.owner?.mid})-${videoDetailCtr.bvid}-${videoDetailCtr.cid.value}-${item.lanDoc}.${format.name}'
+                      '${videoDetail.title}-${videoDetail.owner?.name}(${videoDetail.owner?.mid})-${videoDetailCtr.bvid}-${videoDetailCtr.cid}-${item.lanDoc}.${format.name}'
                           .replaceAll(
                             Platform.isWindows ? RegExp(r'[<>:/\\|?*"]') : '/',
                             '_',
@@ -1707,7 +1707,7 @@ class HeaderControlState extends State<HeaderControl>
         !isFileSource && plPlayerController.showFSActionItem && isFSOrPip;
     showCurrTimeIfNeeded(isFullScreen);
     Widget title;
-    if (introController.videoDetail.value.title != null &&
+    if (introController.videoDetail.title != null &&
         (isFullScreen ||
             ((!horizontalScreen || plPlayerController.isDesktopPip) &&
                 !isPortrait))) {
@@ -1718,7 +1718,7 @@ class HeaderControlState extends State<HeaderControl>
             : const EdgeInsets.only(right: 10),
         child: Obx(
           () {
-            final videoDetail = introController.videoDetail.value;
+            final videoDetail = introController.videoDetail;
             final String title;
             if (isFileSource || videoDetail.videos == 1) {
               title = videoDetail.title!;
@@ -1726,7 +1726,7 @@ class HeaderControlState extends State<HeaderControl>
               title =
                   videoDetail.pages
                       ?.firstWhereOrNull(
-                        (e) => e.cid == videoDetailCtr.cid.value,
+                        (e) => e.cid == videoDetailCtr.cid,
                       )
                       ?.part ??
                   videoDetail.title!;
@@ -1750,7 +1750,7 @@ class HeaderControlState extends State<HeaderControl>
             title,
             Obx(
               () => Text(
-                '${introController.total.value}人正在看',
+                '${introController.total}人正在看',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 11,
@@ -2029,7 +2029,7 @@ class HeaderControlState extends State<HeaderControl>
                         color: Colors.white,
                       ),
                       selectIcon: const Icon(FontAwesomeIcons.solidThumbsUp),
-                      selectStatus: introController.hasLike.value,
+                      selectStatus: introController.hasLike,
                       semanticsLabel: '点赞',
                       animation: introController.tripleAnimation,
                       onStartTriple: () {
@@ -2100,7 +2100,7 @@ class HeaderControlState extends State<HeaderControl>
                         context,
                         isLongPress: true,
                       ),
-                      selectStatus: introController.hasFav.value,
+                      selectStatus: introController.hasFav,
                       semanticsLabel: '收藏',
                     ),
                   ),

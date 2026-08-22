@@ -26,29 +26,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
-/// Minimal state class for CommonIntroController.
+/// Abstract base controller for video intro pages.
 ///
-/// Phase 3: empty — reactive fields (.obs) remain on the controller.
-/// Phase 4 will migrate them here.
-class CommonIntroState {
-  const CommonIntroState();
-}
-
-abstract class CommonIntroController extends StateNotifier<CommonIntroState>
+/// Uses [ChangeNotifier] pattern — plain fields + [notifyListeners].
+/// Implements [TripleMixin.notifyChange] to propagate reactive field changes.
+abstract class CommonIntroController extends ChangeNotifier
     with TripleMixin, FavMixin {
-  CommonIntroController() : super(const CommonIntroState()) {
+  CommonIntroController() {
     onInit();
   }
 
-  /// GetxController compatibility — StateNotifier uses [mounted].
-  bool get isClosed => !mounted;
+  /// GetxController compatibility.
+  bool isClosed = false;
   late final String heroTag;
   late String bvid;
 
   // 是否稍后再看
-  final RxBool hasLater = false.obs;
+  bool _hasLater = false;
+  bool get hasLater => _hasLater;
+  set hasLater(bool value) {
+    if (_hasLater != value) {
+      _hasLater = value;
+      notifyListeners();
+    }
+  }
 
-  final Rx<List<CoreVideoTagItem>?> videoTags = Rx<List<CoreVideoTagItem>?>(null);
+  List<CoreVideoTagItem>? _videoTags;
+  List<CoreVideoTagItem>? get videoTags => _videoTags;
+  set videoTags(List<CoreVideoTagItem>? value) {
+    _videoTags = value;
+    notifyListeners();
+  }
 
   bool isProcessing = false;
   Future<void> handleAction(FutureOr Function() action) async {
@@ -69,7 +77,12 @@ abstract class CommonIntroController extends StateNotifier<CommonIntroState>
     getStat()?.favorite += count;
   }
 
-  final Rx<VideoDetailData> videoDetail = VideoDetailData().obs;
+  VideoDetailData _videoDetail = VideoDetailData();
+  VideoDetailData get videoDetail => _videoDetail;
+  set videoDetail(VideoDetailData value) {
+    _videoDetail = value;
+    notifyListeners();
+  }
 
   void queryVideoIntro();
 
@@ -80,19 +93,38 @@ abstract class CommonIntroController extends StateNotifier<CommonIntroState>
 
   // 同时观看
   final bool isShowOnlineTotal = Pref.enableOnlineTotal;
-  late final RxString total = '1'.obs;
+  String _total = '1';
+  String get total => _total;
+  set total(String value) {
+    if (_total != value) {
+      _total = value;
+      notifyListeners();
+    }
+  }
+
   Timer? timer;
 
-  late final RxInt cid;
+  int _cid = 0;
+  int get cid => _cid;
+  set cid(int value) {
+    if (_cid != value) {
+      _cid = value;
+      notifyListeners();
+    }
+  }
 
   late final videoDetailCtr = Get.find<VideoDetailController>(tag: heroTag);
+
+  /// TripleMixin notification callback — delegates to [notifyListeners].
+  @override
+  void notifyChange() => notifyListeners();
 
   void onInit() {
     final args = Get.arguments;
     heroTag = args['heroTag'];
     bvid = args['bvid'];
-    cid = RxInt(args['cid']);
-    hasLater.value = args['sourceType'] == SourceType.watchLater;
+    _cid = args['cid'];
+    _hasLater = args['sourceType'] == SourceType.watchLater;
 
     queryVideoIntro();
     startTimer();
@@ -120,10 +152,10 @@ abstract class CommonIntroController extends StateNotifier<CommonIntroState>
     final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).onlineTotal(
       aid: IdUtils.bv2av(bvid),
       bvid: bvid,
-      cid: cid.value,
+      cid: _cid,
     );
     if (result case Success(:final response)) {
-      total.value = response;
+      total = response;
     }
   }
 
@@ -145,12 +177,12 @@ abstract class CommonIntroController extends StateNotifier<CommonIntroState>
     );
     if (res.isSuccess) {
       SmartDialog.showToast('投币成功');
-      coinNum.value += coin;
+      coinNum += coin;
       GlobalData().afterCoin(coin);
       stat.coin += coin;
-      if (coinWithLike && !hasLike.value) {
+      if (coinWithLike && !hasLike) {
         stat.like++;
-        hasLike.value = true;
+        hasLike = true;
       }
     } else {
       SmartDialog.showToast(res.toString());
@@ -158,15 +190,15 @@ abstract class CommonIntroController extends StateNotifier<CommonIntroState>
   }
 
   Future<void> queryVideoTags() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).videoTags(bvid: bvid, cid: cid.value);
-    videoTags.value = result.dataOrNull;
+    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).videoTags(bvid: bvid, cid: _cid);
+    videoTags = result.dataOrNull;
   }
 
   Future<void> viewLater() async {
-    final res = await (hasLater.value
+    final res = await (_hasLater
 ? (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewDel(aids: IdUtils.bv2av(bvid).toString())
    : (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewLater(bvid: bvid));
-    if (res.isSuccess) hasLater.toggle();
+    if (res.isSuccess) hasLater = !hasLater;
   }
 }
 
@@ -176,7 +208,13 @@ mixin FavMixin on TripleMixin {
   Set? favIds;
   int? quickFavId;
   late final enableQuickFav = Pref.enableQuickFav;
-  final Rx<CoreFavFolderData> favFolderData = CoreFavFolderData().obs;
+
+  CoreFavFolderData _favFolderData = CoreFavFolderData();
+  CoreFavFolderData get favFolderData => _favFolderData;
+  set favFolderData(CoreFavFolderData value) {
+    _favFolderData = value;
+    notifyChange();
+  }
 
   (Object, int) get getFavRidType;
 
@@ -189,7 +227,7 @@ mixin FavMixin on TripleMixin {
       type: type,
     );
     if (res case Success(:final response)) {
-      favFolderData.value = response;
+      favFolderData = response;
       favIds = response.list
           ?.where((item) => item.favState == 1)
           .map((item) => item.id)
@@ -207,7 +245,7 @@ mixin FavMixin on TripleMixin {
       return this.quickFavId!;
     }
     final quickFavId = Pref.quickFavId;
-    final list = favFolderData.value.list!;
+    final list = favFolderData.list!;
     if (quickFavId != null) {
       final folderInfo = list.firstWhereOrNull((e) => e.id == quickFavId);
       if (folderInfo != null) {
@@ -248,7 +286,7 @@ mixin FavMixin on TripleMixin {
       SmartDialog.showLoading(msg: '请求中');
       queryVideoInFolder().then((res) async {
         if (res.isSuccess) {
-          final hasFav = this.hasFav.value;
+          final hasFav = this.hasFav;
           final result = hasFav
 ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).unfavAll(rid, type)
    : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
@@ -258,7 +296,7 @@ mixin FavMixin on TripleMixin {
           SmartDialog.dismiss();
           if (result.isSuccess) {
             updateFavCount(hasFav ? -1 : 1);
-            this.hasFav.toggle();
+            this.hasFav = !hasFav;
             SmartDialog.showToast('${hasFav ? '取消' : ''}收藏成功');
           } else {
             res.toast();
@@ -273,7 +311,7 @@ mixin FavMixin on TripleMixin {
     List<int?> addMediaIdsNew = [];
     List<int?> delMediaIdsNew = [];
     try {
-      for (final i in favFolderData.value.list!) {
+      for (final i in favFolderData.list!) {
         bool isFaved = favIds?.contains(i.id) == true;
         if (i.favState == 1) {
           if (!isFaved) {
@@ -299,9 +337,9 @@ mixin FavMixin on TripleMixin {
       Get.back();
       final newVal =
           addMediaIdsNew.isNotEmpty || favIds?.length != delMediaIdsNew.length;
-      if (hasFav.value != newVal) {
+      if (hasFav != newVal) {
         updateFavCount(newVal ? 1 : -1);
-        hasFav.value = newVal;
+        hasFav = newVal;
       }
       SmartDialog.showToast('${newVal ? '' : '取消'}收藏成功');
     } else {

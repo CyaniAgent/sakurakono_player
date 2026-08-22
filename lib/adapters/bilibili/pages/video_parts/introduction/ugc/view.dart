@@ -105,7 +105,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
       ),
       sliver: Obx(
         () {
-          final videoDetail = introController.videoDetail.value;
+          final videoDetail = introController.videoDetail;
           final isLoading = videoDetail.bvid == null;
           return SliverToBoxAdapter(
             child: GestureDetector(
@@ -193,7 +193,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                               .horizontalSeasonPanel))
                     Obx(
                       () => SeasonPanel(
-                        key: ValueKey(introController.videoDetail.value),
+                        key: ValueKey(introController.videoDetail),
                         heroTag: widget.heroTag,
                         showEpisodes: widget.showEpisodes,
                         ugcIntroController: introController,
@@ -208,7 +208,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                               .horizontalSeasonPanel))
                     Obx(
                       () => PagesPanel(
-                        key: ValueKey(introController.videoDetail.value),
+                        key: ValueKey(introController.videoDetail),
                         heroTag: widget.heroTag,
                         ugcIntroController: introController,
                         bvid: introController.bvid,
@@ -296,7 +296,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
     ],
     NoTranslucentArea(
       child: Obx(() {
-        final videoTags = introController.videoTags.value;
+        final videoTags = introController.videoTags;
         if (videoTags == null || videoTags.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -480,7 +480,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               animation: introController.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.thumbsUp),
               selectIcon: const Icon(FontAwesomeIcons.solidThumbsUp),
-              selectStatus: introController.hasLike.value,
+              selectStatus: introController.hasLike,
               semanticsLabel: '点赞',
               text: !isLoading ? NumUtils.numFormat(stat!.like) : null,
               onStartTriple: introController.onStartTriple,
@@ -520,7 +520,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                 context,
                 isLongPress: true,
               ),
-              selectStatus: introController.hasFav.value,
+              selectStatus: introController.hasFav,
               semanticsLabel: '收藏',
               text: !isLoading ? NumUtils.numFormat(stat!.favorite) : null,
             ),
@@ -531,7 +531,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               selectIcon: const Icon(FontAwesomeIcons.solidClock),
               onTap: () =>
                   introController.handleAction(introController.viewLater),
-              selectStatus: introController.hasLater.value,
+              selectStatus: introController.hasLater,
               semanticsLabel: '再看',
               text: '再看',
             ),
@@ -972,7 +972,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
         if (introController.isShowOnlineTotal)
           Obx(
             () => Text(
-              '${introController.total.value}人在看',
+              '${introController.total}人在看',
               style: TextStyle(fontSize: 12, color: colorScheme.outline),
             ),
           ),

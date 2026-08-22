@@ -755,7 +755,7 @@ Future<void> _showMsgBadgeDialog(
     if (mainController.msgBadgeMode != DynamicBadgeMode.hidden) {
       mainController.queryUnreadMsg(true);
     } else {
-      mainController.msgUnReadCount.value = '';
+      mainController.msgUnReadCount = '';
     }
     await GStorage.setting.put(SettingBoxKey.msgBadgeMode, res.index);
     SmartDialog.showToast('设置成功');

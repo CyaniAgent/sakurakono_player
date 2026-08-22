@@ -44,7 +44,7 @@ class _FavPanelState extends State<FavPanel> {
       case Loading():
         return m3eLoading;
       case Success():
-        final list = widget.ctr.favFolderData.value.list!;
+        final list = widget.ctr.favFolderData.list!;
         return ListView.builder(
           controller: widget.scrollController,
           itemCount: list.length,
@@ -113,7 +113,7 @@ class _FavPanelState extends State<FavPanel> {
             TextButton.icon(
               onPressed: () => AppNavigator.toNamed('/createFav')?.then((data) {
                 if (data is CoreFavFolderInfo && mounted) {
-                  widget.ctr.favFolderData.value.list?.insert(
+                  widget.ctr.favFolderData.list?.insert(
                     1,
                     data
                       ..favState = 1

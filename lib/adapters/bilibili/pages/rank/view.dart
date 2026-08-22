@@ -90,8 +90,8 @@ class _RankPageState extends ConsumerState<RankPage>
       },
       scrollOffsetAdjustment: _mainCtr.useBottomNav &&
               switch (_mainCtr.barHideType) {
-                BarHideType.instant => _mainCtr.showBottomBar?.value ?? true,
-                BarHideType.sync => (_mainCtr.barOffset?.value ?? 0) == 0,
+                BarHideType.instant => _mainCtr.showBottomBar ?? true,
+                BarHideType.sync => (_mainCtr.barOffset ?? 0) == 0,
               }
           ? 80.0
           : 0.0,

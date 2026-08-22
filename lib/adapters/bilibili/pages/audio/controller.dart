@@ -61,6 +61,10 @@ class AudioController extends ChangeNotifier
         BlockMixin {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
+
+  /// TripleMixin notification callback.
+  @override
+  void notifyChange() => notifyListeners();
   late Int64 id;
   late Int64 oid;
   late List<Int64> subId;
@@ -202,9 +206,9 @@ class AudioController extends ChangeNotifier
 
   void _updateCurrItem(DetailItem item) {
     audioItem = item;
-    hasLike.value = item.stat.hasLike_7;
-    coinNum.value = item.stat.hasCoin_8 ? 2 : 0;
-    hasFav.value = item.stat.hasFav;
+    hasLike = item.stat.hasLike_7;
+    coinNum = item.stat.hasCoin_8 ? 2 : 0;
+    hasFav = item.stat.hasFav;
     videoPlayerServiceHandler?.onVideoDetailChange(
       item,
       (subId.firstOrNull ?? oid).toInt(),
@@ -418,7 +422,7 @@ class AudioController extends ChangeNotifier
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final newVal = !hasLike.value;
+    final newVal = !hasLike;
     final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioThumbUp(
       oid: oid,
       subId: subId,
@@ -428,7 +432,7 @@ class AudioController extends ChangeNotifier
           : CoreAudioThumbType.cancelLike,
     );
     if (res case Success(:final response)) {
-      hasLike.value = newVal;
+      hasLike = newVal;
       try {
         audioItem!.stat
           ..hasLike_7 = newVal
@@ -453,9 +457,9 @@ class AudioController extends ChangeNotifier
       itemType: itemType,
     );
     if (res case Success(:final response)) {
-      hasLike.value = true;
+      hasLike = true;
       if (response.coinOk == true && !hasCoin) {
-        coinNum.value = 2;
+        coinNum = 2;
         GlobalData().afterCoin(2);
         try {
           audioItem!.stat
@@ -464,7 +468,7 @@ class AudioController extends ChangeNotifier
           notifyListeners();
         } catch (_) {}
       }
-      hasFav.value = true;
+      hasFav = true;
       if (!hasCoin) {
         SmartDialog.showToast('投币失败');
       } else {
@@ -488,11 +492,11 @@ class AudioController extends ChangeNotifier
       thumbUp: coinWithLike,
     );
     if (res.isSuccess) {
-      final updateLike = !hasLike.value && coinWithLike;
+      final updateLike = !hasLike && coinWithLike;
       if (updateLike) {
-        hasLike.value = true;
+        hasLike = true;
       }
-      coinNum.value += coin;
+      coinNum += coin;
       try {
         final stat = audioItem!.stat
           ..hasCoin_8 = true

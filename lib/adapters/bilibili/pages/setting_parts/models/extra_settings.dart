@@ -489,7 +489,7 @@ List<SettingsModel> get extraSettings => [
         if (val) {
           controller.querySearchDefault();
         } else {
-          controller.defaultSearch.value = '';
+          controller.defaultSearch = '';
         }
       } catch (_) {}
     },

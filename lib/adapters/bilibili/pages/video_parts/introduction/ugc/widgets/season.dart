@@ -35,7 +35,7 @@ class _SeasonPanelState extends State<SeasonPanel> {
 
   UgcIntroController get ugcIntroController => widget.ugcIntroController;
   VideoDetailData get videoDetail =>
-      widget.ugcIntroController.videoDetail.value;
+      widget.ugcIntroController.videoDetail;
 
   @override
   void initState() {
@@ -44,12 +44,12 @@ class _SeasonPanelState extends State<SeasonPanel> {
       tag: widget.heroTag,
     );
 
-    _videoDetailController.seasonCid = ugcIntroController.cid.value != 0
+    _videoDetailController.seasonCid = ugcIntroController.cid != 0
         ? (videoDetail.pages?.isNotEmpty == true
               ? videoDetail.isPageReversed
                     ? videoDetail.pages!.last.cid
                     : videoDetail.pages!.first.cid
-              : ugcIntroController.cid.value)
+              : ugcIntroController.cid)
         : videoDetail.isPageReversed
         ? videoDetail.pages!.last.cid
         : videoDetail.pages!.first.cid;

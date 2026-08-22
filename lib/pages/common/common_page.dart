@@ -9,21 +9,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Implemented by the active adapter's main scaffold controller so the
 /// generic page layer stays free of adapter imports.
 abstract interface class MainBarState {
-  RxDouble? get barOffset;
-  RxBool? get showBottomBar;
+  double? get barOffset;
+  set barOffset(double? value);
+  bool? get showBottomBar;
+  set showBottomBar(bool? value);
   bool get useBottomNav;
 }
 
 /// Top-bar visibility contract implemented by the adapter's home controller.
 abstract interface class HomeBarState {
-  RxBool? get showTopBar;
+  bool? get showTopBar;
+  set showTopBar(bool? value);
 }
 
 abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
-  RxDouble? _barOffset;
-  RxBool? _showTopBar;
-  RxBool? _showBottomBar;
-  final _mainController = Get.find<MainBarState>();
+  MainBarState? _mainBarState;
+  HomeBarState? _homeBarState;
 
   // ignore: unused_field
   Ref? _ref;
@@ -37,21 +38,20 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
   @override
   void initState() {
     super.initState();
-    _barOffset = _mainController.barOffset;
-    _showBottomBar = _mainController.showBottomBar;
+    _mainBarState = Get.find<MainBarState>();
     try {
-      _showTopBar = Get.find<HomeBarState>().showTopBar;
+      _homeBarState = Get.find<HomeBarState>();
     } catch (_) {}
   }
 
   Widget onBuild(Widget child) {
-    if (_barOffset != null) {
+    if (_mainBarState?.barOffset != null) {
       return NotificationListener<ScrollNotification>(
         onNotification: onNotificationType2,
         child: child,
       );
     }
-    if (_showTopBar != null || _showBottomBar != null) {
+    if (_homeBarState?.showTopBar != null || _mainBarState?.showBottomBar != null) {
       return NotificationListener<UserScrollNotification>(
         onNotification: onNotificationType1,
         child: child,
@@ -61,30 +61,31 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
   }
 
   bool onNotificationType1(UserScrollNotification notification) {
-    if (!_mainController.useBottomNav) return false;
+    if (!_mainBarState!.useBottomNav) return false;
     if (notification.metrics.axis == .horizontal) return false;
     switch (notification.direction) {
       case .forward:
-        _showTopBar?.value = true;
-        _showBottomBar?.value = true;
+        _homeBarState?.showTopBar = true;
+        _mainBarState?.showBottomBar = true;
       case .reverse:
-        _showTopBar?.value = false;
-        _showBottomBar?.value = false;
+        _homeBarState?.showTopBar = false;
+        _mainBarState?.showBottomBar = false;
       case _:
     }
     return false;
   }
 
   void _updateOffset(double scrollDelta) {
-    _barOffset!.value = clampDouble(
-      _barOffset!.value + scrollDelta,
+    final current = _mainBarState!.barOffset ?? 0.0;
+    _mainBarState!.barOffset = clampDouble(
+      current + scrollDelta,
       0.0,
       Style.topBarHeight,
     );
   }
 
   bool onNotificationType2(ScrollNotification notification) {
-    if (!_mainController.useBottomNav) return false;
+    if (!_mainBarState!.useBottomNav) return false;
 
     final metrics = notification.metrics;
     if (metrics.axis == .horizontal) return false;
@@ -95,7 +96,7 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
       final scrollDelta = notification.scrollDelta ?? 0;
       if (pixel < 0.0 && scrollDelta > 0) return false;
       if (needsCorrection) {
-        final value = _barOffset!.value;
+        final value = _mainBarState!.barOffset ?? 0.0;
         final newValue = clampDouble(
           value + scrollDelta,
           0.0,
@@ -103,7 +104,7 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
         );
         final offset = value - newValue;
         if (offset != 0) {
-          _barOffset!.value = newValue;
+          _mainBarState!.barOffset = newValue;
           if (pixel < 0.0 && scrollDelta < 0.0 && value > 0.0) {
             return false;
           }
@@ -125,9 +126,8 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
 
   @override
   void dispose() {
-    _barOffset = null;
-    _showTopBar = null;
-    _showBottomBar = null;
+    _mainBarState = null;
+    _homeBarState = null;
     super.dispose();
   }
 }

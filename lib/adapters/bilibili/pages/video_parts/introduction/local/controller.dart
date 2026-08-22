@@ -52,7 +52,7 @@ class LocalIntroController extends CommonIntroController {
   @override
   void onInit() {
     super.onInit();
-    videoDetail.value.title = videoDetailCtr.args['title'];
+    videoDetail.title = videoDetailCtr.args['title'];
     final controller = Get.find<DownloadPageController>();
     final list = <BiliDownloadEntryInfo>[];
     for (final e in controller.pages) {
@@ -143,8 +143,8 @@ class LocalIntroController extends CommonIntroController {
       ..initFileSource(entry, isInit: false)
       ..playerInit();
     videoDetail
-      ..value.title = entry.showTitle
-      ..refresh();
+      ..title = entry.showTitle;
+    notifyListeners();
     this.index.value = index;
     if (PlatformUtils.isMobile) {
       onVideoDetailChange(entry);

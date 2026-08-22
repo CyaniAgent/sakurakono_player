@@ -191,7 +191,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
 
   // 动态构建底部控制条
   Widget _buildBottomBar() {
-    final videoDetail = introController.videoDetail.value;
+    final videoDetail = introController.videoDetail;
     final isSeason = videoDetail.ugcSeason != null;
     final isPart = videoDetail.pages != null && videoDetail.pages!.length > 1;
     final isPgc = !videoDetailController.isUgc;

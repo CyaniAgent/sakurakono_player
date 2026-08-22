@@ -11,7 +11,6 @@ import 'package:skf/common/widgets/route_aware_mixin.dart';
 import 'package:skf/pages/home/view.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/main/main_host.dart';
-import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/player_controller.dart';
 import 'package:skf/utils/android/android_helper.dart';
 import 'package:skf/utils/extension/context_ext.dart';
@@ -270,11 +269,11 @@ class _MainAppState extends PopScopeState<MainApp>
     if (_mainController.directExitOnBack) {
       _onBack();
     } else {
-      if (_mainController.selectedIndex.value != 0) {
+      if (_mainController.selectedIndex != 0) {
         _mainController
           ..setIndex(0)
-          ..barOffset?.value = 0.0
-          ..showBottomBar?.value = true
+          ..barOffset = 0.0
+          ..showBottomBar = true
           ..setSearchBar();
       } else {
         _onBack();
@@ -286,10 +285,11 @@ class _MainAppState extends PopScopeState<MainApp>
     Widget? bottomNav;
     if (_mainController.navigationBars.length > 1) {
       if (_mainController.floatingNavBar) {
-        bottomNav = Obx(
-          () => FloatingNavigationBar(
+        bottomNav = ListenableBuilder(
+          listenable: _mainController,
+          builder: (_, __) => FloatingNavigationBar(
             onDestinationSelected: _mainController.setIndex,
-            selectedIndex: _mainController.selectedIndex.value,
+            selectedIndex: _mainController.selectedIndex,
             destinations: _mainController.navigationBars
                 .map(
                   (e) => FloatingNavigationDestination(
@@ -302,11 +302,12 @@ class _MainAppState extends PopScopeState<MainApp>
           ),
         );
       } else if (_mainController.enableMYBar) {
-        bottomNav = Obx(
-          () => NavigationBar(
+        bottomNav = ListenableBuilder(
+          listenable: _mainController,
+          builder: (_, __) => NavigationBar(
             maintainBottomViewPadding: true,
             onDestinationSelected: _mainController.setIndex,
-            selectedIndex: _mainController.selectedIndex.value,
+            selectedIndex: _mainController.selectedIndex,
             destinations: _mainController.navigationBars
                 .map(
                   (e) => NavigationDestination(
@@ -319,9 +320,10 @@ class _MainAppState extends PopScopeState<MainApp>
           ),
         );
       } else {
-        bottomNav = Obx(
-          () => BottomNavigationBar(
-            currentIndex: _mainController.selectedIndex.value,
+        bottomNav = ListenableBuilder(
+          listenable: _mainController,
+          builder: (_, __) => BottomNavigationBar(
+            currentIndex: _mainController.selectedIndex,
             onTap: _mainController.setIndex,
             iconSize: 16,
             selectedFontSize: 12,
@@ -341,23 +343,25 @@ class _MainAppState extends PopScopeState<MainApp>
       }
 
       if (_mainController.hideBottomBar) {
-        if (_mainController.barOffset case final barOffset?) {
-          return Obx(
-            () => FractionalTranslation(
+        if (_mainController.barOffset != null) {
+          return ListenableBuilder(
+            listenable: _mainController,
+            builder: (_, __) => FractionalTranslation(
               translation: Offset(
                 0.0,
-                barOffset.value / Style.topBarHeight,
+                (_mainController.barOffset ?? 0.0) / Style.topBarHeight,
               ),
               child: bottomNav,
             ),
           );
         }
-        if (_mainController.showBottomBar case final showBottomBar?) {
-          return Obx(
-            () => AnimatedSlide(
+        if (_mainController.showBottomBar != null) {
+          return ListenableBuilder(
+            listenable: _mainController,
+            builder: (_, __) => AnimatedSlide(
               curve: Curves.easeInOutCubicEmphasized,
               duration: const Duration(milliseconds: 500),
-              offset: Offset(0, showBottomBar.value ? 0 : 1),
+              offset: Offset(0, _mainController.showBottomBar == true ? 0 : 1),
               child: bottomNav,
             ),
           );
@@ -380,8 +384,9 @@ class _MainAppState extends PopScopeState<MainApp>
                       flex: 5,
                       child: SizedBox(
                         width: 130,
-                        child: Obx(
-                          () => NavigationDrawer(
+                        child: ListenableBuilder(
+                          listenable: _mainController,
+                          builder: (_, __) => NavigationDrawer(
                             backgroundColor: Colors.transparent,
                             tilePadding: const .symmetric(
                               vertical: 5,
@@ -391,7 +396,7 @@ class _MainAppState extends PopScopeState<MainApp>
                               borderRadius: .all(.circular(16)),
                             ),
                             onDestinationSelected: _mainController.setIndex,
-                            selectedIndex: _mainController.selectedIndex.value,
+                            selectedIndex: _mainController.selectedIndex,
                             children: _mainController.navigationBars
                                 .map(
                                   (e) => NavigationDrawerDestination(
@@ -410,10 +415,11 @@ class _MainAppState extends PopScopeState<MainApp>
                     ),
                   ],
                 )
-              : Obx(
-                  () => NavigationRail(
+              : ListenableBuilder(
+                  listenable: _mainController,
+                  builder: (_, __) => NavigationRail(
                     groupAlignment: 0.5,
-                    selectedIndex: _mainController.selectedIndex.value,
+                    selectedIndex: _mainController.selectedIndex,
                     onDestinationSelected: _mainController.setIndex,
                     labelType: .selected,
                     leading: userAndSearchVertical(theme),
@@ -503,9 +509,10 @@ class _MainAppState extends PopScopeState<MainApp>
   Widget _buildIcon({required MainTab tab, bool selected = false}) {
     final icon = selected ? tab.selectedIcon : tab.icon;
     return tab.id == MainTabIds.dynamics
-        ? Obx(
-            () {
-              final dynCount = _mainController.dynCount.value;
+        ? ListenableBuilder(
+            listenable: _mainController,
+            builder: (_, __) {
+              final dynCount = _mainController.dynCount;
               return Badge(
                 isLabelVisible: dynCount > 0,
                 label: _mainController.dynamicBadgeMode == .number

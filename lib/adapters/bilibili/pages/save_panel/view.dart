@@ -105,7 +105,7 @@ class _SavePanelState extends State<SavePanel> {
           if (videoType == VideoType.pgc || videoType == VideoType.pugv) {
             final ctr = Get.find<PgcIntroController>(tag: heroTag);
             final pgcItem = ctr.pgcItem;
-            final cid = ctr.cid.value;
+            final cid = ctr.cid;
             final episode = pgcItem.episodes!.firstWhere(
               (e) => e.cid == cid,
             );
@@ -123,15 +123,15 @@ class _SavePanelState extends State<SavePanel> {
                 'bilibili://comment/detail/$type/$oid/$rootId/?${anchor}enterUri=bilibili://pgc/season/ep/${ctr.epId}';
           } else {
             final ctr = Get.find<UgcIntroController>(tag: heroTag);
-            final videoDetail = ctr.videoDetail.value;
+            final videoDetail = ctr.videoDetail;
             cover = videoDetail.pic;
             title = videoDetail.title;
             pubdate = videoDetail.pubdate;
             uname = videoDetail.owner?.name;
 
-            final cid = ctr.cid.value;
+            final cid = ctr.cid;
             final part =
-                ctr.videoDetail.value.pages?.indexWhere((i) => i.cid == cid) ??
+                ctr.videoDetail.pages?.indexWhere((i) => i.cid == cid) ??
                 -1;
             if (part > 0) uri += '&p=${part + 1}';
           }

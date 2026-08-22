@@ -682,7 +682,7 @@ class _AudioPageState extends State<AudioPage>
               selectIcon: const Icon(
                 FontAwesomeIcons.solidThumbsUp,
               ),
-              selectStatus: _controller.hasLike.value,
+              selectStatus: _controller.hasLike,
               semanticsLabel: '点赞',
               text: NumUtils.numFormat(audioItem.stat.like),
               onStartTriple: _controller.onStartTriple,
@@ -714,7 +714,7 @@ class _AudioPageState extends State<AudioPage>
                 context,
                 isLongPress: true,
               ),
-              selectStatus: _controller.hasFav.value,
+              selectStatus: _controller.hasFav,
               semanticsLabel: '收藏',
               text: NumUtils.numFormat(
                 audioItem.stat.favourite,

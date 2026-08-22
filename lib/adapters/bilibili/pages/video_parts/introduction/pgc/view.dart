@@ -287,7 +287,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
       return GestureDetector(
         onTap: () => widget.showIntroDetail(
           item,
-          introController.videoTags.value,
+          introController.videoTags,
         ),
         behavior: HitTestBehavior.opaque,
         child: SizedBox(
@@ -396,7 +396,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
               animation: introController.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.thumbsUp),
               selectIcon: const Icon(FontAwesomeIcons.solidThumbsUp),
-              selectStatus: introController.hasLike.value,
+              selectStatus: introController.hasLike,
               semanticsLabel: '点赞',
               text: NumUtils.numFormat(stat.like),
               onStartTriple: introController.onStartTriple,
@@ -424,7 +424,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
                 context,
                 isLongPress: true,
               ),
-              selectStatus: introController.hasFav.value,
+              selectStatus: introController.hasFav,
               semanticsLabel: '收藏',
               text: NumUtils.numFormat(stat.favorite),
             ),
@@ -435,7 +435,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
               selectIcon: const Icon(FontAwesomeIcons.solidClock),
               onTap: () =>
                   introController.handleAction(introController.viewLater),
-              selectStatus: introController.hasLater.value,
+              selectStatus: introController.hasLater,
               semanticsLabel: '再看',
               text: '再看',
             ),

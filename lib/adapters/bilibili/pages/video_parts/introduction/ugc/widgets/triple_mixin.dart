@@ -6,21 +6,49 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 mixin TripleMixin {
   TickerProvider? _tickerProvider;
   void attachTicker(TickerProvider ticker) { _tickerProvider = ticker; }
-  // 是否点赞
-  final RxBool hasLike = false.obs;
-  // 投币数量
-  final RxNum coinNum = RxNum(0);
-  // 是否投币
-  bool get hasCoin => coinNum.value != 0;
-  // 是否收藏
-  final RxBool hasFav = false.obs;
 
-  bool get hasTriple => hasLike.value && hasCoin && hasFav.value;
+  /// Called when any reactive field changes. Implementations should
+  /// propagate the change to listeners (e.g. notifyListeners).
+  void notifyChange();
+
+  // 是否点赞
+  bool _hasLike = false;
+  bool get hasLike => _hasLike;
+  set hasLike(bool value) {
+    if (_hasLike != value) {
+      _hasLike = value;
+      notifyChange();
+    }
+  }
+
+  // 投币数量
+  num _coinNum = 0;
+  num get coinNum => _coinNum;
+  set coinNum(num value) {
+    if (_coinNum != value) {
+      _coinNum = value;
+      notifyChange();
+    }
+  }
+
+  // 是否投币
+  bool get hasCoin => coinNum != 0;
+
+  // 是否收藏
+  bool _hasFav = false;
+  bool get hasFav => _hasFav;
+  set hasFav(bool value) {
+    if (_hasFav != value) {
+      _hasFav = value;
+      notifyChange();
+    }
+  }
+
+  bool get hasTriple => hasLike && hasCoin && hasFav;
 
   bool get isLogin;
 
@@ -42,7 +70,7 @@ mixin TripleMixin {
       return;
     }
 
-    final coinNum = this.coinNum.value;
+    final coinNum = this.coinNum;
     final copyright = this.copyright;
     final hasCopyright = isHasCopyright(copyright);
     if (reachCoinLimit(hasCopyright, coinNum)) {

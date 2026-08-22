@@ -49,7 +49,7 @@ class BiliMineActions implements MineActions {
   bool get isMainMineTab {
     final mainController = Get.find<MainControllerNotifier>();
     return mainController.navigationBars.first.id != MainTabIds.mine &&
-        mainController.selectedIndex.value == 0;
+        mainController.selectedIndex == 0;
   }
 
   @override

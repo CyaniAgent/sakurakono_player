@@ -10,14 +10,13 @@ import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 
 // ---------------------------------------------------------------------------
-// Riverpod StateNotifier pattern
+// Riverpod ChangeNotifier pattern
 // ---------------------------------------------------------------------------
 
 /// Immutable state snapshot for the home tab controller.
@@ -51,14 +50,10 @@ class HomeState {
   );
 }
 
-/// Riverpod StateNotifier managing home tab state.
-///
-/// Mirrors the essential state from the GetX [HomeController] without
-/// any GetX dependency. TabController lifecycle is managed by the view
-/// (ConsumerStatefulWidget provides the TickerProvider).
-class HomeControllerNotifier extends StateNotifier<HomeState>
+/// Manages home tab state. TabController lifecycle is managed by the view.
+class HomeControllerNotifier extends ChangeNotifier
     implements HomeBarState {
-  HomeControllerNotifier() : super(const HomeState()) {
+  HomeControllerNotifier() {
     _init();
   }
 
@@ -66,18 +61,35 @@ class HomeControllerNotifier extends StateNotifier<HomeState>
   late int lateCheckSearchAt = 0;
 
   // -- HomeBarState implementation --
+  bool? _showTopBar;
   @override
-  RxBool? showTopBar;
+  bool? get showTopBar => _showTopBar;
+  @override
+  set showTopBar(bool? value) {
+    if (_showTopBar != value) {
+      _showTopBar = value;
+      notifyListeners();
+    }
+  }
 
   // -- Tab controller --
   late TabController tabController;
 
+  // -- State --
+  HomeState _state = const HomeState();
+  HomeState get state => _state;
+
   // -- Config (mutable for settings pages) --
   bool enableSearchWord = Pref.enableSearchWord;
-  late final RxString defaultSearch = ''.obs;
-  // -- Convenience getters for view compatibility --
-  List<HomeTabItem> get tabs => state.tabs;
-  bool get hideTopBar => state.hideTopBar;
+
+  // -- Convenience getters/setters for view compatibility --
+  String get defaultSearch => _state.defaultSearch;
+  set defaultSearch(String value) {
+    _state = _state.copyWith(defaultSearch: value);
+    notifyListeners();
+  }
+  List<HomeTabItem> get tabs => _state.tabs;
+  bool get hideTopBar => _state.hideTopBar;
 
 
   // -- Account --
@@ -89,7 +101,7 @@ class HomeControllerNotifier extends StateNotifier<HomeState>
 
     _loadTabs();
 
-    state = state.copyWith(
+    _state = _state.copyWith(
       hideTopBar: hideTopBar,
       enableSearchWord: enableSearchWord,
     );
@@ -99,9 +111,9 @@ class HomeControllerNotifier extends StateNotifier<HomeState>
         final mainCtr = Get.find<MainControllerNotifier>();
         switch (mainCtr.barHideType) {
           case BarHideType.instant:
-            showTopBar = RxBool(true);
+            _showTopBar = true;
           case BarHideType.sync:
-            mainCtr.barOffset ??= RxDouble(0.0);
+            mainCtr.barOffset ??= 0.0;
         }
       } catch (_) {}
     }
@@ -126,7 +138,7 @@ class HomeControllerNotifier extends StateNotifier<HomeState>
       tabs.indexWhere((t) => t.id == _host.defaultHomeTabId),
     );
 
-    state = state.copyWith(
+    _state = _state.copyWith(
       tabs: tabs,
       selectedTab: selectedIndex,
     );
@@ -134,36 +146,37 @@ class HomeControllerNotifier extends StateNotifier<HomeState>
 
   /// Switch to the tab at [index].
   void switchTab(int index) {
-    if (index >= 0 && index < state.tabs.length) {
-      state = state.copyWith(selectedTab: index);
+    if (index >= 0 && index < _state.tabs.length) {
+      _state = _state.copyWith(selectedTab: index);
+      notifyListeners();
     }
   }
 
   /// Get the [ScrollOrRefreshMixin] for a specific tab.
   ScrollOrRefreshMixin getControllerForTab(int index) {
-    return _host.homeTabCtrFor(state.tabs[index]);
+    return _host.homeTabCtrFor(_state.tabs[index]);
   }
 
   /// Animate scroll to top for the current tab.
   void animateToTop() {
-    getControllerForTab(state.selectedTab).animateToTop();
+    getControllerForTab(_state.selectedTab).animateToTop();
   }
 
   /// Refresh the current tab.
   Future<void> onRefresh() async {
-    await getControllerForTab(state.selectedTab).onRefresh();
+    await getControllerForTab(_state.selectedTab).onRefresh();
   }
 
   /// Refresh or scroll to top for the current tab.
   void toTopOrRefresh() {
-    getControllerForTab(state.selectedTab).toTopOrRefresh();
+    getControllerForTab(_state.selectedTab).toTopOrRefresh();
   }
 
   Future<void> querySearchDefault() async {
     try {
       final search = await _host.fetchDefaultSearchWord();
-      defaultSearch.value = search;
-      state = state.copyWith(defaultSearch: search);
+      _state = _state.copyWith(defaultSearch: search);
+      notifyListeners();
     } catch (_) {}
   }
 }
@@ -176,6 +189,6 @@ class HomeControllerNotifier extends StateNotifier<HomeState>
 /// ref.read(homeControllerProvider.notifier).switchTab(2);
 /// ```
 final homeControllerProvider =
-    StateNotifierProvider<HomeControllerNotifier, HomeState>((ref) {
+    ChangeNotifierProvider<HomeControllerNotifier>((ref) {
   return HomeControllerNotifier();
 });

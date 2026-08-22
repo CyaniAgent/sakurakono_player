@@ -48,7 +48,7 @@ class _PagesPanelState extends State<PagesPanel> {
   StreamSubscription? _listener;
 
   List<Part> get pages =>
-      widget.list ?? widget.ugcIntroController.videoDetail.value.pages!;
+      widget.list ?? widget.ugcIntroController.videoDetail.pages!;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _PagesPanelState extends State<PagesPanel> {
     );
     double offset = 0;
     if (widget.list == null) {
-      cid = widget.ugcIntroController.cid.value;
+      cid = widget.ugcIntroController.cid;
       pageIndex = pages.indexWhere((Part e) => e.cid == cid);
       offset = targetOffset;
       _listener = _videoDetailController.cid.listen((cid) {
@@ -186,7 +186,7 @@ class _PagesPanelState extends State<PagesPanel> {
                           widget
                                   .ugcIntroController
                                   .videoDetail
-                                  .value
+
                                   .ugcSeason !=
                               null) {
                         _videoDetailController.seasonCid = pages.first.cid;
