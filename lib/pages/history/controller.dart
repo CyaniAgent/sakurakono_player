@@ -29,7 +29,9 @@ class HistoryController
 
   final String? type;
   TabController? tabController;
-  late RxList<CoreHistoryTab> tabs = <CoreHistoryTab>[].obs;
+  List<CoreHistoryTab> _tabs = [];
+  List<CoreHistoryTab> get tabs => _tabs;
+  set tabs(List<CoreHistoryTab> v) { _tabs = v; notifyListeners(); }
 
   int? max;
   int? viewAt;
@@ -64,7 +66,7 @@ class HistoryController
 
     if (isRefresh && type == null) {
       if (tabs.isEmpty && data.tab?.isNotEmpty == true) {
-        tabs.value = data.tab!;
+        tabs = data.tab!;
         tabController = TabController(
           length: data.tab!.length + 1,
           vsync: this,
