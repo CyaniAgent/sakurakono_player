@@ -45,68 +45,66 @@ typedef PlayCallback = Future<void>? Function();
 /// 零适配器依赖（lib/player/ 层）。B站 专属能力通过适配器侧的扩展 mixin
 /// 叠加，mixin 通过本类提供的钩子方法（onPlayerInit / onOpenStart /
 /// onHeartBeat / onEnterPip …）挂载适配器逻辑，保持核心层纯净。
-class PlayerController implements CorePlayerService {
+class PlayerController extends ChangeNotifier implements CorePlayerService {
   Player? _videoPlayerController;
   VideoController? _videoController;
 
   /// 当前激活的播放器实例（由适配器扩展类创建并赋值）。
   static PlayerController? currentInstance;
 
-  final playerStatus = PlPlayerStatus(.playing);
+  PlayerStatus playerStatus = PlayerStatus.playing;
 
-  final Rx<DataStatus> dataStatus = Rx(.none);
+  DataStatus dataStatus = DataStatus.none;
 
   Duration? seekToPos;
   bool hasToasted = false;
-  final RxBool isSeeking = false.obs;
+  bool isSeeking = false;
 
-  final RxInt position = RxInt(0);
+  int position = 0;
 
   int get positionInMilliseconds =>
       videoPlayerController?.state.position.inMilliseconds ?? 0;
 
-  final RxInt buffered = RxInt(0);
+  int buffered = 0;
 
-  final RxInt duration = RxInt(0);
+  int duration = 0;
 
   int durationInMilliseconds = 0;
 
   void updateDuration(Duration value) {
-    duration.value = value.inSeconds;
+    duration = value.inSeconds;
     durationInMilliseconds = value.inMilliseconds;
+    notifyListeners();
   }
 
   /// 播放器引用计数（>1 时 dispose 仅减一，不销毁资源）。
   int playerCount = 0;
 
   late double lastPlaybackSpeed = 1.0;
-  final RxDouble _playbackSpeed = (Pref.playSpeedDefault).obs;
-  late final RxDouble _longPressSpeed = (Pref.longPressSpeedDefault).obs;
+  late double _playbackSpeed = Pref.playSpeedDefault;
+  late double _longPressSpeed = Pref.longPressSpeedDefault;
 
-  final RxDouble volume = RxDouble(
-    PlatformUtils.isDesktop ? Pref.desktopVolume : 1.0,
-  );
+  double volume = PlatformUtils.isDesktop ? Pref.desktopVolume : 1.0;
   final setSystemBrightness = Pref.setSystemBrightness;
 
-  final RxDouble brightness = (-1.0).obs;
+  double brightness = -1.0;
 
-  final RxBool showControls = false.obs;
+  bool showControls = false;
 
-  final RxBool showBrightnessStatus = false.obs;
+  bool showBrightnessStatus = false;
 
-  final RxBool longPressStatus = false.obs;
+  bool longPressStatus = false;
 
-  final RxBool controlsLock = false.obs;
+  bool controlsLock = false;
 
-  final RxBool isFullScreen = false.obs;
+  bool isFullScreen = false;
   bool isLive = false;
 
   bool _isVertical = false;
 
-  final Rx<VideoFitType> videoFit = Rx(.contain);
+  VideoFitType videoFit = VideoFitType.contain;
 
-  late final RxBool continuePlayInBackground =
-      (Pref.continuePlayInBackground).obs;
+  late bool continuePlayInBackground = Pref.continuePlayInBackground;
 
   bool _autoPlay = false;
 
@@ -123,10 +121,10 @@ class PlayerController implements CorePlayerService {
   Box setting = GStorage.setting;
 
   /// 视频播放速度
-  double get playbackSpeed => _playbackSpeed.value;
+  double get playbackSpeed => _playbackSpeed;
 
   // 长按倍速
-  double get longPressSpeed => _longPressSpeed.value;
+  double get longPressSpeed => _longPressSpeed;
 
   /// [videoPlayerController] instance of Player
   Player? get videoPlayerController => _videoPlayerController;
@@ -137,14 +135,14 @@ class PlayerController implements CorePlayerService {
   bool isMuted = false;
 
   /// 听视频
-  late final RxBool onlyPlayAudio = false.obs;
+  late bool onlyPlayAudio = false;
 
   /// 镜像
-  late final RxBool flipX = false.obs;
+  late bool flipX = false;
 
-  late final RxBool flipY = false.obs;
+  late bool flipY = false;
 
-  final RxBool isBuffering = true.obs;
+  bool isBuffering = true;
 
   /// 全屏方向
   // ignore: unnecessary_getters_setters
@@ -162,9 +160,10 @@ class PlayerController implements CorePlayerService {
   late Rect _lastWindowBounds;
 
   late final showWindowTitleBar = Pref.showWindowTitleBar;
-  late final RxBool isAlwaysOnTop = false.obs;
+  late bool isAlwaysOnTop = false;
   Future<void> setAlwaysOnTop(bool value) {
-    isAlwaysOnTop.value = value;
+    isAlwaysOnTop = value;
+    notifyListeners();
     return windowManager.setAlwaysOnTop(value);
   }
 
@@ -181,7 +180,7 @@ class PlayerController implements CorePlayerService {
   }
 
   Future<void> enterDesktopPip() async {
-    if (isFullScreen.value) return;
+    if (isFullScreen) return;
 
     isDesktopPip = true;
 
@@ -320,7 +319,7 @@ class PlayerController implements CorePlayerService {
 
   TextStyle get subTitleStyle => TextStyle(
     height: 1.5,
-    fontSize: 16 * (isFullScreen.value ? subtitleFontScaleFS : subtitleFontScale),
+    fontSize: 16 * (isFullScreen ? subtitleFontScaleFS : subtitleFontScale),
     letterSpacing: 0.1,
     wordSpacing: 0.1,
     color: Colors.white,
@@ -330,7 +329,7 @@ class PlayerController implements CorePlayerService {
         : Colors.black.withValues(alpha: subtitleBgOpacity),
   );
 
-  late final Rx<SubtitleViewConfiguration> subtitleConfig = getSubConfig.obs;
+  late SubtitleViewConfiguration subtitleConfig = getSubConfig;
 
   SubtitleViewConfiguration get getSubConfig {
     final subTitleStyle = this.subTitleStyle;
@@ -357,7 +356,8 @@ class PlayerController implements CorePlayerService {
   }
 
   void updateSubtitleStyle() {
-    subtitleConfig.value = getSubConfig;
+    subtitleConfig = getSubConfig;
+    notifyListeners();
   }
 
   void onUpdatePadding(EdgeInsets padding) {
@@ -402,7 +402,7 @@ class PlayerController implements CorePlayerService {
     _orientation = param.orientation;
     if (Platform.isIOS && !visible) return;
     final orientation = param.orientation;
-    final isFullScreen = this.isFullScreen.value;
+    final isFullScreen = this.isFullScreen;
     if (checkIsAutoRotate &&
         param.isAutoRotate != true &&
         (!isFullScreen ||
@@ -413,7 +413,7 @@ class PlayerController implements CorePlayerService {
     }
     switch (orientation) {
       case .portraitUp:
-        if (!_isVertical && controlsLock.value) return;
+        if (!_isVertical && controlsLock) return;
         if (!horizontalScreen && !_isVertical && isFullScreen) {
           if (!isManualFS) {
             triggerFullScreen(status: false, orientation: orientation);
@@ -423,7 +423,7 @@ class PlayerController implements CorePlayerService {
         }
       case .portraitDown:
         if (!horizontalScreen) return;
-        if (!_isVertical && controlsLock.value) return;
+        if (!_isVertical && controlsLock) return;
         portraitDownMode();
       case .landscapeLeft:
         if (!horizontalScreen && !isFullScreen) {
@@ -501,7 +501,7 @@ class PlayerController implements CorePlayerService {
         );
     _autoPlay = autoplay;
     // 初始化数据加载状态
-    dataStatus.value = DataStatus.loading;
+    dataStatus = DataStatus.loading;
     // 初始化全屏方向
     _isVertical = isVertical ?? false;
 
@@ -526,9 +526,10 @@ class PlayerController implements CorePlayerService {
     }
 
     updateDuration(duration ?? _videoPlayerController!.state.duration);
-    position.value = buffered.value = seekTo?.inSeconds ?? 0;
+    position = buffered = seekTo?.inSeconds ?? 0;
 
-    dataStatus.value = .loaded;
+    dataStatus = .loaded;
+    notifyListeners();
 
     if (autoFullScreenFlag && autoEnterFullScreen) {
       triggerFullScreen(status: true);
@@ -544,7 +545,7 @@ class PlayerController implements CorePlayerService {
     Duration? seekTo,
     Map<String, String>? adapterExtras,
   ) async {
-    isBuffering.value = false;
+    isBuffering = false;
     heartDuration = 0;
     onOpenStart();
 
@@ -580,7 +581,7 @@ class PlayerController implements CorePlayerService {
 
     String video = dataSource.videoSource;
     if (dataSource.audioSource case final audio? when (audio.isNotEmpty)) {
-      if (onlyPlayAudio.value) {
+      if (onlyPlayAudio) {
         video = audio;
       }
     }
@@ -601,7 +602,7 @@ class PlayerController implements CorePlayerService {
       'video-sync': Pref.videoSync,
       if (Platform.isAndroid) 'ao': Pref.audioOutput,
       'volume':
-          (PlatformUtils.isMobile ? Pref.playerVolume : volume.value * 100)
+          (PlatformUtils.isMobile ? Pref.playerVolume : volume * 100)
               .toString(),
       'volume-max': ?volumeMax,
     };
@@ -636,7 +637,7 @@ class PlayerController implements CorePlayerService {
 
   Map<String, String>? _buffer;
   Map<String, String> get buffer =>
-      _buffer ??= Pref.initBuffer(_playbackSpeed.value);
+      _buffer ??= Pref.initBuffer(_playbackSpeed);
   Map<String, String>? _liveBuffer;
   Map<String, String> get liveBuffer => _liveBuffer ??= Pref.initLiveBuffer();
 
@@ -660,8 +661,8 @@ class PlayerController implements CorePlayerService {
     if (isLive) {
       await setPlaybackSpeed(1.0);
     } else {
-      if (_videoPlayerController?.state.rate != _playbackSpeed.value) {
-        await setPlaybackSpeed(_playbackSpeed.value);
+      if (_videoPlayerController?.state.rate != _playbackSpeed) {
+        await setPlaybackSpeed(_playbackSpeed);
       }
     }
     _initVideoFit();
@@ -702,14 +703,15 @@ class PlayerController implements CorePlayerService {
               _disableAutoEnterPip();
             }
           }
-          playerStatus.value = .playing;
+          playerStatus = .playing;
         } else {
           _disableAutoEnterPip();
-          playerStatus.value = .paused;
+          playerStatus = .paused;
         }
         _emitEvent(.playing, payload: playing);
 
-        onStatusChanged(playerStatus.value, isBuffering.value, isLive);
+        onStatusChanged(playerStatus, isBuffering, isLive);
+        notifyListeners();
 
         for (final element in _statusListeners) {
           element(playing ? .playing : .paused);
@@ -724,7 +726,8 @@ class PlayerController implements CorePlayerService {
       ///completed
       stream.completed.listen((bool completed) {
         if (completed) {
-          playerStatus.value = .completed;
+          playerStatus = .completed;
+          notifyListeners();
           _emitEvent(.completed, payload: true);
 
           for (final element in _statusListeners) {
@@ -739,9 +742,9 @@ class PlayerController implements CorePlayerService {
       stream.position.listen((Duration position) {
         final posInSeconds = position.inSeconds;
 
-        if (posInSeconds != this.position.value) {
-          if (!isSeeking.value) {
-            this.position.value = posInSeconds;
+        if (posInSeconds != this.position) {
+          if (!isSeeking) {
+            this.position = posInSeconds;
           }
           _emitEvent(.position, payload: position);
 
@@ -759,12 +762,14 @@ class PlayerController implements CorePlayerService {
         _emitEvent(.duration, payload: value);
       }),
       stream.buffer.listen((Duration buffer) {
-        buffered.value = buffer.inSeconds;
+        buffered = buffer.inSeconds;
+        notifyListeners();
       }),
       stream.buffering.listen((bool buffering) {
-        isBuffering.value = buffering;
+        isBuffering = buffering;
+        notifyListeners();
         _emitEvent(.buffering, payload: buffering);
-        onStatusChanged(playerStatus.value, buffering, isLive);
+        onStatusChanged(playerStatus, buffering, isLive);
       }),
       if (kDebugMode)
         stream.log.listen(((PlayerLog log) {
@@ -798,7 +803,7 @@ class PlayerController implements CorePlayerService {
             const Duration(milliseconds: 10000),
             () {
               Future.delayed(const Duration(milliseconds: 3000), () {
-                if (isBuffering.value && buffered.value == 0) {
+                if (isBuffering && buffered == 0) {
                   SmartDialog.showToast(
                     '视频链接打开失败，重试中',
                     displayTime: const Duration(milliseconds: 500),
@@ -810,7 +815,7 @@ class PlayerController implements CorePlayerService {
           );
         } else if (event.startsWith('Could not open codec')) {
           SmartDialog.showToast('无法加载解码器, $event，可能会切换至软解');
-        } else if (!onlyPlayAudio.value) {
+        } else if (!onlyPlayAudio) {
           if (event.startsWith("error running") ||
               event.startsWith("Failed to open .") ||
               event.startsWith("Cannot open") ||
@@ -860,14 +865,16 @@ class PlayerController implements CorePlayerService {
       }
     }
 
-    if (duration.value != 0) {
+    if (duration != 0) {
       seek();
     } else {
       // if (kDebugMode) debugPrint('seek duration else');
       _subForSeek?.cancel();
-      _subForSeek = duration.listen((_) {
-        seek();
-        _cancelSubForSeek();
+      _subForSeek = Stream.periodic(const Duration(milliseconds: 100), (_) {}).listen((_) {
+        if (duration != 0) {
+          seek();
+          _cancelSubForSeek();
+        }
       });
     }
   }
@@ -881,7 +888,8 @@ class PlayerController implements CorePlayerService {
     }
 
     await _videoPlayerController?.setRate(speed);
-    _playbackSpeed.value = speed;
+    _playbackSpeed = speed;
+    notifyListeners();
     onPlaybackSpeedChanged(speed);
   }
 
@@ -889,7 +897,8 @@ class PlayerController implements CorePlayerService {
   double playSpeedDefault = Pref.playSpeedDefault;
   Future<void> setDefaultSpeed() async {
     await _videoPlayerController?.setRate(playSpeedDefault);
-    _playbackSpeed.value = playSpeedDefault;
+    _playbackSpeed = playSpeedDefault;
+    notifyListeners();
   }
 
   /// 播放视频
@@ -908,7 +917,8 @@ class PlayerController implements CorePlayerService {
 
     onAudioSessionChanged(true);
 
-    playerStatus.value = PlayerStatus.playing;
+    playerStatus = PlayerStatus.playing;
+    notifyListeners();
     // screenManager.setOverlays(false);
   }
 
@@ -916,7 +926,8 @@ class PlayerController implements CorePlayerService {
   @override
   Future<void> pause({bool notify = true, bool isInterrupt = false}) async {
     await _videoPlayerController?.pause();
-    playerStatus.value = PlayerStatus.paused;
+    playerStatus = PlayerStatus.paused;
+    notifyListeners();
 
     // 主动暂停时让出音频焦点
     if (!isInterrupt) {
@@ -930,7 +941,7 @@ class PlayerController implements CorePlayerService {
   void hideTaskControls() {
     _timer?.cancel();
     _timer = Timer(showControlDuration, () {
-      if (!isSeeking.value && !tripling) {
+      if (!isSeeking && !tripling) {
         controls = false;
       }
       _timer = null;
@@ -943,19 +954,21 @@ class PlayerController implements CorePlayerService {
     }
     onSeekPreviewEnd();
     hasToasted = false;
-    isSeeking.value = false;
+    isSeeking = false;
+    notifyListeners();
     hideTaskControls();
   }
 
-  final RxBool volumeIndicator = false.obs;
+  bool volumeIndicator = false;
   Timer? volumeTimer;
   bool volumeInterceptEventStream = false;
 
   final double maxVolume = PlatformUtils.isDesktop ? Pref.maxVolume : 1.0;
   @override
   Future<void> setVolume(double volume, {bool showIndicator = true}) async {
-    if (this.volume.value != volume) {
-      this.volume.value = volume;
+    if (this.volume != volume) {
+      this.volume = volume;
+      notifyListeners();
       try {
         if (PlatformUtils.isDesktop) {
           await _videoPlayerController!.setVolume(volume * 100);
@@ -968,12 +981,14 @@ class PlayerController implements CorePlayerService {
       }
     }
     if (showIndicator) {
-      volumeIndicator.value = true;
+      volumeIndicator = true;
+      notifyListeners();
     }
     volumeInterceptEventStream = true;
     volumeTimer?.cancel();
     volumeTimer = Timer(const Duration(milliseconds: 200), () {
-      volumeIndicator.value = false;
+      volumeIndicator = false;
+      notifyListeners();
       volumeInterceptEventStream = false;
       if (PlatformUtils.isDesktop) {
         setting.put(SettingBoxKey.desktopVolume, volume.toPrecision(3));
@@ -983,7 +998,8 @@ class PlayerController implements CorePlayerService {
 
   /// Toggle Change the videofit accordingly
   void toggleVideoFit(VideoFitType value) {
-    _prefFit = videoFit.value = value;
+    _prefFit = videoFit = value;
+    notifyListeners();
     video.put(VideoBoxKey.cacheVideoFit, value.index);
   }
 
@@ -991,10 +1007,11 @@ class PlayerController implements CorePlayerService {
   var _prefFit = VideoFitType.values[Pref.cacheVideoFit];
   void _initVideoFit() {
     if (_prefFit == .fill && _isVertical) {
-      videoFit.value = .contain;
+      videoFit = .contain;
     } else {
-      videoFit.value = _prefFit;
+      videoFit = _prefFit;
     }
+    notifyListeners();
   }
 
   /// 设置后台播放
@@ -1006,7 +1023,8 @@ class PlayerController implements CorePlayerService {
   }
 
   set controls(bool visible) {
-    showControls.value = visible;
+    showControls = visible;
+    notifyListeners();
     _timer?.cancel();
     if (visible) {
       hideTaskControls();
@@ -1024,22 +1042,24 @@ class PlayerController implements CorePlayerService {
     if (isLive) {
       return;
     }
-    if (controlsLock.value) {
+    if (controlsLock) {
       return;
     }
-    if (longPressStatus.value == val) {
+    if (longPressStatus == val) {
       return;
     }
     if (val) {
       if (playerStatus.isPlaying) {
-        longPressStatus.value = val;
+        longPressStatus = val;
+        notifyListeners();
         HapticFeedback.lightImpact();
         await setPlaybackSpeed(
           enableAutoLongPressSpeed ? playbackSpeed * 2 : longPressSpeed,
         );
       }
     } else {
-      longPressStatus.value = val;
+      longPressStatus = val;
+      notifyListeners();
       await setPlaybackSpeed(lastPlaybackSpeed);
     }
   }
@@ -1058,15 +1078,17 @@ class PlayerController implements CorePlayerService {
     }
   }
 
-  final RxBool mountSeekBackwardButton = false.obs;
-  final RxBool mountSeekForwardButton = false.obs;
+  bool mountSeekBackwardButton = false;
+  bool mountSeekForwardButton = false;
 
   void onDoubleTapSeekBackward() {
-    mountSeekBackwardButton.value = true;
+    mountSeekBackwardButton = true;
+    notifyListeners();
   }
 
   void onDoubleTapSeekForward() {
-    mountSeekForwardButton.value = true;
+    mountSeekForwardButton = true;
+    notifyListeners();
   }
 
   void onForward(Duration duration) {
@@ -1107,15 +1129,16 @@ class PlayerController implements CorePlayerService {
   /// 关闭控制栏
   void onLockControl(bool val) {
     feedBack();
-    controlsLock.value = val;
-    if (!val && showControls.value) {
-      showControls.refresh();
+    controlsLock = val;
+    if (!val && showControls) {
+      notifyListeners();
     }
     controls = !val;
   }
 
   void _setFullScreen(bool val) {
-    isFullScreen.value = val;
+    isFullScreen = val;
+    notifyListeners();
     updateSubtitleStyle();
   }
 
@@ -1159,7 +1182,7 @@ class PlayerController implements CorePlayerService {
     bool isManualFS = true,
   }) async {
     if (isDesktopPip) return;
-    if (isFullScreen.value == status) return;
+    if (isFullScreen == status) return;
 
     if (_fsProcessing) return;
     _fsProcessing = true;
@@ -1264,7 +1287,7 @@ class PlayerController implements CorePlayerService {
       AndroidHelper$ToDart.onUserLeaveHint = null;
     }
     _timer?.cancel();
-    if (PlatformUtils.isDesktop && isAlwaysOnTop.value) {
+    if (PlatformUtils.isDesktop && isAlwaysOnTop) {
       windowManager.setAlwaysOnTop(false);
     }
 
@@ -1282,22 +1305,25 @@ class PlayerController implements CorePlayerService {
     _videoController = null;
     currentInstance = null;
     onDisposeEnd();
+    super.dispose();
   }
 
 
   void setContinuePlayInBackground() {
-    continuePlayInBackground.toggle();
+    continuePlayInBackground = !continuePlayInBackground;
+    notifyListeners();
     if (!tempPlayerConf) {
       setting.put(
         SettingBoxKey.continuePlayInBackground,
-        continuePlayInBackground.value,
+        continuePlayInBackground,
       );
     }
   }
 
   void setOnlyPlayAudio() {
-    onlyPlayAudio.toggle();
-    videoPlayerController?.setVideoTrack(onlyPlayAudio.value ? .no() : .auto());
+    onlyPlayAudio = !onlyPlayAudio;
+    notifyListeners();
+    videoPlayerController?.setVideoTrack(onlyPlayAudio ? .no() : .auto());
   }
 
   void onPopInvokedWithResult(bool didPop, Object? result) {
@@ -1318,7 +1344,7 @@ class PlayerController implements CorePlayerService {
       return;
     }
 
-    if (controlsLock.value) {
+    if (controlsLock) {
       onLockControl(false);
       return;
     }
@@ -1326,7 +1352,7 @@ class PlayerController implements CorePlayerService {
       exitDesktopPip();
       return;
     }
-    if (isFullScreen.value) {
+    if (isFullScreen) {
       triggerFullScreen(status: false);
       return;
     }

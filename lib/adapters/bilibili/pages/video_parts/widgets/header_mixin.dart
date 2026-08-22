@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 mixin HeaderMixin<T extends StatefulWidget> on State<T> {
   PlPlayerController get plPlayerController;
 
-  bool get isFullScreen => plPlayerController.isFullScreen.value;
+  bool get isFullScreen => plPlayerController.isFullScreen;
 
   ThemeData? get theme {
     if (plPlayerController.darkVideoPage) {

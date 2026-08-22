@@ -73,7 +73,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
   final String heroTag = Utils.generateRandomString(6);
   late final LiveRoomController _liveRoomController;
   late final PlPlayerController plPlayerController;
-  bool get isFullScreen => plPlayerController.isFullScreen.value;
+  bool get isFullScreen => plPlayerController.isFullScreen;
 
   late final GlobalKey pageKey = GlobalKey();
   late final GlobalKey chatKey = GlobalKey();

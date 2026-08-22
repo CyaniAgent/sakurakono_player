@@ -79,8 +79,8 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
   ContextSingleTicker get effectiveProvider => provider ??= ContextSingleTicker(
     context,
     autoStart: () =>
-        plPlayerController.showControls.value &&
-        !plPlayerController.controlsLock.value,
+        plPlayerController.showControls &&
+        !plPlayerController.controlsLock,
   );
 
   bool get isPortrait;
@@ -539,11 +539,11 @@ class HeaderControlState extends State<HeaderControl>
                     children: [
                       Obx(
                         () {
-                          final flipX = plPlayerController.flipX.value;
+                          final flipX = plPlayerController.flipX;
                           return ActionRowLineItem(
                             iconData: Icons.flip,
                             onTap: () =>
-                                plPlayerController.flipX.value = !flipX,
+                                plPlayerController.flipX = !flipX,
                             text: " 左右翻转 ",
                             selectStatus: flipX,
                           );
@@ -551,7 +551,7 @@ class HeaderControlState extends State<HeaderControl>
                       ),
                       Obx(
                         () {
-                          final flipY = plPlayerController.flipY.value;
+                          final flipY = plPlayerController.flipY;
                           return ActionRowLineItem(
                             icon: Icon(
                               CustomIcons.flip_rotate_90,
@@ -561,7 +561,7 @@ class HeaderControlState extends State<HeaderControl>
                                   : theme.colorScheme.outline,
                             ),
                             onTap: () {
-                              plPlayerController.flipY.value = !flipY;
+                              plPlayerController.flipY = !flipY;
                             },
                             text: " 上下翻转 ",
                             selectStatus: flipY,
@@ -576,11 +576,11 @@ class HeaderControlState extends State<HeaderControl>
                         Obx(
                           () {
                             final onlyPlayAudio =
-                                plPlayerController.onlyPlayAudio.value;
+                                plPlayerController.onlyPlayAudio;
                             return ActionRowLineItem(
                               iconData: Icons.headphones,
                               onTap: () {
-                                plPlayerController.onlyPlayAudio.value =
+                                plPlayerController.onlyPlayAudio =
                                     !onlyPlayAudio;
                                 widget.videoDetailCtr.playerInit();
                               },
@@ -597,8 +597,7 @@ class HeaderControlState extends State<HeaderControl>
                                 plPlayerController.setContinuePlayInBackground,
                             text: " 后台播放 ",
                             selectStatus: plPlayerController
-                                .continuePlayInBackground
-                                .value,
+                                .continuePlayInBackground,
                           ),
                         ),
                     ],
@@ -1820,7 +1819,7 @@ class HeaderControlState extends State<HeaderControl>
               ...?timeBatteryWidgets,
               if (PlatformUtils.isDesktop && !plPlayerController.isDesktopPip)
                 Obx(() {
-                  final isAlwaysOnTop = plPlayerController.isAlwaysOnTop.value;
+                  final isAlwaysOnTop = plPlayerController.isAlwaysOnTop;
                   return SizedBox(
                     width: btnWidth,
                     height: btnHeight,

@@ -615,13 +615,14 @@ class BiliVideoHost implements VideoHost {
       ),
       danmuWidget: isPipMode && player.pipNoDanmaku
           ? null
-          : Obx(
-              () => PlDanmaku(
+          : ListenableBuilder(
+              listenable: player,
+              builder: (_, __) => PlDanmaku(
                 key: ValueKey(ctr.cid.value),
                 isPipMode: isPipMode,
                 cid: ctr.cid.value,
                 playerController: player,
-                isFullScreen: player.isFullScreen.value,
+                isFullScreen: player.isFullScreen,
                 isFileSource: ctr.isFileSource,
                 size: Size(width, height),
               ),
@@ -691,7 +692,7 @@ class BiliVideoHost implements VideoHost {
           padding: EdgeInsets.only(
             left: 16,
             right: 16,
-            bottom: player.showControls.value ? 75 : 16,
+            bottom: player.showControls ? 75 : 16,
           ),
           child: Wrap(
             spacing: 25,
@@ -1110,7 +1111,7 @@ class BiliVideoHost implements VideoHost {
             }
           : null,
     );
-    if (ctr.plPlayerController.isFullScreen.value || ctr.showVideoSheet) {
+    if (ctr.plPlayerController.isFullScreen || ctr.showVideoSheet) {
       PageUtils.showVideoBottomSheet(
         context,
         child: ctr.plPlayerController.darkVideoPage
@@ -1142,7 +1143,7 @@ class BiliVideoHost implements VideoHost {
       isStein: ctr.graphVersion != null,
       title: title,
     );
-    if (ctr.plPlayerController.isFullScreen.value || ctr.showVideoSheet) {
+    if (ctr.plPlayerController.isFullScreen || ctr.showVideoSheet) {
       PageUtils.showVideoBottomSheet(
         context,
         child: ctr.plPlayerController.darkVideoPage
@@ -1307,7 +1308,7 @@ class BiliVideoHost implements VideoHost {
       videoDetailController: ctr,
       plPlayerController: ctr.plPlayerController as PlPlayerController,
     );
-    if (ctr.plPlayerController.isFullScreen.value || ctr.showVideoSheet) {
+    if (ctr.plPlayerController.isFullScreen || ctr.showVideoSheet) {
       PageUtils.showVideoBottomSheet(
         context,
         child: ctr.plPlayerController.darkVideoPage
@@ -1387,7 +1388,7 @@ class BiliVideoHost implements VideoHost {
         onReversePlay(heroTag, isSeason: season != null);
       },
     );
-    final isFullScreen = ctr.plPlayerController.isFullScreen.value;
+    final isFullScreen = ctr.plPlayerController.isFullScreen;
     if (isFullScreen || ctr.showVideoSheet) {
       final child = listSheetContent(enableSlide: false);
       PageUtils.showVideoBottomSheet(
@@ -1413,7 +1414,7 @@ class BiliVideoHost implements VideoHost {
       videoDetailController: ctr,
       plPlayerController: player,
     );
-    if (player.isFullScreen.value || ctr.showVideoSheet) {
+    if (player.isFullScreen || ctr.showVideoSheet) {
       PageUtils.showVideoBottomSheet(
         AppNavigator.context!,
         child: player.darkVideoPage

@@ -69,7 +69,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   bool isShowing = true;
 
   bool get isFullScreen =>
-      videoDetailController.plPlayerController.isFullScreen.value;
+      videoDetailController.plPlayerController.isFullScreen;
 
   bool get _shouldShowSeasonPanel =>
       host.shouldShowSeasonPanel(heroTag, isPortrait: isPortrait);
@@ -191,11 +191,11 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       if (exitFlag) {
         if (autoExitFullscreen) {
           plPlayerController.triggerFullScreen(status: false);
-          if (plPlayerController.controlsLock.value) {
+          if (plPlayerController.controlsLock) {
             plPlayerController.onLockControl(false);
           }
         } else {
-          if (plPlayerController.controlsLock.value &&
+          if (plPlayerController.controlsLock &&
               (!Platform.isAndroid || !AndroidHelper.isPipMode)) {
             plPlayerController.onLockControl(false);
           }
@@ -285,8 +285,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     videoDetailController
       ..videoState.value = false
       ..cancelBlockListener()
-      ..playerStatus = plPlayerController.playerStatus.value
-      ..brightness = plPlayerController.brightness.value;
+      ..playerStatus = plPlayerController.playerStatus
+      ..brightness = plPlayerController.brightness;
     videoDetailController.makeHeartBeat();
     plPlayerController
       ..removeStatusLister(playerListener)
@@ -321,7 +321,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         Platform.isAndroid &&
         !videoDetailController.setSystemBrightness) {
       if (videoDetailController.brightness != null) {
-        plPlayerController.brightness.value =
+        plPlayerController.brightness =
             videoDetailController.brightness!;
         if (videoDetailController.brightness != -1.0) {
           ScreenBrightnessPlatform.instance.setApplicationScreenBrightness(

@@ -211,7 +211,7 @@ class LiveRoomController extends ChangeNotifier {
     final res = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveRoomInfo(
       roomId: roomId,
       qn: currentQn,
-      onlyAudio: plPlayerController.onlyPlayAudio.value,
+      onlyAudio: plPlayerController.onlyPlayAudio,
     );
     if (res case Success(:final response)) {
       if (response.liveStatus != 1) {

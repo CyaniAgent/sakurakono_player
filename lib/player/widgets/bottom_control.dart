@@ -35,15 +35,15 @@ class BottomControl extends StatelessWidget {
   void onDragStart(ThumbDragDetails duration) {
     feedBack();
     controller
-      ..position.value = duration.seconds
-      ..isSeeking.value = true;
+      ..position = duration.seconds
+      ..isSeeking = true;
   }
 
   void onDragUpdate(ThumbDragDetails duration) {
     if (!controller.isFileSource && seekPreview?.enabled == true) {
       seekPreview!.updateIndex(duration.seconds);
     }
-    controller.position.value = duration.seconds;
+    controller.position = duration.seconds;
   }
 
   void onSeek(int milliseconds) {
@@ -73,16 +73,16 @@ class BottomControl extends StatelessWidget {
                 final viewPointsVisible = overlaySource.viewPointList.isNotEmpty &&
                     overlaySource.showVP.value;
                 return Offstage(
-                  offstage: !controller.showControls.value,
+                  offstage: !controller.showControls,
                   child: Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.bottomCenter,
                     children: [
                       Obx(
                         () => ProgressBar(
-                          progress: controller.position.value,
-                          buffered: controller.buffered.value,
-                          total: controller.duration.value,
+                          progress: controller.position,
+                          buffered: controller.buffered,
+                          total: controller.duration,
                           progressBarColor: primary,
                           baseBarColor: const Color(0x33FFFFFF),
                           bufferedBarColor: bufferedBarColor,

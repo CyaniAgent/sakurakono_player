@@ -437,7 +437,7 @@ class VideoDetailController extends ChangeNotifier {
 
   late final RxString videoLabel = ''.obs;
   int? get timeLength => data.timeLength;
-  bool get isFullScreen => plPlayerController.isFullScreen.value;
+  bool get isFullScreen => plPlayerController.isFullScreen;
   bool get autoPlay => _autoPlay.value;
   set autoPlay(bool value) => _autoPlay.value = value;
   bool get preInitPlayer => plPlayerController.preInitPlayer;
@@ -500,8 +500,8 @@ class VideoDetailController extends ChangeNotifier {
     _autoPlay.value = true;
     playedTime = plPlayerController.videoPlayerController?.state.position;
     plPlayerController
-      ..isBuffering.value = false
-      ..buffered.value = 0;
+      ..isBuffering = false
+      ..buffered = 0;
 
     final config = VideoHost.of().selectPlayback(
       data: data,
@@ -700,7 +700,7 @@ class VideoDetailController extends ChangeNotifier {
         SmartDialog.showToast('视频资源不存在');
         _autoPlay.value = false;
         videoState.value = false;
-        if (plPlayerController.isFullScreen.value) {
+        if (plPlayerController.isFullScreen) {
           plPlayerController.triggerFullScreen(status: false);
         }
         isQuerying = false;
@@ -725,7 +725,7 @@ class VideoDetailController extends ChangeNotifier {
     } else {
       _autoPlay.value = false;
       videoState.value = false;
-      if (plPlayerController.isFullScreen.value) {
+      if (plPlayerController.isFullScreen) {
         plPlayerController.triggerFullScreen(status: false);
       }
       result.toast();

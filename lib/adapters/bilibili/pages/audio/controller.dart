@@ -128,7 +128,7 @@ class AudioController extends ChangeNotifier
   void syncVolume([_]) {
     final volume = desktopVolume;
     PlPlayerController.instance
-      ?..volume.value = volume
+      ?..volume = volume
       ..videoPlayerController?.setVolume(volume * 100);
     GStorage.setting.put(SettingBoxKey.desktopVolume, volume.toPrecision(3));
   }

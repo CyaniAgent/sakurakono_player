@@ -62,7 +62,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
   bool get horizontalScreen => true;
 
   @override
-  bool get isFullScreen => plPlayerController.isFullScreen.value;
+  bool get isFullScreen => plPlayerController.isFullScreen;
 
   @override
   bool get isPortrait => widget.isPortrait;
@@ -136,7 +136,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           const SizedBox(width: 10),
           if (PlatformUtils.isDesktop && !plPlayerController.isDesktopPip)
             Obx(() {
-              final isAlwaysOnTop = plPlayerController.isAlwaysOnTop.value;
+              final isAlwaysOnTop = plPlayerController.isAlwaysOnTop;
               return ComBtn(
                 height: 30,
                 tooltip: '${isAlwaysOnTop ? '取消' : ''}置顶',
@@ -189,10 +189,10 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
               height: 30,
               tooltip: '仅播放音频',
               onTap: () {
-                plPlayerController.onlyPlayAudio.toggle();
+                plPlayerController.setOnlyPlayAudio();
                 widget.onPlayAudio();
               },
-              icon: plPlayerController.onlyPlayAudio.value
+              icon: plPlayerController.onlyPlayAudio
                   ? const Icon(
                       size: 18,
                       MdiIcons.musicCircle,
@@ -208,7 +208,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           if (PlatformUtils.isMobile)
             Obx(() {
               final continuePlayInBackground =
-                  plPlayerController.continuePlayInBackground.value;
+                  plPlayerController.continuePlayInBackground;
               return ComBtn(
                 height: 30,
                 tooltip: '${continuePlayInBackground ? '关闭' : ''}后台播放',

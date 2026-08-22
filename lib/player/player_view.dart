@@ -173,16 +173,16 @@ class _PlayerViewState extends State<PlayerView>
 
   void _onVolumeChanged(double value) {
     if (mounted && !plPlayerController.volumeInterceptEventStream) {
-      plPlayerController.volume.value = value;
+      plPlayerController.volume = value;
       if (Platform.isIOS && !FlutterVolumeController.showSystemUI) {
         plPlayerController
-          ..volumeIndicator.value = true
+          ..volumeIndicator = true
           ..volumeTimer?.cancel()
           ..volumeTimer = Timer(
             const Duration(milliseconds: 800),
             () {
               if (mounted) {
-                plPlayerController.volumeIndicator.value = false;
+                plPlayerController.volumeIndicator = false;
               }
             },
           );
@@ -193,14 +193,14 @@ class _PlayerViewState extends State<PlayerView>
   void _getCurrVolume() {
     FlutterVolumeController.getVolume().then((res) {
       if (mounted) {
-        plPlayerController.volume.value = res!;
+        plPlayerController.volume = res!;
       }
     });
   }
 
-  StreamSubscription? _controlsListener;
-  void _onControlChanged(bool val) {
-    final visible = val && !plPlayerController.controlsLock.value;
+  VoidCallback? _controlsListener;
+  void _onControlChanged() {
+    final visible = plPlayerController.showControls && !plPlayerController.controlsLock;
 
     widget.onControlsVisibilityChanged?.call(visible);
 
@@ -216,9 +216,8 @@ class _PlayerViewState extends State<PlayerView>
     super.initState();
     addObserverMobile(this);
 
-    _controlsListener = plPlayerController.showControls.listen(
-      _onControlChanged,
-    );
+    _controlsListener = _onControlChanged;
+    plPlayerController.addListener(_controlsListener!);
 
     _transformationController = TransformationController();
 
@@ -290,7 +289,7 @@ class _PlayerViewState extends State<PlayerView>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!plPlayerController.continuePlayInBackground.value) {
+    if (!plPlayerController.continuePlayInBackground) {
       late final player = plPlayerController.videoPlayerController;
       if (const <AppLifecycleState>[.paused, .detached].contains(state)) {
         if (player != null && player.state.playing) {
@@ -326,7 +325,7 @@ class _PlayerViewState extends State<PlayerView>
         _brightnessIndicator.value = false;
       }
     });
-    plPlayerController.brightness.value = value;
+    plPlayerController.brightness = value;
   }
 
   @override
@@ -338,7 +337,9 @@ class _PlayerViewState extends State<PlayerView>
     _doubleTapGestureRecognizer.dispose();
     _scaleGestureRecognizer.dispose();
     _brightnessListener?.cancel();
-    _controlsListener?.cancel();
+    if (_controlsListener != null) {
+      plPlayerController.removeListener(_controlsListener!);
+    }
     _animationController.dispose();
     _transformationController.dispose();
     widget.dmTapInteraction?.cancel();
@@ -350,7 +351,7 @@ class _PlayerViewState extends State<PlayerView>
 
   PlayerController get plPlayerController => widget.plPlayerController;
 
-  bool get isFullScreen => plPlayerController.isFullScreen.value;
+  bool get isFullScreen => plPlayerController.isFullScreen;
 
   late final TransformationController _transformationController;
 
@@ -382,13 +383,13 @@ class _PlayerViewState extends State<PlayerView>
   }
 
   void _onHorizontalDragStart() {
-    plPlayerController.isSeeking.value = true;
+    plPlayerController.isSeeking = true;
   }
 
   void _onHorizontalDragUpdate(double dx) {
     final curPos =
         plPlayerController.seekToPos?.inMilliseconds ??
-        plPlayerController.position.value * 1000;
+        plPlayerController.position * 1000;
     final posDelta = (plPlayerController.sliderScale * dx / maxWidth).round();
     final newPos = (curPos + posDelta).clamp(
       0,
@@ -397,7 +398,7 @@ class _PlayerViewState extends State<PlayerView>
     final seconds = newPos ~/ 1000;
     plPlayerController
       ..seekToPos = Duration(milliseconds: newPos)
-      ..position.value = seconds;
+      ..position = seconds;
     if (!plPlayerController.isFileSource &&
         widget.seekPreview?.enabled == true) {
       widget.seekPreview!.updateIndex(seconds);
@@ -411,7 +412,7 @@ class _PlayerViewState extends State<PlayerView>
         ..seekTo(seekToPos, isSeek: false)
         ..seekToPos = null;
     } else {
-      plPlayerController.position.value =
+      plPlayerController.position =
           plPlayerController.videoPlayerController?.state.position.inSeconds ??
           0;
     }
@@ -542,7 +543,7 @@ class _PlayerViewState extends State<PlayerView>
         const Duration(milliseconds: 20),
         () {
           final double volume = clampDouble(
-            plPlayerController.volume.value - delta.dy / level,
+            plPlayerController.volume - delta.dy / level,
             0.0,
             plPlayerController.maxVolume,
           );
@@ -561,7 +562,7 @@ class _PlayerViewState extends State<PlayerView>
   }
 
   void onDoubleTapDownMobile(TapDownDetails details) {
-    if (plPlayerController.isLive || plPlayerController.controlsLock.value) {
+    if (plPlayerController.isLive || plPlayerController.controlsLock) {
       return;
     }
     final double tapPosition = details.localPosition.dx;
@@ -583,7 +584,7 @@ class _PlayerViewState extends State<PlayerView>
         plPlayerController.onDoubleTapCenter();
       default:
         if (widget.dmTapInteraction?.handleTapUp(details) == true) return;
-        plPlayerController.controls = !plPlayerController.showControls.value;
+        plPlayerController.controls = !plPlayerController.showControls;
     }
   }
 
@@ -635,10 +636,10 @@ class _PlayerViewState extends State<PlayerView>
       final isSecondaryBtn = buttons == kSecondaryMouseButton;
       if (isSecondaryBtn || buttons == kMiddleMouseButton) {
         final isFullScreen = this.isFullScreen;
-        if (isFullScreen && plPlayerController.controlsLock.value) {
+        if (isFullScreen && plPlayerController.controlsLock) {
           plPlayerController
-            ..controlsLock.value = false
-            ..showControls.value = false;
+            ..controlsLock = false
+            ..showControls = false;
         }
         plPlayerController.triggerFullScreen(
           status: !isFullScreen,
@@ -648,7 +649,7 @@ class _PlayerViewState extends State<PlayerView>
       }
     }
 
-    final controlsUnlock = !plPlayerController.controlsLock.value;
+    final controlsUnlock = !plPlayerController.controlsLock;
     if (PlatformUtils.isMobile) {
       _tapGestureRecognizer.addPointer(event);
       if (controlsUnlock) {
@@ -673,7 +674,7 @@ class _PlayerViewState extends State<PlayerView>
   }
 
   void _onPointerPanZoomUpdate(PointerPanZoomUpdateEvent event) {
-    if (plPlayerController.controlsLock.value) return;
+    if (plPlayerController.controlsLock) return;
     if (_gestureType == null) {
       final pan = event.pan;
       if (pan.distanceSquared < 1) return;
@@ -703,7 +704,7 @@ class _PlayerViewState extends State<PlayerView>
         const Duration(milliseconds: 20),
         () {
           final double volume = clampDouble(
-            plPlayerController.volume.value - event.localPanDelta.dy / level,
+            plPlayerController.volume - event.localPanDelta.dy / level,
             0.0,
             plPlayerController.maxVolume,
           );
@@ -724,7 +725,7 @@ class _PlayerViewState extends State<PlayerView>
     if (event is PointerScrollEvent) {
       final offset = -event.scrollDelta.dy / 4000;
       final volume = clampDouble(
-        plPlayerController.volume.value + offset,
+        plPlayerController.volume + offset,
         0.0,
         plPlayerController.maxVolume,
       );
@@ -766,7 +767,7 @@ class _PlayerViewState extends State<PlayerView>
               child: Obx(
                 () => SubtitleView(
                   controller: videoController,
-                  configuration: plPlayerController.subtitleConfig.value,
+                  configuration: plPlayerController.subtitleConfig,
                   enableDragSubtitle: plPlayerController.enableDragSubtitle,
                   onUpdatePadding: plPlayerController.onUpdatePadding,
                 ),
@@ -790,7 +791,7 @@ class _PlayerViewState extends State<PlayerView>
                 child: Obx(
                   () => AnimatedOpacity(
                     curve: Curves.easeInOut,
-                    opacity: plPlayerController.longPressStatus.value
+                    opacity: plPlayerController.longPressStatus
                         ? 1.0
                         : 0.0,
                     duration: const Duration(milliseconds: 150),
@@ -802,7 +803,7 @@ class _PlayerViewState extends State<PlayerView>
                       ),
                       child: Obx(
                         () => Text(
-                          '${plPlayerController.enableAutoLongPressSpeed ? (plPlayerController.longPressStatus.value ? plPlayerController.lastPlaybackSpeed : plPlayerController.playbackSpeed) * 2 : plPlayerController.longPressSpeed}倍速中',
+                          '${plPlayerController.enableAutoLongPressSpeed ? (plPlayerController.longPressStatus ? plPlayerController.lastPlaybackSpeed : plPlayerController.playbackSpeed) * 2 : plPlayerController.longPressSpeed}倍速中',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 13,
@@ -829,7 +830,7 @@ class _PlayerViewState extends State<PlayerView>
                 child: Obx(
                   () => AnimatedOpacity(
                     curve: Curves.easeInOut,
-                    opacity: plPlayerController.isSeeking.value ? 1.0 : 0.0,
+                    opacity: plPlayerController.isSeeking ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 150),
                     child: Container(
                       decoration: const BoxDecoration(
@@ -848,7 +849,7 @@ class _PlayerViewState extends State<PlayerView>
                           Obx(
                             () => Text(
                               DurationUtils.formatDuration(
-                                plPlayerController.position.value,
+                                plPlayerController.position,
                               ),
                               style: textStyle,
                             ),
@@ -857,7 +858,7 @@ class _PlayerViewState extends State<PlayerView>
                           Obx(
                             () => Text(
                               DurationUtils.formatDuration(
-                                plPlayerController.duration.value,
+                                plPlayerController.duration,
                               ),
                               style: textStyle,
                             ),
@@ -878,10 +879,10 @@ class _PlayerViewState extends State<PlayerView>
             alignment: Alignment.center,
             child: Obx(
               () {
-                final volume = plPlayerController.volume.value;
+                final volume = plPlayerController.volume;
                 return AnimatedOpacity(
                   curve: Curves.easeInOut,
-                  opacity: plPlayerController.volumeIndicator.value ? 1.0 : 0.0,
+                  opacity: plPlayerController.volumeIndicator ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 150),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -1018,7 +1019,7 @@ class _PlayerViewState extends State<PlayerView>
 
         Obx(
           () =>
-              showRestoreScaleBtn.value && plPlayerController.showControls.value
+              showRestoreScaleBtn.value && plPlayerController.showControls
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -1073,24 +1074,24 @@ class _PlayerViewState extends State<PlayerView>
             right: 0,
             child: Obx(
               () {
-                final showControls = plPlayerController.showControls.value;
+                final showControls = plPlayerController.showControls;
                 late final bool offstage;
                 switch (widget.progressType ?? BtmProgressBehavior.alwaysShow) {
                   case BtmProgressBehavior.alwaysShow:
                     offstage = showControls;
                   case BtmProgressBehavior.alwaysHide:
-                    if (!plPlayerController.isSeeking.value) {
+                    if (!plPlayerController.isSeeking) {
                       return const SizedBox.shrink();
                     }
                     offstage = showControls;
                   case BtmProgressBehavior.onlyShowFullScreen:
                     offstage =
                         showControls ||
-                        (!isFullScreen && !plPlayerController.isSeeking.value);
+                        (!isFullScreen && !plPlayerController.isSeeking);
                   case BtmProgressBehavior.onlyHideFullScreen:
                     offstage =
                         showControls ||
-                        (isFullScreen && !plPlayerController.isSeeking.value);
+                        (isFullScreen && !plPlayerController.isSeeking);
                 }
                 final viewPointsVisible = overlaySource
                             ?.viewPointList
@@ -1105,9 +1106,9 @@ class _PlayerViewState extends State<PlayerView>
                     children: [
                       Obx(
                         () => ProgressBar(
-                          progress: plPlayerController.position.value,
-                          buffered: plPlayerController.buffered.value,
-                          total: plPlayerController.duration.value,
+                          progress: plPlayerController.position,
+                          buffered: plPlayerController.buffered,
+                          total: plPlayerController.duration,
                           progressBarColor: primary,
                           baseBarColor: const Color(0x33FFFFFF),
                           bufferedBarColor: bufferedBarColor,
@@ -1136,7 +1137,7 @@ class _PlayerViewState extends State<PlayerView>
                             segments: overlaySource!.viewPointList,
                             onSeek: PlatformUtils.isMobile
                                 ? (position) {
-                                    if (!plPlayerController.controlsLock.value) {
+                                    if (!plPlayerController.controlsLock) {
                                       plPlayerController.seekTo(
                                         position,
                                         isSeek: false,
@@ -1182,7 +1183,7 @@ class _PlayerViewState extends State<PlayerView>
                   translation: const Offset(1, -0.4),
                   child: Obx(
                     () => Offstage(
-                      offstage: !plPlayerController.showControls.value,
+                      offstage: !plPlayerController.showControls,
                       child: DecoratedBox(
                         decoration: const BoxDecoration(
                           color: Color(0x45000000),
@@ -1190,7 +1191,7 @@ class _PlayerViewState extends State<PlayerView>
                         ),
                         child: Obx(() {
                           final controlsLock =
-                              plPlayerController.controlsLock.value;
+                              plPlayerController.controlsLock;
                           return ComBtn(
                             tooltip: controlsLock ? '解锁' : '锁定',
                             icon: controlsLock
@@ -1226,7 +1227,7 @@ class _PlayerViewState extends State<PlayerView>
                   child: FractionalTranslation(
                     translation: const Offset(-1, -0.4),
                     child: Offstage(
-                      offstage: !plPlayerController.showControls.value,
+                      offstage: !plPlayerController.showControls,
                       child: DecoratedBox(
                         decoration: const BoxDecoration(
                           color: Color(0x45000000),
@@ -1255,8 +1256,8 @@ class _PlayerViewState extends State<PlayerView>
         ],
 
         Obx(() {
-          if (plPlayerController.dataStatus.loading ||
-              (plPlayerController.isBuffering.value &&
+          if (plPlayerController.dataStatus == DataStatus.loading ||
+              (plPlayerController.isBuffering &&
                   plPlayerController.playerStatus.isPlaying)) {
             return Center(
               child: GestureDetector(
@@ -1279,9 +1280,9 @@ class _PlayerViewState extends State<PlayerView>
                         semanticLabel: "加载中",
                         color: Colors.white,
                       ),
-                      if (plPlayerController.isBuffering.value)
+                      if (plPlayerController.isBuffering)
                         Obx(() {
-                          final buffered = plPlayerController.buffered.value;
+                          final buffered = plPlayerController.buffered;
                           if (buffered == 0) {
                             return const Text(
                               '加载中...',
@@ -1313,9 +1314,9 @@ class _PlayerViewState extends State<PlayerView>
         if (!isLive)
           Obx(() {
             final mountSeekBackwardButton =
-                plPlayerController.mountSeekBackwardButton.value;
+                plPlayerController.mountSeekBackwardButton;
             final mountSeekForwardButton =
-                plPlayerController.mountSeekForwardButton.value;
+                plPlayerController.mountSeekForwardButton;
             return mountSeekBackwardButton || mountSeekForwardButton
                 ? Positioned.fill(
                     child: Row(
@@ -1334,7 +1335,7 @@ class _PlayerViewState extends State<PlayerView>
                                     plPlayerController.fastForBackwardDuration,
                                 onSubmitted: (Duration value) {
                                   plPlayerController
-                                    ..mountSeekBackwardButton.value = false
+                                    ..mountSeekBackwardButton = false
                                     ..onBackward(value);
                                 },
                               ),
@@ -1355,7 +1356,7 @@ class _PlayerViewState extends State<PlayerView>
                                     plPlayerController.fastForBackwardDuration,
                                 onSubmitted: (Duration value) {
                                   plPlayerController
-                                    ..mountSeekForwardButton.value = false
+                                    ..mountSeekForwardButton = false
                                     ..onForward(value);
                                 },
                               ),
@@ -1371,7 +1372,7 @@ class _PlayerViewState extends State<PlayerView>
     if (PlatformUtils.isDesktop) {
       return Obx(
         () => MouseRegion(
-          cursor: !plPlayerController.showControls.value && isFullScreen
+          cursor: !plPlayerController.showControls && isFullScreen
               ? SystemMouseCursors.none
               : MouseCursor.defer,
           onEnter: (_) => plPlayerController.controls = true,
@@ -1393,7 +1394,7 @@ class _PlayerViewState extends State<PlayerView>
       color: widget.fill,
       child: Obx(
         () => MouseInteractiveViewer(
-          scaleEnabled: !plPlayerController.controlsLock.value,
+          scaleEnabled: !plPlayerController.controlsLock,
           pointerSignalFallback: _onPointerSignal,
           onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
           onPointerPanZoomEnd: _onPointerPanZoomEnd,
@@ -1416,10 +1417,10 @@ class _PlayerViewState extends State<PlayerView>
             key: _videoKey,
             child: Obx(
               () {
-                final videoFit = plPlayerController.videoFit.value;
+                final videoFit = plPlayerController.videoFit;
                 return Transform.flip(
-                  flipX: plPlayerController.flipX.value,
-                  flipY: plPlayerController.flipY.value,
+                  flipX: plPlayerController.flipX,
+                  flipY: plPlayerController.flipY,
                   child: FittedBox(
                     fit: videoFit.boxFit,
                     alignment: widget.alignment,
@@ -1466,10 +1467,10 @@ class _PlayerViewState extends State<PlayerView>
             Obx(
               () => VideoTime(
                 position: DurationUtils.formatDuration(
-                  plPlayerController.position.value,
+                  plPlayerController.position,
                 ),
                 duration: DurationUtils.formatDuration(
-                  plPlayerController.duration.value,
+                  plPlayerController.duration,
                 ),
               ),
             ),
@@ -1481,7 +1482,7 @@ class _PlayerViewState extends State<PlayerView>
             /// 画面比例
             Obx(
               () {
-                final fit = plPlayerController.videoFit.value;
+                final fit = plPlayerController.videoFit;
                 return PopupMenuButton<VideoFitType>(
                   tooltip: '画面比例',
                   requestFocus: false,

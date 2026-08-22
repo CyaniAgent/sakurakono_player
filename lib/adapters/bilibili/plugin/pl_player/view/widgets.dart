@@ -65,7 +65,7 @@ Widget buildSeekPreviewWidget(
         final data = plPlayerController.videoShot!.data;
 
         final double scale =
-            plPlayerController.isFullScreen.value &&
+            plPlayerController.isFullScreen &&
                 (PlatformUtils.isDesktop || !plPlayerController.isVertical)
             ? 4
             : 3;

@@ -50,7 +50,7 @@ class PlPlayerController extends PlayerController
 
   // try to get PlayerStatus
   static PlayerStatus? getPlayerStatusIfExists() {
-    return PlayerController.currentInstance?.playerStatus.value;
+    return PlayerController.currentInstance?.playerStatus;
   }
 
   static Future<void> pauseIfExists({
@@ -71,7 +71,7 @@ class PlPlayerController extends PlayerController
   }
 
   static double? getVolumeIfExists() {
-    return PlayerController.currentInstance?.volume.value;
+    return PlayerController.currentInstance?.volume;
   }
 
   static Future<void>? setVolumeIfExists(

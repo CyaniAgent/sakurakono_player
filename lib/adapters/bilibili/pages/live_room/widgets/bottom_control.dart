@@ -43,7 +43,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
 
   @override
   Widget build(BuildContext context) {
-    final isFullScreen = plPlayerController.isFullScreen.value;
+    final isFullScreen = plPlayerController.isFullScreen;
     return AppBar(
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
@@ -130,7 +130,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
           Obx(
             () => PopupMenuButton<VideoFitType>(
               tooltip: '画面比例',
-              initialValue: plPlayerController.videoFit.value,
+              initialValue: plPlayerController.videoFit,
               color: Colors.black.withValues(alpha: 0.8),
               itemBuilder: (context) {
                 return VideoFitType.values
@@ -154,7 +154,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
-                  plPlayerController.videoFit.value.desc,
+                  plPlayerController.videoFit.desc,
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),

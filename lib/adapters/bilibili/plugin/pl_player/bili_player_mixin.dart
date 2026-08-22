@@ -319,7 +319,7 @@ mixin BiliPlayerMixin on PlayerController {
       this.height = height;
       this.dataSource = dataSource;
       // 初始化数据加载状态
-      dataStatus.value = DataStatus.loading;
+      dataStatus = DataStatus.loading;
       _aid = aid;
       _bvid = bvid;
       this.cid = cid;
@@ -349,7 +349,7 @@ mixin BiliPlayerMixin on PlayerController {
         autoFullScreenFlag: autoFullScreenFlag,
       );
     } catch (err, stackTrace) {
-      dataStatus.value = DataStatus.error;
+      dataStatus = DataStatus.error;
       if (kDebugMode) {
         debugPrint(stackTrace.toString());
         debugPrint('plPlayer err:  $err');
@@ -364,7 +364,7 @@ mixin BiliPlayerMixin on PlayerController {
     final extras = <String, String>{};
 
     if (dataSource.audioSource case final audio? when (audio.isNotEmpty)) {
-      if (!onlyPlayAudio.value) {
+      if (!onlyPlayAudio) {
         extras['audio-files'] =
             '"${Platform.isWindows ? audio.replaceAll(';', r'\;') : audio.replaceAll(':', r'\:')}"';
       }

@@ -175,13 +175,13 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
             tmpSubtitlePaddingB = plPlayerController.subtitlePaddingB;
             plPlayerController
               ..subtitlePaddingB = minPadding
-              ..subtitleConfig.value = plPlayerController.getSubConfig;
+              ..subtitleConfig = plPlayerController.getSubConfig;
           }
         } else {
           if (tmpSubtitlePaddingB != null) {
             plPlayerController
               ..subtitlePaddingB = tmpSubtitlePaddingB!
-              ..subtitleConfig.value = plPlayerController.getSubConfig;
+              ..subtitleConfig = plPlayerController.getSubConfig;
             tmpSubtitlePaddingB = null;
           }
         }
@@ -197,7 +197,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
     final isPgc = !videoDetailController.isUgc;
     final isPlayAll = videoDetailController.isPlayAll;
     final anySeason = isSeason || isPart || isPgc || isPlayAll;
-    final isFullScreen = plPlayerController.isFullScreen.value;
+    final isFullScreen = plPlayerController.isFullScreen;
     final double widgetWidth =
         widget.maxWidth > widget.maxHeight && isFullScreen ? 42 : 35;
 
@@ -247,10 +247,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       BottomControlType.time => Obx(
         () => VideoTime(
           position: DurationUtils.formatDuration(
-            plPlayerController.position.value,
+            plPlayerController.position,
           ),
           duration: DurationUtils.formatDuration(
-            plPlayerController.duration.value,
+            plPlayerController.duration,
           ),
         ),
       ),
@@ -411,7 +411,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       /// 画面比例
       BottomControlType.fit => Obx(
         () {
-          final fit = plPlayerController.videoFit.value;
+          final fit = plPlayerController.videoFit;
           return PopupMenuButton<VideoFitType>(
             tooltip: '画面比例',
             requestFocus: false,
