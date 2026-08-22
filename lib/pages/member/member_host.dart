@@ -39,7 +39,7 @@ abstract class MemberHost {
     String? title,
     required String heroTag,
     required int mid,
-    required RxInt contributeInitialIndex,
+    required int contributeInitialIndex,
   });
 
   /// Whether the "网页投稿" menu item is available (Bilibili: a

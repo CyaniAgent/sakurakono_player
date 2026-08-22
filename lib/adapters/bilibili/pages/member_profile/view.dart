@@ -99,10 +99,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   GStorage.userInfo.put('userInfoCache', userInfo);
                 } catch (_) {}
                 try {
-                  Get.find<MineController>().userInfo
-                    ..value.uname = data.name
-                    ..value.face = data.face
-                    ..refresh();
+                  final ctr = Get.find<MineController>();
+                  ctr.userInfo.uname = data.name;
+                  ctr.userInfo.face = data.face;
+                  ctr.notifyListeners();
                 } catch (_) {}
               } else {
                 _loadingState = Error(res.data['message']);
@@ -389,9 +389,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GStorage.userInfo.put('userInfoCache', userInfo);
               } catch (_) {}
               try {
-                Get.find<MineController>().userInfo
-                  ..value.uname = _textController.text
-                  ..refresh();
+                final ctr = Get.find<MineController>();
+                ctr.userInfo.uname = _textController.text;
+                ctr.notifyListeners();
               } catch (_) {}
             } else if (type == ProfileType.sign) {
               data.sign = _textController.text;

@@ -61,6 +61,46 @@ abstract class CommonControllerRiverpod<R, T> extends ChangeNotifier
   }
 }
 
+/// Riverpod-compatible data controller replacing `CommonDataController<R, T>`.
+///
+/// Provides a concrete [loadingState] with setter that calls
+/// [notifyListeners], plus [queryData] and [onReload] implementations.
+abstract class CommonDataControllerRiverpod<R, T>
+    extends CommonControllerRiverpod<R, T> {
+  LoadingState<T> _loadingState = LoadingState<T>.loading();
+
+  @override
+  LoadingState<T> get loadingState => _loadingState;
+
+  set loadingState(LoadingState<T> value) {
+    _loadingState = value;
+    notifyListeners();
+  }
+
+  @override
+  Future<void> queryData([bool isRefresh = true]) async {
+    if (isLoading) return;
+    isLoading = true;
+    final LoadingState<R> res = await customGetData();
+    if (res case Success(:final response)) {
+      if (!customHandleResponse(isRefresh, res)) {
+        loadingState = res as LoadingState<T>;
+      }
+    } else {
+      if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
+        loadingState = res as Error;
+      }
+    }
+    isLoading = false;
+  }
+
+  @override
+  Future<void> onReload() {
+    loadingState = LoadingState<T>.loading();
+    return super.onReload();
+  }
+}
+
 /// Riverpod-compatible list controller replacing `CommonListController<R, T>`.
 ///
 /// Adds pagination state ([page], [isEnd]) and list-specific query logic.

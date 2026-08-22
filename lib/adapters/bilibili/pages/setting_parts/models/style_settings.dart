@@ -876,7 +876,7 @@ Future<void> _showThemeTypeDialog(
   );
   if (res != null) {
     try {
-      Get.find<MineController>().themeType.value = res;
+      Get.find<MineController>().themeType = res;
     } catch (_) {}
     GStorage.setting.put(SettingBoxKey.themeMode, res.index);
     Get.changeThemeMode(ThemeUtils.themeMode = res.toThemeMode);

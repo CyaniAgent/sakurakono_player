@@ -18,9 +18,7 @@ class RcmdController extends CommonListController {
   @override
   bool get isEnd => false;
 
-  @override
-  void onInit() {
-    super.onInit();
+  RcmdController() {
     page = 0;
     queryData();
   }
@@ -45,7 +43,7 @@ class RcmdController extends CommonListController {
   @override
   void handleListResponse(List dataList) {
     if (enableSaveLastData && page == 0) {
-      if (loadingState.value case Success(:final response)) {
+      if (loadingState case Success(:final response)) {
         if (response != null && response.isNotEmpty) {
           if (savedRcmdTip) {
             lastRefreshAt = dataList.length;

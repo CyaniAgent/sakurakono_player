@@ -41,8 +41,9 @@ class _RcmdPageState extends State<RcmdPage>
           slivers: [
             SliverPadding(
               padding: const .only(top: Style.cardSpace, bottom: 100),
-              sliver: Obx(
-                () => _buildBody(colorScheme, controller.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: controller,
+                builder: (_, __) => _buildBody(colorScheme, controller.loadingState),
               ),
             ),
           ],
@@ -100,22 +101,26 @@ class _RcmdPageState extends State<RcmdPage>
                     return VideoCardV(
                       videoItem: ModelConverters.rcmdItem(response[actualIndex]),
                       onRemove: () {
-                        if (controller.lastRefreshAt != null &&
-                            actualIndex < controller.lastRefreshAt!) {
-                          controller.lastRefreshAt =
-                              controller.lastRefreshAt! - 1;
+                        if (controller.loadingState case Success(:final response?)) {
+                          if (controller.lastRefreshAt != null &&
+                              actualIndex < controller.lastRefreshAt!) {
+                            controller.lastRefreshAt =
+                                controller.lastRefreshAt! - 1;
+                          }
+                          response.removeAt(actualIndex);
+                          controller.loadingState = Success(response);
                         }
-                        controller.loadingState
-                          ..value.data!.removeAt(actualIndex)
-                          ..refresh();
                       },
                     );
                   } else {
                     return VideoCardV(
                       videoItem: ModelConverters.rcmdItem(response[index]),
-                      onRemove: () => controller.loadingState
-                        ..value.data!.removeAt(index)
-                        ..refresh(),
+                      onRemove: () {
+                        if (controller.loadingState case Success(:final response?)) {
+                          response.removeAt(index);
+                          controller.loadingState = Success(response);
+                        }
+                      },
                     );
                   }
                 },

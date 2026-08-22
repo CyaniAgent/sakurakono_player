@@ -25,7 +25,7 @@ class OttoMemberHost implements MemberHost {
     String? title,
     required String heroTag,
     required int mid,
-    required RxInt contributeInitialIndex,
+    required int contributeInitialIndex,
   }) =>
       const SizedBox.shrink();
 

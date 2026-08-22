@@ -72,7 +72,7 @@ class BiliMemberHost implements MemberHost {
     String? title,
     required String heroTag,
     required int mid,
-    required RxInt contributeInitialIndex,
+    required int contributeInitialIndex,
   }) {
     return switch (param) {
       'home' => MemberHome(heroTag: heroTag),
@@ -80,7 +80,7 @@ class BiliMemberHost implements MemberHost {
       'contribute' => Obx(
           () => MemberContribute(
             heroTag: heroTag,
-            initialIndex: contributeInitialIndex.value,
+            initialIndex: contributeInitialIndex,
             mid: mid,
           ),
         ),

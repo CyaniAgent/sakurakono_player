@@ -13,7 +13,7 @@ class MemberBangumiCtr
     required this.mid,
     required this.heroTag,
   }) : super() {
-    final response = _ctr.loadingState.value.data;
+    final response = _ctr.loadingState.data;
     if (response != null) {
       page = 2;
       final res = response.season!;

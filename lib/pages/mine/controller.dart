@@ -4,7 +4,7 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:skf/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/mine/theme_type.dart';
@@ -19,7 +19,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
-class MineController extends CommonDataController<CoreFavFolderData, CoreFavFolderData>
+class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, CoreFavFolderData>
     with AccountMixin {
   int? favFolderCount;
 
@@ -30,26 +30,42 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   void attachRef(Ref ref) { _ref = ref; }
 
   // 用户信息 头像、昵称、lv
-  final Rx<CoreUserInfoData> userInfo = CoreUserInfoData().obs;
-  // 用户状态 动态、关注、粉丝
-  final Rx<CoreUserStat> userStat = const CoreUserStat().obs;
+  CoreUserInfoData _userInfo = CoreUserInfoData();
+  CoreUserInfoData get userInfo => _userInfo;
+  set userInfo(CoreUserInfoData value) {
+    _userInfo = value;
+    notifyListeners();
+  }
 
-  final Rx<ThemeType> themeType = ThemeType.values[Pref.themeType].obs;
+  // 用户状态 动态、关注、粉丝
+  CoreUserStat _userStat = const CoreUserStat();
+  CoreUserStat get userStat => _userStat;
+  set userStat(CoreUserStat value) {
+    _userStat = value;
+    notifyListeners();
+  }
+
+  ThemeType _themeType = ThemeType.values[Pref.themeType];
+  ThemeType get themeType => _themeType;
+  set themeType(ThemeType value) {
+    _themeType = value;
+    notifyListeners();
+  }
 
   ThemeType get nextThemeType =>
-      ThemeType.values[(themeType.value.index + 1) % ThemeType.values.length];
+      ThemeType.values[(_themeType.index + 1) % ThemeType.values.length];
 
-  static RxBool anonymity = MineActions.of().isAnonymity.obs;
+  static final ValueNotifier<bool> anonymity = ValueNotifier(MineActions.of().isAnonymity);
+
 
   /// 菜单项（由适配器经 [MineActions.menuItems] 注入）。
   late final List<MineMenuItem> list = MineActions.of().menuItems;
 
-  @override
-  void onInit() {
-    super.onInit();
+  MineController() {
+    initAccountListener();
     CoreUserInfoData? userInfoCache = Pref.userInfoCache;
     if (userInfoCache != null) {
-      userInfo.value = userInfoCache;
+      _userInfo = userInfoCache;
       queryData();
       queryUserInfo();
     }
@@ -73,7 +89,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
     final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userInfo();
     if (res case Success(:final response)) {
       if (response.isLogin == true) {
-        userInfo.value = response;
+        userInfo = response;
         if (response != Pref.userInfoCache) {
           GStorage.userInfo.put('userInfoCache', response);
         }
@@ -100,14 +116,14 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
   Future<void> queryUserStatOwner() async {
     final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userStatOwner();
     if (res case Success(:final response)) {
-      userStat.value = response;
+      userStat = response;
     }
   }
 
   @override
   bool customHandleResponse(bool isRefresh, Success<CoreFavFolderData> response) {
     favFolderCount = response.response.count;
-    loadingState.value = response;
+    loadingState = response;
     return true;
   }
 
@@ -239,13 +255,13 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
 
   void onChangeTheme() {
     final newVal = nextThemeType;
-    themeType.value = newVal;
+    themeType = newVal;
     GStorage.setting.put(SettingBoxKey.themeMode, newVal.index);
     Get.changeThemeMode(ThemeUtils.themeMode = newVal.toThemeMode);
   }
 
   void push(String name) {
-    late final mid = userInfo.value.mid;
+    late final mid = userInfo.mid;
     if (isLogin && mid != null) {
       MineActions.of().openUserPage(name, mid);
     }
@@ -255,7 +271,7 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
     if (!accountService.isLogin || longPress) {
       MineActions.of().openLoginPage();
     } else {
-      MineActions.of().openMemberPage(userInfo.value.mid);
+      MineActions.of().openMemberPage(userInfo.mid);
     }
   }
 
@@ -277,9 +293,15 @@ class MineController extends CommonDataController<CoreFavFolderData, CoreFavFold
     if (isLogin) {
       onRefresh();
     } else {
-      userInfo.value = CoreUserInfoData();
-      userStat.value = const CoreUserStat();
-      loadingState.value = LoadingState.loading();
+      userInfo = CoreUserInfoData();
+      userStat = const CoreUserStat();
+      loadingState = LoadingState.loading();
     }
+  }
+
+  @override
+  void dispose() {
+    disposeAccountListener();
+    super.dispose();
   }
 }

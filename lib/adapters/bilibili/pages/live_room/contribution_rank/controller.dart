@@ -25,11 +25,7 @@ class ContributionRankController
     required this.ruid,
     required this.roomId,
     required this.type,
-  });
-
-  @override
-  void onInit() {
-    super.onInit();
+  }) {
     queryData();
   }
 

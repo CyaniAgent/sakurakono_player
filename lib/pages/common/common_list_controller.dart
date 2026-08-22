@@ -1,15 +1,18 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller.dart';
-import 'package:get/get.dart';
 
 abstract class CommonListController<R, T> extends CommonController<R, T> {
   int page = 1;
   bool isEnd = false;
   bool? hasFooter;
 
+  LoadingState<List<T>?> _loadingState = LoadingState<List<T>?>.loading();
   @override
-  Rx<LoadingState<List<T>?>> loadingState =
-      LoadingState<List<T>?>.loading().obs;
+  LoadingState<List<T>?> get loadingState => _loadingState;
+  set loadingState(LoadingState<List<T>?> value) {
+    _loadingState = value;
+    notifyListeners();
+  }
 
   void handleListResponse(List<T> dataList) {}
 
@@ -30,9 +33,9 @@ abstract class CommonListController<R, T> extends CommonController<R, T> {
         if (dataList == null || dataList.isEmpty) {
           isEnd = true;
           if (isRefresh) {
-            loadingState.value = Success(dataList);
+            loadingState = Success(dataList);
           } else if (hasFooter == true) {
-            loadingState.refresh();
+            notifyListeners();
           }
           isLoading = false;
           return;
@@ -40,17 +43,17 @@ abstract class CommonListController<R, T> extends CommonController<R, T> {
         handleListResponse(dataList);
         if (isRefresh) {
           checkIsEnd(dataList.length);
-          loadingState.value = Success(dataList);
-        } else if (loadingState.value case Success(:final response)) {
+          loadingState = Success(dataList);
+        } else if (loadingState case Success(:final response)) {
           response!.addAll(dataList);
           checkIsEnd(response.length);
-          loadingState.refresh();
+          notifyListeners();
         }
       }
       page++;
     } else {
       if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
-        loadingState.value = res as Error;
+        loadingState = res as Error;
       }
     }
     isLoading = false;
@@ -65,7 +68,7 @@ abstract class CommonListController<R, T> extends CommonController<R, T> {
 
   @override
   Future<void> onReload() {
-    loadingState.value = LoadingState<List<T>?>.loading();
+    loadingState = LoadingState<List<T>?>.loading();
     return super.onReload();
   }
 }

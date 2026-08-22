@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/widgets.dart' show ScrollController;
-import 'package:get/get.dart';
+import 'package:flutter/widgets.dart' show ScrollController, ChangeNotifier;
 
 mixin ScrollOrRefreshMixin {
   ScrollController get scrollController;
@@ -28,13 +27,14 @@ mixin ScrollOrRefreshMixin {
   }
 }
 
-abstract class CommonController<R, T> extends GetxController
+abstract class CommonController<R, T> extends ChangeNotifier
     with ScrollOrRefreshMixin {
   @override
   final ScrollController scrollController = ScrollController();
 
   bool isLoading = false;
-  Rx<LoadingState> get loadingState;
+
+  LoadingState get loadingState;
 
   Future<LoadingState<R>> customGetData();
 
@@ -62,8 +62,8 @@ abstract class CommonController<R, T> extends GetxController
   }
 
   @override
-  void onClose() {
+  void dispose() {
     scrollController.dispose();
-    super.onClose();
+    super.dispose();
   }
 }

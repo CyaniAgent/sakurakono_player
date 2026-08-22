@@ -138,8 +138,9 @@ class _ContributionRankTypeState extends State<_ContributionRankType>
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             ViewSliverSafeArea(
-              sliver: Obx(
-                () => _buildBody(showScore, _controller.loadingState.value),
+              sliver: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _buildBody(showScore, _controller.loadingState),
               ),
             ),
           ],

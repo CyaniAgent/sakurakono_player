@@ -145,7 +145,7 @@ class ColorSelectPage extends ConsumerWidget {
               );
               if (result != null) {
                 try {
-                  Get.find<MineController>().themeType.value = result;
+                  Get.find<MineController>().themeType = result;
                 } catch (_) {}
                 notifier.setThemeType(result);
                 GStorage.setting.put(SettingBoxKey.themeMode, result.index);

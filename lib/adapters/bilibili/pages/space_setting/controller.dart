@@ -4,16 +4,15 @@ import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class SpaceSettingController
-    extends CommonDataController<CoreSpaceSettingData, CorePrivacy?> {
+    extends CommonDataControllerRiverpod<CoreSpaceSettingData, CorePrivacy?> {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  @override
-  void onInit() {
-    super.onInit();
+
+  SpaceSettingController() {
     queryData();
   }
 
@@ -24,7 +23,7 @@ class SpaceSettingController
     bool isRefresh,
     Success<CoreSpaceSettingData> response,
   ) {
-    loadingState.value = Success(response.response.privacy);
+    loadingState = Success(response.response.privacy);
     return true;
   }
 
@@ -40,7 +39,7 @@ class SpaceSettingController
 
   Future<void> onMod() async {
     if (hasMod ?? false) {
-      if (loadingState.value case Success(:final response?)) {
+      if (loadingState case Success(:final response?)) {
         final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).spaceSettingMod(
           {
             for (final e in response.list1) e.key: e.value,

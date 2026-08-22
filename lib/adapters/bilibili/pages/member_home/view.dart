@@ -41,8 +41,10 @@ class _MemberHomeState extends State<MemberHome>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return _buildBody(_ctr.loadingState.value);
+    return ListenableBuilder(
+      listenable: _ctr,
+      builder: (_, __) => _buildBody(_ctr.loadingState),
+    );
   }
 
   late final gridDelegateV = SliverGridDelegateWithExtentAndRatio(
@@ -332,7 +334,7 @@ class _MemberHomeState extends State<MemberHome>
                       (item) => item.param == param1,
                     );
                     if (index1 != -1) {
-                      _ctr.contributeInitialIndex.value = index1;
+                      _ctr.contributeInitialIndex = index1;
                     }
                   }
                   _ctr.tabController?.animateTo(index);

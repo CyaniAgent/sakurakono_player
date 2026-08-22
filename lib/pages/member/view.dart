@@ -66,8 +66,9 @@ class _MemberPageState extends State<MemberPage> {
     final padding = MediaQuery.viewPaddingOf(context);
     return Material(
       color: theme.surface,
-      child: Obx(
-        () => switch (_userController.loadingState.value) {
+      child: ListenableBuilder(
+        listenable: _userController,
+        builder: (_, __) => switch (_userController.loadingState) {
           Loading() => m3eLoading,
           Success(:final response) => ExtendedNestedScrollView(
             key: _userController.scrollKey,
@@ -80,23 +81,21 @@ class _MemberPageState extends State<MemberPage> {
                   DynamicSliverAppBar.medium(
                     actions: _actions(theme),
                     title: Text(_userController.username ?? ''),
-                    flexibleSpace: Obx(
-                      () => UserInfoCard(
-                        isOwner:
-                            _userController.mid == _userController.currentUserId,
-                        relation: _userController.relation.value,
-                        card: response.coreCard!,
-                        images: response.images!,
-                        onFollow: () => _userController.onFollow(context),
-                        live: _userController.live,
-                        silence: _userController.silence,
-                        headerControllerBuilder: getHeaderController,
-                        showLiveMedalWall: _showLiveMedalWall,
-                        charges: _userController.charges,
-                        chargeCount: _userController.chargeCount,
-                        guards: _userController.guards,
-                        guardCount: _userController.guardCount,
-                      ),
+                    flexibleSpace: UserInfoCard(
+                      isOwner:
+                          _userController.mid == _userController.currentUserId,
+                      relation: _userController.relation,
+                      card: response.coreCard!,
+                      images: response.images!,
+                      onFollow: () => _userController.onFollow(context),
+                      live: _userController.live,
+                      silence: _userController.silence,
+                      headerControllerBuilder: getHeaderController,
+                      showLiveMedalWall: _showLiveMedalWall,
+                      charges: _userController.charges,
+                      chargeCount: _userController.chargeCount,
+                      guards: _userController.guards,
+                      guardCount: _userController.guardCount,
                     ),
                   ),
                 ];
@@ -331,7 +330,7 @@ class _MemberPageState extends State<MemberPage> {
                 const Icon(Icons.block, size: 19),
                 const SizedBox(width: 10),
                 Text(
-                  _userController.relation.value != 128 ? '加入黑名单' : '移除黑名单',
+                  _userController.relation != 128 ? '加入黑名单' : '移除黑名单',
                 ),
               ],
             ),
@@ -428,7 +427,7 @@ class _MemberPageState extends State<MemberPage> {
           ),
         if (_userController.isLogin)
           if (_userController.mid == _userController.currentUserId) ...[
-            if ((_userController.loadingState.value.dataOrNull?.coreCard?.vip
+            if ((_userController.loadingState.dataOrNull?.coreCard?.vip
                     ?.status ??
                 0) >
                 0)

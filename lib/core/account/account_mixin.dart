@@ -1,28 +1,21 @@
-import 'dart:async';
 import 'package:get/get.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 
 /// Mixin for controllers that need to react to auth state changes.
 /// Substitutes the old Bilibili-specific AccountMixin.
-mixin AccountMixin on GetLifeCycleBase {
-  StreamSubscription<bool>? _listener;
-
+mixin AccountMixin {
   AccountProvider get accountService => Get.find<AccountProvider>();
 
   void onChangeAccount(bool isLogin);
 
-  @override
-  void onInit() {
-    super.onInit();
-    accountService.onAuthStateChanged({});
+  void initAccountListener() {
+    // Account listening now handled by RiverpodAccountMixin.
+    // This method is kept for backward compatibility with existing callers.
   }
 
-  @override
-  void onClose() {
-    _listener?.cancel();
-    _listener = null;
-    super.onClose();
+  void disposeAccountListener() {
+    // Account listening now handled by RiverpodAccountMixin.
   }
 }
 

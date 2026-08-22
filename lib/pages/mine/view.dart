@@ -79,8 +79,9 @@ class _MediaPageState extends CommonPageState<MinePage>
                   children: [
                     _buildUserInfo(theme, secondary),
                     _buildActions(secondary),
-                    Obx(
-                      () => controller.loadingState.value is Loading
+                    ListenableBuilder(
+                      listenable: controller,
+                      builder: (_, __) => controller.loadingState is Loading
                           ? const SizedBox.shrink()
                           : _buildFav(theme, secondary),
                     ),
@@ -167,20 +168,18 @@ class _MediaPageState extends CommonPageState<MinePage>
             onPressed: actions.openReply,
             icon: const Icon(Icons.message_outlined),
           ),
-        Obx(
-          () {
-            final anonymity = MineController.anonymity.value;
-            return IconButton(
-              iconSize: iconSize,
-              padding: padding,
-              style: style,
-              tooltip: "${anonymity ? '退出' : '进入'}无痕模式",
-              onPressed: MineController.onChangeAnonymity,
-              icon: anonymity
-                  ? const Icon(MdiIcons.incognito)
-                  : const Icon(MdiIcons.incognitoOff),
-            );
-          },
+        ValueListenableBuilder<bool>(
+          valueListenable: MineController.anonymity,
+          builder: (_, anonymity, __) => IconButton(
+            iconSize: iconSize,
+            padding: padding,
+            style: style,
+            tooltip: "${anonymity ? '退出' : '进入'}无痕模式",
+            onPressed: MineController.onChangeAnonymity,
+            icon: anonymity
+                ? const Icon(MdiIcons.incognito)
+                : const Icon(MdiIcons.incognitoOff),
+          ),
         ),
         IconButton(
           iconSize: iconSize,
@@ -190,17 +189,16 @@ class _MediaPageState extends CommonPageState<MinePage>
           onPressed: () => actions.switchAccountDialog(context),
           icon: const Icon(Icons.switch_account_outlined),
         ),
-        Obx(
-          () {
-            return IconButton(
-              iconSize: iconSize,
-              padding: padding,
-              style: style,
-              tooltip: '切换至${controller.nextThemeType.desc}主题',
-              onPressed: controller.onChangeTheme,
-              icon: controller.themeType.value.icon,
-            );
-          },
+        ListenableBuilder(
+          listenable: controller,
+          builder: (_, __) => IconButton(
+            iconSize: iconSize,
+            padding: padding,
+            style: style,
+            tooltip: '切换至${controller.nextThemeType.desc}主题',
+            onPressed: controller.onChangeTheme,
+            icon: controller.themeType.icon,
+          ),
         ),
         IconButton(
           iconSize: iconSize,
@@ -232,12 +230,12 @@ class _MediaPageState extends CommonPageState<MinePage>
       fontWeight: FontWeight.bold,
       color: secondary,
     );
-    return Obx(() {
-      final userInfo = controller.userInfo.value;
+    return ListenableBuilder(listenable: controller, builder: (_, __) {
+      final userInfo = controller.userInfo;
       final levelInfo = userInfo.levelInfo;
       final hasLevel = levelInfo != null;
       final isVip = userInfo.vipStatus != null && userInfo.vipStatus! > 0;
-      final userStat = controller.userStat.value;
+      final userStat = controller.userStat;
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -485,7 +483,7 @@ class _MediaPageState extends CommonPageState<MinePage>
             icon: const Icon(Icons.refresh, size: 20),
           ),
         ),
-        _buildFavBody(theme, secondary, controller.loadingState.value),
+        _buildFavBody(theme, secondary, controller.loadingState),
       ],
     );
   }

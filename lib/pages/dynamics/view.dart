@@ -65,8 +65,9 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
             }
             return false;
           },
-          child: Obx(
-            () => _buildUpPanel(_dynamicsController.loadingState.value),
+          child: ListenableBuilder(
+            listenable: _dynamicsController,
+            builder: (_, __) => _buildUpPanel(_dynamicsController.loadingState),
           ),
         ),
       ),

@@ -223,8 +223,9 @@ Widget userAvatar({
               Positioned(
                 right: -4,
                 bottom: -4,
-                child: Obx(
-                  () => MineController.anonymity.value
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: MineController.anonymity,
+                  builder: (_, anonymity, __) => anonymity
                       ? IgnorePointer(
                           child: Container(
                             padding: const .all(2),

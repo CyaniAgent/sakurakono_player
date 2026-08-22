@@ -24,7 +24,7 @@ class _SpaceSettingPageState extends State<SpaceSettingPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text('空间设置')),
-      body: Obx(() => _buildBody(theme, _controller.loadingState.value)),
+      body: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(theme, _controller.loadingState)),
     );
   }
 

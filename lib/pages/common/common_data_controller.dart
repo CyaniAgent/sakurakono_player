@@ -1,31 +1,55 @@
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/common/common_controller.dart';
-import 'package:get/get.dart';
+import 'package:skf/pages/common/common_controller.dart' show ScrollOrRefreshMixin;
+import 'package:flutter/widgets.dart' show ChangeNotifier, ScrollController;
 
-abstract class CommonDataController<R, T> extends CommonController<R, T> {
+abstract class CommonDataController<R, T> extends ChangeNotifier
+    with ScrollOrRefreshMixin {
   @override
-  Rx<LoadingState<T>> loadingState = LoadingState<T>.loading().obs;
+  final ScrollController scrollController = ScrollController();
 
-  @override
+  bool isLoading = false;
+
+  LoadingState<T> _loadingState = LoadingState<T>.loading();
+  LoadingState<T> get loadingState => _loadingState;
+  set loadingState(LoadingState<T> value) {
+    _loadingState = value;
+    notifyListeners();
+  }
+
+  Future<LoadingState<R>> customGetData();
+
+  bool customHandleResponse(bool isRefresh, Success<R> response) {
+    return false;
+  }
+
+  bool handleError(String? errMsg) {
+    return false;
+  }
+
   Future<void> queryData([bool isRefresh = true]) async {
     if (isLoading) return;
     isLoading = true;
     final LoadingState<R> res = await customGetData();
-    if (res is Success<R>) {
+    if (res case Success(:final response)) {
       if (!customHandleResponse(isRefresh, res)) {
-        loadingState.value = res as LoadingState<T>;
+        loadingState = res as LoadingState<T>;
       }
     } else {
       if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
-        loadingState.value = res as Error;
+        loadingState = res as Error;
       }
     }
     isLoading = false;
   }
 
   @override
-  Future<void> onReload() {
-    loadingState.value = LoadingState<T>.loading();
-    return super.onReload();
+  Future<void> onRefresh() => queryData();
+
+  Future<void> onReload() => onRefresh();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 }

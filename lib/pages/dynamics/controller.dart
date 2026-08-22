@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';
-import 'package:skf/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
@@ -16,10 +16,11 @@ import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class DynamicsController
-    extends CommonDataController<CoreFollowUpModel, CoreFollowUpModel>
-    with GetSingleTickerProviderStateMixin, AccountMixin {
+    extends CommonDataControllerRiverpod<CoreFollowUpModel, CoreFollowUpModel>
+    with AccountMixin implements TickerProvider {
   late final TabController tabController;
 
   final Set<int> tempBannedList = <int>{};
@@ -44,9 +45,8 @@ class DynamicsController
       CoreDynamicsTabType.values[tabController.index];
 
 
-  @override
-  void onInit() {
-    super.onInit();
+  DynamicsController() {
+    initAccountListener();
     tabController = TabController(
       vsync: this,
       length: CoreDynamicsTabType.values.length,
@@ -54,6 +54,9 @@ class DynamicsController
     );
     queryData();
   }
+
+  @override
+  Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
 
   void _jumpToTab(int mid) {
     tabController.index = mid == -1 ? 0 : 4;
@@ -123,9 +126,10 @@ class DynamicsController
   }
 
   @override
-  void onClose() {
+  void dispose() {
+    disposeAccountListener();
     tabController.dispose();
-    super.onClose();
+    super.dispose();
   }
 
   @override
@@ -179,7 +183,7 @@ class DynamicsController
         _offset = '';
         _cacheUpList = res.upList?.toSet();
       }
-      loadingState.value = response;
+      loadingState = response;
     } else {
       if (_showAllUp) {
         _page++;
@@ -189,9 +193,10 @@ class DynamicsController
         if (_showAllUp && _cacheUpList != null) {
           upList.removeWhere(_cacheUpList!.contains);
         }
-        loadingState
-          ..value.data.addAllUpList(upList)
-          ..refresh();
+        if (loadingState case Success(:final response?)) {
+          response.addAllUpList(upList);
+          loadingState = Success(response);
+        }
       }
     }
 

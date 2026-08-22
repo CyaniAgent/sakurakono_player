@@ -6,21 +6,32 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/common/common_data_controller.dart';
+import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/nested_scroll_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     show ExtendedNestedScrollViewState;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
-class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData?>
-    with GetTickerProviderStateMixin {
-  MemberController({required this.mid});
+class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreSpaceData?>
+    implements TickerProvider {
+  MemberController({required this.mid}) {
+    queryData();
+  }
+
+  final List<Ticker> _tickers = [];
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    final ticker = Ticker(onTick);
+    _tickers.add(ticker);
+    return ticker;
+  }
   int mid;
   String? username;
   String? userAvatar;
@@ -38,17 +49,27 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   int? silence;
 
   int? isFollowed; // 被关注
-  RxInt relation = 0.obs;
+  int _relation = 0;
   bool get isFollow {
-    final relation = this.relation.value;
+    final relation = this._relation;
     return relation != 0 && relation != 128 && relation != -1;
+  }
+  int get relation => _relation;
+  set relation(int value) {
+    _relation = value;
+    notifyListeners();
   }
 
   CoreSpaceSetting? spaceSetting;
   List<CoreSpaceTab2>? tab2;
   late List<Tab> tabs;
   TabController? tabController;
-  RxInt contributeInitialIndex = 0.obs;
+  int _contributeInitialIndex = 0;
+  int get contributeInitialIndex => _contributeInitialIndex;
+  set contributeInitialIndex(int value) {
+    _contributeInitialIndex = value;
+    notifyListeners();
+  }
 
   bool? hasSeasonOrSeries;
 
@@ -66,11 +87,6 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
 
   final scrollKey = GlobalKey<ExtendedNestedScrollViewState>();
 
-  @override
-  void onInit() {
-    super.onInit();
-    queryData();
-  }
 
   @override
   bool customHandleResponse(bool isRefresh, Success<CoreSpaceData> response) {
@@ -94,13 +110,13 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
 
     switch (data.relation) {
       case -1:
-        relation.value = 128;
+        _relation = 128;
       case -999:
         if (data.guestRelation == -1) {
-          relation.value = -1;
+          _relation = -1;
         }
       default:
-        relation.value = card?.relation?.isFollow == 1
+        _relation = card?.relation?.isFollow == 1
             ? data.relSpecial == 1
                   ? -10
                   : card?.relation?.status ?? 2
@@ -149,7 +165,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
     if (mid == currentUserId) {
       spaceSetting = data.setting;
     }
-    loadingState.value = response;
+    loadingState = response;
     return true;
   }
 
@@ -172,7 +188,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
       length: tabs.length,
     );
     username = errMsg;
-    loadingState.value = const Success(null);
+    loadingState = const Success(null);
     return true;
   }
 
@@ -198,7 +214,7 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('提示'),
-        content: Text(relation.value != 128 ? '确定拉黑UP主?' : '从黑名单移除UP主'),
+        content: Text(relation != 128 ? '确定拉黑UP主?' : '从黑名单移除UP主'),
         actions: [
           TextButton(
             onPressed: AppNavigator.back,
@@ -224,21 +240,21 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
   }
 
   Future<void> _onBlock() async {
-    final isBlocked = relation.value == 128;
+    final isBlocked = relation == 128;
     final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
       mid: mid,
       act: isBlocked ? 6 : 5,
       reSrc: 11,
     );
     if (res.isSuccess) {
-      relation.value = isBlocked ? 0 : 128;
+      relation = isBlocked ? 0 : 128;
     }
   }
 
   void onFollow(BuildContext context) {
     if (mid == currentUserId) {
       AppNavigator.toNamed('/editProfile');
-    } else if (relation.value == 128) {
+    } else if (relation == 128) {
       _onBlock();
     } else {
       if (!isLogin) {
@@ -249,23 +265,26 @@ class MemberController extends CommonDataController<CoreSpaceData, CoreSpaceData
         context,
         mid: mid,
         isFollow: isFollow,
-        afterMod: (attribute) => relation.value = attribute,
+        afterMod: (attribute) => relation = attribute,
       );
     }
   }
 
   @override
-  void onClose() {
+  void dispose() {
     tabController?.dispose();
-    super.onClose();
+    for (final ticker in _tickers) {
+      if (ticker.isActive) ticker.dispose();
+    }
+    super.dispose();
   }
 
   Future<void> onRemoveFan() async {
     final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(mid: mid, act: 7, reSrc: 11);
     if (res.isSuccess) {
       isFollowed = null;
-      if (relation.value == 4) {
-        relation.value = 2;
+      if (relation == 4) {
+        relation = 2;
       }
       SmartDialog.showToast('移除成功');
     } else {
