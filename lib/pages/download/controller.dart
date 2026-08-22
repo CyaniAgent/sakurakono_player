@@ -24,6 +24,12 @@ class DownloadPageController extends ChangeNotifier
   @override
   void notifyStateChanged() => notifyListeners();
 
+  bool get isMultiSelectMode => enableMultiSelect.value;
+  set isMultiSelectMode(bool v) {
+    enableMultiSelect.value = v;
+    notifyListeners();
+  }
+
   DownloadPageController() {
     _loadList();
     _downloadActions.addFlagListener(_loadList);

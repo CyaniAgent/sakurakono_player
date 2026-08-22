@@ -50,8 +50,8 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final padding = MediaQuery.viewPaddingOf(context);
-    return Obx(() {
-      final enableMultiSelect = _controller.enableMultiSelect.value;
+    return ListenableBuilder(listenable: _controller, builder: (context, _) {
+      final enableMultiSelect = _controller.isMultiSelectMode;
       return popScope(
         canPop: !enableMultiSelect,
         onPopInvokedWithResult: (didPop, result) {
@@ -109,7 +109,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                     if (enableMultiSelect) {
                       _controller.handleSelect();
                     } else {
-                      _controller.enableMultiSelect.value = true;
+                      _controller.isMultiSelectMode = true;
                     }
                   },
                   icon: const Icon(Icons.edit_note),
@@ -282,7 +282,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () {
-          if (_controller.enableMultiSelect.value) {
+          if (_controller.isMultiSelectMode) {
             _controller.onSelect(pageInfo);
             return;
           }

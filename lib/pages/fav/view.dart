@@ -25,17 +25,19 @@ class FavPage extends StatefulWidget {
 class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   final FavController _favController = Get.put(FavController());
-  late final RxBool _showVideoFavMenu;
+  bool _showVideoFavMenu = false;
 
   void listener() {
-    _showVideoFavMenu.value = _tabController.index == 0;
+    setState(() {
+      _showVideoFavMenu = _tabController.index == 0;
+    });
   }
 
   @override
   void initState() {
     super.initState();
     int initialIndex = AppNavigator.argsOf(context) is int ? AppNavigator.argsOf(context) as int : 0;
-    _showVideoFavMenu = (initialIndex == 0).obs;
+    _showVideoFavMenu = (initialIndex == 0);
     _tabController = TabController(
       length: FavTabType.values.length,
       vsync: this,
@@ -59,75 +61,69 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: const Text('我的收藏'),
         actions: [
-          Obx(
-            () => _showVideoFavMenu.value
-                ? IconButton(
-                    onPressed: () => AppNavigator.toNamed('/createFav')?.then(
-                      (data) {
-                        if (data != null) {
-                          final list =
-                              _favController.loadingState.dataOrNull;
-                          if (list != null && list.isNotEmpty) {
-                            list.insert(1, data);
-                            _favController.loadingState = _favController.loadingState;
-                          } else {
-                            _favController.loadingState = Success([data]);
-                          }
+          _showVideoFavMenu
+              ? IconButton(
+                  onPressed: () => AppNavigator.toNamed('/createFav')?.then(
+                    (data) {
+                      if (data != null) {
+                        final list =
+                            _favController.loadingState.dataOrNull;
+                        if (list != null && list.isNotEmpty) {
+                          list.insert(1, data);
+                          _favController.loadingState = _favController.loadingState;
+                        } else {
+                          _favController.loadingState = Success([data]);
                         }
-                      },
-                    ),
-                    icon: const Icon(Icons.add),
-                    tooltip: '新建收藏夹',
-                  )
-                : const SizedBox.shrink(),
-          ),
-          Obx(
-            () => _showVideoFavMenu.value
-                ? IconButton(
-                    onPressed: () {
-                      if (_favController.loadingState.isSuccess) {
-                        if (!_favController.isEnd) {
-                          SmartDialog.showToast('加载全部收藏夹再排序');
-                          return;
-                        }
-                        widget.actions?.onOpenFolderSort?.call(
-                          _favController,
+                      }
+                    },
+                  ),
+                  icon: const Icon(Icons.add),
+                  tooltip: '新建收藏夹',
+                )
+              : const SizedBox.shrink(),
+          _showVideoFavMenu
+              ? IconButton(
+                  onPressed: () {
+                    if (_favController.loadingState.isSuccess) {
+                      if (!_favController.isEnd) {
+                        SmartDialog.showToast('加载全部收藏夹再排序');
+                        return;
+                      }
+                      widget.actions?.onOpenFolderSort?.call(
+                        _favController,
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.sort),
+                  tooltip: '收藏夹排序',
+                )
+              : const SizedBox.shrink(),
+          _showVideoFavMenu
+              ? IconButton(
+                  onPressed: () {
+                    if (_favController.loadingState case Success(
+                      :final response,
+                    )) {
+                      try {
+                        if (response == null || response.isEmpty) return;
+                        final item = response.first;
+                        AppNavigator.toNamed(
+                          '/favSearch',
+                          arguments: {
+                            'type': 1,
+                            'mediaId': item.id,
+                            'title': item.title,
+                            'count': item.mediaCount,
+                            'isOwner': true,
+                          },
                         );
-                      }
-                    },
-                    icon: const Icon(Icons.sort),
-                    tooltip: '收藏夹排序',
-                  )
-                : const SizedBox.shrink(),
-          ),
-          Obx(
-            () => _showVideoFavMenu.value
-                ? IconButton(
-                    onPressed: () {
-                      if (_favController.loadingState case Success(
-                        :final response,
-                      )) {
-                        try {
-                          if (response == null || response.isEmpty) return;
-                          final item = response.first;
-                          AppNavigator.toNamed(
-                            '/favSearch',
-                            arguments: {
-                              'type': 1,
-                              'mediaId': item.id,
-                              'title': item.title,
-                              'count': item.mediaCount,
-                              'isOwner': true,
-                            },
-                          );
-                        } catch (_) {}
-                      }
-                    },
-                    icon: const Icon(Icons.search_outlined),
-                    tooltip: '搜索',
-                  )
-                : const SizedBox.shrink(),
-          ),
+                      } catch (_) {}
+                    }
+                  },
+                  icon: const Icon(Icons.search_outlined),
+                  tooltip: '搜索',
+                )
+              : const SizedBox.shrink(),
           const SizedBox(width: 6),
         ],
         bottom: TabBar(
