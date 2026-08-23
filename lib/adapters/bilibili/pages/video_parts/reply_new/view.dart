@@ -61,7 +61,7 @@ class ReplyPage extends CommonRichTextPubPage {
 }
 
 class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
-  final RxBool _syncToDynamic = false.obs;
+  bool _syncToDynamic = false;
   final heroTag = AppNavigator.arguments?['heroTag'];
 
   @override
@@ -145,7 +145,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
         ),
         child: Listener(
           onPointerUp: (event) {
-            if (readOnly.value) {
+            if (_syncToDynamic) {
               updatePanelType(PanelType.keyboard);
             }
           },
@@ -201,12 +201,12 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             Obx(
               () => ToolbarIconButton(
                 tooltip: '转到动态',
-                onPressed: _syncToDynamic.toggle,
+                onPressed: () => setState(() => _syncToDynamic = !_syncToDynamic),
                 icon: const Icon(
                   CustomIcons.repeat_rounded_rotate_90,
                   size: 22,
                 ),
-                selected: _syncToDynamic.value,
+                selected: _syncToDynamic,
               ),
             ),
             const Spacer(),
@@ -404,7 +404,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
           : message,
       atNameToMid: atNameToMid,
       pictures: pictures,
-      syncToDynamic: _syncToDynamic.value,
+      syncToDynamic: _syncToDynamic,
     );
     if (res case Success(:final response)) {
       hasPub = true;

@@ -40,7 +40,6 @@ class FollowChildController
       LoadingState<List<CoreFollowItemModel>?>.loading().obs;
 
   late final Rx<FollowOrderType> orderType = FollowOrderType.values[Pref.followOrderType].obs;
-  }
 
 
   @override

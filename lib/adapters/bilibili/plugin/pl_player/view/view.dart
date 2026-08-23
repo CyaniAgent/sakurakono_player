@@ -829,7 +829,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         false;
     if (!success) return;
 
-    final progress = 0.0.obs;
+    double progress = 0.0;
     final name =
         '${ctr.cid}-${model.segment.first.toStringAsFixed(3)}_${model.segment.second.toStringAsFixed(3)}.webp';
     final file = '$tmpDirPath/$name';
@@ -850,7 +850,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       backType: SmartBackType.normal,
       builder: (_) => LoadingWidget(progress: progress, msg: '正在保存，可能需要较长时间'),
       onDismiss: () async {
-        if (progress.value < 1.0) {
+        if (progress < 1.0) {
           mpv.dispose();
         }
         if (await future) {

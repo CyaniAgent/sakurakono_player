@@ -47,9 +47,9 @@ class SendDanmakuPanel extends CommonTextPubPage {
 }
 
 class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
-  late final RxInt _mode;
-  late final RxInt _fontSize;
-  late final Rx<Color> _color;
+  late final int _mode;
+  late final int _fontSize;
+  late Color _color;
 
   final List<Color> _colorList = [
     Colors.white,
@@ -71,9 +71,9 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   @override
   void initState() {
     super.initState();
-    _mode = (widget.dmConfig?.mode ?? 1).obs;
-    _fontSize = (widget.dmConfig?.fontSize ?? 25).obs;
-    _color = (widget.dmConfig?.color ?? Colors.white).obs;
+    _mode = widget.dmConfig?.mode ?? 1;
+    _fontSize = widget.dmConfig?.fontSize ?? 25;
+    _color = widget.dmConfig?.color ?? Colors.white;
     if (Pref.userInfoCache?.vipStatus == 1) {
       _colorList.add(Colors.transparent);
     }
@@ -82,17 +82,16 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   @override
   void dispose() {
     widget.onSaveDmConfig?.call((
-      mode: _mode.value,
-      fontSize: _fontSize.value,
-      color: _color.value,
+      mode: _mode,
+      fontSize: _fontSize,
+      color: _color,
     ));
     super.dispose();
   }
 
   Widget get _buildColorPanel => Expanded(
-    child: Obx(
       () {
-        final bool isCustomColor = !_colorList.contains(_color.value);
+        final bool isCustomColor = !_colorList.contains(_color);
         final int length = _colorList.length + (isCustomColor ? 1 : 0) + 1;
         return GridView.builder(
           shrinkWrap: true,
@@ -125,7 +124,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
                 ),
               );
             } else if (index == length - 2 && isCustomColor) {
-              return _buildColorItem(_color.value);
+              return _buildColorItem(_color);
             }
             return _buildColorItem(_colorList[index]);
           },
@@ -236,12 +235,12 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
 
   Widget _buildColorItem(Color color) {
     return GestureDetector(
-      onTap: () => _color.value = color,
+      onTap: () => setState(() => _color = color),
       child: Container(
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
-          border: _color.value != color
+          _color != color
               ? null
               : Border.all(
                   width: 2,
@@ -286,13 +285,13 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
 
   Widget _buildPositionItem(int mode, String title) {
     return Obx(
-      () => Expanded(
-        child: GestureDetector(
-          onTap: () => _mode.value = mode,
+            () => Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _mode = mode),
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: _mode.value == mode
+                color: _mode == mode
                   ? themeData.colorScheme.secondaryContainer
                   : themeData.colorScheme.onInverseSurface,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -301,7 +300,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
             child: Text(
               title,
               style: TextStyle(
-                color: _mode.value == mode
+                color: _mode == mode
                     ? themeData.colorScheme.onSecondaryContainer
                     : themeData.colorScheme.outline,
               ),
@@ -314,13 +313,13 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
 
   Widget _buildFontSizeItem(int fontSize, String title) {
     return Obx(
-      () => Expanded(
-        child: GestureDetector(
-          onTap: () => _fontSize.value = fontSize,
+            () => Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _fontSize = fontSize),
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: _fontSize.value == fontSize
+                color: _fontSize == fontSize
                   ? themeData.colorScheme.secondaryContainer
                   : themeData.colorScheme.onInverseSurface,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -329,7 +328,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
             child: Text(
               title,
               style: TextStyle(
-                color: _fontSize.value == fontSize
+                color: _fontSize == fontSize
                     ? themeData.colorScheme.onSecondaryContainer
                     : themeData.colorScheme.outline,
               ),
@@ -434,10 +433,10 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         title: const Text('Color Picker'),
         content: SlideColorPicker(
-          color: _color.value,
+          color: _color,
           onChanged: (Color? color) {
             if (color != null) {
-              _color.value = color;
+              _color = color;
             }
           },
         ),
@@ -448,7 +447,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   @override
   Future<void> onCustomPublish({List? pictures}) async {
     SmartDialog.showLoading(msg: '发送中...');
-    bool isColorful = _color.value == Colors.transparent;
+    bool isColorful = _color == Colors.transparent;
     final res = await appRead(danmakuRepositoryProvider).shootDanmaku(
       oid: widget.cid,
       bvid: widget.bvid,
@@ -456,7 +455,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
       msg: editController.text,
       mode: _mode.value,
       fontSize: _fontSize.value,
-      color: isColorful ? null : _color.value.toARGB32() & 0xFFFFFF,
+      color: isColorful ? null : _color.toARGB32() & 0xFFFFFF,
       colorful: isColorful,
     );
     SmartDialog.dismiss();
@@ -474,7 +473,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
       widget.onSuccess(
         DanmakuContentItem(
           editController.text,
-          color: isColorful ? Colors.white : _color.value,
+          color: isColorful ? Colors.white : _color,
           type: switch (_mode.value) {
             5 => DanmakuItemType.top,
             4 => DanmakuItemType.bottom,

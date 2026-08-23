@@ -51,9 +51,9 @@ class PgcIntroController extends CommonIntroController {
   @override
   StatDetail? getStat() => pgcItem.stat;
 
-  late final RxBool isFollowed = false.obs;
-  late final RxInt followStatus = (-1).obs;
-  late final RxBool isFav = (pgcItem.userStatus?.favored == 1).obs;
+  bool isFollowed = false;
+  int followStatus = -1;
+  bool isFav = (pgcItem.userStatus?.favored == 1);
 
   @override
   void onInit() {
@@ -291,8 +291,8 @@ class PgcIntroController extends CommonIntroController {
   Future<void> pgcAdd() async {
     final result = await Get.find<VideoRepository>().pgcAdd(seasonId: pgcItem.seasonId);
     if (result case Success(:final response)) {
-      isFollowed.value = true;
-      followStatus.value = 2;
+      isFollowed = true;
+      followStatus = 2;
       SmartDialog.showToast(response);
     } else {
       SmartDialog.showToast(result.toString());
@@ -303,7 +303,7 @@ class PgcIntroController extends CommonIntroController {
   Future<void> pgcDel() async {
     final result = await Get.find<VideoRepository>().pgcDel(seasonId: pgcItem.seasonId);
     if (result case Success(:final response)) {
-      isFollowed.value = false;
+      isFollowed = false;
       SmartDialog.showToast(response);
     } else {
       SmartDialog.showToast(result.toString());
@@ -316,7 +316,7 @@ class PgcIntroController extends CommonIntroController {
       status: status,
     );
     if (result case Success(:final response)) {
-      followStatus.value = status;
+      followStatus = status;
       SmartDialog.showToast(response);
     } else {
       SmartDialog.showToast(result.toString());
@@ -410,8 +410,8 @@ class PgcIntroController extends CommonIntroController {
   Future<void> queryIsFollowed() async {
     final res = await Get.find<PgcRepository>().seasonStatus(seasonId!);
     if (res case Success(:final response)) {
-      isFollowed.value = response['follow'] == 1;
-      followStatus.value = response['follow_status'];
+      isFollowed = response['follow'] == 1;
+      followStatus = response['follow_status'];
     }
   }
 
@@ -434,7 +434,7 @@ class PgcIntroController extends CommonIntroController {
       ? await Get.find<FavRepository>().delFavPugv(seasonId!)
       : await Get.find<FavRepository>().addFavPugv(seasonId!);
     if (res.isSuccess) {
-      this.isFav.toggle();
+      isFav = !isFav;
       SmartDialog.showToast('${isFav ? '\u53d6\u6d88' : ''}\u6536\u85cf\u6210\u529f');
     } else {
       SmartDialog.showToast(res.toString());

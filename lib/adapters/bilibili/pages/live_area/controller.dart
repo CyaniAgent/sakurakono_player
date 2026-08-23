@@ -95,7 +95,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
         res.toast();
       }
     } else {
-      isEditing.toggle();
+      isEditing = !isEditing;
     }
   }
 
