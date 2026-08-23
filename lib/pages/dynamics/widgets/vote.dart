@@ -50,7 +50,7 @@ class _VotePanelState extends State<VotePanel> {
   late bool _showPercentage = !_enabled;
   late final _maxCnt = _voteInfo.choiceCnt ?? _voteInfo.options.length;
   final isLogin = Get.find<AccountProvider>().isLogin;
-  late final followeeVote = Rxn<List<CoreFolloweeVote>>();
+  late Listenable followeeVote;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _VotePanelState extends State<VotePanel> {
           .then((res) {
         if (!mounted) return;
         if (res case Success(:final response)) {
-          followeeVote.value = response;
+          followeeVote = response;
         }
       });
     }
@@ -119,7 +119,7 @@ class _VotePanelState extends State<VotePanel> {
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Obx(
-          OutlinedButton(
+          child: OutlinedButton(
               onPressed: groupValue.isNotEmpty
                   ? () async {
                       final res = await widget.onVote(
@@ -140,7 +140,6 @@ class _VotePanelState extends State<VotePanel> {
                   : null,
               child: const Center(child: Text('投票')),
             ),
-        ),
       ],
     ];
     Widget title = Text(
