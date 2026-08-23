@@ -122,41 +122,44 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
             padding: EdgeInsets.only(left: padding.left, right: padding.right),
             child: CustomScrollView(
               slivers: [
-                Obx(() {
-                  final entry =
-                      _downloadActions.waitDownloadQueue.firstWhereOrNull(
-                        (e) => e.cid == _downloadActions.curCid,
-                      ) ??
-                      _downloadActions.waitDownloadQueue.firstOrNull;
-                  if (entry != null) {
-                    return SliverMainAxisGroup(
-                      slivers: [
-                        SliverPadding(
-                          padding: const EdgeInsets.only(left: 12, bottom: 7),
-                          sliver: SliverToBoxAdapter(
-                            child: Text(
-                              '正在缓存 (${_downloadActions.waitDownloadQueue.length})',
+                ListenableBuilder(
+                  listenable: _downloadActions,
+                  builder: (context, _) {
+                    final entry =
+                        _downloadActions.waitDownloadQueue.firstWhereOrNull(
+                          (e) => e.cid == _downloadActions.curCid,
+                        ) ??
+                        _downloadActions.waitDownloadQueue.firstOrNull;
+                    if (entry != null) {
+                      return SliverMainAxisGroup(
+                        slivers: [
+                          SliverPadding(
+                            padding: const EdgeInsets.only(left: 12, bottom: 7),
+                            sliver: SliverToBoxAdapter(
+                              child: Text(
+                                '正在缓存 (${_downloadActions.waitDownloadQueue.length})',
+                              ),
                             ),
                           ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 110,
-                            child: DetailItem(
-                              entry: entry,
-                              progress: _progress,
-                              actions: _downloadActions,
-                              showTitle: true,
-                              isCurr: true,
-                              controller: _controller,
+                          SliverToBoxAdapter(
+                            child: SizedBox(
+                              height: 110,
+                              child: DetailItem(
+                                entry: entry,
+                                progress: _progress,
+                                actions: _downloadActions,
+                                showTitle: true,
+                                isCurr: true,
+                                controller: _controller,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }
-                  return const SliverToBoxAdapter();
-                }),
+                        ],
+                      );
+                    }
+                    return const SliverToBoxAdapter();
+                  },
+                ),
               ListenableBuilder(
                 listenable: _controller,
                 builder: (context, _) {
