@@ -57,11 +57,14 @@ class _FansPageState extends FollowTypePageState<FansPage> {
       ? AppBar(
           title: controller.isOwner
               ? const Text('我的粉丝')
-              : Obx(() {
-                  final name = controller.name.value;
+              ListenableBuilder(
+                listenable: controller,
+                builder: (context, _) {
+                  final name = controller.name;
                   if (name != null) return Text('$name的粉丝');
                   return const SizedBox.shrink();
-                }),
+                },
+              ),
         )
       : null;
 
