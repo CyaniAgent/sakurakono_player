@@ -41,8 +41,8 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
   bool _blockToast = Pref.blockToast;
   String _blockServer = Pref.blockServer;
   bool _blockTrack = Pref.blockTrack;
-  final _serverStatus = Rxn<bool>();
-  final _userInfo = LoadingState<UserInfo>.loading().obs;
+  bool? _serverStatus;
+  LoadingState<UserInfo> _userInfo = LoadingState<UserInfo>.loading();
 
   Box setting = GStorage.setting;
 
@@ -60,7 +60,8 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
   }
 
   Future<void> _checkServerStatus() async {
-    _serverStatus.value = (await appRead(sponsorBlockRepositoryProvider).uptimeStatus()).isSuccess;
+    _serverStatus = (await appRead(sponsorBlockRepositoryProvider).uptimeStatus()).isSuccess;
+    setState(() {});
   }
 
   Future<void> _getUserInfo() async {
@@ -73,12 +74,13 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
       userId: _userId,
     );
     if (info case Loading()) {
-      _userInfo.value = LoadingState.loading();
+      _userInfo = LoadingState.loading();
     } else if (info case Success(:final response)) {
-      _userInfo.value = Success(ModelConverters.userInfoConverter(response));
+      _userInfo = Success(ModelConverters.userInfoConverter(response));
     } else if (info case Error(:final errMsg)) {
-      _userInfo.value = Error(errMsg);
+      _userInfo = Error(errMsg);
     }
+    setState(() {});
   }
 
   Widget _blockLimitItem(
@@ -289,19 +291,20 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     ThemeData theme,
     TextStyle titleStyle,
     TextStyle subTitleStyle,
-  ) => Obx(
-    () {
+  ) => Builder(
+    builder: (context) {
       return ListTile(
         dense: true,
         onTap: () {
-          _userInfo.value = LoadingState.loading();
+          _userInfo = LoadingState.loading();
+          setState(() {});
           _getUserInfo();
         },
         title: Text(
           '您的信息',
           style: titleStyle,
         ),
-        subtitle: switch (_userInfo.value) {
+        subtitle: switch (_userInfo) {
           Loading() => const SizedBox.shrink(),
           Success<UserInfo>(:final response) => Text(
             response.toString(),
@@ -383,11 +386,11 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     },
   );
 
-  Widget _serverStatusItem(ThemeData theme, TextStyle titleStyle) => Obx(
-    () {
+  Widget _serverStatusItem(ThemeData theme, TextStyle titleStyle) => Builder(
+    builder: (context) {
       String status;
       Color? color;
-      switch (_serverStatus.value) {
+      switch (_serverStatus) {
         case null:
           status = '——';
         case true:
@@ -400,7 +403,8 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
       return ListTile(
         dense: true,
         onTap: () {
-          _serverStatus.value = null;
+          _serverStatus = null;
+          setState(() {});
           _checkServerStatus();
         },
         title: Text('服务器状态', style: titleStyle),
