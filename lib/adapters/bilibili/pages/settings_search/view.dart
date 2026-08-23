@@ -12,7 +12,6 @@ import 'package:skf/adapters/bilibili/pages/setting_parts/models/video_settings.
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
 
@@ -26,7 +25,7 @@ class SettingsSearchPage extends StatefulWidget {
 class _SettingsSearchPageState
     extends DebounceStreamState<SettingsSearchPage, String> {
   final _textEditingController = TextEditingController();
-  final RxList<SettingsModel> _list = <SettingsModel>[].obs;
+  final List<SettingsModel> _list = [];
   late final _settings = [
     ...extraSettings,
     ...privacySettings,
@@ -38,18 +37,23 @@ class _SettingsSearchPageState
 
   @override
   void onValueChanged(String value) {
-    if (value.isEmpty) {
-      _list.clear();
-    } else {
-      value = value.toLowerCase();
-      _list.value = _settings
-          .where(
-            (item) =>
-                item.effectiveTitle.toLowerCase().contains(value) ||
-                item.effectiveSubtitle?.toLowerCase().contains(value) == true,
-          )
-          .toList();
-    }
+    setState(() {
+      if (value.isEmpty) {
+        _list.clear();
+      } else {
+        value = value.toLowerCase();
+        _list.clear();
+        _list.addAll(
+          _settings
+              .where(
+                (item) =>
+                    item.effectiveTitle.toLowerCase().contains(value) ||
+                    item.effectiveSubtitle?.toLowerCase().contains(value) == true,
+              )
+              .toList(),
+        );
+      }
+    });
   }
 
   @override
@@ -65,12 +69,10 @@ class _SettingsSearchPageState
         actions: [
           IconButton(
             onPressed: () {
-              if (_textEditingController.text.isNotEmpty) {
+              setState(() {
                 _textEditingController.clear();
                 _list.clear();
-              } else {
-                AppNavigator.back();
-              }
+              });
             },
             icon: const Icon(Icons.clear),
           ),
@@ -92,20 +94,18 @@ class _SettingsSearchPageState
       body: CustomScrollView(
         slivers: [
           ViewSliverSafeArea(
-            sliver: Obx(
-              () => _list.isEmpty
-                  ? const HttpError()
-                  : SliverWaterfallFlow(
+            sliver: _list.isEmpty
+                ? const HttpError()
+                : SliverWaterfallFlow(
                       gridDelegate:
-                          SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: Grid.smallCardWidth * 2,
-                          ),
+                        SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: Grid.smallCardWidth * 2,
+                        ),
                       delegate: SliverChildBuilderDelegate(
                         (_, index) => _list[index].widget,
                         childCount: _list.length,
                       ),
-                    ),
-            ),
+            )
           ),
         ],
       ),
