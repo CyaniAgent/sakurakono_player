@@ -101,16 +101,19 @@ class _AudioPageState extends State<AudioPage>
       appBar: AppBar(
         actions: [
           if (_controller.isUgc && _controller.enableSponsorBlock)
-            Obx(() {
-              if (_controller.segmentProgressList.isNotEmpty) {
-                return IconButton(
-                  tooltip: '片段信息',
-                  onPressed: _controller.showSBDetail,
-                  icon: const Icon(MdiIcons.advertisements, size: 22),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
+                if (_controller.segmentProgressList.isNotEmpty) {
+                  return IconButton(
+                    tooltip: '片段信息',
+                    onPressed: _controller.showSBDetail,
+                    icon: const Icon(MdiIcons.advertisements, size: 22),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           Builder(
             builder: (context) {
               return PopupMenuButton<ListOrder>(
@@ -675,8 +678,9 @@ class _AudioPageState extends State<AudioPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (_, __) => ActionItem(
               animation: _controller.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.thumbsUp),
               selectIcon: const Icon(
@@ -689,8 +693,9 @@ class _AudioPageState extends State<AudioPage>
               onCancelTriple: _controller.onCancelTriple,
             ),
           ),
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (_, __) => ActionItem(
               animation: _controller.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.b),
               selectIcon: const Icon(FontAwesomeIcons.b),
@@ -702,8 +707,9 @@ class _AudioPageState extends State<AudioPage>
               ),
             ),
           ),
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (_, __) => ActionItem(
               animation: _controller.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.star),
               selectIcon: const Icon(
@@ -807,8 +813,9 @@ class _AudioPageState extends State<AudioPage>
             left: 0,
             right: 0,
             bottom: 3.5,
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
                 if (_controller.segmentProgressList.isNotEmpty) {
                   return SegmentProgressBar(
                     height: 5,

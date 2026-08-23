@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/audio/controller.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderProxyBox, BoxHitTestResult;
-import 'package:get/get.dart';
 
 class VolumeButton extends StatefulWidget {
   const VolumeButton({
@@ -69,25 +68,28 @@ class _VolumeButtonState extends State<VolumeButton> {
       child: OverlayPortal.overlayChildLayoutBuilder(
         controller: _controller,
         overlayChildBuilder: _overlayChildBuilder,
-        child: Obx(() {
-          final volume = widget.controller.desktopVolume;
-          return InkWell(
-            onTapUp: _onTapUp,
-            customBorder: const CircleBorder(),
-            child: Padding(
-              padding: const .all(10.0),
-              child: Icon(
-                volume == 0.0
-                    ? Icons.volume_off
-                    : volume < 0.5
-                    ? Icons.volume_down
-                    : Icons.volume_up,
-                color: theme.onSurfaceVariant,
-                size: 22.0,
+        child: ListenableBuilder(
+          listenable: widget.controller,
+          builder: (_, __) {
+            final volume = widget.controller.desktopVolume;
+            return InkWell(
+              onTapUp: _onTapUp,
+              customBorder: const CircleBorder(),
+              child: Padding(
+                padding: const .all(10.0),
+                child: Icon(
+                  volume == 0.0
+                      ? Icons.volume_off
+                      : volume < 0.5
+                      ? Icons.volume_down
+                      : Icons.volume_up,
+                  color: theme.onSurfaceVariant,
+                  size: 22.0,
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       ),
     );
   }
@@ -127,8 +129,9 @@ class _VolumeButtonState extends State<VolumeButton> {
                 enabledThumbRadius: 6,
               ),
             ),
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: widget.controller,
+              builder: (_, __) {
                 final volume = widget.controller.desktopVolume;
                 return Column(
                   spacing: 2,

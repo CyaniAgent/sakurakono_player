@@ -76,8 +76,9 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
   PreferredSizeWidget _buildAppBar() => AppBar(
     title: Padding(
       padding: const EdgeInsets.only(right: 12),
-      child: Obx(
-        () {
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
           if (controller.infoState.value case Success(:final response)) {
             final showTitle = controller.showTitle.value;
             return AnimatedOpacity(
@@ -112,7 +113,9 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
           ],
   );
 
-  Widget _buildBody() => Obx(() {
+  Widget _buildBody() => ListenableBuilder(
+    listenable: controller,
+    builder: (context, _) {
     switch (controller.infoState.value) {
       case Success(:final response):
         double padding = max(maxWidth / 2 - Grid.smallCardWidth, 0);
@@ -132,7 +135,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                   child: _buildChart(response, maxWidth),
                 ),
                 buildReplyHeader(),
-                Obx(() => replyList(controller.loadingState)),
+                ListenableBuilder(listenable: controller, builder: (_, __) => replyList(controller.loadingState)),
               ],
             ),
           );
@@ -183,8 +186,9 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         slivers: [
                           buildReplyHeader(),
-                          Obx(
-                            () => replyList(controller.loadingState),
+                          ListenableBuilder(
+                            listenable: controller,
+                            builder: (_, __) => replyList(controller.loadingState),
                           ),
                         ],
                       ),
@@ -205,7 +209,8 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
       default:
         return const SizedBox.shrink();
     }
-  });
+  },
+);
 
   Widget _buildBottom(CoreMusicDetail item) {
     if (!controller.showDynActionBar) {

@@ -168,8 +168,10 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
           Positioned(
             right: 6,
             bottom: 6,
-            child: Obx(() {
-              final isFav = introController.isFav.value;
+            child: ListenableBuilder(
+              listenable: introController,
+              builder: (context, _) {
+                final isFav = introController.isFav.value;
               return iconButton(
                 size: 28,
                 iconSize: 26,
@@ -197,8 +199,9 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
     PgcInfoModel item,
   ) {
     if (introController.isPgc) {
-      Widget subBtn() => Obx(
-        () {
+      Widget subBtn() => ListenableBuilder(
+        listenable: introController,
+        builder: (context, _) {
           final isFollowed = introController.isFollowed.value;
           final followStatus = introController.followStatus.value;
           return FilledButton.tonal(
@@ -391,8 +394,9 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: introController,
+            builder: (context, _) => ActionItem(
               animation: introController.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.thumbsUp),
               selectIcon: const Icon(FontAwesomeIcons.solidThumbsUp),
@@ -403,8 +407,9 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
               onCancelTriple: introController.onCancelTriple,
             ),
           ),
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: introController,
+            builder: (context, _) => ActionItem(
               animation: introController.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.b),
               selectIcon: const Icon(FontAwesomeIcons.b),
@@ -414,8 +419,9 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
               text: NumUtils.numFormat(stat.coin),
             ),
           ),
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: introController,
+            builder: (context, _) => ActionItem(
               animation: introController.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.star),
               selectIcon: const Icon(FontAwesomeIcons.solidStar),
@@ -429,8 +435,9 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
               text: NumUtils.numFormat(stat.favorite),
             ),
           ),
-          Obx(
-            () => ActionItem(
+          ListenableBuilder(
+            listenable: introController,
+            builder: (context, _) => ActionItem(
               icon: const Icon(FontAwesomeIcons.clock),
               selectIcon: const Icon(FontAwesomeIcons.solidClock),
               onTap: () =>

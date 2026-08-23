@@ -50,8 +50,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     padding = MediaQuery.viewPaddingOf(context);
-    return Obx(
-      () {
+    return ListenableBuilder(listenable: _favDetailController, builder: (context, _) {
         final enableMultiSelect = _favDetailController.enableMultiSelect.value;
         return popScope(
           canPop: !enableMultiSelect,
@@ -67,8 +66,9 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
               padding: const EdgeInsets.only(
                 right: kFloatingActionButtonMargin,
               ),
-              child: Obx(
-                () => _favDetailController.folderInfo.value.mediaCount > 0
+              child: ListenableBuilder(
+                listenable: _favDetailController,
+                builder: (context, _) => _favDetailController.folderInfo.value.mediaCount > 0
                     ? AnimatedSlide(
                         offset: _favDetailController.isPlayAll.value
                             ? Offset.zero
@@ -112,8 +112,9 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                       right: padding.right,
                       bottom: padding.bottom + 100,
                     ),
-                    sliver: Obx(
-                      () => _buildBody(
+                    sliver: ListenableBuilder(
+                      listenable: _favDetailController,
+                      builder: (context, _) => _buildBody(
                         enableMultiSelect,
                         theme,
                         _favDetailController.loadingState,
@@ -141,8 +142,9 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                   onPressed: _favDetailController.handleSelect,
                   icon: const Icon(Icons.close_outlined),
                 ),
-                Obx(
-                  () {
+                ListenableBuilder(
+                  listenable: _favDetailController,
+                  builder: (context, _) {
                     return Text(
                       '已选: ${_favDetailController.checkedCount}',
                       style: const TextStyle(fontSize: 15),
@@ -193,8 +195,10 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
         },
         icon: const Icon(Icons.search_outlined),
       ),
-      Obx(() {
-        final attr = _favDetailController.folderInfo.value.attr;
+      ListenableBuilder(
+        listenable: _favDetailController,
+        builder: (context, _) {
+          final attr = _favDetailController.folderInfo.value.attr;
         return attr == -1 || !BiliUtils.isPublicFav(attr)
             ? const SizedBox.shrink()
             : IconButton(
@@ -206,8 +210,9 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                 icon: const Icon(Icons.share),
               );
       }),
-      Obx(
-        () {
+      ListenableBuilder(
+        listenable: _favDetailController,
+        builder: (context, _) {
           return PopupMenuButton<CoreFavOrderType>(
             icon: const Icon(Icons.sort),
             initialValue: _favDetailController.order.value,
@@ -368,8 +373,9 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
         ),
         child: SizedBox(
           height: 110,
-          child: Obx(
-            () {
+          child: ListenableBuilder(
+            listenable: _favDetailController,
+            builder: (context, _) {
               final folderInfo = _favDetailController.folderInfo.value;
               return Row(
                 spacing: 12,
@@ -389,8 +395,10 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                       Positioned(
                         right: 6,
                         top: 6,
-                        child: Obx(() {
-                          if (_favDetailController.isOwner ||
+                        child: ListenableBuilder(
+                          listenable: _favDetailController,
+                          builder: (context, _) {
+                            if (_favDetailController.isOwner ||
                               _favDetailController.loadingState
                                   is! Success) {
                             return const SizedBox.shrink();

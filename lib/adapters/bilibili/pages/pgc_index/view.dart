@@ -49,9 +49,9 @@ class _PgcIndexPageState extends State<PgcIndexPage>
         ? Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(title: const Text('索引')),
-            body: Obx(() => _buildBody(theme, _ctr.conditionState.value)),
+            body: ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildBody(theme, _ctr.conditionState.value)),
           )
-        : Obx(() => _buildBody(theme, _ctr.conditionState.value));
+        : ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildBody(theme, _ctr.conditionState.value));
   }
 
   Widget _buildBody(
@@ -80,7 +80,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                     alignment: Alignment.topCenter,
                     duration: const Duration(milliseconds: 200),
                     child: count > 5
-                        ? Obx(() => _buildSortsWidget(theme, count, response))
+                        ? ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildSortsWidget(theme, count, response))
                         : _buildSortsWidget(theme, count, response),
                   ),
                 ),
@@ -174,7 +174,9 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                     : data.filter![index - 1].values
               : data.filter![index].values;
           if (item != null && item.isNotEmpty) {
-            return Obx(() {
+            return ListenableBuilder(
+              listenable: _ctr,
+              builder: (_, __) {
               // ignore: invalid_use_of_protected_member
               final indexParams = _ctr.indexParams.value;
               return SelfSizedHorizontalList(
@@ -191,7 +193,8 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                 ),
                 itemCount: item.length,
               );
-            });
+            },
+            );
           }
           return const SizedBox.shrink();
         },

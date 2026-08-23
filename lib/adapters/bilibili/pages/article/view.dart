@@ -94,7 +94,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
               ),
               SelectionContainer.disabled(child: buildReplyHeader()),
               SelectionContainer.disabled(
-                child: Obx(() => replyList(controller.loadingState)),
+                child: ListenableBuilder(listenable: controller, builder: (context, _) => replyList(controller.loadingState)),
               ),
             ],
           ),
@@ -148,7 +148,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     buildReplyHeader(),
-                    Obx(() => replyList(controller.loadingState)),
+                    ListenableBuilder(listenable: controller, builder: (context, _) => replyList(controller.loadingState)),
                   ],
                 ),
               ),
@@ -161,8 +161,9 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
 
   Widget _buildContent(double maxWidth) => SliverPadding(
     padding: const .symmetric(horizontal: 12, vertical: 8),
-    sliver: Obx(
-      () {
+    sliver: ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
         if (controller.isLoaded.value) {
           final Widget content;
           if (controller.opus != null) {
@@ -258,8 +259,10 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
   );
 
   PreferredSizeWidget _buildAppBar() => AppBar(
-    title: Obx(() {
-      if (controller.isLoaded.value && controller.showTitle.value) {
+    title: ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        if (controller.isLoaded.value && controller.showTitle.value) {
         return Text(controller.summary.title!);
       }
       return const SizedBox.shrink();
@@ -381,8 +384,10 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
 
     return Padding(
       padding: .only(left: padding.left, right: padding.right),
-      child: Obx(() {
-        final stats = controller.stats.value;
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
+          final stats = controller.stats.value;
 
         Widget btn = Padding(
           padding: .only(
@@ -571,8 +576,9 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             },
           ),
         ),
-        Obx(
-          () => PBadge(
+        ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) => PBadge(
             top: 12,
             right: 12,
             type: .gray,
