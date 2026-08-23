@@ -103,7 +103,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
     if (isEditing) {
       setFavTag();
     } else {
-      isEditing.toggle();
+      isEditing = !isEditing;
     }
   }
 
