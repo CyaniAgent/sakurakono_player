@@ -43,7 +43,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   void attachRef(Ref ref) { _ref = ref; }
   int get currentUserId => MemberHost.of().currentUserId;
 
-  bool get isLogin => _ref?.read(accountProvider).isLogin == true || Get.find<AccountProvider>().isLogin;
+  bool get isLogin => _ref?.read(accountProvider).isLogin == true || false;
 
   CoreLive? live;
   int? silence;
