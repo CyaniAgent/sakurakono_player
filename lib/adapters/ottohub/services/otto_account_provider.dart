@@ -1,7 +1,6 @@
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/storage.dart';
-import 'package:get/get.dart';
 
 /// OttoHub implementation of [AccountProvider].
 ///
@@ -13,18 +12,18 @@ class OttoAccountProvider extends AccountProvider {
   OttoAccountProvider(this._client);
 
   @override
-  final RxBool rxIsLogin = false.obs;
+  bool rxIsLogin = false;
   @override
-  final RxString rxFace = ''.obs;
+  String rxFace = '';
 
   @override
   int? get userId => int.tryParse(_loggedInUid ?? '');
   @override
   String? get displayName => _loggedInName;
   @override
-  bool get isLogin => rxIsLogin.value;
+  bool get isLogin => rxIsLogin;
   @override
-  String? get face => rxFace.value;
+  String? get face => rxFace.isEmpty ? null : rxFace;
 
   String? _loggedInUid;
   String? _loggedInName;
@@ -40,11 +39,11 @@ class OttoAccountProvider extends AccountProvider {
     final cachedToken = GStorage.userInfo.get(_tokenKey) as String?;
     if (cachedToken != null && cachedToken.isNotEmpty) {
       _client.token = cachedToken;
-      rxIsLogin.value = true;
+      rxIsLogin = true;
       _loggedInUid = GStorage.userInfo.get(_uidKey) as String?;
       _loggedInName = GStorage.userInfo.get(_nameKey) as String?;
       final cachedFace = GStorage.userInfo.get(_faceKey) as String?;
-      if (cachedFace != null) rxFace.value = cachedFace;
+      if (cachedFace != null) rxFace = cachedFace;
     }
   }
 
@@ -60,8 +59,8 @@ class OttoAccountProvider extends AccountProvider {
     _client.token = token;
     _loggedInUid = uid;
     _loggedInName = uname;
-    if (face != null) rxFace.value = face;
-    rxIsLogin.value = true;
+    if (face != null) rxFace = face;
+    rxIsLogin = true;
     // Persist for next app launch.
     GStorage.userInfo.put(_tokenKey, token);
     GStorage.userInfo.put(_uidKey, uid);
@@ -74,8 +73,8 @@ class OttoAccountProvider extends AccountProvider {
     _client.token = null;
     _loggedInUid = null;
     _loggedInName = null;
-    rxFace.value = '';
-    rxIsLogin.value = false;
+    rxFace = '';
+    rxIsLogin = false;
     GStorage.userInfo.delete(_tokenKey);
     GStorage.userInfo.delete(_uidKey);
     GStorage.userInfo.delete(_nameKey);

@@ -40,10 +40,6 @@ class FollowChildController
       LoadingState<List<CoreFollowItemModel>?>.loading().obs;
 
   late final Rx<FollowOrderType> orderType = FollowOrderType.values[Pref.followOrderType].obs;
-
-  void setOrderType(FollowOrderType type) {
-    orderType.value = type;
-    GStorage.setting.put(SettingBoxKey.followOrderType, type.index);
   }
 
 

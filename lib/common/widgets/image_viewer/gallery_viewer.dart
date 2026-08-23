@@ -85,7 +85,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     with SingleTickerProviderStateMixin {
   late Size _containerSize;
   late final int _quality;
-  late final RxInt _currIndex;
+  late final int _currIndex;
   GlobalKey? _key;
   EdgeInsets? _padding;
 
@@ -127,7 +127,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     final currItem = widget.sources[_currIndex.value];
     if (currItem.sourceType == .livePhoto) {
       player.open(Media(currItem.liveUrl!));
-      _currIndex.refresh();
+      setState(() {});
     }
   }
 
@@ -135,7 +135,7 @@ class _GalleryViewerState extends State<GalleryViewer>
   void initState() {
     super.initState();
     _quality = Pref.previewQ;
-    _currIndex = widget.initIndex.obs;
+    _currIndex = widget.initIndex;
     final item = widget.sources[widget.initIndex];
     _playIfNeeded(item);
 
@@ -304,7 +304,6 @@ class _GalleryViewerState extends State<GalleryViewer>
         }
       }
     }
-    Future.delayed(const Duration(milliseconds: 200), _currIndex.close);
     super.dispose();
     if (_hideSystemBar) {
       SystemChrome.setEnabledSystemUIMode(
@@ -378,11 +377,9 @@ class _GalleryViewerState extends State<GalleryViewer>
           ),
         ),
         alignment: Alignment.center,
-        child: Obx(
-          () => Text(
-            "${_currIndex.value + 1}/${widget.sources.length}",
-            style: const TextStyle(color: Colors.white),
-          ),
+        child: Text(
+          "${_currIndex + 1}/${widget.sources.length}",
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     ),
@@ -402,7 +399,7 @@ class _GalleryViewerState extends State<GalleryViewer>
   void _onPageChanged(int index) {
     _player?.pause();
     _playIfNeeded(widget.sources[index]);
-    _currIndex.value = index;
+    _currIndex = index;
     widget.onPageChanged?.call(index);
   }
 
@@ -502,30 +499,10 @@ class _GalleryViewerState extends State<GalleryViewer>
           return child;
         }
       case CoreSourceType.livePhoto:
-        child = Obx(
+        child = Builder(
           key: _key,
-          () => _currIndex.value == index && _videoController != null
+          builder: (context) => _currIndex == index && _videoController != null
               ? Viewer(
-                  minScale: widget.minScale,
-                  maxScale: widget.maxScale,
-                  containerSize: _containerSize,
-                  childSize: _containerSize,
-                  onDragStart: _onDragStart,
-                  onDragUpdate: _onDragUpdate,
-                  onDragEnd: _onDragEnd,
-                  doubleTapGestureRecognizer: _doubleTapGestureRecognizer,
-                  horizontalDragGestureRecognizer:
-                      _horizontalDragGestureRecognizer,
-                  onChangePage: _onChangePage,
-                  child: FittedBox(
-                    child: SimpleVideo(
-                      controller: _videoController!,
-                      fill: Colors.transparent,
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        );
     }
     return Hero(tag: '${item.url}${widget.tag}', child: child);
   }

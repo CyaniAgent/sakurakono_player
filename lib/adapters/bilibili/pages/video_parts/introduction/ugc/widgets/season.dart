@@ -28,7 +28,7 @@ class SeasonPanel extends StatefulWidget {
 }
 
 class _SeasonPanelState extends State<SeasonPanel> {
-  RxInt currentIndex = 0.obs;
+  int currentIndex = 0;
   late VideoDetailController _videoDetailController;
   StreamSubscription? _listener;
   List<EpisodeItem> episodes = <EpisodeItem>[];
@@ -62,7 +62,7 @@ class _SeasonPanelState extends State<SeasonPanel> {
     }
 
     /// 取对应 season_id 的 episodes
-    currentIndex.value = episodes.indexWhere(
+    currentIndex = episodes.indexWhere(
       (EpisodeItem e) => e.cid == _videoDetailController.seasonCid,
     );
     _listener = _videoDetailController.cid.listen((int cid) {
@@ -74,7 +74,7 @@ class _SeasonPanelState extends State<SeasonPanel> {
         }
       }
       _findEpisode();
-      currentIndex.value = episodes.indexWhere(
+      currentIndex = episodes.indexWhere(
         (EpisodeItem e) => e.cid == _videoDetailController.seasonCid,
       );
     });
@@ -105,7 +105,7 @@ class _SeasonPanelState extends State<SeasonPanel> {
           borderRadius: const BorderRadius.all(Radius.circular(6)),
           onTap: widget.canTap
               ? () => widget.showEpisodes(
-                  _videoDetailController.seasonIndex.value,
+                  _videoDetailController.seasonIndex,
                   videoDetail.ugcSeason,
                   null,
                   _videoDetailController.bvid,
@@ -133,13 +133,11 @@ class _SeasonPanelState extends State<SeasonPanel> {
                   semanticLabel: "正在播放：",
                 ),
                 const SizedBox(width: 10),
-                Obx(
-                  () => Text(
-                    '${currentIndex.value + 1}/${episodes.length}',
-                    style: theme.textTheme.labelMedium,
-                    semanticsLabel:
-                        '第${currentIndex.value + 1}集，共${episodes.length}集',
-                  ),
+                Text(
+                  '${currentIndex + 1}/${episodes.length}',
+                  style: theme.textTheme.labelMedium,
+                  semanticsLabel:
+                      '第${currentIndex + 1}集，共${episodes.length}集',
                 ),
                 const SizedBox(width: 6),
                 const Icon(
@@ -161,8 +159,8 @@ class _SeasonPanelState extends State<SeasonPanel> {
       final List<EpisodeItem> episodesList = sections[i].episodes!;
       for (int j = 0; j < episodesList.length; j++) {
         if (episodesList[j].cid == _videoDetailController.seasonCid) {
-          if (_videoDetailController.seasonIndex.value != i) {
-            _videoDetailController.seasonIndex.value = i;
+          if (_videoDetailController.seasonIndex != i) {
+            _videoDetailController.seasonIndex = i;
           }
           episodes = episodesList;
           break;

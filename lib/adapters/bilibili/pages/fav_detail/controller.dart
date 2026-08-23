@@ -78,21 +78,21 @@ class FavDetailController
   @override
   late int mediaId;
   late String heroTag;
-  final Rx<CoreFavFolderInfo> folderInfo = CoreFavFolderInfo().obs;
-  final RxBool _isOwner = false.obs;
-  final Rx<CoreFavOrderType> order = CoreFavOrderType.mtime.obs;
+  CoreFavFolderInfo folderInfo = CoreFavFolderInfo();
+  bool _isOwner = false;
+  CoreFavOrderType order = CoreFavOrderType.mtime;
 
   @override
-  bool get isOwner => _isOwner.value;
+  bool get isOwner => _isOwner;
 
   late final account = Accounts.main;
 
   late double dx = 0;
-  late final RxBool isPlayAll = (Pref.enablePlayAll).obs;
+  late final bool isPlayAll = Pref.enablePlayAll;
 
   void setIsPlayAll(bool isPlayAll) {
-    if (this.isPlayAll.value == isPlayAll) return;
-    this.isPlayAll.value = isPlayAll;
+    if (this.isPlayAll == isPlayAll) return;
+    this.isPlayAll = isPlayAll;
     GStorage.setting.put(SettingBoxKey.enablePlayAll, isPlayAll);
   }
 
@@ -115,7 +115,7 @@ class FavDetailController
 
   @override
   void checkIsEnd(int length) {
-    if (length >= folderInfo.value.mediaCount) {
+    if (length >= folderInfo.mediaCount) {
       isEnd = true;
     }
   }
@@ -124,17 +124,17 @@ class FavDetailController
   bool customHandleResponse(bool isRefresh, Success<CoreFavDetailData> response) {
     if (isRefresh) {
       CoreFavDetailData data = response.response;
-      folderInfo.value = data.info!;
-      _isOwner.value = data.info?.mid == account.mid;
+      folderInfo = data.info!;
+      _isOwner = data.info?.mid == account.mid;
     }
     return false;
   }
 
   @override
   ValueChanged<int>? get updateCount =>
-      (count) => folderInfo
-        ..value.mediaCount -= count
-        ..refresh();
+      (count) {
+        folderInfo.mediaCount -= count;
+      };
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
@@ -142,7 +142,7 @@ class FavDetailController
         pn: page,
         ps: 20,
         mediaId: mediaId,
-        order: order.value,
+        order: order,
       );
     return switch (result) {
       Loading _ => LoadingState.loading(),
@@ -183,8 +183,7 @@ class FavDetailController
 
     if (res.isSuccess) {
       folderInfo
-        ..value.favState = isFav ? 0 : 1
-        ..refresh();
+        ..favState = isFav ? 0 : 1;
       SmartDialog.showToast('${isFav ? '取消' : ''}收藏成功');
     } else {
       SmartDialog.showToast(res.toString());
@@ -204,7 +203,7 @@ class FavDetailController
   void onSort() {
     if (loadingState case Success(:final response)) {
       if (response != null && response.isNotEmpty) {
-        if (folderInfo.value.mediaCount > 1000) {
+        if (folderInfo.mediaCount > 1000) {
           SmartDialog.showToast('内容太多啦！超过1000不支持排序');
           return;
         }
@@ -215,7 +214,7 @@ class FavDetailController
 
   @override
   void onViewFav(CoreFavDetailItemModel item, int? index) {
-    final folder = folderInfo.value;
+    final folder = folderInfo;
     // NOTE: dimension not carried by fav list API; the video page
     // resolves it itself via videoIntro.
     PageUtils.toVideoPage(
@@ -223,7 +222,7 @@ class FavDetailController
       cid: item.ugc!.firstCid!,
       cover: item.cover,
       title: item.title,
-      extraArguments: isPlayAll.value
+      extraArguments: isPlayAll
           ? {
               'sourceType': SourceType.fav,
               'mediaId': folder.id,
