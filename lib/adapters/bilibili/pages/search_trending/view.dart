@@ -32,7 +32,7 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
   final _controller = Get.putOrFind(SearchTrendingController.new);
 
   late double _offset;
-  final RxDouble _scrollRatio = 0.0.obs;
+  double _scrollRatio = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,43 +43,38 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
     final width = size.isPortrait ? maxWidth : min(640.0, maxWidth * 0.6);
     final height = width * 528 / 1125;
     _offset = height - kToolbarHeight - padding.top;
+    final flag = maxWidth > width || _scrollRatio >= 0.5;
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Obx(
-          () {
-            final scrollRatio = _scrollRatio.value;
-            final flag = maxWidth > width || scrollRatio >= 0.5;
-            return AppBar(
-              title: Opacity(
-                opacity: scrollRatio,
-                child: Text(
-                  'bilibili热搜',
-                  style: TextStyle(color: flag ? null : Colors.white),
+        child: AppBar(
+          title: Opacity(
+            opacity: _scrollRatio,
+            child: Text(
+              'bilibili热搜',
+              style: TextStyle(color: flag ? null : Colors.white),
+            ),
+          ),
+          backgroundColor: theme.colorScheme.surface.withValues(
+            alpha: _scrollRatio,
+          ),
+          foregroundColor: flag ? null : Colors.white,
+          systemOverlayStyle: flag
+              ? null
+              : const SystemUiOverlayStyle(
+                  statusBarBrightness: .dark,
+                  statusBarIconBrightness: .light,
                 ),
-              ),
-              backgroundColor: theme.colorScheme.surface.withValues(
-                alpha: scrollRatio,
-              ),
-              foregroundColor: flag ? null : Colors.white,
-              systemOverlayStyle: flag
-                  ? null
-                  : const SystemUiOverlayStyle(
-                      statusBarBrightness: .dark,
-                      statusBarIconBrightness: .light,
-                    ),
-              shape: scrollRatio == 1
-                  ? Border(
-                      bottom: BorderSide(
-                        color: theme.colorScheme.outline.withValues(alpha: 0.1),
-                      ),
-                    )
-                  : null,
-            );
-          },
+          shape: _scrollRatio == 1
+              ? Border(
+                  bottom: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.1),
+                  ),
+                )
+              : null,
         ),
       ),
       body: Padding(
@@ -95,7 +90,7 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
                 slivers: [
                   TrendingHeader(
                     offset: _offset,
-                    onScrollRatioChanged: _scrollRatio.call,
+                    onScrollRatioChanged: (v) => setState(() => _scrollRatio = v),
                     child: Image.asset(
                       width: width,
                       height: height,
