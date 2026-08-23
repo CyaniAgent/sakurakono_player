@@ -35,7 +35,7 @@ class FavSearchController
     title = args['title'];
   }
 
-  final Rx<CoreFavOrderType> order = CoreFavOrderType.mtime.obs;
+  CoreFavOrderType order = CoreFavOrderType.mtime;
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
@@ -45,7 +45,7 @@ class FavSearchController
         mediaId: mediaId,
         keyword: editController.text,
         type: type,
-        order: order.value,
+        order: order,
       );
     return switch (result) {
       Loading _ => LoadingState.loading(),

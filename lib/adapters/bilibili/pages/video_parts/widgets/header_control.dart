@@ -88,7 +88,7 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
   bool get horizontalScreen;
 
   Timer? _clock;
-  RxString now = ''.obs;
+  String now = '';
 
   static final _format = DateFormat('HH:mm');
 
@@ -101,13 +101,14 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
   void startClock() {
     if (!_showCurrTime) return;
     if (_clock == null) {
-      now.value = _format.format(DateTime.now());
+      now = _format.format(DateTime.now());
       _clock ??= Timer.periodic(const Duration(seconds: 1), (Timer t) {
         if (!mounted) {
           stopClock();
           return;
         }
-        now.value = _format.format(DateTime.now());
+        now = _format.format(DateTime.now());
+        setState(() {});
       });
     }
   }
@@ -162,15 +163,13 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
           ),
           const SizedBox(width: 10),
         ],
-        Obx(
-          () => Text(
-            now.value,
+        Text(
+            now,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
             ),
           ),
-        ),
       ];
     }
     return null;

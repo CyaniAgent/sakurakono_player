@@ -18,8 +18,7 @@ class MatchInfoController extends CommonDynController {
   @override
   dynamic get sourceId => oid.toString();
 
-  final Rx<LoadingState<CoreMatchContest?>> infoState =
-      LoadingState<CoreMatchContest?>.loading().obs;
+  LoadingState<CoreMatchContest?> infoState = LoadingState<CoreMatchContest?>.loading();
 
   MatchInfoController() {
     getMatchInfo();
@@ -30,10 +29,11 @@ class MatchInfoController extends CommonDynController {
     if (res.isSuccess) {
       queryData();
     }
-    infoState.value = switch (res) {
+    infoState = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
+    notifyListeners();
   }
 }

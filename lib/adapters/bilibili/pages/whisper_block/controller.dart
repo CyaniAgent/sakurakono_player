@@ -18,13 +18,13 @@ class WhisperBlockController
     queryData();
   }
 
-  RxInt count = 0.obs;
+  int count = 0;
   int? listLimit;
   int? charLimit;
 
   @override
   List<CoreImKeywordBlockingItem>? getDataList(CoreImKeywordBlockingListReply response) {
-    count.value = response.items.length;
+    count = response.items.length;
     listLimit = response.listLimit;
     charLimit = response.charLimit;
     return response.items;
@@ -46,7 +46,7 @@ class WhisperBlockController
       Get.back();
       loadingState.data!.add(CoreImKeywordBlockingItem(keyword: keyword, id: 0));
       notifyListeners();
-      count.value += 1;
+      count += 1;
       SmartDialog.showToast('添加成功');
     } else {
       SmartDialog.showToast(res.toString());
@@ -58,7 +58,7 @@ class WhisperBlockController
     if (res.isSuccess) {
       loadingState.data!.remove(item);
       notifyListeners();
-      count.value -= 1;
+      count -= 1;
       SmartDialog.showToast('删除成功');
     } else {
       SmartDialog.showToast(res.toString());

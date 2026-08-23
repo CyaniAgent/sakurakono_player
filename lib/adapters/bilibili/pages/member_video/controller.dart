@@ -48,7 +48,7 @@ class MemberVideoCtr
   String? firstAid;
   String? lastAid;
   String? fromViewAid;
-  RxBool isLocating = false.obs;
+  bool isLocating = false;
   bool isLoadPrevious = false;
   bool? hasPrev;
   Ref? _ref;
@@ -56,7 +56,7 @@ class MemberVideoCtr
 
   @override
   Future<void> onRefresh() async {
-    if (isLocating.value) {
+    if (isLocating) {
       if (hasPrev == true) {
         isLoadPrevious = true;
         await queryData();
@@ -128,7 +128,7 @@ class MemberVideoCtr
       next: next,
       seasonId: seasonId,
       seriesId: seriesId,
-      includeCursor: isLocating.value && page == 0,
+      includeCursor: isLocating && page == 0,
     );
     return switch (result) {
       Loading _ => LoadingState.loading(),
@@ -140,7 +140,8 @@ class MemberVideoCtr
   void queryBySort() {
     if (isLoading) return;
     if (isVideo) {
-      isLocating.value = false;
+      isLocating = false;
+      notifyListeners();
       order = order == CoreArchiveOrderTypeApp.pubdate
           ? CoreArchiveOrderTypeApp.click
           : CoreArchiveOrderTypeApp.pubdate;
@@ -236,7 +237,8 @@ class MemberVideoCtr
   @override
   Future<void> onReload() {
     reload = true;
-    isLocating.value = false;
+    isLocating = false;
+    notifyListeners();
     return super.onReload();
   }
 }

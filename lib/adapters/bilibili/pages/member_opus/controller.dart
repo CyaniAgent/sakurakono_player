@@ -30,11 +30,11 @@ class MemberOpusController
   void attachRef(Ref ref) { _ref = ref; }
 
   String offset = '';
-  Rx<SpaceTabFilter> type = const SpaceTabFilter(
+  SpaceTabFilter type = const SpaceTabFilter(
     text: "全部图文",
     meta: "all",
     tabName: "图文",
-  ).obs;
+  );
   List<SpaceTabFilter>? filter;
 
   @override
@@ -57,7 +57,7 @@ class MemberOpusController
       hostMid: mid,
       page: page,
       offset: offset,
-      type: type.value.meta,
+      type: type.meta,
     );
     return switch (result) {
       Loading _ => LoadingState.loading(),

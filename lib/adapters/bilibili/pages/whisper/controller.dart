@@ -25,7 +25,7 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
 
   late final List<({bool enabled, IconData icon, String name, String route})>
   msgFeedTopItems;
-  late final RxList<int> unreadCounts;
+  late List<int> unreadCounts;
 
   PbMap<int, Offset>? offset;
 
@@ -59,7 +59,7 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
         enabled: true,
       ),
     ];
-    unreadCounts = List.filled(msgFeedTopItems.length, 0).obs;
+    unreadCounts = List.filled(msgFeedTopItems.length, 0);
     queryMsgFeedUnread();
     queryData();
   }
@@ -76,7 +76,7 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
       );
       final unreadCounts = [data.reply, data.at, data.like, data.sysMsg];
       if (!listEquals(this.unreadCounts, unreadCounts)) {
-        this.unreadCounts.value = unreadCounts;
+        this.unreadCounts = unreadCounts;
       }
     } else {
       SmartDialog.showToast(res.toString());

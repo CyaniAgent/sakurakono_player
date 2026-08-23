@@ -14,7 +14,7 @@ class SelectTopicController
   final focusNode = FocusNode();
   final controller = TextEditingController();
 
-  final RxBool enableClear = false.obs;
+  bool enableClear = false;
 
   SelectTopicController() {
     queryData();

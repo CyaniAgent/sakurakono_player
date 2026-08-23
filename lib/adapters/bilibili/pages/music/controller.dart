@@ -15,7 +15,7 @@ class CoreMusicDetailController extends CommonDynController {
   @override
   dynamic get sourceId => oid.toString();
 
-  final infoState = LoadingState<CoreMusicDetail>.loading().obs;
+  LoadingState<CoreMusicDetail> infoState = LoadingState<CoreMusicDetail>.loading();
 
   late final String musicId;
   Ref? _ref;
@@ -38,7 +38,7 @@ class CoreMusicDetailController extends CommonDynController {
       count.value = comment.nums ?? -1;
       queryData();
     }
-    infoState.value = switch (res) {
+    infoState = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
