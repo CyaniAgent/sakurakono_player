@@ -30,10 +30,10 @@ class PgcReviewPostPanel extends StatefulWidget {
 
 class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
   late final TextEditingController _controller;
-  late final RxInt _score = (widget.score ?? 0).obs;
-  late final RxBool _shareFeed = false.obs;
-  late final RxBool _enablePost = _isMod.obs;
+  late int _score = widget.score ?? 0;
   late final _isMod = widget.reviewId != null;
+  bool _shareFeed = false;
+  late bool _enablePost = _isMod;
 
   @override
   void initState() {
@@ -48,9 +48,11 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
   }
 
   void _onScore(double dx) {
-    int index = (dx ~/ 50).clamp(0, 4);
-    _enablePost.value = true;
-    _score.value = index + 1;
+    setState(() {
+      int index = (dx ~/ 50).clamp(0, 4);
+      _enablePost = true;
+      _score = index + 1;
+    });
   }
 
   @override
@@ -95,19 +97,17 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
                 children: List.generate(
                   5,
                   (index) {
-                    return Obx(
-                      () => index <= _score.value - 1
-                          ? const Icon(
-                              CustomIcons.star_favorite_solid,
-                              size: 50,
-                              color: Color(0xFFFFAD35),
-                            )
-                          : const Icon(
-                              CustomIcons.star_favorite_line,
-                              size: 50,
-                              color: Colors.grey,
-                            ),
-                    );
+                    return index <= _score - 1
+                        ? const Icon(
+                            CustomIcons.star_favorite_solid,
+                            size: 50,
+                            color: Color(0xFFFFAD35),
+                          )
+                        : const Icon(
+                            CustomIcons.star_favorite_line,
+                            size: 50,
+                            color: Colors.grey,
+                          );
                   },
                 ),
               ),
@@ -115,26 +115,21 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
           ),
         ),
         Center(
-          child: Obx(
-            () {
-              final score = _score.value;
-              return Text(
-                switch (score) {
-                  1 => '很差',
-                  2 => '较差',
-                  3 => '还行',
-                  4 => '很好',
-                  5 => '佳作',
-                  _ => '轻触评分',
-                },
-                style: TextStyle(
-                  fontSize: 16,
-                  color: score == 0
-                      ? theme.colorScheme.outline
-                      : const Color(0xFFFFAD35),
-                ),
-              );
+          child: Text(
+            switch (_score) {
+              1 => '很差',
+              2 => '较差',
+              3 => '还行',
+              4 => '很好',
+              5 => '佳作',
+              _ => '轻触评分',
             },
+            style: TextStyle(
+              fontSize: 16,
+              color: _score == 0
+                  ? theme.colorScheme.outline
+                  : const Color(0xFFFFAD35),
+            ),
           ),
         ),
         Flexible(
@@ -157,27 +152,28 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
             padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
             child: GestureDetector(
               behavior: .opaque,
-              onTap: _shareFeed.toggle,
-              child: Obx(
-                () {
-                  final shareFeed = _shareFeed.value;
-                  Color color = shareFeed
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.outline;
-                  return Row(
-                    mainAxisSize: .min,
-                    children: [
-                      Icon(
-                        size: 22,
-                        shareFeed
-                            ? Icons.check_box_outlined
-                            : Icons.check_box_outline_blank_outlined,
-                        color: color,
-                      ),
-                      Text(' 分享到动态', style: TextStyle(color: color)),
-                    ],
-                  );
-                },
+              onTap: () => setState(() => _shareFeed = !_shareFeed),
+              child: Row(
+                mainAxisSize: .min,
+                children: [
+                  Icon(
+                    size: 22,
+                    _shareFeed
+                        ? Icons.check_box_outlined
+                        : Icons.check_box_outline_blank_outlined,
+                    color: _shareFeed
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.outline,
+                  ),
+                  Text(
+                    ' 分享到动态',
+                    style: TextStyle(
+                      color: _shareFeed
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.outline,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -201,18 +197,16 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
               ),
             ),
           ),
-          child: Obx(
-            () => FilledButton.tonal(
-              style: FilledButton.styleFrom(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: EdgeInsets.zero,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
-                ),
+          child: FilledButton.tonal(
+            style: FilledButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(6)),
               ),
-              onPressed: _enablePost.value ? _onPost : null,
-              child: _isMod ? const Text('编辑') : const Text('发布'),
             ),
+            onPressed: _enablePost ? _onPost : null,
+            child: _isMod ? const Text('编辑') : const Text('发布'),
           ),
         ),
       ],
@@ -223,7 +217,7 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
     if (_isMod) {
       final res = await appRead(pgcRepositoryProvider).pgcReviewMod(
         mediaId: widget.mediaId,
-        score: _score.value * 2,
+        score: _score * 2,
         content: _controller.text,
         reviewId: widget.reviewId,
       );
@@ -241,9 +235,9 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
     }
     final res = await appRead(pgcRepositoryProvider).pgcReviewPost(
       mediaId: widget.mediaId,
-      score: _score.value * 2,
+      score: _score * 2,
       content: _controller.text,
-      shareFeed: _isMod ? false : _shareFeed.value,
+      shareFeed: _isMod ? false : _shareFeed,
     );
     if (res.isSuccess) {
       AppNavigator.back();
