@@ -54,16 +54,16 @@ class _DynamicDetailPageState
   late final DynamicDetailController controller;
   late final DynReactController _reactController;
 
-  late final RxBool _isRefreshing = false.obs;
+  bool _isRefreshing = false;
 
   void _startRefresh() {
-    _isRefreshing.value = true;
+    _isRefreshing = true;
     _refreshController.repeat();
   }
 
   void _stopRefresh() {
     if (!mounted) return;
-    _isRefreshing.value = false;
+    _isRefreshing = false;
     _refreshController.stop();
   }
 
@@ -382,7 +382,7 @@ class _DynamicDetailPageState
             right: 0,
             top: displacement,
             child: Obx(() {
-              final isRefreshing = _isRefreshing.value;
+              final isRefreshing = _isRefreshing;
               return AnimatedScale(
                 scale: isRefreshing ? 1 : 0,
                 duration: const Duration(milliseconds: 200),

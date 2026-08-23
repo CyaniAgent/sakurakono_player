@@ -23,14 +23,14 @@ abstract class ReplyController<R>
     extends CommonListControllerRiverpod<R, ReplyInfo> {
   ReplyController() {
     final cacheSortType = BiliPref.replySortType;
-    sortType = cacheSortType.obs;
+    sortType = cacheSortType;
     mode = cacheSortType == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
   }
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
-  final RxInt count = (-1).obs;
+  int count = -1;
 
-  late final Rx<ReplySortType> sortType;
+  late ReplySortType sortType;
   late CoreMode mode;
 
   final savedReplies = <Object, List<RichTextItem>?>{};
@@ -54,7 +54,7 @@ abstract class ReplyController<R>
 
   @override
   void checkIsEnd(int length) {
-    final count = this.count.value;
+    final count = this.count;
     if (count != -1 && length >= count) {
       isEnd = true;
     }
@@ -73,7 +73,7 @@ abstract class ReplyController<R>
     cursorNext = cursor?.next.toInt();
     paginationReply = data.paginationReply as FeedPaginationReply?;
     final subjectControl = data.subjectControl as SubjectControl?;
-    count.value = subjectControl?.count.toInt() ?? 0;
+    count = subjectControl?.count.toInt() ?? 0;
     if (isRefresh) {
       this.subjectControl = subjectControl;
       upMid ??= subjectControl?.upMid;
@@ -81,7 +81,7 @@ abstract class ReplyController<R>
         (data.replies as List<ReplyInfo>).insert(0, data.upTop as ReplyInfo);
       }
       if (subjectControl?.title == ReplySortType.select.title) {
-        sortType.value = .select;
+        sortType = .select;
       }
     }
     isEnd = cursor?.isEnd ?? false;
@@ -99,13 +99,13 @@ abstract class ReplyController<R>
   // 排序搜索评论
   void queryBySort() {
     if (isLoading) return;
-    switch (sortType.value) {
+    switch (sortType)
       case ReplySortType.time:
-        sortType.value = ReplySortType.hot;
+        sortType = ReplySortType.hot;
         mode = CoreMode.mainListHot;
         break;
       case ReplySortType.hot:
-        sortType.value = ReplySortType.time;
+        sortType = ReplySortType.time;
         mode = CoreMode.mainListTime;
         break;
       case ReplySortType.select:
@@ -202,7 +202,7 @@ abstract class ReplyController<R>
               } else {
                 loadingState = Success([replyInfo]);
               }
-              count.value += 1;
+              count += 1;
 
               // check reply
               if (enableCommAntifraud) {
@@ -221,7 +221,7 @@ abstract class ReplyController<R>
         ..count -= 1
         ..replies.removeAt(subIndex);
     }
-    count.value -= 1;
+    count -= 1;
     notifyListeners();
   }
 

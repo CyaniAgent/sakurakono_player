@@ -14,9 +14,9 @@ abstract class FollowTypeController
     init();
   }
   late final int mid;
-  late final RxnString name;
+  String? name;
 
-  RxInt total = 0.obs;
+  int total = 0;
 
   Ref? repoRef;
 
@@ -30,7 +30,7 @@ abstract class FollowTypeController
     final Map? args = AppNavigator.arguments;
     mid = args?['mid'] ?? ownerMid;
     final String? name = args?['name'];
-    this.name = RxnString(name);
+    this.name = name;
     if (name == null) {
       queryUserName();
     }
@@ -39,18 +39,18 @@ abstract class FollowTypeController
 
   Future<void> queryUserName() async {
     final res = await (repoRef?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberCardInfo(mid: mid);
-    name.value = res.dataOrNull?.card?.name;
+    name = res.dataOrNull?.card?.name;
   }
 
   @override
   List<CoreFollowItemModel>? getDataList(CoreFollowData response) {
-    total.value = response.total ?? 0;
+    total = response.total ?? 0;
     return response.list;
   }
 
   @override
   void checkIsEnd(int length) {
-    if (length >= total.value) {
+    if (length >= total) {
       isEnd = true;
     }
   }

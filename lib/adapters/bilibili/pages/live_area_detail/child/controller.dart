@@ -21,7 +21,7 @@ class LiveAreaChildController
   String? sortType;
 
   // tag
-  final RxInt tagIndex = 0.obs;
+  int tagIndex = 0;
   List<CoreLiveSecondTag>? newTags;
 
   LiveAreaChildController(this.areaId, this.parentAreaId) {
@@ -39,7 +39,7 @@ class LiveAreaChildController
   List<CoreCardLiveItem>? getDataList(CoreLiveSecondData response) {
     count = response.count;
     newTags = response.newTags;
-    tagIndex.value = max(
+    tagIndex = max(
       0,
       newTags?.indexWhere((e) => e.sortType == sortType) ?? 0,
     );
@@ -65,7 +65,7 @@ class LiveAreaChildController
     if (isLoading) {
       return;
     }
-    tagIndex.value = index;
+    tagIndex = index;
     this.sortType = sortType;
 
     onRefresh();

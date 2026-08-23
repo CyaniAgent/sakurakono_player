@@ -18,9 +18,9 @@ class PgcReviewController
   final CorePgcReviewType type;
   final String mediaId;
 
-  final count = RxnInt();
+  int? count;
   String? next;
-  final sortType = PgcReviewSortType.def.obs;
+  PgcReviewSortType sortType = PgcReviewSortType.def;
 
 
   @override
@@ -31,7 +31,7 @@ class PgcReviewController
 
   @override
   void checkIsEnd(int length) {
-    final count = this.count.value;
+    final count = this.count;
     if (count != null && length >= count) {
       isEnd = true;
     }
@@ -40,10 +40,10 @@ class PgcReviewController
   @override
   List<CorePgcReviewItemModel>? getDataList(CorePgcReviewData response) {
     if (type == CorePgcReviewType.long &&
-        sortType.value == PgcReviewSortType.latest) {
-      count.value = null;
+        sortType == PgcReviewSortType.latest) {
+      count = null;
     } else {
-      count.value = response.count;
+      count = response.count;
     }
     next = response.next;
 
@@ -56,7 +56,7 @@ class PgcReviewController
       type: type,
       mediaId: mediaId,
       next: next,
-      sort: sortType.value.sort,
+      sort: sortType.sort,
     );
     return switch (result) {
       Loading _ => LoadingState.loading(),
@@ -123,7 +123,7 @@ class PgcReviewController
 
   void queryBySort() {
     if (isLoading) return;
-    sortType.value = sortType.value == PgcReviewSortType.def
+    sortType = sortType == PgcReviewSortType.def
         ? PgcReviewSortType.latest
         : PgcReviewSortType.def;
     onReload();

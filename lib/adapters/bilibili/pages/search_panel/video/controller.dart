@@ -12,7 +12,6 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class SearchVideoController
     extends SearchPanelController<SearchVideoData, SearchVideoItemModel> {
@@ -71,7 +70,7 @@ class SearchVideoController
     }
   }
 
-  final Rx<ArchiveFilterType> selectedType = ArchiveFilterType.totalrank.obs;
+  ArchiveFilterType selectedType = ArchiveFilterType.totalrank;
   VideoPubTimeType? pubTimeType = VideoPubTimeType.all;
   late DateTime pubBeginDate;
   late DateTime pubEndDate;

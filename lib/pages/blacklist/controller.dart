@@ -17,7 +17,7 @@ class BlackListController
   BlackListController() {
     queryData();
   }
-  RxInt total = (-1).obs;
+  int total = -1;
 
   Ref? _ref;
 
@@ -27,13 +27,13 @@ class BlackListController
 
   @override
   List<CoreBlackListItem>? getDataList(CoreBlackListData response) {
-    total.value = response.total ?? 0;
+    total = response.total ?? 0;
     return response.list;
   }
 
   @override
   void checkIsEnd(int length) {
-    if (length >= total.value) {
+    if (length >= total) {
       isEnd = true;
     }
   }
@@ -47,7 +47,7 @@ class BlackListController
         if (result.isSuccess) {
           loadingState.data!.removeAt(index);
           notifyListeners();
-          total.value -= 1;
+          total -= 1;
           SmartDialog.showToast('移除成功');
         }
       },

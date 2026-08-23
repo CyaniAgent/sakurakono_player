@@ -29,8 +29,8 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
 
   PbMap<int, Offset>? offset;
 
-  Rx<List<ThreeDotItem>?> threeDotItems = Rx<List<ThreeDotItem>?>(null);
-  Rx<List<ThreeDotItem>?> outsideItem = Rx<List<ThreeDotItem>?>(null);
+  List<ThreeDotItem>? threeDotItems;
+  List<ThreeDotItem>? outsideItem;
 
   WhisperController() {
     msgFeedTopItems = [
@@ -96,8 +96,8 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
     Success<SessionMainReply> response,
   ) {
     if (isRefresh) {
-      threeDotItems.value = response.response.threeDotItems;
-      outsideItem.value = response.response.outsideItem;
+      threeDotItems = response.response.threeDotItems;
+      outsideItem = response.response.outsideItem;
     }
     return false;
   }

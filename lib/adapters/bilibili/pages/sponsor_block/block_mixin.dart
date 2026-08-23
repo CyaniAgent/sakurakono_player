@@ -45,7 +45,7 @@ mixin BlockMixin {
   StreamSubscription<Duration>? _blockListener;
   StreamSubscription<Duration>? get blockListener => _blockListener;
   late final List<SegmentModel> _segmentList = <SegmentModel>[];
-  late final RxList<Segment> segmentProgressList = <Segment>[].obs;
+  List<Segment> segmentProgressList = [];
 
   Timer? _skipTimer;
   late final listKey = GlobalKey<AnimatedListState>();

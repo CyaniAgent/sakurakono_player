@@ -41,8 +41,8 @@ class _VotePanelState extends State<VotePanel> {
   late bool anonymous = false;
 
   late CoreVoteInfo _voteInfo;
-  late final RxList<int> groupValue =
-      (_voteInfo.myVotes?.toList() ?? <int>[]).obs;
+  late final List<int> groupValue =
+      _voteInfo.myVotes?.toList() ?? <int>[];
   late var _percentage = _cnt2Percentage(_voteInfo.options);
   late bool _enabled =
       groupValue.isEmpty &&
@@ -84,7 +84,7 @@ class _VotePanelState extends State<VotePanel> {
                 ? '已结束'
                 : '已完成',
           ),
-          if (_enabled) Obx(() => Text('${groupValue.length} / $_maxCnt')),
+          if (_enabled) Text('${groupValue.length} / $_maxCnt'),
         ],
       ),
       Flexible(
@@ -119,7 +119,7 @@ class _VotePanelState extends State<VotePanel> {
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Obx(
-            () => OutlinedButton(
+          OutlinedButton(
               onPressed: groupValue.isNotEmpty
                   ? () async {
                       final res = await widget.onVote(
@@ -140,7 +140,6 @@ class _VotePanelState extends State<VotePanel> {
                   : null,
               child: const Center(child: Text('投票')),
             ),
-          ),
         ),
       ],
     ];

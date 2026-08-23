@@ -23,11 +23,11 @@ class FavNoteController
 
 
   @override
-  final RxBool allSelected = false.obs;
+  bool allSelected = false;
 
   @override
   void handleSelect({bool checked = false, bool disableSelect = true}) {
-    allSelected.value = checked;
+    allSelected = checked;
     super.handleSelect(checked: checked, disableSelect: disableSelect);
   }
 

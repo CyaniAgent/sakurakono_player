@@ -39,8 +39,8 @@ class WebviewPage extends StatefulWidget {
 class _WebviewPageState extends State<WebviewPage> {
   late final String _url = widget.url ?? AppNavigator.parameters['url'] ?? '';
   late final String userAgent;
-  final RxString title = ''.obs;
-  final RxDouble progress = 1.0.obs;
+  String title = '';
+  double progress = 1.0;
   bool _inApp = false;
   bool _off = false;
 
@@ -91,20 +91,16 @@ class _WebviewPageState extends State<WebviewPage> {
       appBar: widget.url != null
           ? null
           : AppBar(
-              title: Obx(
-                () => Text(
-                  title.value.isNotEmpty ? title.value : _url,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              title: Text(
+                title.isNotEmpty ? title : _url,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               bottom: PreferredSize(
                 preferredSize: Size.zero,
-                child: Obx(
-                  () => progress.value < 1
-                      ? LinearProgressIndicator(value: progress.value)
-                      : const SizedBox.shrink(),
-                ),
+                child: progress < 1
+                    ? LinearProgressIndicator(value: progress)
+                    : const SizedBox.shrink(),
               ),
               actions: [
                 PopupMenuButton(
@@ -209,10 +205,10 @@ class _WebviewPageState extends State<WebviewPage> {
               );
           },
           onProgressChanged: (controller, progress) {
-            this.progress.value = progress / 100;
+            setState(() { this.progress = progress / 100; });
           },
           onTitleChanged: (controller, title) {
-            this.title.value = title ?? '';
+            setState(() { this.title = title ?? ''; });
           },
           onCloseWindow: (controller) => AppNavigator.back(),
           onLoadStop: (controller, uri) {
@@ -292,7 +288,7 @@ class _WebviewPageState extends State<WebviewPage> {
                       );
                     },
                   );
-                  progress.value = 1;
+                  setState(() { progress = 1; });
                 }
               : null,
           shouldInterceptAjaxRequest: (controller, ajaxRequest) async {
@@ -312,7 +308,7 @@ class _WebviewPageState extends State<WebviewPage> {
             if (url.startsWith(
               'https://passport.bilibili.com/x/passport-login/web',
             )) {
-              progress.value = 1;
+              setState(() { progress = 1; });
               return WebResourceResponse();
             }
             return null;
@@ -329,7 +325,7 @@ class _WebviewPageState extends State<WebviewPage> {
             );
             // if (kDebugMode) debugPrint('webview: [$url], [$hasMatch]');
             if (hasMatch) {
-              progress.value = 1;
+              setState(() { progress = 1; });
               return NavigationActionPolicy.CANCEL;
             } else if (_prefixRegex.hasMatch(url)) {
               if (context.mounted) {
@@ -344,7 +340,7 @@ class _WebviewPageState extends State<WebviewPage> {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
-              progress.value = 1;
+              setState(() { progress = 1; });
               return NavigationActionPolicy.CANCEL;
             }
 

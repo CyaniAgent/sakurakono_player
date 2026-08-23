@@ -6,7 +6,6 @@ import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SearchUserController
     extends SearchPanelController<SearchUserData, SearchUserItemModel> {
@@ -15,8 +14,8 @@ class SearchUserController
     required super.searchType,
     required super.tag,
   }) {
-    userType = UserType.all.obs;
-    userOrderType = UserOrderType.def.obs;
+    userType = UserType.all;
+    userOrderType = UserOrderType.def;
   }
 
 
@@ -49,11 +48,11 @@ class SearchUserController
                 runSpacing: 8,
                 children: UserOrderType.values.map(
                   (e) {
-                    final isCurr = e == userOrderType!.value;
+                    final isCurr = e == userOrderType!;
                     return SearchText(
                       text: e.label,
                       onTap: (_) {
-                        userOrderType!.value = e;
+                        userOrderType = e;
                         order = e.order;
                         onSortSearch(label: e.label);
                       },
@@ -75,11 +74,11 @@ class SearchUserController
                 runSpacing: 8,
                 children: UserType.values.map(
                   (e) {
-                    final isCurr = e == userType!.value;
+                    final isCurr = e == userType!;
                     return SearchText(
                       text: e.label,
                       onTap: (_) {
-                        userType!.value = e;
+                        userType = e;
                         onSortSearch(label: e.label);
                       },
                       bgColor: isCurr

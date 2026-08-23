@@ -127,7 +127,7 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
   }
 
   late final _battery = Battery();
-  late final RxnInt _batteryLevel = RxnInt();
+  int? _batteryLevel;
   late final _showBatteryLevel = Pref.showBatteryLevel;
   void getBatteryLevelIfNeeded() {
     if (!_showCurrTime || !_showBatteryLevel) return;
@@ -136,7 +136,7 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
       const Duration(seconds: 30),
       () async {
         try {
-          _batteryLevel.value = await _battery.batteryLevel;
+          _batteryLevel = await _battery.batteryLevel;
         } catch (_) {}
       },
     );
@@ -146,9 +146,9 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
     if (_showCurrTime) {
       return [
         if (_showBatteryLevel) ...[
-          Obx(
-            () {
-              final batteryLevel = _batteryLevel.value;
+          Builder(
+            builder: (context) {
+              final batteryLevel = _batteryLevel;
               if (batteryLevel == null) {
                 return const SizedBox.shrink();
               }

@@ -17,7 +17,7 @@ abstract class CommonDynController extends ReplyController<CoreMainListReply>
   int get oid;
   int get replyType;
 
-  late final RxBool showTitle = false.obs;
+  bool showTitle = false;
 
   late final horizontalPreview = Pref.horizontalPreview;
   late final List<double> ratio = Pref.dynamicDetailRatio;

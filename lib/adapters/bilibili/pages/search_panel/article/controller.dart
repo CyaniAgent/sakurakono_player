@@ -15,7 +15,7 @@ class SearchArticleController
     required super.searchType,
     required super.tag,
   }) {
-    articleZoneType = ArticleZoneType.all.obs;
+    articleZoneType = ArticleZoneType.all;
     jump2Article();
   }
 
@@ -38,7 +38,7 @@ class SearchArticleController
     }
   }
 
-  Rx<ArticleOrderType> articleOrderType = ArticleOrderType.totalrank.obs;
+  ArticleOrderType articleOrderType = ArticleOrderType.totalrank;
 
   void onShowFilterDialog(BuildContext context) {
     showModalBottomSheet(
@@ -69,11 +69,11 @@ class SearchArticleController
                 runSpacing: 8,
                 children: ArticleOrderType.values.map(
                   (e) {
-                    final isCurr = e == articleOrderType.value;
+                    final isCurr = e == articleOrderType;
                     return SearchText(
                       text: e.label,
                       onTap: (_) {
-                        articleOrderType.value = e;
+                        articleOrderType = e;
                         order = e.order;
                         onSortSearch(label: e.label);
                       },
@@ -95,11 +95,11 @@ class SearchArticleController
                 runSpacing: 8,
                 children: ArticleZoneType.values.map(
                   (e) {
-                    final isCurr = e == articleZoneType!.value;
+                    final isCurr = e == articleZoneType!;
                     return SearchText(
                       text: e.label,
                       onTap: (_) {
-                        articleZoneType!.value = e;
+                        articleZoneType = e;
                         onSortSearch(label: e.label);
                       },
                       bgColor: isCurr

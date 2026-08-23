@@ -1065,7 +1065,7 @@ class BiliVideoHost implements VideoHost {
           ),
         )
         .toList()
-        .obs;
+        ;
     Widget panel() => MediaListPanel(
       mediaList: mediaList,
       onChangeEpisode: (episode) {

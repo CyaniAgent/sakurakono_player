@@ -18,7 +18,7 @@ class WhisperSettingsController
 
   final IMSettingType imSettingType;
 
-  final RxString title = ''.obs;
+  String title = '';
   LoadingState<PbMap<int, Setting>> _loadingState =
       LoadingState<PbMap<int, Setting>>.loading();
   @override
@@ -33,7 +33,7 @@ class WhisperSettingsController
     bool isRefresh,
     Success<GetImSettingsReply> response,
   ) {
-    title.value = response.response.pageTitle;
+    title = response.response.pageTitle;
     loadingState = Success(response.response.settings);
     return true;
   }

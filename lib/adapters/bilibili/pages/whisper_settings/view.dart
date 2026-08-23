@@ -54,7 +54,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Obx(() => Text(_controller.title.value)),
+        title: ListenableBuilder(listenable: _controller, builder: (_, __) => Text(_controller.title)),
       ),
       body: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(theme, _controller.loadingState)),
     );

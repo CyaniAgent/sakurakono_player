@@ -14,7 +14,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SuperChatCard extends StatefulWidget {
   const SuperChatCard({
@@ -36,7 +35,7 @@ class SuperChatCard extends StatefulWidget {
 
 class _SuperChatCardState extends State<SuperChatCard> {
   Timer? _timer;
-  RxInt? _remains;
+  int? _remains;
 
   @override
   void initState() {
@@ -49,7 +48,7 @@ class _SuperChatCardState extends State<SuperChatCard> {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       final offset = widget.item.endTime - now;
       if (offset > 0) {
-        _remains = offset.obs;
+        _remains = offset;
         _startTimer();
       } else {
         _remove();
@@ -70,9 +69,9 @@ class _SuperChatCardState extends State<SuperChatCard> {
   }
 
   void _callback(_) {
-    final remains = _remains!.value;
+    final remains = _remains!;
     if (remains > 0) {
-      _remains!.value = remains - 1;
+      _remains = remains - 1;
     } else {
       _cancelTimer();
       _onRemove();
@@ -174,11 +173,9 @@ class _SuperChatCardState extends State<SuperChatCard> {
     Widget price = Text("￥${item.price}", style: TextStyle(color: bottomColor));
     Widget? remains;
     if (_remains != null) {
-      remains = Obx(
-        () => Text(
-          _remains.toString(),
-          style: const TextStyle(fontSize: 14, color: Colors.grey),
-        ),
+      remains = Text(
+        _remains.toString(),
+        style: const TextStyle(fontSize: 14, color: Colors.grey),
       );
     } else {
       price = Row(

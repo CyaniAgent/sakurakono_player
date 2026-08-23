@@ -34,12 +34,12 @@ class ArticleController extends CommonDynController {
   int get replyType => commentType;
   final summary = Summary();
 
-  late final RxInt topIndex = 0.obs;
+  late int topIndex = 0;
 
   @override
   dynamic get sourceId => commentType == 12 ? 'cv' : id;
 
-  final RxBool isLoaded = false.obs;
+  bool isLoaded = false;
   CoreDynamicItemModel? opusData; // 标题信息从summary获取, 动态没有favorite
   CoreArticleViewData? articleData;
   final stats = Rxn<CoreModuleStatModel>();
@@ -180,13 +180,13 @@ class ArticleController extends CommonDynController {
   // 请求动态内容
   Future<void> _queryContent() async {
     if (type != 'read') {
-      isLoaded.value = await queryOpus(id);
+      isLoaded = await queryOpus(id);
     } else {
       commentId = int.parse(id);
       commentType = 12;
-      isLoaded.value = await queryRead(commentId);
+      isLoaded = await queryRead(commentId);
     }
-    if (isLoaded.value) {
+    if (isLoaded)
       queryData();
       if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
         (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).historyReport(aid: commentId.toString(), type: 5);
@@ -240,7 +240,7 @@ class ArticleController extends CommonDynController {
 
   @override
   Future<void> onReload() {
-    if (!isLoaded.value) {
+    if (!isLoaded)
       return Future.syncValue(null);
     }
     return super.onReload();

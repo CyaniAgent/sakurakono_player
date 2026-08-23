@@ -66,10 +66,10 @@ class LocalIntroController extends CommonIntroController {
         aidSet.add(e.pageId);
       }
     }
-    this.list.value = list;
+    this.list = list;
     final currCid = videoDetailCtr.cid.value;
     final index = list.indexWhere((e) => e.cid == currCid);
-    this.index.value = index;
+    this.index = index;
     if (PlatformUtils.isMobile) {
       onVideoDetailChange(list[index]);
     }
@@ -92,13 +92,13 @@ class LocalIntroController extends CommonIntroController {
     }
   }
 
-  final index = (-1).obs;
-  double get _offset => index * 112 + 7 - 35;
-  final list = RxList<BiliDownloadEntryInfo>();
+  int index = -1;
+  double get _offset => (index * 112 + 7 - 35).toDouble();
+  List<BiliDownloadEntryInfo> list = [];
 
   @override
   bool nextPlay() {
-    final next = index.value + 1;
+    final next = index + 1;
     if (next < list.length) {
       playIndex(next);
       return true;
@@ -120,7 +120,7 @@ class LocalIntroController extends CommonIntroController {
 
   @override
   bool prevPlay() {
-    final prev = index.value - 1;
+    final prev = index - 1;
     if (prev >= 0) {
       playIndex(prev);
       return true;
@@ -145,7 +145,7 @@ class LocalIntroController extends CommonIntroController {
     videoDetail
       ..title = entry.showTitle;
     notifyListeners();
-    this.index.value = index;
+    this.index = index;
     if (PlatformUtils.isMobile) {
       onVideoDetailChange(entry);
     }
