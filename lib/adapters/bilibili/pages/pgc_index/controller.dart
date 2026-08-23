@@ -15,12 +15,11 @@ class PgcIndexController
   PgcIndexController(this.indexType) {
     getPgcIndexCondition();
   }
-  Rx<LoadingState<CorePgcIndexConditionData>> conditionState =
-      LoadingState<CorePgcIndexConditionData>.loading().obs;
+  LoadingState<CorePgcIndexConditionData> conditionState = LoadingState<CorePgcIndexConditionData>.loading();
 
-  late final RxBool isExpand = false.obs;
+  late bool isExpand = false;
 
-  RxMap<String, dynamic> indexParams = <String, dynamic>{}.obs;
+  Map<String, dynamic> indexParams = {};
 
 
   Future<void> getPgcIndexCondition() async {
@@ -40,7 +39,7 @@ class PgcIndexController
       }
       queryData();
     }
-    conditionState.value = switch (res) {
+    conditionState = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),

@@ -22,14 +22,14 @@ class LiveController extends CommonListControllerRiverpod {
   int? areaId;
   String? sortType;
   int? parentAreaId;
-  final RxInt areaIndex = 0.obs;
+  int areaIndex = 0;
 
   // tag
-  final RxInt tagIndex = 0.obs;
+  int tagIndex = 0;
   List<CoreLiveSecondTag>? newTags;
 
-  final Rx<Pair<CoreLiveCardList?, CoreLiveCardList?>> topState =
-      Pair<CoreLiveCardList?, CoreLiveCardList?>(first: null, second: null).obs;
+  Pair<CoreLiveCardList?, CoreLiveCardList?> topState =
+      Pair<CoreLiveCardList?, CoreLiveCardList?>(first: null, second: null);
 
   final followController = ScrollController();
 
@@ -55,7 +55,7 @@ class LiveController extends CommonListControllerRiverpod {
         if (res.hasMore == 0) {
           isEnd = true;
         }
-        topState.value = Pair(
+        topState = Pair(
           first: res.followItem,
           second: res.areaItem,
         );
@@ -63,8 +63,8 @@ class LiveController extends CommonListControllerRiverpod {
         count = res.count;
         newTags = res.newTags;
         if (sortType != null) {
-          tagIndex.value =
-              newTags?.indexWhere((e) => e.sortType == sortType) ?? -1;
+        tagIndex =
+            newTags?.indexWhere((e) => e.sortType == sortType) ?? -1;
         }
       }
     }
@@ -74,7 +74,7 @@ class LiveController extends CommonListControllerRiverpod {
   @override
   Future<LoadingState> customGetData() async {
     final LoadingState biliResult;
-    if (areaIndex.value != 0) {
+    if (areaIndex != 0) {
       biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveSecondList(
         pn: page,
         areaId: areaId,
@@ -96,7 +96,7 @@ class LiveController extends CommonListControllerRiverpod {
     count = null;
     page = 1;
     isEnd = false;
-    if (areaIndex.value != 0) {
+    if (areaIndex != 0) {
       queryTop().whenComplete(followController.jumpToTop);
       return queryData();
     }
@@ -111,11 +111,11 @@ class LiveController extends CommonListControllerRiverpod {
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
     if (res case Success(:final response)) {
-      topState.value = Pair(
+      topState = Pair(
         first: response.followItem,
         second: response.areaItem,
       );
-      areaIndex.value =
+      areaIndex =
           (response.areaItem?.cardData?.areaEntranceV3?.list?.indexWhere(
                 (e) => e.areaV2Id == areaId && e.areaV2ParentId == parentAreaId,
               ) ??
@@ -128,13 +128,13 @@ class LiveController extends CommonListControllerRiverpod {
     if (isLoading) {
       return; // areaIndex conflict
     }
-    if (index == areaIndex.value) {
+    if (index == areaIndex) {
       return;
     }
-    tagIndex.value = 0;
+    tagIndex = 0;
     newTags = null;
     sortType = null;
-    areaIndex.value = index;
+    areaIndex = index;
     areaId = cardLiveItem?.areaV2Id;
     parentAreaId = cardLiveItem?.areaV2ParentId;
 
@@ -148,7 +148,7 @@ class LiveController extends CommonListControllerRiverpod {
     if (isLoading) {
       return;
     }
-    tagIndex.value = index;
+    tagIndex = index;
     this.sortType = sortType;
 
     count = null;

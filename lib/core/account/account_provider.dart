@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:get/get.dart';
 import 'package:riverpod/riverpod.dart';
 
 /// Immutable account state for Riverpod.
@@ -92,10 +91,10 @@ final accountProvider =
 /// Each platform adapter (Bilibili, OttoHub, etc.) provides its own
 /// implementation that extends RiverpodAccountMixin for state access.
 abstract class AccountProvider {
-  /// User avatar URL (reactive).
-  RxString get rxFace;
-  /// Login state (reactive).
-  RxBool get rxIsLogin;
+  /// User avatar URL.
+  String rxFace = '';
+  /// Login state.
+  bool rxIsLogin = false;
 
   /// User avatar URL.
   String? get face;

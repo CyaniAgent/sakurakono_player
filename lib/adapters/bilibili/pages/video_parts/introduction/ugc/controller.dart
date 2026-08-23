@@ -54,16 +54,16 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   late final RxBool expand;
-  final RxBool status = true.obs;
+  bool status = true;
 
   // up主粉丝数
-  final Rx<CoreMemberCardInfoData> userStat = CoreMemberCardInfoData().obs;
+  CoreMemberCardInfoData userStat = CoreMemberCardInfoData();
   // 关注状态 默认未关注
   late final Rx<CoreRelationData> followStatus = Rx(CoreRelationData());
-  late final RxMap staffRelations = {}.obs;
+  late final Map staffRelations = {};
 
   // 是否点踩
-  final RxBool hasDislike = false.obs;
+  bool hasDislike = false;
 
   late final showArgueMsg = Pref.showArgueMsg;
   late final enableAi = Pref.enableAi;
@@ -156,7 +156,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
           .toList());
     } else {
       SmartDialog.showToast(res.toString());
-      status.value = false;
+      status = false;
     }
 
     if (isLogin) {
@@ -182,7 +182,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       }
       final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberCardInfo(mid: mid);
       if (res case Success(:final response)) {
-        userStat.value = response;
+        userStat = response;
       }
     }
   }
@@ -198,7 +198,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         stat?.favorite = max(1, stat.favorite);
       }
       hasLike = response.like!;
-      hasDislike.value = response.dislike!;
+      hasDislike = response.dislike!;
       coinNum = response.coin!;
       hasFav = response.favorite!;
     }
@@ -233,7 +233,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         stat?.favorite++;
         hasFav = true;
       }
-      hasDislike.value = false;
+      hasDislike = false;
       if (!hasCoin) {
         SmartDialog.showToast('投币失败');
       } else {
@@ -261,7 +261,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       videoDetail.stat?.like += newVal ? 1 : -1;
       hasLike = newVal;
       if (newVal) {
-        hasDislike.value = false;
+        hasDislike = false;
       }
     } else {
       SmartDialog.showToast(result.toString());
@@ -275,19 +275,19 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
     }
     final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).dislikeVideo(
       bvid: bvid,
-      type: !hasDislike.value,
+      type: !hasDislike,
     );
     if (res.isSuccess) {
-      if (!hasDislike.value) {
+      if (!hasDislike) {
         SmartDialog.showToast('点踩成功');
-        hasDislike.value = true;
+        hasDislike = true;
         if (hasLike) {
           videoDetail.stat?.like--;
           hasLike = false;
         }
       } else {
         SmartDialog.showToast('取消踩');
-        hasDislike.value = false;
+        hasDislike = false;
       }
     } else {
       SmartDialog.showToast(res.toString());

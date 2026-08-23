@@ -137,11 +137,11 @@ class _PlayerViewState extends State<PlayerView>
   final _playerKey = GlobalKey();
   final _videoKey = GlobalKey();
 
-  final RxDouble _brightnessValue = 0.0.obs;
-  final RxBool _brightnessIndicator = false.obs;
+  double _brightnessValue = 0.0;
+  bool _brightnessIndicator = false;
   Timer? _brightnessTimer;
 
-  late final RxBool showRestoreScaleBtn = false.obs;
+  late bool showRestoreScaleBtn = false;
 
   GestureType? _gestureType;
   Offset? _initialFocalPoint;
@@ -151,14 +151,14 @@ class _PlayerViewState extends State<PlayerView>
   StreamSubscription? _brightnessListener;
   void _onBrightnessChanged(double value) {
     if (mounted && _gestureType != .left) {
-      _brightnessValue.value = value;
+      _brightnessValue = value;
     }
   }
 
   void _getSystemBrightness() {
     ScreenBrightnessPlatform.instance.system.then((res) {
       if (mounted) {
-        _brightnessValue.value = res;
+        _brightnessValue = res;
       }
     });
   }
@@ -166,7 +166,7 @@ class _PlayerViewState extends State<PlayerView>
   void _getAppBrightness() {
     ScreenBrightnessPlatform.instance.application.then((res) {
       if (mounted) {
-        _brightnessValue.value = res;
+        _brightnessValue = res;
       }
     });
   }
@@ -306,7 +306,7 @@ class _PlayerViewState extends State<PlayerView>
   }
 
   Future<void> setBrightness(double value) async {
-    _brightnessValue.value = value;
+    _brightnessValue = value;
     try {
       if (Platform.isIOS || plPlayerController.setSystemBrightness) {
         await ScreenBrightnessPlatform.instance.setSystemScreenBrightness(
@@ -318,11 +318,11 @@ class _PlayerViewState extends State<PlayerView>
         );
       }
     } catch (_) {}
-    _brightnessIndicator.value = true;
+    _brightnessIndicator = true;
     _brightnessTimer?.cancel();
     _brightnessTimer = Timer(const Duration(milliseconds: 200), () {
       if (mounted) {
-        _brightnessIndicator.value = false;
+        _brightnessIndicator = false;
       }
     });
     plPlayerController.brightness = value;
@@ -379,7 +379,7 @@ class _PlayerViewState extends State<PlayerView>
   }
 
   void _onScaleUpdate(double scale) {
-    showRestoreScaleBtn.value = scale != 1.0;
+    showRestoreScaleBtn = scale != 1.0;
   }
 
   void _onHorizontalDragStart() {
@@ -508,7 +508,7 @@ class _PlayerViewState extends State<PlayerView>
     } else if (_gestureType == .left) {
       // 左边区域 👈
       final double level = maxHeight * 3;
-      final double brightness = (_brightnessValue.value - delta.dy / level)
+      final double brightness = (_brightnessValue - delta.dy / level)
           .clamp(0.0, 1.0);
       setBrightness(brightness);
     } else if (_gestureType == .center) {
@@ -931,7 +931,7 @@ class _PlayerViewState extends State<PlayerView>
             child: Obx(
               () => AnimatedOpacity(
                 curve: Curves.easeInOut,
-                opacity: _brightnessIndicator.value ? 1.0 : 0.0,
+                opacity: _brightnessIndicator ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 150),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -947,9 +947,9 @@ class _PlayerViewState extends State<PlayerView>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Icon(
-                        _brightnessValue.value < 1.0 / 3.0
+                        _brightnessValue < 1.0 / 3.0
                             ? Icons.brightness_low
-                            : _brightnessValue.value < 2.0 / 3.0
+                            : _brightnessValue < 2.0 / 3.0
                             ? Icons.brightness_medium
                             : Icons.brightness_high,
                         color: Colors.white,
@@ -957,7 +957,7 @@ class _PlayerViewState extends State<PlayerView>
                       ),
                       const SizedBox(width: 2.0),
                       Text(
-                        '${(_brightnessValue.value * 100.0).round()}%',
+                        '${(_brightnessValue * 100.0).round()}%',
                         style: const TextStyle(
                           fontSize: 13.0,
                           color: Colors.white,
@@ -1019,7 +1019,7 @@ class _PlayerViewState extends State<PlayerView>
 
         Obx(
           () =>
-              showRestoreScaleBtn.value && plPlayerController.showControls
+              showRestoreScaleBtn && plPlayerController.showControls
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -1038,7 +1038,7 @@ class _PlayerViewState extends State<PlayerView>
                         ),
                       ),
                       onPressed: () async {
-                        showRestoreScaleBtn.value = false;
+                        showRestoreScaleBtn = false;
                         final animController = AnimationController(
                           vsync: this,
                           duration: const Duration(milliseconds: 255),
@@ -1598,7 +1598,7 @@ class _EmptyOverlaySource implements PlayerOverlaySource {
   List<ViewPointSegment> get viewPointList => const [];
 
   @override
-  RxBool get showVP => false.obs;
+  bool get showVP => false;
 
   @override
   bool get showDmTrendChart => false;

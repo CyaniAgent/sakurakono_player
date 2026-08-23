@@ -27,13 +27,13 @@ class MemberFavoriteCtr
 
   late int favPage = 2;
   bool _favExpand = true;
-  final RxBool favEnd = true.obs;
-  final Rx<CoreSpaceFavData> favState = CoreSpaceFavData().obs;
+  bool favEnd = true;
+  CoreSpaceFavData favState = CoreSpaceFavData();
 
   late int subPage = 2;
   bool _subExpand = true;
-  final RxBool subEnd = true.obs;
-  final Rx<CoreSpaceFavData> subState = CoreSpaceFavData().obs;
+  bool subEnd = true;
+  CoreSpaceFavData subState = CoreSpaceFavData();
 
   LoadingState<List<CoreSpaceFavData>?> _loadingState =
       LoadingState<List<CoreSpaceFavData>?>.loading();
@@ -97,13 +97,13 @@ class MemberFavoriteCtr
   ) {
     try {
       List<CoreSpaceFavData> res = response.response!;
-      favState.value = res.first;
-      subState.value = res[1];
+      favState = res.first;
+      subState = res[1];
 
-      favEnd.value =
+      favEnd =
           (res.first.mediaListResponse?.count ?? -1) <=
           (res.first.mediaListResponse?.list?.length ?? -1);
-      subEnd.value =
+      subEnd =
           (res[1].mediaListResponse?.count ?? -1) <=
           (res[1].mediaListResponse?.list?.length ?? -1);
     } catch (e) {
@@ -127,19 +127,17 @@ class MemberFavoriteCtr
         favPage++;
         final data = res.data['data'];
         if (data != null) {
-          favEnd.value = data['has_more'] == false;
+          favEnd = data['has_more'] == false;
           final list = (data['list'] as List<dynamic>?)
               ?.map((item) => CoreSpaceFavItemModel.fromJson(item))
               .toList();
           if (list != null && list.isNotEmpty) {
-            favState
-              ..value.mediaListResponse!.list!.addAll(list)
-              ..refresh();
+            favState.mediaListResponse!.list!.addAll(list);
           } else {
-            favEnd.value = true;
+            favEnd = true;
           }
         } else {
-          favEnd.value = true;
+          favEnd = true;
         }
       } else {
         SmartDialog.showToast(res.data['message']);
@@ -164,19 +162,17 @@ class MemberFavoriteCtr
         subPage++;
         final data = res.data['data'];
         if (data != null) {
-          subEnd.value = data['has_more'] == false;
+          subEnd = data['has_more'] == false;
           final list = (data['list'] as List<dynamic>?)
               ?.map((item) => CoreSpaceFavItemModel.fromJson(item))
               .toList();
           if (list != null && list.isNotEmpty) {
-            subState
-              ..value.mediaListResponse!.list!.addAll(list)
-              ..refresh();
+            subState.mediaListResponse!.list!.addAll(list);
           } else {
-            subEnd.value = true;
+            subEnd = true;
           }
         } else {
-          subEnd.value = true;
+          subEnd = true;
         }
       } else {
         SmartDialog.showToast(res.data['message']);

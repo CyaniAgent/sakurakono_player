@@ -7,7 +7,6 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:chat_bottom_container/chat_bottom_container.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 abstract class CommonPublishPage<T> extends StatefulWidget {
   const CommonPublishPage({
@@ -34,9 +33,9 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   );
   TextEditingController get editController;
 
-  final Rx<PanelType> panelType = PanelType.none.obs;
-  late final RxBool readOnly = false.obs;
-  late final RxBool enablePublish = false.obs;
+  PanelType panelType = PanelType.none;
+  late bool readOnly = false;
+  late bool enablePublish = false;
 
   bool isPublishing = false;
 
@@ -87,7 +86,7 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
     if (state == .resumed) {
       if (_paused) {
         _paused = false;
-        final panelType = this.panelType.value;
+        final panelType = this.panelType;
         if (panelType == .keyboard || panelType == .none) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (focusNode.hasFocus) {
@@ -157,8 +156,8 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   bool updateInputView({
     required bool isReadOnly,
   }) {
-    if (readOnly.value != isReadOnly) {
-      readOnly.value = isReadOnly;
+    if (readOnly != isReadOnly)
+      readOnly = isReadOnly;
       return true;
     }
     return false;
@@ -196,14 +195,14 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
       onPanelTypeChange: (panelType, data) {
         switch (panelType) {
           case ChatBottomPanelType.none:
-            this.panelType.value = PanelType.none;
+            panelType = PanelType.none;
             break;
           case ChatBottomPanelType.keyboard:
-            this.panelType.value = PanelType.keyboard;
+            panelType = PanelType.keyboard;
             break;
           case ChatBottomPanelType.other:
             if (data == null) return;
-            this.panelType.value = data;
+            panelType = data;
             break;
         }
       },
@@ -212,7 +211,7 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   }
 
   void onSubmitted(String value) {
-    if (enablePublish.value) {
+    if (enablePublish)
       onPublishThrottle();
     }
   }
@@ -230,7 +229,7 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   Widget? get customPanel => null;
 
   void onChanged(String value) {
-    enablePublish.value = value.trim().isNotEmpty;
+    enablePublish = value.trim().isNotEmpty;
   }
 
   void onSave();

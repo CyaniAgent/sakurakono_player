@@ -78,9 +78,9 @@ mixin BiliPlayerMixin on PlayerController {
   bool enableHeart = true;
 
   /// 弹幕开关
-  late final RxBool enableShowDanmaku = (Pref.enableShowDanmaku).obs;
-  late final RxBool enableShowLiveDanmaku = (Pref.enableShowLiveDanmaku).obs;
-  RxBool get enableShowDanmakuAdaptive =>
+  late final bool enableShowDanmaku = Pref.enableShowDanmaku;
+  late final bool enableShowLiveDanmaku = Pref.enableShowLiveDanmaku;
+  bool get enableShowDanmakuAdaptive =>
       isLive ? enableShowLiveDanmaku : enableShowDanmaku;
 
   // 弹幕相关配置
@@ -95,7 +95,7 @@ mixin BiliPlayerMixin on PlayerController {
     ascii.encode(Accounts.main.mid.toString()),
     0,
   ).toRadixString(16);
-  late final RxDouble danmakuOpacity = (Pref.danmakuOpacity).obs;
+  late final double danmakuOpacity = Pref.danmakuOpacity;
   final bool showVipDanmaku = Pref.showVipDanmaku; // loop unswitching
 
   late final progressType = BiliPref.btmProgressBehavior;
@@ -105,8 +105,8 @@ mixin BiliPlayerMixin on PlayerController {
 
   // 超分辨率
   late final isAnim = _pgcType == 1 || _pgcType == 4;
-  late final Rx<SuperResolutionType> superResolutionType =
-      (isAnim ? BiliPref.superResolutionType : SuperResolutionType.disable).obs;
+  late SuperResolutionType superResolutionType =
+      isAnim ? BiliPref.superResolutionType : SuperResolutionType.disable;
 
   String? shadersDirPath;
   Future<String> get copyShadersToExternalDirectory async {
@@ -123,9 +123,9 @@ mixin BiliPlayerMixin on PlayerController {
 
   Future<void> setShader([SuperResolutionType? type, NativePlayer? pp]) async {
     if (type == null) {
-      type = superResolutionType.value;
+      type = superResolutionType;
     } else {
-      superResolutionType.value = type;
+      superResolutionType = type;
       if (isAnim && !tempPlayerConf) {
         setting.put(SettingBoxKey.superResolutionType, type.index);
       }
@@ -160,7 +160,7 @@ mixin BiliPlayerMixin on PlayerController {
   // videoshot 预览
   late final Map<String, ui.Image?> previewCache = {};
   LoadingState<VideoShotData>? videoShot;
-  late final RxBool showPreview = false.obs;
+  late bool showPreview = false;
   late final showSeekPreview = Pref.showSeekPreview;
   late final previewIndex = RxnInt();
 
@@ -186,7 +186,7 @@ mixin BiliPlayerMixin on PlayerController {
 
   @override
   Future<void> onPlayerAttached(Player player) async {
-    if (isAnim && superResolutionType.value != .disable) {
+    if (isAnim && superResolutionType != .disable) {
       await setShader();
     }
   }
@@ -246,7 +246,7 @@ mixin BiliPlayerMixin on PlayerController {
   @override
   void onSeekPreviewEnd() {
     if (showSeekPreview) {
-      showPreview.value = false;
+      showPreview = false;
     }
   }
 
@@ -464,7 +464,7 @@ mixin BiliPlayerMixin on PlayerController {
       return;
     }
     if (videoShot case Success(:final response)) {
-      showPreview.value = true;
+      showPreview = true;
       previewIndex.value = max(
         0,
         (response.index.where((item) => item <= seconds).length - 2),
@@ -473,7 +473,7 @@ mixin BiliPlayerMixin on PlayerController {
   }
 
   void _clearPreview() {
-    showPreview.value = false;
+    showPreview = false;
     previewIndex.value = null;
     videoShot = null;
     for (final i in previewCache.values) {
