@@ -30,7 +30,7 @@ class GroupPanel extends StatefulWidget {
 
 class _GroupPanelState extends State<GroupPanel> {
   LoadingState<List<MemberTagItemModel>> loadingState = LoadingState.loading();
-  final RxBool showDefaultBtn = true.obs;
+  bool showDefaultBtn = true;
   late final Set<int> tags = widget.tags == null
       ? {}
       : Set<int>.from(widget.tags!);
@@ -52,7 +52,7 @@ class _GroupPanelState extends State<GroupPanel> {
               ),
               Error(:final errMsg) => Error(errMsg),
             };
-        showDefaultBtn.value = tags.isEmpty;
+        showDefaultBtn = tags.isEmpty;
         setState(() {});
       }
     });
@@ -99,7 +99,7 @@ class _GroupPanelState extends State<GroupPanel> {
                     item.count++;
                   }
                   (context as Element).markNeedsBuild();
-                  showDefaultBtn.value = tags.isEmpty;
+                  showDefaultBtn = tags.isEmpty;
                 }
 
                 return ListTile(
@@ -176,7 +176,7 @@ class _GroupPanelState extends State<GroupPanel> {
           child: FilledButton.tonal(
             onPressed: onSave,
             style: const ButtonStyle(visualDensity: .compact),
-            child: Obx(() => Text(showDefaultBtn.value ? '保存至默认分组' : '保存')),
+            child: Text(showDefaultBtn ? '保存至默认分组' : '保存'),
           ),
         ),
       ],
@@ -188,7 +188,7 @@ class _GroupPanelState extends State<GroupPanel> {
     if (loadingState case Success(:final response)) {
       response.add(MemberTagItemModel.fromCreate(res, count: 1));
       tags.add(res.tagid);
-      showDefaultBtn.value = false;
+      showDefaultBtn = false;
       setState(() {});
     } else {
       _queryFollowUpTags();
