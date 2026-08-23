@@ -1,6 +1,5 @@
 import 'package:skf/core/models/ui/multi_select_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MultiSelectAppBarWidget extends StatelessWidget
     implements PreferredSizeWidget {
@@ -19,7 +18,7 @@ class MultiSelectAppBarWidget extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    if (visible ?? ctr.enableMultiSelect.value) {
+    if (visible ?? ctr.enableMultiSelect) {
       final style = TextButton.styleFrom(visualDensity: VisualDensity.compact);
       final colorScheme = ColorScheme.of(context);
       return AppBar(
@@ -29,7 +28,10 @@ class MultiSelectAppBarWidget extends StatelessWidget
           onPressed: ctr.handleSelect,
           icon: const Icon(Icons.close_outlined),
         ),
-        title: Obx(() => Text('已选: ${ctr.checkedCount}')),
+        title: ListenableBuilder(
+          listenable: ctr as Listenable,
+          builder: (context, _) => Text('已选: ${ctr.checkedCount}'),
+        ),
         actions: [
           TextButton(
             style: style,
