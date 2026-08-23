@@ -34,9 +34,10 @@ class _FollowedPageState extends FollowTypePageState<FollowedPage> {
 
   @override
   PreferredSizeWidget get appBar => AppBar(
-    title: Obx(
-      () => Text(
-        '我关注的${controller.total.value}人也关注了${controller.name.value ?? 'TA'}',
+    title: ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) => Text(
+        '我关注的${controller.total}人也关注了${controller.name ?? 'TA'}',
       ),
     ),
   );
