@@ -102,9 +102,9 @@ class CreateDynPanel extends CommonRichTextPubPage {
 
 class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   late final bool _isEdit;
-  late final RxBool _isPrivate;
+  late bool _isPrivate;
   late final Rx<Pair<int, String>?> _topic;
-  late final Rx<ReplyOptionType> _replyOption;
+  late ReplyOptionType _replyOption;
   late final TextEditingController _titleEditCtr;
   late final _publishTime = Rxn<DateTime>();
   final _reserveCard = Rxn<ReserveInfoData>();
@@ -113,8 +113,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   void initState() {
     super.initState();
     _isEdit = widget.editConfig != null;
-    _isPrivate = widget.isPrivate.obs;
-    _replyOption = widget.replyOption.obs;
+    _isPrivate = widget.isPrivate;
+    _replyOption = widget.replyOption;
     _topic = Rx<Pair<int, String>?>(widget.topic);
     _titleEditCtr = TextEditingController(text: widget.title);
   }
@@ -381,13 +381,13 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   );
 
   Widget _buildPrivateWidget(ThemeData theme) {
-    final color = _isPrivate.value
+    final color = _isPrivate
         ? theme.colorScheme.error
         : theme.colorScheme.secondary;
     return PopupMenuButton<bool>(
       requestFocus: false,
-      initialValue: _isPrivate.value,
-      onSelected: _isPrivate.call,
+      initialValue: _isPrivate,
+      onSelected: (v) { setState(() { _isPrivate = v; }); },
       itemBuilder: (context) => List.generate(
         2,
         (index) => PopupMenuItem<bool>(
@@ -413,12 +413,12 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
           children: [
             Icon(
               size: 19,
-              _isPrivate.value ? Icons.visibility_off : Icons.visibility,
+              _isPrivate ? Icons.visibility_off : Icons.visibility,
               color: color,
             ),
             const SizedBox(width: 4),
             Text(
-              _isPrivate.value ? '仅自己可见' : '所有人可见',
+              _isPrivate ? '仅自己可见' : '所有人可见',
               style: TextStyle(
                 height: 1,
                 color: color,
@@ -437,13 +437,13 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   }
 
   Widget _buildReplyOptionWidget(ThemeData theme) {
-    final color = _replyOption.value == ReplyOptionType.close
+    final color = _replyOption == ReplyOptionType.close
         ? theme.colorScheme.error
         : theme.colorScheme.secondary;
     return PopupMenuButton<ReplyOptionType>(
       requestFocus: false,
-      initialValue: _replyOption.value,
-      onSelected: (item) => _replyOption.value = item,
+      initialValue: _replyOption,
+      onSelected: (item) { setState(() { _replyOption = item; }); },
       itemBuilder: (context) => ReplyOptionType.values
           .map(
             (item) => PopupMenuItem<ReplyOptionType>(
@@ -469,12 +469,12 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
           children: [
             Icon(
               size: 19,
-              _replyOption.value.iconData,
+              _replyOption.iconData,
               color: color,
             ),
             const SizedBox(width: 4),
             Text(
-              _replyOption.value.title,
+              _replyOption.title,
               style: TextStyle(
                 height: 1,
                 color: color,
@@ -501,7 +501,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
             ),
             visualDensity: VisualDensity.compact,
           ),
-          onPressed: _isEdit || _isPrivate.value
+          onPressed: _isEdit || _isPrivate
               ? null
               : () async {
                   DateTime nowDate = DateTime.now();
@@ -750,8 +750,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
         repostDynId: editConfig.repostDynId,
         rawText: hasRichText ? null : editController.text,
         pics: pictures,
-        replyOption: CoreReplyOptionType.values.byName(_replyOption.value.name),
-        privatePub: _isPrivate.value ? 1 : null,
+        replyOption: CoreReplyOptionType.values.byName(_replyOption.name),
+        privatePub: _isPrivate ? 1 : null,
         title: _titleEditCtr.text,
         topic: _topic.value,
         extraContent: extraContent,
@@ -776,8 +776,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       publishTime: _publishTime.value != null
           ? _publishTime.value!.millisecondsSinceEpoch ~/ 1000
           : null,
-      replyOption: CoreReplyOptionType.values.byName(_replyOption.value.name),
-      privatePub: _isPrivate.value ? 1 : null,
+      replyOption: CoreReplyOptionType.values.byName(_replyOption.name),
+      privatePub: _isPrivate ? 1 : null,
       title: _titleEditCtr.text,
       topic: _topic.value,
       extraContent: extraContent,
@@ -799,7 +799,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       SmartDialog.showToast('发布成功');
       final id = response?['dyn_id'];
       RequestUtils.insertCreatedDyn(id);
-      if (!_isPrivate.value && _publishTime.value == null) {
+      if (!_isPrivate && _publishTime.value == null) {
         RequestUtils.checkCreatedDyn(
           id: id,
           dynText: editController.rawText,
