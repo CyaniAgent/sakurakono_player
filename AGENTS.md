@@ -9,7 +9,7 @@
 
 ## Current Phase
 
-Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (14 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Current work: runtime hardening of the Core↔adapter bridge** — recent commits fixed 11 runtime type-mismatch crash sites via `lib/adapters/bilibili/utils/model_converters.dart` (SPES-014: `as dynamic` eliminated from adapter code), added explicit casts for `Pref.*.obs` dynamic extension dispatch, and fixed Accounts/Hive init ordering. Repository params fully typed (91 Object→String/int, 2026-08-09); 34 Pref getters typed (B站 enum getters moved to BiliPref); as-dynamic casts eliminated (2 features fixed via SelectionArea.onSelectionChanged, 2026-08-10). 6 B站-specific media ID types were moved out of `lib/core/models/` into the adapter, then deleted in the dead-surface cleanup (2026-08, zero consumers; only the `CoreMediaId` base class remains in core). Dead-surface cleanup (2026-08): `core/player/`, `core/plugin/`, adapter player factories/reporters, `bilibili/account/` + `bilibili/router/`, `player/media_ids.dart`, and 5 dead AppAdapter members all deleted; unified playback entry added (设置页「播放链接」).
+Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (14 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Riverpod migration in progress** — all `extends GetxController` eliminated from lib/; `CommonController` and `CommonDataController` now extend `ChangeNotifier`; all 79 `CommonListController` subclasses moved to `CommonListControllerRiverpod` (ChangeNotifier-based). Base classes live in `lib/pages/common/common_controller_riverpod.dart` (`CommonControllerRiverpod`, `CommonListControllerRiverpod`), with `ScrollOrRefreshMixin` re-exported from original `common_controller.dart`. Many `.obs` Rx patterns already converted to plain fields + notifyListeners (later, history, pgc, video_host, player, main, home, fav, download, common_intro domains). Remaining work: `.obs` cleanup in adapter pages, `Get.find`→`ref.read`, `Obx`→`ListenableBuilder`, remove `package:get`. Historical: SPES-014 fixed 11 runtime type-mismatch crash sites; Repository params fully typed (91 Object→String/int); 6 B站-specific media ID types moved out of core; dead-surface cleanup (2026-08) deleted `core/player/`, `core/plugin/`, adapter player factories/reporters, `bilibili/account/` + `bilibili/router/`, `player/media_ids.dart`, and 5 dead AppAdapter members; unified playback entry added (设置页「播放链接」).
 
 ## SDK & env
 
@@ -34,7 +34,7 @@ Structural work complete: Bilibili adapter fully separated (24/24 repositories),
 lib/
 ├── core/                      # Abstract interfaces (zero adapter dependency)
 │   ├── adapter/               # AppAdapter interface + AdapterRegistry
-│   ├── account/               # AccountProvider (GetxService) + AccountMixin
+│   ├── account/               # AccountProvider (ChangeNotifier) + AccountMixin
 │   ├── models/                # ~30 Core* type files (video, user, live, fav, msg, …)
 │   ├── repository/            # 24 repository interfaces (Video, User, Auth, Danmaku, …)
 │   ├── utils/                # pair, subtitle_utils, image_action_registry
@@ -57,7 +57,7 @@ lib/
 ├── ottohub_sdk_fix/           # Vendored ottohub_sdk_dart (pubspec path override)
 ├── common/                    # Shared widgets — 0 adapter imports (common⇄utils coupled)
 ├── utils/                     # Storage (hive_ce), path, platform, theme
-├── router/app_pages.dart      # GetX routes: uses AdapterRegistry.active.routes
+├── router/app_pages.dart      # Routes: uses AdapterRegistry.active.routes (GetX GetPage retained during migration)
 ├── scripts/                   # patch.ps1, build.ps1, 18 .patch files for Flutter SDK
 ├── grpc/bilibili/             # Standalone gRPC generated protobuf code (excluded from analysis)
 ├── build_config.dart         # version injection reader (skf.* via fromEnvironment)
@@ -72,10 +72,11 @@ lib/
   1. 删除 `lib/adapters/bilibili/bridge.dart` `registerRoutes()` 中对应 GetPage 行；
   2. 删除对应 `pages/<feature>/` 目录；
   3. 删除仅该功能使用的 repository 注册/依赖。
-- **Pages → Repository**: Bilibili pages use `Get.find<Repository>()` (not direct HTTP). OttoHub pages share the same UI but use Otto*Repository implementations.
+- **Pages → Repository**: Bilibili pages use `ref.read<Repository>()` (via Riverpod) or legacy `Get.find<Repository>()` (migration in progress). OttoHub pages share the same UI but use Otto*Repository implementations.
 - **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; repository params are typed String/int (no `as dynamic` — SPES-014).
 - **Unified playback entry (统一播放入口)**: 设置页「播放链接」(`lib/adapters/bilibili/pages/setting/play_input_dialog.dart`) → `classifyPlayInput` (`lib/adapters/bilibili/utils/play_input.dart`, pure function) → B站 URL/BV/av → `PiliScheme.routePushFromUrl`; OttoHub pure-numeric ID → `PageUtils.toVideoPage`. **Dynamic plugin loading is NOT feasible under Flutter AOT** (`Isolate.spawnUri` unsupported, `dart:mirrors` disabled, dart_eval runtime cost high — AppFlowy 2023 case); long-term vision = JS/LUA script engine (quickjs-class), NOT done this round.
-- **GetX** throughout: `GetMaterialApp`, `GetPage`, `Get.lazyPut`, `Get.put`, `Get.find`, `Get.toNamed()`.
+- **GetX (legacy, being removed)**: `GetMaterialApp`, `GetPage`, `Get.find` still present in adapter pages. Migration to Riverpod `ref.watch`/`ref.read` + `ListenableBuilder` is ongoing — ~980 GetX pattern matches remain (mostly `Get.find`, `Obx`, `.obs` in adapter pages). New controllers use `ChangeNotifier` + `notifyListeners`.
+- **Riverpod**: Base controller classes `CommonControllerRiverpod`, `CommonListControllerRiverpod` in `lib/pages/common/common_controller_riverpod.dart`. Controllers extend `ChangeNotifier`; widgets use `ListenableBuilder` or `Consumer`.
 - **LoadingState<T>** everywhere: sealed class with `Success`, `Error`, `Loading` variants.
 
 ## Adapter Status
@@ -92,7 +93,7 @@ lib/
 ```dart
 class NewAdapter implements AppAdapter {
   String get name => 'newadapter';
-  Future<void> registerDependencies() { /* Get.lazyPut<Repo>(Impl.new) */ }
+  Future<void> registerDependencies() { /* Get.lazyPut<Repo>(Impl.new) → pending ref migration */ }
   List<GetPage> get routes => BiliBridge.registerRoutes(); // reuse pages
 }
 ```
@@ -174,7 +175,7 @@ See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview
 - **`distribute_options.yaml`**: Output `dist/` for fastforge.
 - **`.omo/`**: Boulder state, work plans, session continuations. Not for code.
 - **gRPC exclusion**: `analysis_options.yaml` excludes `lib/grpc/bilibili/**`, `lib/adapters/bilibili/grpc/**`, and `lib/ottohub_sdk_fix/**`. Don't edit generated `.pb.dart` files.
-- **AccountProvider is a GetxService**: `lib/core/account/account_provider.dart` extends `GetxService`. All adapters must register an implementation.
+- **AccountProvider**: `lib/core/account/account_provider.dart` now extends `ChangeNotifier` (migrated from `GetxService`). All adapters must register an implementation.
 
 ## Platform quirks
 

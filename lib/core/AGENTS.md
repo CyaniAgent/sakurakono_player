@@ -17,7 +17,7 @@ Adapter-free abstract interfaces for the SKF player framework. Zero imports from
 - AppAdapter (adapter/app_adapter.dart): name, registerDependencies(), routes, processImageUrl(originalUrl, {quality}) — minimal surface; dead members (displayName/homePage/onInit/hasFeature) + AppFeature enum removed (dead-surface cleanup, 2026-08).
 - AdapterRegistry: register(), activate(name), active; both adapters registered upfront in main.dart, ADAPTER dart-define picks active.
 - LoadingState (result/loading_state.dart): sealed class, Loading / Success<T>(response) / Error(errMsg, {code}); every repo method returns Future<LoadingState<T>>; NOTE: imports flutter_smart_dialog (a UI package) for error toast — core is NOT purely UI-free.
-- AccountProvider (account/account_provider.dart): abstract, extends GetxService (per AGENTS.md rule all adapters must register one); RxString rxFace, RxBool rxIsLogin, restoreFromCache(), authHeaders, onAuthStateChanged. AccountMixin: on GetLifeCycleBase, subscribes onAuthStateChanged.
+- AccountProvider (account/account_provider.dart): abstract, extends ChangeNotifier (migrated from GetxService); plain fields for face/login state, restoreFromCache(), authHeaders, onAuthStateChanged. AccountMixin: subscribes onAuthStateChanged.
 - AppMeta (app_meta.dart): appName='SakuraKono', packageName='skf', buildConfigPrefix='skf', sourceCodeUrl — the rebranding file; BuildConfig (lib/build_config.dart, NOT in core) composes '${AppMeta.buildConfigPrefix}.code' etc. via fromEnvironment.
 
 ## CONVENTIONS

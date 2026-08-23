@@ -42,7 +42,12 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   final currentVersion =
       '${BuildConfig.versionName}+${BuildConfig.versionCode}';
-  RxString cacheSize = ''.obs;
+  String _cacheSize = '';
+  String get cacheSize => _cacheSize;
+  set cacheSize(String v) {
+    _cacheSize = v;
+    setState(() {});
+  }
 
   late int _pressCount = 0;
 
@@ -54,14 +59,13 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   void dispose() {
-    cacheSize.close();
     super.dispose();
   }
 
   void getCacheSize() {
     CacheManager.loadApplicationCache().then((res) {
       if (mounted) {
-        cacheSize.value = CacheManager.formatSize(res);
+        cacheSize = CacheManager.formatSize(res);
       }
     });
   }
@@ -205,7 +209,7 @@ Commit Hash: ${BuildConfig.commitHash}''',
           ),
           ListTile(
             onTap: () {
-              if (cacheSize.value.isNotEmpty) {
+              if (cacheSize.isNotEmpty) {
                 showConfirmDialog(
                   context: context,
                   title: const Text('提示'),
@@ -227,11 +231,9 @@ Commit Hash: ${BuildConfig.commitHash}''',
             },
             leading: const Icon(Icons.delete_outline),
             title: const Text('清除缓存'),
-            subtitle: Obx(
-              () => Text(
-                '图片及网络缓存 ${cacheSize.value}',
-                style: subTitleStyle,
-              ),
+            subtitle: Text(
+              '图片及网络缓存 $cacheSize',
+              style: subTitleStyle,
             ),
           ),
           ListTile(
