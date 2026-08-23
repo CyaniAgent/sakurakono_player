@@ -254,9 +254,10 @@ class _LiveRoomPageState extends State<LiveRoomPage>
       _liveRoomController.fsSC = null;
     }
     _liveRoomController.isFullScreen = isFullScreen;
-    Widget player = Obx(
+    Widget player = ListenableBuilder(
       key: playerKey,
-      () {
+      listenable: _liveRoomController,
+      builder: (context, _) {
         if (_liveRoomController.isLoaded && plPlayerController.isLive) {
           final roomInfoH5 = _liveRoomController.roomInfoH5;
           return PLVideoPlayer(
@@ -354,7 +355,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             left: padding.left + 25,
             bottom: 25,
             width: fullScreenSCWidth,
-            child: Obx(() {
+            child: ListenableBuilder(listenable: _liveRoomController, builder: (context, _) {
               final item = _liveRoomController.fsSC;
               if (item == null) {
                 return const SizedBox.shrink();
@@ -400,15 +401,16 @@ class _LiveRoomPageState extends State<LiveRoomPage>
   }
 
   Widget get childWhenDisabled {
-    return Obx(() {
+    return ListenableBuilder(listenable: plPlayerController, builder: (context, _) {
       final isFullScreen = this.isFullScreen || plPlayerController.isDesktopPip;
       return Stack(
         clipBehavior: Clip.none,
         children: [
           const SizedBox.expand(child: ColoredBox(color: Colors.black)),
           if (!isFullScreen)
-            Obx(
-              () {
+            ListenableBuilder(
+              listenable: _liveRoomController,
+              builder: (context, _) {
                 final appBackground = _liveRoomController
                     .roomInfoH5
                     ?.roomInfo
@@ -445,8 +447,9 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                 ? null
                 : _buildAppBar(isFullScreen),
             body: isPortrait
-                ? Obx(
-                    () {
+                ? ListenableBuilder(
+                    listenable: _liveRoomController,
+                    builder: (context, _) {
                       if (_liveRoomController.isPortrait) {
                         return _buildPP(isFullScreen);
                       }
@@ -533,7 +536,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
 
   Widget get onlineWidget => GestureDetector(
     onTap: _showRank,
-    child: Obx(() {
+    child: ListenableBuilder(listenable: _liveRoomController, builder: (context, _) {
       if (_liveRoomController.onlineCount case final onlineCount?) {
         return Text(
           '高能观众($onlineCount)',
@@ -577,8 +580,9 @@ class _LiveRoomPageState extends State<LiveRoomPage>
       titleTextStyle: const TextStyle(color: Colors.white),
       title: isFullScreen || plPlayerController.isDesktopPip
           ? null
-          : Obx(
-              () {
+          : ListenableBuilder(
+              listenable: _liveRoomController,
+              builder: (context, _) {
                 CoreRoomInfoH5Data? roomInfoH5 =
                     _liveRoomController.roomInfoH5;
                 if (roomInfoH5 == null) {
@@ -827,8 +831,9 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             child: Row(
               spacing: 6,
               children: [
-                Obx(
-                  () {
+                ListenableBuilder(
+                  listenable: plPlayerController,
+                  builder: (context, _) {
                     final enableShowLiveDanmaku =
                         plPlayerController.enableShowLiveDanmaku.value;
                     return SizedBox(
@@ -894,7 +899,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                           Positioned(
                             left: 30,
                             top: -12,
-                            child: Obx(() {
+                            child: ListenableBuilder(listenable: _liveRoomController, builder: (context, _) {
                               final likeClickTime =
                                   _liveRoomController.likeClickTime;
                               if (likeClickTime == 0) {
@@ -953,8 +958,9 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             left: 0,
             top: 0,
             right: 0,
-            child: Obx(
-              () => _BorderIndicator(
+            child: ListenableBuilder(
+              listenable: _liveRoomController,
+              builder: (context, _) => _BorderIndicator(
                 radius: const Radius.circular(20),
                 isLeft: _liveRoomController.pageIndex == 0,
               ),
@@ -1111,8 +1117,9 @@ class _LiveDanmakuState extends State<LiveDanmaku> {
   @override
   Widget build(BuildContext context) {
     final option = DanmakuOptions.get(notFullscreen: widget.notFullscreen);
-    return Obx(
-      () => AnimatedOpacity(
+    return ListenableBuilder(
+      listenable: plPlayerController,
+      builder: (context, _) => AnimatedOpacity(
         opacity: plPlayerController.enableShowLiveDanmaku.value
             ? plPlayerController.danmakuOpacity.value
             : 0,

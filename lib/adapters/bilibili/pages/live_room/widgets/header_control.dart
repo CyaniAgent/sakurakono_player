@@ -73,9 +73,10 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
     showCurrTimeIfNeeded(isFullScreen);
     final liveController = widget.liveController;
     Widget child;
-    child = Obx(
+    child = ListenableBuilder(
       key: titleKey,
-      () => MarqueeText(
+      listenable: liveController,
+      builder: (_, __) => MarqueeText(
         liveController.title,
         spacing: 30,
         velocity: 30,
@@ -135,8 +136,9 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           ...?timeBatteryWidgets,
           const SizedBox(width: 10),
           if (PlatformUtils.isDesktop && !plPlayerController.isDesktopPip)
-            Obx(() {
-              final isAlwaysOnTop = plPlayerController.isAlwaysOnTop;
+            ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (_, __) {
               return ComBtn(
                 height: 30,
                 tooltip: '${isAlwaysOnTop ? '取消' : ''}置顶',
@@ -184,8 +186,9 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
                 color: Colors.white,
               ),
             ),
-          Obx(
-            () => ComBtn(
+          ListenableBuilder(
+            listenable: plPlayerController,
+            builder: (_, __) => ComBtn(
               height: 30,
               tooltip: '仅播放音频',
               onTap: () {
@@ -206,8 +209,9 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
             ),
           ),
           if (PlatformUtils.isMobile)
-            Obx(() {
-              final continuePlayInBackground =
+            ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (_, __) {
                   plPlayerController.continuePlayInBackground;
               return ComBtn(
                 height: 30,

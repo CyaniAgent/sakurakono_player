@@ -197,17 +197,21 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
                 case final firstFloor?)
               _header(theme, firstFloor)
             else
-              Obx(() {
-                final firstFloor = _controller.firstFloor.value;
-                if (firstFloor == null) {
-                  return const SliverToBoxAdapter();
-                }
-                return _header(theme, firstFloor);
-              }),
+              ListenableBuilder(
+                listenable: _controller,
+                builder: (context, _) {
+                  final firstFloor = _controller.firstFloor.value;
+                  if (firstFloor == null) {
+                    return const SliverToBoxAdapter();
+                  }
+                  return _header(theme, firstFloor);
+                },
+              )
             _sortWidget(theme.colorScheme),
           ],
-          Obx(
-            () => _buildBody(theme.colorScheme, _controller.loadingState),
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) => _buildBody(theme.colorScheme, _controller.loadingState),
           ),
         ],
       ),
@@ -251,8 +255,9 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
         child: Row(
           mainAxisAlignment: .spaceBetween,
           children: [
-            Obx(
-              () {
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
                 final count = _controller.count.value;
                 return count != -1
                     ? Text(
@@ -266,8 +271,9 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
               style: Style.buttonStyle,
               onPressed: _controller.queryBySort,
               icon: Icon(Icons.sort, size: 16, color: colorScheme.secondary),
-              label: Obx(
-                () => Text(
+              label: ListenableBuilder(
+                listenable: _controller,
+                builder: (context, _) => Text(
                   _controller.sortType.value.text!,
                   style: TextStyle(fontSize: 13, color: colorScheme.secondary),
                 ),

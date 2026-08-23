@@ -11,7 +11,7 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+
 
 class BottomControl extends StatefulWidget {
   const BottomControl({
@@ -86,8 +86,9 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
             },
           ),
           const SizedBox(width: 3),
-          Obx(
-            () {
+          ListenableBuilder(
+            listenable: plPlayerController,
+            builder: (_, __) {
               final enableShowLiveDanmaku =
                   plPlayerController.enableShowLiveDanmaku.value;
               return ComBtn(
@@ -127,8 +128,9 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
             ),
             onTap: () => showSetDanmaku(isLive: true),
           ),
-          Obx(
-            () => PopupMenuButton<VideoFitType>(
+          ListenableBuilder(
+            listenable: plPlayerController,
+            builder: (_, __) => PopupMenuButton<VideoFitType>(
               tooltip: '画面比例',
               initialValue: plPlayerController.videoFit,
               color: Colors.black.withValues(alpha: 0.8),
@@ -160,8 +162,9 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
               ),
             ),
           ),
-          Obx(
-            () => PopupMenuButton<int>(
+          ListenableBuilder(
+            listenable: liveRoomCtr,
+            builder: (_, __) => PopupMenuButton<int>(
               tooltip: '画质',
               padding: EdgeInsets.zero,
               initialValue: liveRoomCtr.currentQn,

@@ -66,7 +66,7 @@ class _LivePageState extends State<LivePage>
               ),
               sliver: SliverMainAxisGroup(
                 slivers: [
-                  Obx(() => _buildTop(theme, controller.topState.value)),
+                  ListenableBuilder(listenable: controller, builder: (_, __) => _buildTop(theme, controller.topState.value)),
                   ListenableBuilder(listenable: controller, builder: (_, __) => _buildBody(theme, controller.loadingState)),
                 ],
               ),
@@ -92,7 +92,7 @@ class _LivePageState extends State<LivePage>
                       child: SizedBox(
                         // 10+14*textScaler
                         height: 10.0 + textScaler.scale(14),
-                        child: Obx(() {
+                          child: ListenableBuilder(listenable: controller, builder: (_, __) {
                           final areaIndex = controller.areaIndex.value;
                           return ListView.separated(
                             scrollDirection: .horizontal,
@@ -198,7 +198,7 @@ class _LivePageState extends State<LivePage>
                 child: SizedBox(
                   // 8+10+13*textScaler
                   height: 18.0 + textScaler.scale(13),
-                  child: Obx(() {
+                  child: ListenableBuilder(listenable: controller, builder: (_, __) {
                     final tagIndex = controller.tagIndex.value;
                     return ListView.separated(
                       scrollDirection: .horizontal,

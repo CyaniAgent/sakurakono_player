@@ -82,8 +82,9 @@ class _MainReplyPageState extends State<MainReplyPage>
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 buildReplyHeader(colorScheme),
-                Obx(
-                  () => _buildBody(colorScheme, _controller.loadingState),
+                ListenableBuilder(
+                  listenable: _controller,
+                  builder: (_, __) => _buildBody(colorScheme, _controller.loadingState),
                 ),
               ],
             ),
@@ -186,8 +187,9 @@ class _MainReplyPageState extends State<MainReplyPage>
         child: Row(
           mainAxisAlignment: .spaceBetween,
           children: [
-            Obx(
-              () {
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) {
                 final count = _controller.count.value;
                 return Text(
                   '${count == -1 ? 0 : NumUtils.numFormat(count)}条回复',
@@ -198,8 +200,9 @@ class _MainReplyPageState extends State<MainReplyPage>
               style: Style.buttonStyle,
               onPressed: _controller.queryBySort,
               icon: Icon(Icons.sort, size: 16, color: secondary),
-              label: Obx(
-                () => Text(
+              label: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => Text(
                   _controller.sortType.value.label,
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),

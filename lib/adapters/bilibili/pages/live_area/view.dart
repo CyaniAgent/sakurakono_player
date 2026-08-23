@@ -41,9 +41,9 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                   ),
-                  child: Obx(
-                    () => Text(_controller.isEditing.value ? '完成' : '编辑'),
-                  ),
+                child: ListenableBuilder(
+                  listenable: _controller,
+                  builder: (context, _) => Text(_controller.isEditing.value ? '完成' : '编辑'),
                 ),
                 const SizedBox(width: 16),
               ]
@@ -55,7 +55,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_controller.isLogin)
-              Obx(() => _buildFavWidget(theme, _controller.favState.value)),
+              ListenableBuilder(listenable: _controller, builder: (context, _) => _buildFavWidget(theme, _controller.favState.value)),
             Expanded(
               child: ListenableBuilder(
                 listenable: _controller,
@@ -269,7 +269,9 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
             Positioned(
               top: 0,
               right: 16,
-              child: Obx(() {
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
                 if (_controller.isEditing.value) {
                   if (_controller.favState.value case Success(
                     :final response,
@@ -296,7 +298,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                   }
                 }
                 return const SizedBox.shrink();
-              }),
+              },
             ),
         ],
       ),
@@ -343,24 +345,27 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
         Positioned(
           right: -4,
           top: -4,
-          child: Obx(() {
-            if (_controller.isEditing.value) {
-              final isDark = theme.brightness == Brightness.dark;
-              return iconButton(
-                size: 16,
-                iconSize: 12,
-                icon: const Icon(Icons.horizontal_rule),
-                bgColor: isDark
-                    ? theme.colorScheme.error
-                    : theme.colorScheme.errorContainer,
-                iconColor: isDark
-                    ? theme.colorScheme.onError
-                    : theme.colorScheme.onErrorContainer,
-                onPressed: onPressed,
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+          child: ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) {
+              if (_controller.isEditing.value) {
+                final isDark = theme.brightness == Brightness.dark;
+                return iconButton(
+                  size: 16,
+                  iconSize: 12,
+                  icon: const Icon(Icons.horizontal_rule),
+                  bgColor: isDark
+                      ? theme.colorScheme.error
+                      : theme.colorScheme.errorContainer,
+                  iconColor: isDark
+                      ? theme.colorScheme.onError
+                      : theme.colorScheme.onErrorContainer,
+                  onPressed: onPressed,
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ],
     );

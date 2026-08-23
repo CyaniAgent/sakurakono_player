@@ -388,8 +388,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       (isWindowMode && isFullScreen && !isPortrait);
 
   Widget get childWhenDisabled {
-    return Obx(
-      () {
+    return ListenableBuilder(
+      listenable: plPlayerController, builder: (context, _) {
         final isFullScreen = this.isFullScreen;
         return Scaffold(
           resizeToAvoidBottomInset: false,
@@ -397,8 +397,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
               ? null
               : PreferredSize(
                   preferredSize: const Size.fromHeight(0),
-                  child: Obx(
-                    () {
+                  child: ListenableBuilder(
+                    listenable: videoDetailController, builder: (context, _) {
                       final scrollRatio =
                           videoDetailController.scrollRatio.value;
                       return AppBar(
@@ -615,8 +615,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   }
 
   Widget _buildHeaderOverlay() {
-    return Obx(
-      () {
+    return ListenableBuilder(
+      listenable: videoDetailController, builder: (context, _) {
         final scrollRatio = videoDetailController.scrollRatio.value;
         if (scrollRatio == 0) {
           return const SizedBox.shrink();
@@ -655,8 +655,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     );
   }
 
-  Widget get childWhenDisabledLandscape => Obx(
-    () {
+  Widget get childWhenDisabledLandscape => ListenableBuilder(
+    listenable: plPlayerController, builder: (context, _) {
       final isFullScreen = this.isFullScreen;
       return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -726,7 +726,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
   Widget childWhenDisabledLandscapeInner(bool isFullScreen) {
     if (enableVerticalExpand) {
-      return Obx(() {
+      return ListenableBuilder(listenable: videoDetailController, builder: (context, _) {
         if (videoDetailController.isVertical.value && !isPortrait) {
           final double videoHeight = maxHeight - padding.vertical;
           final double width = videoHeight / Style.aspectRatio16x9;
@@ -891,7 +891,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     );
   }
 
-  Widget get childWhenDisabledAlmostSquare => Obx(() {
+  Widget get childWhenDisabledAlmostSquare => ListenableBuilder(listenable: plPlayerController, builder: (context, _) {
     final isFullScreen = this.isFullScreen;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -909,8 +909,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
   Widget childWhenDisabledAlmostSquareInner(bool isFullScreen) {
     if (enableVerticalExpand) {
-      return Obx(
-        () {
+      return ListenableBuilder(
+        listenable: videoDetailController, builder: (context, _) {
           if (videoDetailController.isVertical.value && !isPortrait) {
             return childSplit(9 / 16);
           }
@@ -984,7 +984,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     );
   }
 
-  Widget get manualPlayerWidget => Obx(() {
+  Widget get manualPlayerWidget => ListenableBuilder(listenable: videoDetailController, builder: (context, _) {
     if (!videoDetailController.autoPlay) {
       return Stack(
         clipBehavior: Clip.none,
@@ -1129,8 +1129,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         (videoDetailController.horizontalScreen || isPortrait),
     onPopInvokedWithResult:
         videoDetailController.plPlayerController.onPopInvokedWithResult,
-    child: Obx(
-      () =>
+    child: ListenableBuilder(
+      listenable: videoDetailController, builder: (context, _) =>
           !videoDetailController.videoState.value ||
               !videoDetailController.autoPlay ||
               plPlayerController.videoController == null
@@ -1248,9 +1248,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       },
       tabs: tabs.map((text) {
         if (text == '评论') {
-          return Obx(() {
-            return host.buildReplyTabLabel(heroTag: heroTag);
-          });
+          return host.buildReplyTabLabel(heroTag: heroTag);
         } else {
           return Tab(text: text);
         }
@@ -1302,8 +1300,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                     SizedBox(
                       width: 38,
                       height: 38,
-                      child: Obx(
-                        () {
+                      child: Builder(
+                        builder: (_) {
                           final enableShowDanmaku = host.playerHost.danmakuEnabled;
                           return IconButton(
                             onPressed: () => host.playerHost.toggleDanmakuEnabled(),
@@ -1340,15 +1338,15 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
         plPlayer(width: width, height: height),
 
-        Obx(() {
+        ListenableBuilder(listenable: videoDetailController, builder: (context, _) {
           if (!videoDetailController.autoPlay) {
             return Positioned.fill(
               bottom: -1,
               child: GestureDetector(
                 onTap: handlePlay,
                 behavior: .opaque,
-                child: Obx(
-                  () => NetworkImgLayer(
+                child:
+                  NetworkImgLayer(
                     type: .emote,
                     quality: 60,
                     src: videoDetailController.cover.value,
@@ -1359,7 +1357,6 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                       child: Image.asset(Assets.loading),
                     ),
                   ),
-                ),
               ),
             );
           }

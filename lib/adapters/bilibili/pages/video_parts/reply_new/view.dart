@@ -114,8 +114,9 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
   Widget? get customPanel => EmotePanel(onChoose: onChooseEmote);
 
   Widget buildImagePreview() {
-    return Obx(
-      () {
+    return ListenableBuilder(
+      listenable: imageList,
+      builder: (context, _) {
         if (imageList.isNotEmpty) {
           return SizedBox(
             height: 85,
@@ -149,14 +150,13 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
               updatePanelType(PanelType.keyboard);
             }
           },
-          child: Obx(
-            () => RichTextField(
+          child: RichTextField(
               key: key,
               controller: editController,
               minLines: 4,
               maxLines: 8,
               autofocus: false,
-              readOnly: readOnly.value,
+              readOnly: readOnly,
               onChanged: onChanged,
               onSubmitted: onSubmitted,
               focusNode: focusNode,
@@ -167,7 +167,6 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
               ),
               style: themeData.textTheme.bodyLarge,
             ),
-          ),
         ),
       ),
       Divider(
@@ -198,8 +197,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             const SizedBox(width: 8),
             moreBtn,
             const SizedBox(width: 8),
-            Obx(
-              () => ToolbarIconButton(
+            ToolbarIconButton(
                 tooltip: '转到动态',
                 onPressed: () => setState(() => _syncToDynamic = !_syncToDynamic),
                 icon: const Icon(
@@ -208,11 +206,9 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                 ),
                 selected: _syncToDynamic,
               ),
-            ),
             const Spacer(),
-            Obx(
-              () => FilledButton.tonal(
-                onPressed: enablePublish.value ? onPublishThrottle : null,
+            FilledButton.tonal(
+                onPressed: enablePublish ? onPublishThrottle : null,
                 style: FilledButton.styleFrom(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: const EdgeInsets.symmetric(
@@ -223,7 +219,6 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                 ),
                 child: const Text('发送'),
               ),
-            ),
           ],
         ),
       ),

@@ -79,8 +79,9 @@ class _BubblePageState extends State<BubblePage>
           Positioned(
             right: kFloatingActionButtonMargin,
             bottom: kFloatingActionButtonMargin + padding.bottom,
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) {
                 final sortInfo = _controller.sortInfo.value;
                 if (sortInfo == null || sortInfo.showSort != true) {
                   return const SizedBox.shrink();
@@ -134,7 +135,7 @@ class _BubblePageState extends State<BubblePage>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Obx(() {
+        title: ListenableBuilder(listenable: _controller, builder: (_, __) {
           final tribeName = _controller.tribeName.value;
           if (tribeName == null) {
             return const SizedBox.shrink();
@@ -144,7 +145,7 @@ class _BubblePageState extends State<BubblePage>
       ),
       body: Padding(
         padding: EdgeInsets.only(left: padding.left, right: padding.right),
-        child: Obx(() {
+        child: ListenableBuilder(listenable: _controller, builder: (_, __) {
           final tabs = _controller.tabs.value;
           if (tabs == null || tabs.isEmpty) {
             return child;

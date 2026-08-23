@@ -16,7 +16,6 @@ import 'package:canvas_danmaku/models/danmaku_content_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class SendDanmakuPanel extends CommonTextPubPage {
   // video
@@ -284,26 +283,24 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   }
 
   Widget _buildPositionItem(int mode, String title) {
-    return Obx(
-            () => Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _mode = mode),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: _mode == mode
-                  ? themeData.colorScheme.secondaryContainer
-                  : themeData.colorScheme.onInverseSurface,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(
-              title,
-              style: TextStyle(
-                color: _mode == mode
-                    ? themeData.colorScheme.onSecondaryContainer
-                    : themeData.colorScheme.outline,
-              ),
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _mode = mode),
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: _mode == mode
+                ? themeData.colorScheme.secondaryContainer
+                : themeData.colorScheme.onInverseSurface,
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: _mode == mode
+                  ? themeData.colorScheme.onSecondaryContainer
+                  : themeData.colorScheme.outline,
             ),
           ),
         ),
@@ -312,26 +309,24 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   }
 
   Widget _buildFontSizeItem(int fontSize, String title) {
-    return Obx(
-            () => Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _fontSize = fontSize),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: _fontSize == fontSize
-                  ? themeData.colorScheme.secondaryContainer
-                  : themeData.colorScheme.onInverseSurface,
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(
-              title,
-              style: TextStyle(
-                color: _fontSize == fontSize
-                    ? themeData.colorScheme.onSecondaryContainer
-                    : themeData.colorScheme.outline,
-              ),
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _fontSize = fontSize),
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: _fontSize == fontSize
+                ? themeData.colorScheme.secondaryContainer
+                : themeData.colorScheme.onInverseSurface,
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: _fontSize == fontSize
+                  ? themeData.colorScheme.onSecondaryContainer
+                  : themeData.colorScheme.outline,
             ),
           ),
         ),
@@ -344,23 +339,20 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
       padding: const EdgeInsets.only(left: 8, top: 2, right: 8),
       child: Row(
         children: [
-          Obx(
-            () {
-              final isEmoji = panelType.value == PanelType.emoji;
-              return iconButton(
-                tooltip: '弹幕样式',
-                onPressed: () {
-                  updatePanelType(
-                    isEmoji ? PanelType.keyboard : PanelType.emoji,
-                  );
-                },
-                iconSize: 24,
-                icon: const Icon(Icons.text_format),
-                iconColor: isEmoji
-                    ? themeData.colorScheme.primary
-                    : themeData.colorScheme.onSurfaceVariant,
+          iconButton(
+            tooltip: '弹幕样式',
+            onPressed: () {
+              updatePanelType(
+                panelType == PanelType.emoji
+                    ? PanelType.keyboard
+                    : PanelType.emoji,
               );
             },
+            iconSize: 24,
+            icon: const Icon(Icons.text_format),
+            iconColor: panelType == PanelType.emoji
+                ? themeData.colorScheme.primary
+                : themeData.colorScheme.onSurfaceVariant,
           ),
           const SizedBox(width: 12),
           Expanded(

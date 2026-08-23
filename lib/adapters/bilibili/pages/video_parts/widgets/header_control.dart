@@ -536,8 +536,9 @@ class HeaderControlState extends State<HeaderControl>
                   child: Row(
                     spacing: 10,
                     children: [
-                      Obx(
-                        () {
+                      ListenableBuilder(
+                        listenable: plPlayerController,
+                        builder: (context, _) {
                           final flipX = plPlayerController.flipX;
                           return ActionRowLineItem(
                             iconData: Icons.flip,
@@ -548,8 +549,9 @@ class HeaderControlState extends State<HeaderControl>
                           );
                         },
                       ),
-                      Obx(
-                        () {
+                      ListenableBuilder(
+                        listenable: plPlayerController,
+                        builder: (context, _) {
                           final flipY = plPlayerController.flipY;
                           return ActionRowLineItem(
                             icon: Icon(
@@ -572,8 +574,9 @@ class HeaderControlState extends State<HeaderControl>
                                   .isMp4) ||
                           (!isFileSource &&
                               videoDetailCtr.audioUrl?.isNotEmpty == true))
-                        Obx(
-                          () {
+                        ListenableBuilder(
+                          listenable: plPlayerController,
+                          builder: (context, _) {
                             final onlyPlayAudio =
                                 plPlayerController.onlyPlayAudio;
                             return ActionRowLineItem(
@@ -589,8 +592,9 @@ class HeaderControlState extends State<HeaderControl>
                           },
                         ),
                       if (PlatformUtils.isMobile)
-                        Obx(
-                          () => ActionRowLineItem(
+                        ListenableBuilder(
+                          listenable: plPlayerController,
+                          builder: (context, _) => ActionRowLineItem(
                             iconData: Icons.play_circle_outline,
                             onTap:
                                 plPlayerController.setContinuePlayInBackground,
@@ -1715,8 +1719,9 @@ class HeaderControlState extends State<HeaderControl>
         padding: isPortrait
             ? EdgeInsets.zero
             : const EdgeInsets.only(right: 10),
-        child: Obx(
-          () {
+        child: ListenableBuilder(
+          listenable: introController,
+          builder: (context, _) {
             final videoDetail = introController.videoDetail;
             final String title;
             if (isFileSource || videoDetail.videos == 1) {
@@ -1747,8 +1752,9 @@ class HeaderControlState extends State<HeaderControl>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             title,
-            Obx(
-              () => Text(
+            ListenableBuilder(
+              listenable: introController,
+              builder: (context, _) => Text(
                 '${introController.total}人正在看',
                 style: const TextStyle(
                   color: Colors.white,
@@ -1817,7 +1823,9 @@ class HeaderControlState extends State<HeaderControl>
               // show current datetime
               ...?timeBatteryWidgets,
               if (PlatformUtils.isDesktop && !plPlayerController.isDesktopPip)
-                Obx(() {
+                ListenableBuilder(
+                  listenable: plPlayerController,
+                  builder: (context, _) {
                   final isAlwaysOnTop = plPlayerController.isAlwaysOnTop;
                   return SizedBox(
                     width: btnWidth,
@@ -1888,8 +1896,9 @@ class HeaderControlState extends State<HeaderControl>
                       ),
                     ),
                   ),
-                Obx(
-                  () => videoDetailCtr.segmentProgressList.isNotEmpty
+                ListenableBuilder(
+                  listenable: videoDetailCtr,
+                  builder: (context, _) => videoDetailCtr.segmentProgressList.isNotEmpty
                       ? SizedBox(
                           width: btnWidth,
                           height: btnHeight,
@@ -1925,8 +1934,9 @@ class HeaderControlState extends State<HeaderControl>
                 SizedBox(
                   width: btnWidth,
                   height: btnHeight,
-                  child: Obx(
-                    () {
+                child: ListenableBuilder(
+                    listenable: plPlayerController,
+                    builder: (context, _) {
                       final enableShowDanmaku =
                           plPlayerController.enableShowDanmaku.value;
                       return IconButton(
@@ -2020,8 +2030,9 @@ class HeaderControlState extends State<HeaderControl>
                 SizedBox(
                   width: btnWidth,
                   height: btnHeight,
-                  child: Obx(
-                    () => ActionItem(
+                  child: ListenableBuilder(
+                    listenable: introController,
+                    builder: (context, _) => ActionItem(
                       expand: false,
                       icon: const Icon(
                         FontAwesomeIcons.thumbsUp,
@@ -2048,8 +2059,9 @@ class HeaderControlState extends State<HeaderControl>
                   SizedBox(
                     width: btnWidth,
                     height: btnHeight,
-                    child: Obx(
-                      () => ActionItem(
+                    child: ListenableBuilder(
+                      listenable: ugc,
+                      builder: (context, _) => ActionItem(
                         expand: false,
                         icon: const Icon(
                           FontAwesomeIcons.thumbsDown,
@@ -2067,8 +2079,9 @@ class HeaderControlState extends State<HeaderControl>
                 SizedBox(
                   width: btnWidth,
                   height: btnHeight,
-                  child: Obx(
-                    () => ActionItem(
+                  child: ListenableBuilder(
+                    listenable: introController,
+                    builder: (context, _) => ActionItem(
                       expand: false,
                       animation: introController.tripleAnimation,
                       icon: const Icon(
@@ -2085,8 +2098,9 @@ class HeaderControlState extends State<HeaderControl>
                 SizedBox(
                   width: btnWidth,
                   height: btnHeight,
-                  child: Obx(
-                    () => ActionItem(
+                  child: ListenableBuilder(
+                    listenable: introController,
+                    builder: (context, _) => ActionItem(
                       expand: false,
                       animation: introController.tripleAnimation,
                       icon: const Icon(

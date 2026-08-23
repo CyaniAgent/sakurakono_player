@@ -15,7 +15,7 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+
 
 class LiveRoomChatPanel extends StatelessWidget {
   const LiveRoomChatPanel({
@@ -48,8 +48,9 @@ class LiveRoomChatPanel extends StatelessWidget {
         : colorScheme.inversePrimary;
     return Stack(
       children: [
-        Obx(
-          () => ListView.separated(
+        ListenableBuilder(
+          listenable: liveRoomController,
+          builder: (_, __) => ListView.separated(
             key: const PageStorageKey(LiveRoomChatPanel),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             controller: liveRoomController.scrollController,
@@ -193,7 +194,7 @@ class LiveRoomChatPanel extends StatelessWidget {
           Positioned(
             top: 12,
             right: 12,
-            child: Obx(() {
+            child: ListenableBuilder(listenable: liveRoomController, builder: (_, __) {
               final isEmpty = liveRoomController.superChatMsg.isEmpty;
               return AnimatedOpacity(
                 opacity: isEmpty ? 0 : 1,
@@ -238,8 +239,9 @@ class LiveRoomChatPanel extends StatelessWidget {
               );
             }),
           ),
-        Obx(
-          () => liveRoomController.disableAutoScroll
+        ListenableBuilder(
+          listenable: liveRoomController,
+          builder: (_, __) => liveRoomController.disableAutoScroll
               ? Positioned(
                   right: 12,
                   bottom: 0,

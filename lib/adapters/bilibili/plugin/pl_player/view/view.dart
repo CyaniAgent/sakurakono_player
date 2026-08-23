@@ -596,8 +596,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         ),
       ),
 
-      BottomControlType.qa => Obx(
-        () {
+      BottomControlType.qa => ListenableBuilder(
+        listenable: videoDetailController,
+        builder: (context, _) {
           final VideoQuality? currentVideoQa =
               videoDetailController.currentVideoQa.value;
           if (currentVideoQa == null) {
@@ -942,7 +943,7 @@ class _BiliDmTapInteraction implements PlayerDmTapInteraction {
 
   @override
   Widget buildOverlay(BuildContext context) {
-    return Obx(() {
+    return ListenableBuilder(listenable: _plPlayerController, builder: (context, _) {
       if (!_plPlayerController.enableShowDanmaku.value) {
         return const SizedBox.shrink();
       }
