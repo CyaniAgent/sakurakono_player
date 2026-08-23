@@ -53,7 +53,7 @@ class MemberOpusController
 
   @override
   Future<LoadingState<CoreOpusSpaceFlowResp>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceOpus(
+    final result = await (_ref!.read(memberRepositoryProvider)).spaceOpus(
       hostMid: mid,
       page: page,
       offset: offset,

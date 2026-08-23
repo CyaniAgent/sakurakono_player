@@ -32,7 +32,7 @@ class WhisperBlockController
 
   @override
   Future<LoadingState<CoreImKeywordBlockingListReply>> customGetData() async {
-          final result = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingList();
+          final result = await (_ref!.read(imRepositoryProvider)).keywordBlockingList();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -41,7 +41,7 @@ class WhisperBlockController
   }
 
   Future<void> onAdd(String keyword) async {
-    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingAdd(keyword);
+    final res = await (_ref!.read(imRepositoryProvider)).keywordBlockingAdd(keyword);
     if (res.isSuccess) {
       Get.back();
       loadingState.data!.add(CoreImKeywordBlockingItem(keyword: keyword, id: 0));
@@ -54,7 +54,7 @@ class WhisperBlockController
   }
 
   Future<void> onRemove(CoreImKeywordBlockingItem item) async {
-    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).keywordBlockingDelete(item.keyword);
+    final res = await (_ref!.read(imRepositoryProvider)).keywordBlockingDelete(item.keyword);
     if (res.isSuccess) {
       loadingState.data!.remove(item);
       notifyListeners();

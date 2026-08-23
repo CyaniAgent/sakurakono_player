@@ -29,7 +29,7 @@ class ArticleListController
 
   @override
   Future<LoadingState<CoreArticleListData>> customGetData() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).articleList(id: id);
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).articleList(id: id);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

@@ -2,7 +2,6 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -35,7 +34,7 @@ class UpowerRankController
 
   @override
   Future<LoadingState<CoreUpowerRankData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).upowerRank(
+    final result = await (_ref!.read(memberRepositoryProvider)).upowerRank(
       upMid: int.tryParse(upMid) ?? 0,
       page: page,
       privilegeType: privilegeType,

@@ -1,7 +1,6 @@
 
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/core/repository/repository_providers.dart';
@@ -9,7 +8,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 class FollowedController extends FollowTypeController {
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
-    final result = await (repoRef?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).followedUp(mid: mid, pn: page);
+    final result = await (repoRef!.read(userRepositoryProvider)).followedUp(mid: mid, pn: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

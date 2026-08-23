@@ -1,6 +1,5 @@
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
@@ -34,8 +33,8 @@ class FavNoteController
   @override
   Future<LoadingState<List<CoreFavNoteItemModel>?>> customGetData() async {
     final result = isPublish
-        ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userNoteList(page: page)
-        : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).noteList(page: page);
+        ? await (_ref!.read(favRepositoryProvider)).userNoteList(page: page)
+        : await (_ref!.read(favRepositoryProvider)).noteList(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -46,7 +45,7 @@ class FavNoteController
   @override
   Future<void> onRemove() async {
     final removeList = allChecked.toSet();
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delNote(
+    final res = await (_ref!.read(favRepositoryProvider)).delNote(
       isPublish: isPublish,
       noteIds: removeList
           .map((item) => isPublish ? item.cvid : item.noteId)

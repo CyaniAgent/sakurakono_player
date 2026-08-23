@@ -4,7 +4,6 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 
 class MemberArticleCtr
     extends CommonListControllerRiverpod<CoreSpaceArticleData, CoreSpaceArticleItem> {
@@ -36,7 +35,7 @@ class MemberArticleCtr
 
   @override
   Future<LoadingState<CoreSpaceArticleData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArticle(mid: mid, page: page);
+    final result = await (_ref!.read(memberRepositoryProvider)).spaceArticle(mid: mid, page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

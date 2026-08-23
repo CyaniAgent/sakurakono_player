@@ -5,7 +5,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
-import 'package:get/get.dart';
 
 class FollowSearchController
     extends CommonSearchController<CoreFollowData, CoreFollowItemModel> {
@@ -16,7 +15,7 @@ class FollowSearchController
 
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).getfollowSearch(
+    final result = await (_ref!.read(memberRepositoryProvider)).getfollowSearch(
         mid: mid,
         ps: 20,
         pn: page,

@@ -5,7 +5,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -18,7 +17,7 @@ abstract class CommonWhisperController<R>
   CoreImSessionPageType get sessionPageType;
 
   Future<void> onRemove(int index, int talkerId) async {
-    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).removeMsg(talkerId);
+    final res = await (_ref!.read(msgRepositoryProvider)).removeMsg(talkerId);
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();
@@ -35,8 +34,8 @@ abstract class CommonWhisperController<R>
     CoreImSessionId sessionId,
   ) async {
     final res = isTop
-        ? await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).unpinSession(sessionId: sessionId)
-        : await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).pinSession(sessionId: sessionId);
+        ? await (_ref!.read(imRepositoryProvider)).unpinSession(sessionId: sessionId)
+        : await (_ref!.read(imRepositoryProvider)).pinSession(sessionId: sessionId);
 
     if (res.isSuccess) {
       List<Session> list = loadingState.data!;
@@ -52,7 +51,7 @@ abstract class CommonWhisperController<R>
   }
 
   Future<void> onSetMute(Session item, bool isMuted, int talkerUid) async {
-    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).setMsgDnd(
+    final res = await (_ref!.read(msgRepositoryProvider)).setMsgDnd(
       uid: Accounts.main.mid,
       setting: isMuted ? 0 : 1,
       dndUid: talkerUid,
@@ -67,7 +66,7 @@ abstract class CommonWhisperController<R>
   }
 
   Future<void> onClearUnread() async {
-    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).clearUnread(pageType: sessionPageType);
+    final res = await (_ref!.read(imRepositoryProvider)).clearUnread(pageType: sessionPageType);
     if (res.isSuccess) {
       if (loadingState case Success(:final response)) {
         if (response != null && response.isNotEmpty) {
@@ -86,7 +85,7 @@ abstract class CommonWhisperController<R>
   }
 
   Future<void> onDeleteList() async {
-    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).deleteSessionList(pageType: sessionPageType);
+    final res = await (_ref!.read(imRepositoryProvider)).deleteSessionList(pageType: sessionPageType);
     if (res.isSuccess) {
       loadingState = const Success(null);
     } else {

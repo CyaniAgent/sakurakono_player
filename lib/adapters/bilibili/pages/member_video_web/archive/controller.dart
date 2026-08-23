@@ -2,7 +2,6 @@ import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -49,7 +48,7 @@ class MemberVideoWebCtr
 
   @override
   Future<LoadingState<CoreSearchArchiveData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).searchArchive(
+    final result = await (_ref!.read(memberRepositoryProvider)).searchArchive(
       mid: mid,
       ps: ps,
       pn: page,

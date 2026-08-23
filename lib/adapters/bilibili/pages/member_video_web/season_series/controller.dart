@@ -43,7 +43,7 @@ class MemberSSWebCtr
 
   @override
   Future<LoadingState<CoreSeasonWebData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).seasonSeriesWeb(
+    final result = await (_ref!.read(memberRepositoryProvider)).seasonSeriesWeb(
       type: _type,
       mid: mid,
       id: _id.toString(),

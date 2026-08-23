@@ -30,7 +30,7 @@ class LaterSearchController
 
   @override
   Future<LoadingState<CoreLaterData>> customGetData() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).seeYouLater(
+    final result = await (_ref!.read(userRepositoryProvider)).seeYouLater(
     page: page,
     keyword: editController.value.text,
   );

@@ -194,7 +194,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
 
   @override
   Future<LoadingState<CoreSpaceData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).space(
+    final result = await (_ref!.read(memberRepositoryProvider)).space(
       mid: mid,
       fromViewAid: fromViewAid,
     );
@@ -241,7 +241,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
 
   Future<void> _onBlock() async {
     final isBlocked = relation == 128;
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
+    final res = await (_ref!.read(videoRepositoryProvider)).relationMod(
       mid: mid,
       act: isBlocked ? 6 : 5,
       reSrc: 11,
@@ -280,7 +280,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   }
 
   Future<void> onRemoveFan() async {
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(mid: mid, act: 7, reSrc: 11);
+    final res = await (_ref!.read(videoRepositoryProvider)).relationMod(mid: mid, act: 7, reSrc: 11);
     if (res.isSuccess) {
       isFollowed = null;
       if (relation == 4) {
@@ -299,7 +299,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   }
 
   Future<void> vipExpAdd() async {
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).vipExpAdd();
+    final res = await (_ref!.read(userRepositoryProvider)).vipExpAdd();
     if (res.isSuccess) {
       SmartDialog.showToast('领取成功');
     } else {

@@ -86,7 +86,7 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
   }
 
   Future<void> queryUserInfo() async {
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userInfo();
+    final res = await (_ref!.read(userRepositoryProvider)).userInfo();
     if (res case Success(:final response)) {
       if (response.isLogin == true) {
         userInfo = response;
@@ -114,7 +114,7 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
   void _onLogoutMain() => MineActions.of().logout();
 
   Future<void> queryUserStatOwner() async {
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userStatOwner();
+    final res = await (_ref!.read(userRepositoryProvider)).userStatOwner();
     if (res case Success(:final response)) {
       userStat = response;
     }
@@ -129,7 +129,7 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
 
   @override
   Future<LoadingState<CoreFavFolderData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userfavFolder(
+    final result = await (_ref!.read(favRepositoryProvider)).userfavFolder(
       pn: 1,
       ps: 20,
       mid: accountService.userId,

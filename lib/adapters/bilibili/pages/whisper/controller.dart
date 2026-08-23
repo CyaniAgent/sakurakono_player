@@ -12,7 +12,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
@@ -65,7 +64,7 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
   }
 
   Future<void> queryMsgFeedUnread() async {
-    final res = await (_ref?.read(imRepositoryProvider) ?? Get.find<ImRepository>()).getTotalUnread(unreadType: 2);
+    final res = await (_ref!.read(imRepositoryProvider)).getTotalUnread(unreadType: 2);
     if (res case Success(:final response)) {
       final unreadMap = response.msgFeedUnread;
       final data = CoreMsgFeedUnreadData(

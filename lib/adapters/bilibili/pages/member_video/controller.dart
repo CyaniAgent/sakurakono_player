@@ -110,7 +110,7 @@ class MemberVideoCtr
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArchive(
+    final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
       type: type,
       mid: mid,
       aid: isVideo
@@ -161,7 +161,7 @@ class MemberVideoCtr
       String? oid = params['oid'];
       if (oid != null) {
         final bvid = IdUtils.av2bv(int.parse(oid));
-        final res = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).ab2cWithDimension(aid: int.tryParse(oid), bvid: bvid);
+        final res = await (_ref!.read(searchRepositoryProvider)).ab2cWithDimension(aid: int.tryParse(oid), bvid: bvid);
         final cid = res?.cid;
         if (cid != null) {
           PageUtils.toVideoPage(

@@ -4,7 +4,6 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
@@ -38,7 +37,7 @@ class ContributionRankController
 
   @override
   Future<LoadingState<CoreLiveContributionRankData>> customGetData() async {
-    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveContributionRank(
+    final result = await (_ref!.read(liveRepositoryProvider)).liveContributionRank(
         ruid: ruid,
         roomId: roomId,
         page: page,

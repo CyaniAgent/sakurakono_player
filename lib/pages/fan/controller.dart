@@ -17,7 +17,7 @@ class FansController extends FollowTypeController {
   @override
   void init() {
     final Map? args = AppNavigator.arguments;
-    final ownerMid = repoRef?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId ?? 0;
+    final ownerMid = repoRef!.read(accountProvider).userId ?? 0;
     final int? mid = args?['mid'];
     this.mid = mid ?? ownerMid;
     isOwner = ownerMid == this.mid;
@@ -33,7 +33,7 @@ class FansController extends FollowTypeController {
 
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
-    final result = await (repoRef?.read(fanRepositoryProvider) ?? Get.find<FanRepository>()).fans(
+    final result = await (repoRef!.read(fanRepositoryProvider)).fans(
       vmid: mid,
       pn: page,
       orderType: 'attention',
@@ -46,7 +46,7 @@ class FansController extends FollowTypeController {
   }
 
   Future<void> onRemoveFan(int index, int mid) async {
-    final res = await (repoRef?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(
+    final res = await (repoRef!.read(videoRepositoryProvider)).relationMod(
       mid: mid,
       act: 7,
       reSrc: 11,

@@ -41,7 +41,7 @@ class FavController
 
   @override
   Future<LoadingState<CoreFavFolderData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userfavFolder(
+    final result = await (_ref!.read(favRepositoryProvider)).userfavFolder(
     pn: page,
     ps: 20,
     mid: mid,

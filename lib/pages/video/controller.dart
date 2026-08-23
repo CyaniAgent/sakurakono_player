@@ -376,7 +376,7 @@ class VideoDetailController extends ChangeNotifier {
     if (!isReverse && count != null && mediaList.length >= count) {
       return;
     }
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).getMediaList(
+    final res = await (_ref!.read(userRepositoryProvider)).getMediaList(
       type: VideoHost.of().sourceMediaType(args['sourceType']),
       bizId: (args['mediaId'] ?? -1).toString(),
       ps: 20,
@@ -637,7 +637,7 @@ class VideoDetailController extends ChangeNotifier {
             : Pref.defaultAudioQaCellular;
     }
 
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).videoUrl(
+    final result = await (_ref!.read(videoRepositoryProvider)).videoUrl(
       cid: cid,
       bvid: bvid,
       epid: epId?.toString(),
@@ -768,7 +768,7 @@ class VideoDetailController extends ChangeNotifier {
     if (subtitle != null) {
       await setSub(subtitle);
     } else {
-      final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).vttSubtitles(
+      final result = await (_ref!.read(videoRepositoryProvider)).vttSubtitles(
         subtitles[index - 1].subtitleUrl!,
       );
       if (!isClosed && result != null) {
@@ -801,7 +801,7 @@ class VideoDetailController extends ChangeNotifier {
     if (plPlayerController.showViewPoints) {
       viewPointList.clear();
     }
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).playInfo(
+    final res = await (_ref!.read(videoRepositoryProvider)).playInfo(
       bvid: bvid,
       cid: cid,
       seasonId: seasonId?.toString(),
@@ -886,7 +886,7 @@ class VideoDetailController extends ChangeNotifier {
   void updateMediaListHistory(int aid) {
     if (args['sortField'] != null) {
       final mediaId = args['mediaId'];
-      (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).medialistHistory(
+      (_ref!.read(videoRepositoryProvider)).medialistHistory(
         desc: _mediaDesc ? 1 : 0,
         oid: '$aid',
         upperMid: mediaId is int ? mediaId : int.parse('$mediaId'),
@@ -1091,7 +1091,7 @@ class VideoDetailController extends ChangeNotifier {
   @pragma('vm:notify-debugger-on-exception')
   Future<void> onCast() async {
     SmartDialog.showLoading();
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).tvPlayUrl(
+    final res = await (_ref!.read(videoRepositoryProvider)).tvPlayUrl(
       cid: cid,
       objectId: epId ?? aid,
       playurlType: epId != null ? 2 : 1,

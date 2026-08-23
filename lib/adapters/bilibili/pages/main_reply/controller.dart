@@ -27,7 +27,7 @@ class MainReplyController extends ReplyController<CoreMainListReply> {
 
   @override
   Future<LoadingState<CoreMainListReply>> customGetData() async {
-    final result = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).mainList(
+    final result = await (_ref!.read(replyRepositoryProvider)).mainList(
       type: replyType,
       oid: oid,
       mode: mode,

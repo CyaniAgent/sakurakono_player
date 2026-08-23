@@ -4,7 +4,6 @@ import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 
 class PopularPreciousController
     extends CommonListControllerRiverpod<CorePopularPreciousData, CoreHotVideoItemModel> {
@@ -24,7 +23,7 @@ class PopularPreciousController
 
   @override
   Future<LoadingState<CorePopularPreciousData>> customGetData() async {
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).popularPrecious(page: page);
+    final result = await (_ref!.read(videoRepositoryProvider)).popularPrecious(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

@@ -39,7 +39,7 @@ class VideoReplyController extends ReplyController<CoreMainListReply>
 
   @override
   Future<LoadingState<CoreMainListReply>> customGetData() async {
-    final result = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).mainList(
+    final result = await (_ref!.read(replyRepositoryProvider)).mainList(
       oid: isPugv ? videoCtr.epId! : aid,
       type: videoType.replyType,
       mode: mode,

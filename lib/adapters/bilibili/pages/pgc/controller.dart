@@ -68,8 +68,8 @@ class PgcController
 
   Future<void> queryPgcTimeline() async {
     final res = await Future.wait([
-(_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcTimeline(types: 1, before: 6, after: 6),
-  (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcTimeline(types: 4, before: 6, after: 6),
+(_ref!.read(pgcRepositoryProvider)).pgcTimeline(types: 1, before: 6, after: 6),
+  (_ref!.read(pgcRepositoryProvider)).pgcTimeline(types: 4, before: 6, after: 6),
     ]);
     final list1 = res.first.dataOrNull;
     final list2 = res[1].dataOrNull;
@@ -92,7 +92,7 @@ class PgcController
       return;
     }
     followLoading = true;
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favPgc(
+    final res = await (_ref!.read(favRepositoryProvider)).favPgc(
       type: tabType == HomeTabType.bangumi ? 1 : 2,
       pn: followPage,
     );
@@ -135,7 +135,7 @@ class PgcController
 
   @override
   Future<LoadingState<List<CorePgcIndexItem>?>> customGetData() async {
-    final result = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcIndex(
+    final result = await (_ref!.read(pgcRepositoryProvider)).pgcIndex(
       page: page,
       indexType: indexType,
     );

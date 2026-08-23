@@ -89,7 +89,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<bool> queryOpus(String opusId) async {
-    final res = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).opusDetail(opusId: opusId);
+    final res = await (_ref!.read(dynamicsRepositoryProvider)).opusDetail(opusId: opusId);
     if (res case Success(:final response)) {
       //fallback
       if (response.fallback?.id != null) {
@@ -128,7 +128,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<bool> queryRead(int cvid) async {
-    final res = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).articleView(cvId: cvid.toString());
+    final res = await (_ref!.read(dynamicsRepositoryProvider)).articleView(cvId: cvid.toString());
     if (res case Success(:final response)) {
       articleData = response;
       summary
@@ -151,7 +151,7 @@ class ArticleController extends CommonDynController {
 
   // stats
   Future<bool> getArticleInfo([bool isGetCover = false]) async {
-    final res = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).articleInfo(cvId: commentId.toString());
+    final res = await (_ref!.read(dynamicsRepositoryProvider)).articleInfo(cvId: commentId.toString());
     if (res case Success(:final response)) {
       summary
         ..cover ??= response.originImageUrls?.firstOrNull
@@ -189,7 +189,7 @@ class ArticleController extends CommonDynController {
     if (isLoaded)
       queryData();
       if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
-        (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).historyReport(aid: commentId.toString(), type: 5);
+        (_ref!.read(videoRepositoryProvider)).historyReport(aid: commentId.toString(), type: 5);
       }
     }
   }
@@ -197,7 +197,7 @@ class ArticleController extends CommonDynController {
   Future<void> onFav() async {
     final favorite = stats.value?.favorite;
     bool isFav = favorite?.status == true;
-    final repos = _ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>();
+    final repos = _ref!.read(favRepositoryProvider);
     final res = type == 'read'
         ? isFav
           ? await repos.delFavArticle(id: commentId.toString())
@@ -220,7 +220,7 @@ class ArticleController extends CommonDynController {
   Future<void> onLike() async {
     final like = stats.value?.like;
     bool isLike = like?.status == true;
-    final res = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).thumbDynamic(
+    final res = await (_ref!.read(dynamicsRepositoryProvider)).thumbDynamic(
       dynamicId: opusData?.idStr ?? articleData?.dynIdStr,
       up: isLike ? 2 : 1,
     );

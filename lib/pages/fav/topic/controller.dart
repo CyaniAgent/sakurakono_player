@@ -1,6 +1,5 @@
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
@@ -42,7 +41,7 @@ class FavTopicController
 
   @override
   Future<LoadingState<CoreFavTopicData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favTopic(page: page);
+    final result = await (_ref!.read(favRepositoryProvider)).favTopic(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -51,7 +50,7 @@ class FavTopicController
   }
 
   Future<void> onDeleteTopic(int index, dynamic id) async {
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavTopic(id);
+    final res = await (_ref!.read(favRepositoryProvider)).delFavTopic(id);
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();

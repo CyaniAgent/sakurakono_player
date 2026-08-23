@@ -4,7 +4,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/search_repository.dart';
-import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
@@ -46,7 +45,7 @@ class SearchAllController
     // searchAll returns CoreSearchAllData, but the controller still uses
     // the adapter type SearchAllData. Both share the same shape (numResults, list),
     // making the cast safe.
-    final result = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).searchAll(
+    final result = await (_ref!.read(searchRepositoryProvider)).searchAll(
       keyword: keyword,
       page: page,
       order: order,

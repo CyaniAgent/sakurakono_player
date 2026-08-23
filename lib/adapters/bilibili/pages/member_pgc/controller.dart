@@ -46,7 +46,7 @@ class MemberBangumiCtr
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArchive(
+    final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
       type: CoreContributeType.bangumi,
       mid: mid,
       pn: page,

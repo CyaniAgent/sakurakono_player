@@ -20,7 +20,7 @@ class RelatedController
 
   @override
   Future<LoadingState<List<CoreHotVideoItemModel>?>> customGetData() async {
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relatedVideoList(bvid: bvid);
+    final result = await (_ref!.read(videoRepositoryProvider)).relatedVideoList(bvid: bvid);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

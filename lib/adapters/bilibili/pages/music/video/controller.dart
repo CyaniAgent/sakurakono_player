@@ -29,7 +29,7 @@ class MusicRecommendController
 
   @override
   Future<LoadingState<List<CoreBgmRecommend>?>> customGetData() async {
-    final result = await (_ref?.read(musicRepositoryProvider) ?? Get.find<MusicRepository>()).bgmRecommend(musicId);
+    final result = await (_ref!.read(musicRepositoryProvider)).bgmRecommend(musicId);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

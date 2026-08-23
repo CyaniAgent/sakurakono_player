@@ -4,7 +4,6 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/pages/log_table/controller.dart';
-import 'package:get/get.dart';
 
 class ExpLogController extends LogController<CoreCoinLogData, CoreCoinLogItem> {
   Ref? _ref;
@@ -16,7 +15,7 @@ class ExpLogController extends LogController<CoreCoinLogData, CoreCoinLogItem> {
 
   @override
   Future<LoadingState<CoreCoinLogData>> customGetData() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).expLog();
+    final result = await (_ref!.read(userRepositoryProvider)).expLog();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

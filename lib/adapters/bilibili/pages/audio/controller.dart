@@ -423,7 +423,7 @@ class AudioController extends ChangeNotifier
       return;
     }
     final newVal = !hasLike;
-    final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioThumbUp(
+    final res = await (_ref!.read(audioRepositoryProvider)).audioThumbUp(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -451,7 +451,7 @@ class AudioController extends ChangeNotifier
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioTripleLike(
+    final res = await (_ref!.read(audioRepositoryProvider)).audioTripleLike(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -484,7 +484,7 @@ class AudioController extends ChangeNotifier
 
   @override
   Future<void> onPayCoin(int coin, bool coinWithLike) async {
-    final res = await (_ref?.read(audioRepositoryProvider) ?? Get.find<AudioRepository>()).audioCoinAdd(
+    final res = await (_ref!.read(audioRepositoryProvider)).audioCoinAdd(
       oid: oid,
       subId: subId,
       itemType: itemType,

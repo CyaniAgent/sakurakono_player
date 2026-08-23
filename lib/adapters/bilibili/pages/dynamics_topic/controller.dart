@@ -39,7 +39,7 @@ class DynTopicController
   }
 
   Future<void> queryTop() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicTop(topicId: topicId);
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).topicTop(topicId: topicId);
     topState = switch (result) {
       Loading _ => LoadingState<CoreTopDetails?>.loading(),
       Success(:final response) => Success(response),
@@ -89,7 +89,7 @@ class DynTopicController
 
   @override
   Future<LoadingState<CoreTopicCardList?>> customGetData() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicFeed(
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).topicFeed(
       topicId: topicId,
       offset: offset,
       sortBy: sortBy,
@@ -113,8 +113,8 @@ class DynTopicController
     }
     final isFav = this.isFav;
     final res = isFav
-        ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavTopic(topicId)
-        : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).addFavTopic(topicId);
+        ? await (_ref!.read(favRepositoryProvider)).delFavTopic(topicId)
+        : await (_ref!.read(favRepositoryProvider)).addFavTopic(topicId);
     if (res.isSuccess) {
       if (isFav) {
         topState.data!.topicItem!.fav -= 1;
@@ -134,7 +134,7 @@ class DynTopicController
       return;
     }
     final isLike = this.isLike;
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).likeTopic(topicId, isLike);
+    final res = await (_ref!.read(favRepositoryProvider)).likeTopic(topicId, isLike);
     if (res.isSuccess) {
       if (isLike) {
         topState.data!.topicItem!.like -= 1;
@@ -149,7 +149,7 @@ class DynTopicController
   }
 
   Future<void> topicFold() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicFold(topicId: topicId, sortBy: sortBy);
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).topicFold(topicId: topicId, sortBy: sortBy);
     if (result case Success(:final response)) {
       if (response?.items case final items? when items.isNotEmpty) {
         loadingState.data!

@@ -25,7 +25,7 @@ class MatchInfoController extends CommonDynController {
   }
 
   Future<void> getMatchInfo() async {
-    final res = await (_ref?.read(matchRepositoryProvider) ?? Get.find<MatchRepository>()).matchInfo(oid);
+    final res = await (_ref!.read(matchRepositoryProvider)).matchInfo(oid);
     if (res.isSuccess) {
       queryData();
     }

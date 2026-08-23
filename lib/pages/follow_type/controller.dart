@@ -4,7 +4,6 @@ import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -26,7 +25,7 @@ abstract class FollowTypeController
 
 
   void init() {
-    final ownerMid = repoRef?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId ?? 0;
+    final ownerMid = repoRef!.read(accountProvider).userId ?? 0;
     final Map? args = AppNavigator.arguments;
     mid = args?['mid'] ?? ownerMid;
     final String? name = args?['name'];
@@ -38,7 +37,7 @@ abstract class FollowTypeController
   }
 
   Future<void> queryUserName() async {
-    final res = await (repoRef?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberCardInfo(mid: mid);
+    final res = await (repoRef!.read(memberRepositoryProvider)).memberCardInfo(mid: mid);
     name = res.dataOrNull?.card?.name;
   }
 

@@ -40,7 +40,7 @@ class DynReactController
 
   @override
   Future<LoadingState<CoreDynReactionData>> customGetData() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynReaction(id: id, offset: _offset);
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).dynReaction(id: id, offset: _offset);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

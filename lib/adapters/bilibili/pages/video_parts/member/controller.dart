@@ -1,7 +1,6 @@
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -31,7 +30,7 @@ class HorizontalMemberPageController
 
 
   Future<void> getUserInfo() async {
-    final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberInfo(mid: mid);
+    final res = await (_ref!.read(memberRepositoryProvider)).memberInfo(mid: mid);
     userState = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -44,7 +43,7 @@ class HorizontalMemberPageController
   }
 
   Future<void> getMemberStat() async {
-    final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberStat(mid: mid);
+    final res = await (_ref!.read(memberRepositoryProvider)).memberStat(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
       notifyListeners();
@@ -55,7 +54,7 @@ class HorizontalMemberPageController
     if (!Accounts.main.isLogin) {
       return;
     }
-    final res = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberView(mid: mid);
+    final res = await (_ref!.read(memberRepositoryProvider)).memberView(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
       notifyListeners();
@@ -101,7 +100,7 @@ class HorizontalMemberPageController
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-      final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).spaceArchive(
+      final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
         type: .video,
         mid: mid,
         aid: page == 1

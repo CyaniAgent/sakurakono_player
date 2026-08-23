@@ -38,7 +38,7 @@ class SubDetailController
 
   @override
   Future<LoadingState<CoreSubDetailData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favSeasonList(
+    final result = await (_ref!.read(favRepositoryProvider)).favSeasonList(
       id: id,
       ps: 20,
       pn: page,

@@ -34,7 +34,7 @@ class LiveFollowController
 
   @override
   Future<LoadingState<CoreLiveFollowData>> customGetData() async {
-    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveFollow(page);
+    final result = await (_ref!.read(liveRepositoryProvider)).liveFollow(page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

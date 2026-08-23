@@ -43,7 +43,7 @@ class MemberGuardController
 
   @override
   Future<LoadingState<CoreMemberGuardData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberGuard(ruid: ruid, page: page);
+    final result = await (_ref!.read(memberRepositoryProvider)).memberGuard(ruid: ruid, page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

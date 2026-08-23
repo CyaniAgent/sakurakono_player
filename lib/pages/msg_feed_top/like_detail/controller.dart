@@ -3,7 +3,6 @@ import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
@@ -56,7 +55,7 @@ class LikeDetailController
 
   @override
   Future<LoadingState<CoreMsgLikeDetailData>> customGetData() async {
-    final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).msgLikeDetail(cardId: cardId, pn: page, lastMid: lastMid);
+    final result = await (_ref!.read(msgRepositoryProvider)).msgLikeDetail(cardId: cardId, pn: page, lastMid: lastMid);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),

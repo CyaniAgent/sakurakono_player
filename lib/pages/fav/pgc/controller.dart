@@ -41,7 +41,7 @@ class FavPgcController
 
   @override
   Future<LoadingState<CoreFavPgcData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favPgc(
+    final result = await (_ref!.read(favRepositoryProvider)).favPgc(
     type: type,
     followStatus: followStatus,
     pn: page,
@@ -62,7 +62,7 @@ class FavPgcController
 
   // 取消追番
   Future<void> pgcDel(int index, seasonId) async {
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcDel(seasonId: seasonId);
+    final result = await (_ref!.read(videoRepositoryProvider)).pgcDel(seasonId: seasonId);
     if (result case Success(:final response)) {
       loadingState.data!.removeAt(index);
       notifyListeners();
@@ -79,7 +79,7 @@ class FavPgcController
 
   Future<void> onUpdateList(int followStatus) async {
     final removeList = allChecked.toSet();
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcUpdate(
+    final res = await (_ref!.read(videoRepositoryProvider)).pgcUpdate(
       seasonId: removeList.map((item) => item.seasonId).join(','),
       status: followStatus,
     );
@@ -106,7 +106,7 @@ class FavPgcController
   }
 
   Future<void> onUpdate(int index, int followStatus, int? seasonId) async {
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcUpdate(
+    final res = await (_ref!.read(videoRepositoryProvider)).pgcUpdate(
       seasonId: seasonId.toString(),
       status: followStatus,
     );

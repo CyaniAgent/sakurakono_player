@@ -5,7 +5,6 @@ import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 
 class HotController
     extends CommonListControllerRiverpod<List<CoreHotVideoItemModel>, CoreHotVideoItemModel> {
@@ -18,7 +17,7 @@ class HotController
 
   @override
   Future<LoadingState<List<CoreHotVideoItemModel>>> customGetData() async {
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).hotVideoList(
+    final result = await (_ref!.read(videoRepositoryProvider)).hotVideoList(
       pn: page,
       ps: 20,
     );

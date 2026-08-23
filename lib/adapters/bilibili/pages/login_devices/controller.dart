@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/auth_repository.dart';
@@ -23,7 +22,7 @@ class CoreLoginDevicesController
 
   @override
   Future<LoadingState<CoreLoginDevicesData>> customGetData() async {
-    final result = await (_ref?.read(authRepositoryProvider) ?? Get.find<AuthRepository>()).loginDevices();
+    final result = await (_ref!.read(authRepositoryProvider)).loginDevices();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

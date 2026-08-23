@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -139,16 +138,16 @@ class DynamicsController
   Future<LoadingState<CoreFollowUpModel>> customGetData() async {
     LoadingState<CoreFollowUpModel> biliResult;
     if (_offset == null) {
-      biliResult = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).followUp();
+      biliResult = await (_ref!.read(dynamicsRepositoryProvider)).followUp();
     } else if (_showAllUp) {
-      biliResult = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).followings(
+      biliResult = await (_ref!.read(dynamicsRepositoryProvider)).followings(
         vmid: DynamicsHost.of().currentUserId,
         pn: _page,
         orderType: 'attention',
         ps: 50,
       );
     } else {
-      biliResult = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynUpList(_offset);
+      biliResult = await (_ref!.read(dynamicsRepositoryProvider)).dynUpList(_offset);
     }
     return switch (biliResult) {
       Loading _ => LoadingState.loading(),

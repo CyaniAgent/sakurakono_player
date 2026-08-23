@@ -39,7 +39,7 @@ class FavSearchController
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userFavFolderDetail(
+    final result = await (_ref!.read(favRepositoryProvider)).userFavFolderDetail(
         pn: page,
         ps: 20,
         mediaId: mediaId,

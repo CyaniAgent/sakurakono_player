@@ -241,7 +241,7 @@ abstract class ReplyController<R>
     int type,
   ) async {
     bool isUpTop = item.replyControl.isUpTop;
-    final res = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).replyTop(
+    final res = await (_ref!.read(replyRepositoryProvider)).replyTop(
       oid: oid,
       type: type,
       rpid: item.id.toString(),

@@ -3,7 +3,6 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class SearchTrendingController
@@ -24,7 +23,7 @@ class SearchTrendingController
 
   @override
   Future<LoadingState<CoreSearchTrendingData>> customGetData() async {
-    final result = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).searchTrending(needsTop: true);
+    final result = await (_ref!.read(searchRepositoryProvider)).searchTrending(needsTop: true);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

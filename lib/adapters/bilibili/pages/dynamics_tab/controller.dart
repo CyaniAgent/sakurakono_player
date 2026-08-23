@@ -43,7 +43,7 @@ class DynamicsTabController
 
   @override
   Future<LoadingState<CoreDynamicsDataModel>> customGetData() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).followDynamic(
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).followDynamic(
       offset: offset,
       type: dynamicsType,
       hostMid: dynamicsController.hostMid,
@@ -57,7 +57,7 @@ class DynamicsTabController
   }
 
   Future<void> onRemove(int index, dynamic dynamicId) async {
-    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).removeDynamic(dynIdStr: dynamicId.toString());
+    final res = await (_ref!.read(msgRepositoryProvider)).removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();

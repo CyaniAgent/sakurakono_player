@@ -4,7 +4,6 @@ import 'package:skf/core/repository/msg_repository.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -46,7 +45,7 @@ class MemberDynamicsController
 
   @override
   Future<LoadingState<CoreDynamicsDataModel>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).memberDynamic(
+    final result = await (_ref!.read(memberRepositoryProvider)).memberDynamic(
       offset: offset,
       mid: mid,
     );
@@ -58,7 +57,7 @@ class MemberDynamicsController
   }
 
   Future<void> onRemove(dynamic dynamicId) async {
-    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).removeDynamic(dynIdStr: dynamicId.toString());
+    final res = await (_ref!.read(msgRepositoryProvider)).removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
       loadingState.data!
           .removeWhere((item) => (item).idStr == dynamicId);
@@ -71,8 +70,8 @@ class MemberDynamicsController
 
   Future<void> onSetTop(bool isTop, String dynamicId) async {
     final res = await (isTop
-        ? (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).rmTop(dynamicId: dynamicId)
-        : (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).setTop(dynamicId: dynamicId));
+        ? (_ref!.read(dynamicsRepositoryProvider)).rmTop(dynamicId: dynamicId)
+        : (_ref!.read(dynamicsRepositoryProvider)).setTop(dynamicId: dynamicId));
     if (res.isSuccess) {
       final list = loadingState.data!;
       list[0].modules!

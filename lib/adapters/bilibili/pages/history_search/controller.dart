@@ -19,7 +19,7 @@ class HistorySearchController
   void attachRef(Ref ref) { _ref = ref; }
   @override
   Future<LoadingState<CoreHistoryData>> customGetData() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).searchHistory(
+    final result = await (_ref!.read(userRepositoryProvider)).searchHistory(
     pn: page,
     keyword: editController.value.text,
     account: account,
@@ -39,7 +39,7 @@ class HistorySearchController
   final account = Accounts.history;
 
   Future<void> onDelHistory(int index, kid, String business) async {
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).delHistory(
+    final res = await (_ref!.read(userRepositoryProvider)).delHistory(
       '${business}_$kid',
       account: account,
     );
@@ -61,7 +61,7 @@ class HistorySearchController
       onConfirm: () async {
         SmartDialog.showLoading(msg: '请求中');
         final removeList = allChecked.toSet();
-        final response = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).delHistory(
+        final response = await (_ref!.read(userRepositoryProvider)).delHistory(
           removeList
               .map((item) => '${item.history.business!}_${item.kid!}')
               .join(','),

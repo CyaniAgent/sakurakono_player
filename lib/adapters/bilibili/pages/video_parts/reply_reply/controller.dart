@@ -128,14 +128,14 @@ class VideoReplyReplyController extends ReplyController {
   @override
   Future<LoadingState> customGetData() async {
     final result = await (dialog != null
-        ? (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).dialogList(
+        ? (_ref!.read(replyRepositoryProvider)).dialogList(
             type: replyType,
             oid: oid,
             root: rpid,
             dialog: dialog!,
             offset: paginationReply?.nextOffset,
           )
-        : (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).detailList(
+        : (_ref!.read(replyRepositoryProvider)).detailList(
             type: replyType,
             oid: oid,
             root: rpid,

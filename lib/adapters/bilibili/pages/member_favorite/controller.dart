@@ -4,7 +4,6 @@ import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:get/get.dart';
 
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -184,7 +183,7 @@ class MemberFavoriteCtr
 
   @override
   Future<LoadingState<List<CoreSpaceFavData>?>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).spaceFav(mid: mid);
+    final result = await (_ref!.read(favRepositoryProvider)).spaceFav(mid: mid);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

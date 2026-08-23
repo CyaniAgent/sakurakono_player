@@ -4,7 +4,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -39,7 +38,7 @@ class DynMentionController
 
   @override
   Future<LoadingState<List<CoreMentionGroup>?>> customGetData() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynMention(keyword: controller.text);
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).dynMention(keyword: controller.text);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

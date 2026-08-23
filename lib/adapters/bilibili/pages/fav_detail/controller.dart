@@ -32,7 +32,7 @@ mixin BaseFavController
   void onViewFav(CoreFavDetailItemModel item, int? index);
 
   Future<void> onCancelFav(int index, int id, int type) async {
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
+    final res = await (_ref!.read(favRepositoryProvider)).favVideo(
       resources: '$id:$type',
       delIds: mediaId.toString(),
     );
@@ -54,7 +54,7 @@ mixin BaseFavController
       content: const Text('确认删除所选收藏吗？'),
       onConfirm: () async {
         final removeList = allChecked.toSet();
-        final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
+        final res = await (_ref!.read(favRepositoryProvider)).favVideo(
           resources: removeList
               .map((item) => '${item.id}:${item.type}')
               .join(','),
@@ -138,7 +138,7 @@ class FavDetailController
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).userFavFolderDetail(
+    final result = await (_ref!.read(favRepositoryProvider)).userFavFolderDetail(
         pn: page,
         ps: 20,
         mediaId: mediaId,
@@ -178,8 +178,8 @@ class FavDetailController
       return;
     }
     final res = isFav
-        ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).unfavFavFolder(mediaId)
-        : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favFavFolder(mediaId);
+        ? await (_ref!.read(favRepositoryProvider)).unfavFavFolder(mediaId)
+        : await (_ref!.read(favRepositoryProvider)).favFavFolder(mediaId);
 
     if (res.isSuccess) {
       folderInfo
@@ -191,7 +191,7 @@ class FavDetailController
   }
 
   Future<void> cleanFav() async {
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).cleanFav(mediaId: mediaId.toString());
+    final res = await (_ref!.read(favRepositoryProvider)).cleanFav(mediaId: mediaId.toString());
     if (res.isSuccess) {
       SmartDialog.showToast('清除成功');
       Future.delayed(const Duration(milliseconds: 200), onReload);

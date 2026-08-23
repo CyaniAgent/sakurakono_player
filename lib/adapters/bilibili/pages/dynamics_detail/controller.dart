@@ -33,7 +33,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
         commentIdStr.isNotEmpty) {
       _init(commentIdStr, commentType);
     } else {
-      (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynamicDetail(id: dynItem.idStr).then((res) {
+      (_ref!.read(dynamicsRepositoryProvider)).dynamicDetail(id: dynItem.idStr).then((res) {
         if (res case Success(:final response)) {
           _init(response.basic!.commentIdStr!, response.basic!.commentType!);
         } else {
@@ -50,7 +50,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   }
 
   Future<LoadingState> onSetPubSetting(bool isPrivate, String dynId) async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).dynPrivatePubSetting(
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).dynPrivatePubSetting(
       dynId: dynId,
       action: isPrivate ? 'public_pub' : 'private_pub',
     );
@@ -69,7 +69,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   }
 
   Future<void> onSetReplySubject(int action) async {
-    final res = await (_ref?.read(replyRepositoryProvider) ?? Get.find<ReplyRepository>()).replySubjectModify(
+    final res = await (_ref!.read(replyRepositoryProvider)).replySubjectModify(
       oid: oid,
       type: replyType,
       action: action,

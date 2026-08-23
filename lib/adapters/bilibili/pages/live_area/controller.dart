@@ -10,7 +10,6 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>?, CoreAreaList>
     implements TickerProvider {
@@ -61,7 +60,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
 
   @override
   Future<LoadingState<List<CoreAreaList>?>> customGetData() async {
-    final result = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).liveAreaList();
+    final result = await (_ref!.read(liveRepositoryProvider)).liveAreaList();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -70,7 +69,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
   }
 
   Future<void> queryFavTags() async {
-    final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).getLiveFavTag();
+    final biliResult = await (_ref!.read(liveRepositoryProvider)).getLiveFavTag();
     favState = switch (biliResult) {
       Loading _ => LoadingState<List<CoreAreaItem>>.loading(),
       Success(:final response) => Success(response),
@@ -80,7 +79,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
 
   Future<void> setFavTag() async {
     if (favState case Success(:final response)) {
-      final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).setLiveFavTag(
+      final biliResult = await (_ref!.read(liveRepositoryProvider)).setLiveFavTag(
         ids: response.map((e) => e.id).join(','),
       );
       final res = switch (biliResult) {

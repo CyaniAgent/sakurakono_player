@@ -64,7 +64,7 @@ class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, Core
 
   @override
   Future<LoadingState<CoreBubbleData>> customGetData() async {
-    final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).bubble(
+    final result = await (_ref!.read(dynamicsRepositoryProvider)).bubble(
       tribeId: tribeId,
       categoryId: categoryId,
       sortType: sortType,

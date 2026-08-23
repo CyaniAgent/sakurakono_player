@@ -23,7 +23,7 @@ class PopularSeriesController
   }
 
   Future<void> _getSeriesList() async {
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).popularSeriesList();
+    final res = await (_ref!.read(videoRepositoryProvider)).popularSeriesList();
     if (res case Success(:final response)) {
       if (response != null && response.isNotEmpty) {
         number = response.first.number!;
@@ -46,7 +46,7 @@ class PopularSeriesController
 
   @override
   Future<LoadingState<CorePopularSeriesOneData>> customGetData() async {
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).popularSeriesOne(number: number);
+    final result = await (_ref!.read(videoRepositoryProvider)).popularSeriesOne(number: number);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

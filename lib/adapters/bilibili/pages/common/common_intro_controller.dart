@@ -149,7 +149,7 @@ abstract class CommonIntroController extends ChangeNotifier
     if (!isShowOnlineTotal) {
       return;
     }
-    final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).onlineTotal(
+    final result = await (_ref!.read(videoRepositoryProvider)).onlineTotal(
       aid: IdUtils.bv2av(bvid),
       bvid: bvid,
       cid: _cid,
@@ -170,7 +170,7 @@ abstract class CommonIntroController extends ChangeNotifier
     if (stat == null) {
       return;
     }
-    final res = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).coinVideo(
+    final res = await (_ref!.read(videoRepositoryProvider)).coinVideo(
       bvid: bvid,
       multiply: coin,
       selectLike: coinWithLike ? 1 : 0,
@@ -190,14 +190,14 @@ abstract class CommonIntroController extends ChangeNotifier
   }
 
   Future<void> queryVideoTags() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).videoTags(bvid: bvid, cid: _cid);
+    final result = await (_ref!.read(userRepositoryProvider)).videoTags(bvid: bvid, cid: _cid);
     videoTags = result.dataOrNull;
   }
 
   Future<void> viewLater() async {
     final res = await (_hasLater
-? (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewDel(aids: IdUtils.bv2av(bvid).toString())
-   : (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).toViewLater(bvid: bvid));
+? (_ref!.read(userRepositoryProvider)).toViewDel(aids: IdUtils.bv2av(bvid).toString())
+   : (_ref!.read(userRepositoryProvider)).toViewLater(bvid: bvid));
     if (res.isSuccess) hasLater = !hasLater;
   }
 }
@@ -221,7 +221,7 @@ mixin FavMixin on TripleMixin {
   Future<LoadingState<CoreFavFolderData>> queryVideoInFolder() async {
     favIds = null;
     final (rid, type) = getFavRidType;
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).videoInFolder(
+    final res = await (_ref!.read(favRepositoryProvider)).videoInFolder(
       mid: Accounts.main.mid,
       rid: rid,
       type: type,
@@ -288,8 +288,8 @@ mixin FavMixin on TripleMixin {
         if (res.isSuccess) {
           final hasFav = this.hasFav;
           final result = hasFav
-? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).unfavAll(rid, type)
-   : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
+? await (_ref!.read(favRepositoryProvider)).unfavAll(rid, type)
+   : await (_ref!.read(favRepositoryProvider)).favVideo(
                   resources: '$rid:$type',
                   addIds: favFolderId.toString(),
                 );
@@ -327,7 +327,7 @@ mixin FavMixin on TripleMixin {
       if (kDebugMode) debugPrint(e.toString());
     }
     SmartDialog.showLoading(msg: '请求中');
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favVideo(
+    final result = await (_ref!.read(favRepositoryProvider)).favVideo(
       resources: '$rid:$type',
       addIds: addMediaIdsNew.join(','),
       delIds: delMediaIdsNew.join(','),

@@ -11,7 +11,6 @@ import 'package:skf/pages/follow/controller.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
@@ -76,7 +75,7 @@ class FollowChildController
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
     if (tagid != null) {
-      final biliResult = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).followUpGroup(
+      final biliResult = await (_ref!.read(memberRepositoryProvider)).followUpGroup(
         mid: mid,
         tagid: tagid,
         pn: page,
@@ -88,7 +87,7 @@ class FollowChildController
       };
     }
 
-    return (_ref?.read(followRepositoryProvider) ?? Get.find<FollowRepository>()).followings(
+    return (_ref!.read(followRepositoryProvider)).followings(
       vmid: mid,
       pn: page,
       orderType: orderType.type,
@@ -96,7 +95,7 @@ class FollowChildController
   }
 
   Future<void> _loadSameFollow() async {
-    final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).sameFollowing(mid: mid);
+    final res = await (_ref!.read(userRepositoryProvider)).sameFollowing(mid: mid);
     if (res case Success(:final response)) {
       sameState = Success(response.list);
     }

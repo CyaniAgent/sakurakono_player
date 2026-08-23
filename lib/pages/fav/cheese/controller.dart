@@ -1,7 +1,6 @@
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -19,7 +18,7 @@ class FavCheeseController
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
 
-  late final int mid = (_ref?.read(accountProvider).userId ?? Get.find<AccountProvider>().userId) ?? 0;
+  late final int mid = (_ref!.read(accountProvider).userId) ?? 0;
 
 
   @override
@@ -30,7 +29,7 @@ class FavCheeseController
 
   @override
   Future<LoadingState<CoreSpaceCheeseData>> customGetData() async {
-    final result = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).favPugv(mid: mid, page: page);
+    final result = await (_ref!.read(favRepositoryProvider)).favPugv(mid: mid, page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -39,7 +38,7 @@ class FavCheeseController
   }
 
   Future<void> onRemove(int index, int sid) async {
-    final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavPugv(sid);
+    final res = await (_ref!.read(favRepositoryProvider)).delFavPugv(sid);
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();

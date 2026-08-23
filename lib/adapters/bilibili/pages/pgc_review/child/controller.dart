@@ -4,7 +4,6 @@ import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -52,7 +51,7 @@ class PgcReviewController
 
   @override
   Future<LoadingState<CorePgcReviewData>> customGetData() async {
-    final result = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcReview(
+    final result = await (_ref!.read(pgcRepositoryProvider)).pgcReview(
       type: type,
       mediaId: mediaId,
       next: next,
@@ -66,7 +65,7 @@ class PgcReviewController
   }
 
   Future<void> onLike(CorePgcReviewItemModel item, bool isLike, String reviewId) async {
-    final res = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcReviewLike(
+    final res = await (_ref!.read(pgcRepositoryProvider)).pgcReviewLike(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -89,7 +88,7 @@ class PgcReviewController
     bool isDislike,
     String reviewId,
   ) async {
-    final res = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcReviewDislike(
+    final res = await (_ref!.read(pgcRepositoryProvider)).pgcReviewDislike(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -108,7 +107,7 @@ class PgcReviewController
   }
 
   Future<void> onDel(int index, int reviewId) async {
-    final res = await (_ref?.read(pgcRepositoryProvider) ?? Get.find<PgcRepository>()).pgcReviewDel(
+    final res = await (_ref!.read(pgcRepositoryProvider)).pgcReviewDel(
       mediaId: mediaId,
       reviewId: '$reviewId',
     );

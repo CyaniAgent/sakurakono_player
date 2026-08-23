@@ -45,7 +45,7 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
           ),
           TextButton(
             onPressed: () async {
-              final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).cancelSub(
+              final res = await (_ref!.read(favRepositoryProvider)).cancelSub(
                 id: subFolderItem.id!,
                 type: subFolderItem.type!,
               );
@@ -77,7 +77,7 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
 
   @override
   Future<LoadingState<CoreSubData>> customGetData() async {
-    final result = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).userSubFolder(
+    final result = await (_ref!.read(userRepositoryProvider)).userSubFolder(
       pn: page,
       ps: 20,
       mid: account.mid,

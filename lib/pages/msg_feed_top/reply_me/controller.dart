@@ -3,7 +3,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
@@ -41,7 +40,7 @@ class ReplyMeController
 
   @override
   Future<LoadingState<CoreMsgReplyData>> customGetData() async {
-    final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).msgFeedReplyMe(cursor: cursor, cursorTime: cursorTime);
+    final result = await (_ref!.read(msgRepositoryProvider)).msgFeedReplyMe(cursor: cursor, cursorTime: cursorTime);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -51,7 +50,7 @@ class ReplyMeController
 
   Future<void> onRemove(dynamic id, int index) async {
     try {
-      final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).delMsgfeed(1, id);
+      final res = await (_ref!.read(msgRepositoryProvider)).delMsgfeed(1, id);
       if (res.isSuccess) {
         loadingState.data!.removeAt(index);
         notifyListeners();

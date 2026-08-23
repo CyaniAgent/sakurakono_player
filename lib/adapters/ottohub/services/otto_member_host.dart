@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/member/member_host.dart';
 

@@ -5,7 +5,6 @@ import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 class SelectTopicController
     extends CommonListControllerRiverpod<CoreTopicPubSearchData, CoreTopicItem> {
@@ -30,7 +29,7 @@ class SelectTopicController
 
   @override
   Future<LoadingState<CoreTopicPubSearchData>> customGetData() async {
-    final result = await (_ref?.read(searchRepositoryProvider) ?? Get.find<SearchRepository>()).topicPubSearch(
+    final result = await (_ref!.read(searchRepositoryProvider)).topicPubSearch(
       keywords: controller.text,
       pageNum: page,
     );

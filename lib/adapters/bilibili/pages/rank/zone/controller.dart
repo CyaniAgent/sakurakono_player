@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class ZoneController extends CommonListControllerRiverpod<dynamic, dynamic> {
@@ -18,10 +17,10 @@ class ZoneController extends CommonListControllerRiverpod<dynamic, dynamic> {
   @override
   Future<LoadingState> customGetData() async {
     final result = await (rid != null
-        ? (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).getRankVideoList(rid!)
+        ? (_ref!.read(videoRepositoryProvider)).getRankVideoList(rid!)
         : seasonType == 4 || seasonType == 5
-            ? (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcRankList(seasonType: seasonType!)
-            : (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).pgcSeasonRankList(seasonType: seasonType!));
+            ? (_ref!.read(videoRepositoryProvider)).pgcRankList(seasonType: seasonType!)
+            : (_ref!.read(videoRepositoryProvider)).pgcSeasonRankList(seasonType: seasonType!));
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

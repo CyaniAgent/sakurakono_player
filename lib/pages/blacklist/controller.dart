@@ -5,7 +5,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/blacklist_data.dart';
 import 'package:skf/core/models/blacklist_item.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
@@ -43,7 +42,7 @@ class BlackListController
       context: context,
       title: Text('确定将 $name 移出黑名单？'),
       onConfirm: () async {
-        final result = await (_ref?.read(videoRepositoryProvider) ?? Get.find<VideoRepository>()).relationMod(mid: mid, act: 6, reSrc: 11);
+        final result = await (_ref!.read(videoRepositoryProvider)).relationMod(mid: mid, act: 6, reSrc: 11);
         if (result.isSuccess) {
           loadingState.data!.removeAt(index);
           notifyListeners();
@@ -56,7 +55,7 @@ class BlackListController
 
   @override
   Future<LoadingState<CoreBlackListData>> customGetData() async {
-    final result = await (_ref?.read(blackRepositoryProvider) ?? Get.find<BlackRepository>()).blackList(pn: page);
+    final result = await (_ref!.read(blackRepositoryProvider)).blackList(pn: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

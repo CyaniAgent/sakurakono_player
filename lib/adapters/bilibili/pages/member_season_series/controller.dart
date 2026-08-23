@@ -1,6 +1,5 @@
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
@@ -32,7 +31,7 @@ class SeasonSeriesController
 
   @override
   Future<LoadingState<CoreSpaceSsData>> customGetData() async {
-    final result = await (_ref?.read(memberRepositoryProvider) ?? Get.find<MemberRepository>()).seasonSeriesList(
+    final result = await (_ref!.read(memberRepositoryProvider)).seasonSeriesList(
       mid: mid,
       pn: page,
     );

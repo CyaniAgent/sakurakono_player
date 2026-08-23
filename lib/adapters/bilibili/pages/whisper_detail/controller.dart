@@ -67,7 +67,7 @@ class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg
 
   // 消息标记已读
   Future<void> ackSessionMsg(int msgSeqno) async {
-    final res = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).ackSessionMsg(
+    final res = await (_ref!.read(msgRepositoryProvider)).ackSessionMsg(
       talkerId: talkerId,
       ackSeqno: msgSeqno,
     );
@@ -176,7 +176,7 @@ class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg
   }
 
   Future<LoadingState> onReport(Msg item, int reasonType, String reasonDesc) async {
-    final result = await (_ref?.read(msgRepositoryProvider) ?? Get.find<MsgRepository>()).imMsgReport(
+    final result = await (_ref!.read(msgRepositoryProvider)).imMsgReport(
       accusedUid: item.senderUid.toInt(),
       reasonType: reasonType,
       reasonDesc: reasonDesc,

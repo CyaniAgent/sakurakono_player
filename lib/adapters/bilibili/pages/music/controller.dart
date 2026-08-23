@@ -30,7 +30,7 @@ class CoreMusicDetailController extends CommonDynController {
   }
 
   Future<void> getCoreMusicDetail() async {
-    final res = await (_ref?.read(musicRepositoryProvider) ?? Get.find<MusicRepository>()).bgmDetail(musicId);
+    final res = await (_ref!.read(musicRepositoryProvider)).bgmDetail(musicId);
     if (res case Success(:final response)) {
       final comment = response.musicComment!;
       oid = comment.oid!;
