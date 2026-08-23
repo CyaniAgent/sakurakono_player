@@ -34,9 +34,10 @@ class _FollowSamePageState extends FollowTypePageState<FollowSamePage> {
 
   @override
   PreferredSizeWidget get appBar => AppBar(
-    title: Obx(
-      () {
-        final name = controller.name.value;
+    title: ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final name = controller.name;
         return Text('${name == null ? '' : '我与$name的'}共同关注');
       },
     ),
