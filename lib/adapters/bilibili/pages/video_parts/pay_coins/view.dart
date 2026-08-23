@@ -65,8 +65,8 @@ class _PayCoinsPageState extends State<PayCoinsPage>
   late final _hasCopyright = widget.hasCopyright;
   late bool _isPaying = false;
   PageController? _controller;
-  late final RxBool _coinWithLike = (Pref.coinWithLike).obs;
-  late final RxInt _pageIndex = 0.obs;
+  late bool _coinWithLike = Pref.coinWithLike;
+  late int _pageIndex = 0;
 
   late final AnimationController _slide22Controller;
   late final Animation<Offset> _slide22Anim;
@@ -78,7 +78,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
   late final Animation<Offset> _boxAnim;
 
   Timer? _timer;
-  late final RxInt _thunderIndex = (-1).obs;
+  late int _thunderIndex = -1;
   static const List<String> _thunderImages = [
     Assets.thunder1,
     Assets.thunder2,
@@ -239,7 +239,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
   }
 
   Widget _build22() {
-    final index = _pageIndex.value;
+    final index = _pageIndex;
     final canPay = _canPay(index);
     final payImg = _getPayImage(index, canPay);
     return GestureDetector(
@@ -279,13 +279,10 @@ class _PayCoinsPageState extends State<PayCoinsPage>
     alignment: Alignment.center,
     children: [
       if (_hasCopyright)
-        Obx(() {
-          final index = _thunderIndex.value;
-          return Offstage(
-            offstage: index == -1 || index == 3,
-            child: Image.asset(_thunderImages[index.clamp(0, 2)]),
-          );
-        }),
+        Offstage(
+          offstage: _thunderIndex == -1 || _thunderIndex == 3,
+          child: Image.asset(_thunderImages[_thunderIndex.clamp(0, 2)]),
+        ),
       Align(
         alignment: Alignment.bottomCenter,
         child: Listener(
@@ -308,7 +305,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                           controller: _controller,
                           onPageChanged: (index) {
                             _scale();
-                            _pageIndex.value = index;
+                            setState(() { _pageIndex = index; });
                           },
                           children: List.generate(
                             2,
@@ -323,15 +320,11 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                                     factor =
                                         1 - (_controller!.page! - index).abs();
                                   }
-                                  return Obx(
-                                    () {
-                                      if (_pageIndex.value != index &&
-                                          _isPaying) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return _buildCoinWidget(index, factor);
-                                    },
-                                  );
+                                  if (_pageIndex != index &&
+                                      _isPaying) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return _buildCoinWidget(index, factor);
                                 },
                               );
                             },
@@ -341,21 +334,20 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Obx(
-                        () {
-                          final index = _pageIndex.value;
+                      child: Builder(
+                        builder: (context) {
                           if (_isPaying) {
                             return const SizedBox.shrink();
                           }
                           return GestureDetector(
-                            onTap: index == 0 ? null : () => _onScroll(0),
+                            onTap: _pageIndex == 0 ? null : () => _onScroll(0),
                             behavior: HitTestBehavior.opaque,
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: Image.asset(
                                 width: 16,
                                 height: 28,
-                                index == 0 ? Assets.leftDisable : Assets.left,
+                                _pageIndex == 0 ? Assets.leftDisable : Assets.left,
                                 cacheWidth: 16.cacheSize(context),
                               ),
                             ),
@@ -365,25 +357,26 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                     ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Obx(() {
-                        final index = _pageIndex.value;
-                        if (_isPaying) {
-                          return const SizedBox.shrink();
-                        }
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: index == 1 ? null : () => _onScroll(1),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 12),
-                            child: Image.asset(
-                              width: 16,
-                              height: 28,
-                              index == 1 ? Assets.rightDisable : Assets.right,
-                              cacheWidth: 16.cacheSize(context),
+                      child: Builder(
+                        builder: (context) {
+                          if (_isPaying) {
+                            return const SizedBox.shrink();
+                          }
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: _pageIndex == 1 ? null : () => _onScroll(1),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Image.asset(
+                                width: 16,
+                                height: 28,
+                                _pageIndex == 1 ? Assets.rightDisable : Assets.right,
+                                cacheWidth: 16.cacheSize(context),
+                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 )
@@ -405,7 +398,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                   onHorizontalDragUpdate: _onDragUpdate,
                   onHorizontalDragEnd: _onDragEnd,
                   onHorizontalDragCancel: _onDragEnd,
-                  child: Center(child: Obx(_build22)),
+                  child: Center(child: _build22()),
                 )
               else
                 Center(child: _build22()),
@@ -425,8 +418,8 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                 children: [
                   GestureDetector(
                     onTap: () {
-                      final newVal = !_coinWithLike.value;
-                      _coinWithLike.value = newVal;
+                      final newVal = !_coinWithLike;
+                      setState(() { _coinWithLike = newVal; });
                       GStorage.setting.put(SettingBoxKey.coinWithLike, newVal);
                     },
                     behavior: HitTestBehavior.opaque,
@@ -434,14 +427,12 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const SizedBox(width: 12),
-                        Obx(
-                          () => Icon(
-                            _coinWithLike.value
-                                ? Icons.check_box_outlined
-                                : Icons.check_box_outline_blank,
-                            size: 20,
-                            color: Colors.white,
-                          ),
+                        Icon(
+                          _coinWithLike
+                              ? Icons.check_box_outlined
+                              : Icons.check_box_outline_blank,
+                          size: 20,
+                          color: Colors.white,
                         ),
                         const Text(
                           ' 同时点赞',
@@ -496,11 +487,11 @@ class _PayCoinsPageState extends State<PayCoinsPage>
     _downPos = null;
     if (_isHorizontal) {
       if (e.delta.dx > 0) {
-        if (_pageIndex.value == 1) {
+        if (_pageIndex == 1) {
           _onScroll(0);
         }
       } else {
-        if (_pageIndex.value == 0) {
+        if (_pageIndex == 0) {
           _onScroll(1);
         }
       }
@@ -513,25 +504,25 @@ class _PayCoinsPageState extends State<PayCoinsPage>
 
   void _onPayCoin() {
     if (_isPaying) return;
-    _isPaying = true;
-    _pageIndex.refresh();
+    setState(() { _isPaying = true;
+    });
     _slide22Controller.forward().whenComplete(() {
       _slide22Controller.reverse().whenComplete(() {
-        if (_pageIndex.value == 1) {
-          _thunderIndex.value += 1;
+        if (_pageIndex == 1) {
+          setState(() { _thunderIndex += 1; });
           _timer ??= Timer.periodic(const Duration(milliseconds: 50 ~/ 3), (_) {
-            final index = _thunderIndex.value;
+            final index = _thunderIndex;
             if (index == _thunderImages.length) {
               _cancelTimer();
             } else {
-              _thunderIndex.value = index + 1;
+              setState(() { _thunderIndex = index + 1; });
             }
           });
         }
         _boxAnimController.forward().whenComplete(_boxAnimController.reverse);
         _coinController.forward().whenComplete(() {
           AppNavigator.back();
-          widget.onPayCoin(_pageIndex.value + 1, _coinWithLike.value);
+          widget.onPayCoin(_pageIndex + 1, _coinWithLike);
         });
       });
     });
