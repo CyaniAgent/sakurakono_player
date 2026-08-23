@@ -53,16 +53,18 @@ class PgcController
 
   // follow
   late int followPage = 1;
-  late RxInt followCount = (-1).obs;
+  int _followCount = -1; int get followCount => _followCount; set followCount(int v) { _followCount = v; notifyListeners(); }
   late bool followLoading = false;
   late bool followEnd = false;
-  late Rx<LoadingState<List<CoreFavPgcItemModel>?>> followState =
-      LoadingState<List<CoreFavPgcItemModel>?>.loading().obs;
+  LoadingState<List<CoreFavPgcItemModel>?> _followState = LoadingState<List<CoreFavPgcItemModel>?>.loading();
+  LoadingState<List<CoreFavPgcItemModel>?> get followState => _followState;
+  set followState(LoadingState<List<CoreFavPgcItemModel>?> v) { _followState = v; notifyListeners(); }
   final followController = ScrollController();
 
   // timeline
-  late Rx<LoadingState<List<CoreTimelineResult>?>> timelineState =
-      LoadingState<List<CoreTimelineResult>?>.loading().obs;
+  LoadingState<List<CoreTimelineResult>?> _timelineState = LoadingState<List<CoreTimelineResult>?>.loading();
+  LoadingState<List<CoreTimelineResult>?> get timelineState => _timelineState;
+  set timelineState(LoadingState<List<CoreTimelineResult>?> v) { _timelineState = v; notifyListeners(); }
 
   Future<void> queryPgcTimeline() async {
     final res = await Future.wait([
@@ -79,7 +81,7 @@ class PgcController
         list1[i].addAll(list2[i]);
       }
     }
-    timelineState.value = Success(list1 ?? list2);
+    timelineState = Success(list1 ?? list2);
   }
 
   // 我的订阅
@@ -97,33 +99,33 @@ class PgcController
 
     if (res case Success(:final response)) {
       final list = response.list;
-      followCount.value = response.total ?? -1;
+      followCount = response.total ?? -1;
 
       if (list == null || list.isEmpty) {
         followEnd = true;
         if (isRefresh) {
-          followState.value = Success(list);
+          followState = Success(list);
         }
         followLoading = false;
         return;
       }
 
       if (isRefresh) {
-        if (list.length >= followCount.value) {
+        if (list.length >= followCount) {
           followEnd = true;
         }
-        followState.value = Success(list);
+        followState = Success(list);
         followController.jumpToTop();
-      } else if (followState.value case Success(:final response)) {
+      } else if (followState case Success(:final response)) {
         final currentList = response!..addAll(list);
-        if (currentList.length >= followCount.value) {
+        if (currentList.length >= followCount) {
           followEnd = true;
         }
-        followState.refresh();
+        notifyListeners();
       }
       followPage++;
     } else if (isRefresh) {
-      followState.value = switch (res) {
+      followState = switch (res) {
         Error(:final errMsg, :final code) => Error(errMsg, code: code),
         _ => LoadingState.loading(),
       };
@@ -154,7 +156,7 @@ class PgcController
     if (isLogin) {
       _refreshPgcFollow();
     } else {
-      followState.value = LoadingState.loading();
+      followState = LoadingState.loading();
     }
   }
 }

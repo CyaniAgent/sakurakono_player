@@ -73,7 +73,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                     Grid.smallCardWidth / 2 / 0.75 +
                     MediaQuery.textScalerOf(context).scale(96),
                 child: Obx(
-                  () => _buildTimeline(theme, controller.timelineState.value),
+                  () => _buildTimeline(theme, controller.timelineState),
                 ),
               ),
             ),
@@ -347,7 +347,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                       Grid.smallCardWidth / 2 / 0.75 +
                       MediaQuery.textScalerOf(context).scale(50),
                   child: Obx(
-                    () => _buildFollowBody(controller.followState.value),
+                    () => _buildFollowBody(controller.followState),
                   ),
                 ),
               ],
@@ -362,7 +362,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
       children: [
         Obx(
           () => Text(
-            '最近${widget.tabType == HomeTabType.bangumi ? '追番' : '追剧'}${controller.followCount.value == -1 ? '' : ' ${controller.followCount.value}'}',
+            '最近${widget.tabType == HomeTabType.bangumi ? '追番' : '追剧'}${controller.followCount == -1 ? '' : ' ${controller.followCount}'}',
             style: theme.textTheme.titleMedium,
           ),
         ),
