@@ -19,7 +19,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
   void attachRef(Ref ref) { _ref = ref; }
   late final isLogin = Accounts.main.isLogin;
 
-  late final isEditing = false.obs;
+  bool isEditing = false;
   late final favInfo = {};
 
   TabController? tabController;
@@ -56,8 +56,8 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
     return super.customHandleResponse(isRefresh, response);
   }
 
-  Rx<LoadingState<List<CoreAreaItem>>> favState =
-      LoadingState<List<CoreAreaItem>>.loading().obs;
+  LoadingState<List<CoreAreaItem>> favState =
+      LoadingState<List<CoreAreaItem>>.loading();
 
   @override
   Future<LoadingState<List<CoreAreaList>?>> customGetData() async {
@@ -71,7 +71,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
 
   Future<void> queryFavTags() async {
     final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).getLiveFavTag();
-    favState.value = switch (biliResult) {
+    favState = switch (biliResult) {
       Loading _ => LoadingState<List<CoreAreaItem>>.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
@@ -79,7 +79,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
   }
 
   Future<void> setFavTag() async {
-    if (favState.value case Success(:final response)) {
+    if (favState case Success(:final response)) {
       final biliResult = await (_ref?.read(liveRepositoryProvider) ?? Get.find<LiveRepository>()).setLiveFavTag(
         ids: response.map((e) => e.id).join(','),
       );
@@ -89,7 +89,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
         Error(:final errMsg, :final code) => Error(errMsg, code: code),
       };
       if (res.isSuccess) {
-        isEditing.toggle();
+        isEditing = !isEditing;
         SmartDialog.showToast('设置成功');
       } else {
         res.toast();
@@ -100,7 +100,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
   }
 
   void onEdit() {
-    if (isEditing.value) {
+    if (isEditing) {
       setFavTag();
     } else {
       isEditing.toggle();

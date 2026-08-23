@@ -36,10 +36,10 @@ class FollowChildController
   void attachRef(Ref ref) { _ref = ref; }
 
   late final loadSameFollow = _followState?.isOwner == false;
-  late final Rx<LoadingState<List<CoreFollowItemModel>?>> sameState =
-      LoadingState<List<CoreFollowItemModel>?>.loading().obs;
+  LoadingState<List<CoreFollowItemModel>?> sameState =
+      LoadingState<List<CoreFollowItemModel>?>.loading();
 
-  late final Rx<FollowOrderType> orderType = FollowOrderType.values[Pref.followOrderType].obs;
+  FollowOrderType orderType = FollowOrderType.values[Pref.followOrderType];
 
 
   @override
@@ -91,14 +91,14 @@ class FollowChildController
     return (_ref?.read(followRepositoryProvider) ?? Get.find<FollowRepository>()).followings(
       vmid: mid,
       pn: page,
-      orderType: orderType.value.type,
+      orderType: orderType.type,
     );
   }
 
   Future<void> _loadSameFollow() async {
     final res = await (_ref?.read(userRepositoryProvider) ?? Get.find<UserRepository>()).sameFollowing(mid: mid);
     if (res case Success(:final response)) {
-      sameState.value = Success(response.list);
+      sameState = Success(response.list);
     }
   }
 }
