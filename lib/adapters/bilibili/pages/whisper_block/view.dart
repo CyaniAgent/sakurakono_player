@@ -62,15 +62,16 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                           ),
                         ),
                         if (_controller.listLimit != null)
-                          Obx(
-                            () => Text(
-                              '${_controller.count.value}/${_controller.listLimit}',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: theme.colorScheme.outline,
-                              ),
+                        ListenableBuilder(
+                          listenable: _controller,
+                          builder: (_, __) => Text(
+                            '${_controller.count.value}/${_controller.listLimit}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: theme.colorScheme.outline,
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),

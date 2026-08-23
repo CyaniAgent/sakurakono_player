@@ -43,33 +43,36 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
       appBar: AppBar(
         title: Text(widget.name),
         actions: [
-          Obx(() {
-            final threeDotItems = _controller.threeDotItems.value;
-            if (threeDotItems != null && threeDotItems.isNotEmpty) {
-              return PopupMenuButton(
-                itemBuilder: (context) {
-                  return threeDotItems
-                      .map(
-                        (e) => PopupMenuItem(
-                          onTap: () => e.type.action(
-                            context: context,
-                            controller: _controller,
-                            item: e,
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (_, __) {
+              final threeDotItems = _controller.threeDotItems.value;
+              if (threeDotItems != null && threeDotItems.isNotEmpty) {
+                return PopupMenuButton(
+                  itemBuilder: (context) {
+                    return threeDotItems
+                        .map(
+                          (e) => PopupMenuItem(
+                            onTap: () => e.type.action(
+                              context: context,
+                              controller: _controller,
+                              item: e,
+                            ),
+                            child: Row(
+                              children: [
+                                e.type.icon,
+                                Text('  ${e.title}'),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              e.type.icon,
-                              Text('  ${e.title}'),
-                            ],
-                          ),
-                        ),
-                      )
-                      .toList();
-                },
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+                        )
+                        .toList();
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ],
       ),
       body: refreshIndicator(

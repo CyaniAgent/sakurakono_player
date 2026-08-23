@@ -49,8 +49,9 @@ class _ViewPointsPageState extends State<ViewPointsPage>
             '分段进度条 ',
             style: TextStyle(fontSize: 16),
           ),
-          Obx(
-            () => Transform.scale(
+          ListenableBuilder(
+            listenable: videoDetailController,
+            builder: (_, __) => Transform.scale(
               alignment: Alignment.centerLeft,
               scale: 0.8,
               child: Switch(
