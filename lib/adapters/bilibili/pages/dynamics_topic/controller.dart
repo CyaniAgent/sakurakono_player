@@ -21,15 +21,15 @@ class DynTopicController
 
   int sortBy = 0;
   String? offset;
-  final topicSortByConf = Rxn<CoreTopicSortByConf>();
+  CoreTopicSortByConf? topicSortByConf;
 
   double? appbarOffset;
 
   // top
-  final isFav = false.obs;
-  final isLike = false.obs;
-  Rx<LoadingState<CoreTopDetails?>> topState =
-      LoadingState<CoreTopDetails?>.loading().obs;
+  bool isFav = false;
+  bool isLike = false;
+  LoadingState<CoreTopDetails?> topState =
+      LoadingState<CoreTopDetails?>.loading();
 
   late final isLogin = Accounts.main.isLogin;
 
@@ -40,16 +40,16 @@ class DynTopicController
 
   Future<void> queryTop() async {
     final result = await (_ref?.read(dynamicsRepositoryProvider) ?? Get.find<DynamicsRepository>()).topicTop(topicId: topicId);
-    topState.value = switch (result) {
+    topState = switch (result) {
       Loading _ => LoadingState<CoreTopDetails?>.loading(),
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
-    if (topState.value case Success(:final response)) {
+    if (topState case Success(:final response)) {
       final topicItem = response!.topicItem!;
       topicName = topicItem.name;
-      isFav.value = topicItem.isFav ?? false;
-      isLike.value = topicItem.isLike ?? false;
+      isFav = topicItem.isFav ?? false;
+      isLike = topicItem.isLike ?? false;
     }
   }
 
@@ -57,7 +57,7 @@ class DynTopicController
   List<CoreTopicCardItem>? getDataList(CoreTopicCardList? response) {
     if (response != null) {
       offset = response.offset;
-      topicSortByConf.value = response.topicSortByConf;
+      topicSortByConf = response.topicSortByConf;
       sortBy = response.topicSortByConf?.showSortBy ?? 0;
       if (response.hasMore == false) {
         isEnd = true;
@@ -111,17 +111,18 @@ class DynTopicController
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final isFav = this.isFav.value;
+    final isFav = this.isFav;
     final res = isFav
         ? await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).delFavTopic(topicId)
         : await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).addFavTopic(topicId);
     if (res.isSuccess) {
       if (isFav) {
-        topState.value.data!.topicItem!.fav -= 1;
+        topState.data!.topicItem!.fav -= 1;
       } else {
-        topState.value.data!.topicItem!.fav += 1;
+        topState.data!.topicItem!.fav += 1;
       }
-      this.isFav.toggle();
+      this.isFav = !this.isFav;
+      notifyListeners();
     } else {
       res.toast();
     }
@@ -132,15 +133,16 @@ class DynTopicController
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final isLike = this.isLike.value;
+    final isLike = this.isLike;
     final res = await (_ref?.read(favRepositoryProvider) ?? Get.find<FavRepository>()).likeTopic(topicId, isLike);
     if (res.isSuccess) {
       if (isLike) {
-        topState.value.data!.topicItem!.like -= 1;
+        topState.data!.topicItem!.like -= 1;
       } else {
-        topState.value.data!.topicItem!.like += 1;
+        topState.data!.topicItem!.like += 1;
       }
-      this.isLike.toggle();
+      this.isLike = !this.isLike;
+      notifyListeners();
     } else {
       res.toast();
     }

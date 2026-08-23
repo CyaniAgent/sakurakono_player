@@ -15,13 +15,14 @@ class DynMentionController
   final focusNode = FocusNode();
   final controller = TextEditingController();
 
-  final RxBool enableClear = false.obs;
+  bool enableClear = false;
 
-  final RxBool showBtn = false.obs;
+  bool showBtn = false;
   Set<CoreMentionItem>? mentionList;
 
   void updateBtn() {
-    showBtn.value = mentionList?.isNotEmpty == true;
+    showBtn = mentionList?.isNotEmpty == true;
+    notifyListeners();
   }
 
   DynMentionController() {
@@ -31,7 +32,8 @@ class DynMentionController
   @override
   Future<void> onRefresh() {
     mentionList?.clear();
-    showBtn.value = false;
+    showBtn = false;
+    notifyListeners();
     return super.onRefresh();
   }
 
