@@ -38,9 +38,10 @@ class _BlackListPageState extends State<BlackListPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Obx(
-          () => Text(
-            '黑名单管理${_blackListController.total.value == -1 ? '' : ': ${_blackListController.total.value}'}',
+        title: ListenableBuilder(
+          listenable: _blackListController,
+          builder: (context, _) => Text(
+            '黑名单管理${_blackListController.total == -1 ? '' : ': ${_blackListController.total}'}',
           ),
         ),
       ),
