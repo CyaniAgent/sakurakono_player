@@ -1,6 +1,5 @@
 import 'package:skf/common/widgets/custom_arc.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({
@@ -11,7 +10,7 @@ class LoadingWidget extends StatelessWidget {
 
   ///loading msg
   final String msg;
-  final RxDouble progress;
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +27,11 @@ class LoadingWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           //loading animation
-          Obx(
-            () => Arc(
-              size: 40,
-              color: onSurfaceVariant,
-              strokeWidth: 3,
-              progress: progress.value,
-            ),
+          Arc(
+            size: 40,
+            color: onSurfaceVariant,
+            strokeWidth: 3,
+            progress: progress,
           ),
           //msg
           Text(msg, style: TextStyle(color: onSurfaceVariant)),
