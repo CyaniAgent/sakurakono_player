@@ -104,8 +104,9 @@ class _UpPanelState extends State<UpPanel> {
           child: upItemBuild(theme, CoreUpItem(face: '', uname: '全部动态', mid: -1)),
         ),
         SliverToBoxAdapter(
-          child: Obx(
-            () => upItemBuild(
+          child: ListenableBuilder(
+            listenable: controller,
+            builder: (context, _) => upItemBuild(
               theme,
               CoreUpItem(
                 uname: '我',
