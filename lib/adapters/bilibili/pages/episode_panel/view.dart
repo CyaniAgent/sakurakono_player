@@ -89,14 +89,14 @@ class _EpisodePanelState extends State<EpisodePanel>
     with TickerProviderStateMixin, CommonSlideMixin {
   // tab
   late final TabController _tabController;
-  late final RxInt _currentTabIndex = _tabController.index.obs;
+  late int _currentTabIndex;
 
   late final showTitle = widget.showTitle;
 
   List<ugc.BaseEpisodeItem> get _getCurrEpisodes =>
       widget.type == EpisodeType.season
-      ? widget.list[_currentTabIndex.value].episodes
-      : widget.list[_currentTabIndex.value];
+      ? widget.list[_currentTabIndex].episodes
+      : widget.list[_currentTabIndex];
 
   // item
   late int _currentItemIndex;
@@ -109,10 +109,10 @@ class _EpisodePanelState extends State<EpisodePanel>
   late final List<ScrollController> _itemScrollController;
 
   // fav
-  Rx<LoadingState<bool>>? _favState;
+  LoadingState<bool>? _favState;
 
   void listener() {
-    _currentTabIndex.value = _tabController.index;
+    setState(() { _currentTabIndex = _tabController.index; });
   }
 
   @override
@@ -128,7 +128,7 @@ class _EpisodePanelState extends State<EpisodePanel>
       if (_currentItemIndex != newItemIndex) {
         _currentItemIndex = newItemIndex;
         try {
-          _itemScrollController[_currentTabIndex.value].jumpTo(
+          _itemScrollController[_currentTabIndex].jumpTo(
             _calcItemOffset(newItemIndex),
           );
         } catch (e, s) {
@@ -138,7 +138,7 @@ class _EpisodePanelState extends State<EpisodePanel>
     }
 
     // jump to current
-    if (_currentTabIndex.value != widget.initialTabIndex) {
+    if (_currentTabIndex != widget.initialTabIndex) {
       _tabController.animateTo(
         widget.initialTabIndex,
         duration: const Duration(milliseconds: 200),
@@ -159,6 +159,7 @@ class _EpisodePanelState extends State<EpisodePanel>
     )..addListener(listener);
 
     _currentItemIndex = _findCurrentItemIndex;
+    _currentTabIndex = widget.initialTabIndex;
     _itemScrollController = List.generate(
       widget.list.length,
       (i) => ScrollController(
@@ -176,15 +177,15 @@ class _EpisodePanelState extends State<EpisodePanel>
       final favState =
           widget.ugcIntroController?.seasonFavState[widget.seasonId];
       if (favState != null) {
-        _favState = Success(favState).obs;
+        _favState = Success(favState);
       } else {
-        _favState = LoadingState<bool>.loading().obs;
+        _favState = LoadingState<bool>.loading();
         appRead(videoRepositoryProvider).videoRelation(bvid: widget.bvid).then(
           (result) {
             if (!mounted) return;
             if (result case Success(:final response)) {
               final seasonFav = response.seasonFav ?? false;
-              _favState!.value = Success(seasonFav);
+              if (mounted) setState(() { _favState = Success(seasonFav); });
               widget.ugcIntroController?.seasonFavState[widget.seasonId] =
                   seasonFav;
             }
@@ -199,7 +200,6 @@ class _EpisodePanelState extends State<EpisodePanel>
     _tabController
       ..removeListener(listener)
       ..dispose();
-    _favState?.close();
     for (final e in _itemScrollController) {
       e.dispose();
     }
@@ -591,7 +591,7 @@ class _EpisodePanelState extends State<EpisodePanel>
           );
           if (res.isSuccess) {
             SmartDialog.showToast('${response ? '取消' : ''}订阅成功');
-            _favState!.value = Success(!response);
+            setState(() { _favState = Success(!response); });
             widget.ugcIntroController?.seasonFavState[widget.seasonId] =
                 !response;
           } else {
@@ -613,7 +613,7 @@ class _EpisodePanelState extends State<EpisodePanel>
   );
 
   void _animToTopOrBottom({bool top = true}) {
-    final tabIndex = _currentTabIndex.value;
+    final tabIndex = _currentTabIndex;
     _itemScrollController[tabIndex].animTo(
       top ^ _isReversed[tabIndex]
           ? 0
@@ -639,7 +639,7 @@ class _EpisodePanelState extends State<EpisodePanel>
             widget.type.title,
             style: theme.textTheme.titleMedium,
           ),
-        if (_favState != null) Obx(() => _buildFavBtn(_favState!.value)),
+        if (_favState != null) _buildFavBtn(_favState!),
         iconButton(
           iconSize: 22,
           tooltip: '跳至顶部',
@@ -657,7 +657,7 @@ class _EpisodePanelState extends State<EpisodePanel>
           tooltip: '跳至当前',
           icon: const Icon(Icons.my_location),
           onPressed: () async {
-            final currentTabIndex = _currentTabIndex.value;
+            final currentTabIndex = _currentTabIndex;
             if (currentTabIndex != widget.initialTabIndex) {
               _tabController.animateTo(widget.initialTabIndex);
               await Future.delayed(const Duration(milliseconds: 225));
@@ -669,28 +669,19 @@ class _EpisodePanelState extends State<EpisodePanel>
           },
         ),
         if (widget.isSupportReverse == true)
-          Obx(
-            () {
-              return _currentTabIndex.value == widget.initialTabIndex
-                  ? _buildReverseBtn
-                  : const SizedBox.shrink();
-            },
-          ),
+          _currentTabIndex == widget.initialTabIndex
+              ? _buildReverseBtn
+              : const SizedBox.shrink(),
         const Spacer(),
-        Obx(
-          () {
-            final currentTabIndex = _currentTabIndex.value;
-            return iconButton(
-              iconSize: 22,
-              tooltip: _isReversed[currentTabIndex] ? '顺序' : '倒序',
-              icon: !_isReversed[currentTabIndex]
-                  ? const Icon(MdiIcons.sortNumericAscending)
-                  : const Icon(MdiIcons.sortNumericDescending),
-              onPressed: () => setState(() {
-                _isReversed[currentTabIndex] = !_isReversed[currentTabIndex];
-              }),
-            );
-          },
+        iconButton(
+          iconSize: 22,
+          tooltip: _isReversed[_currentTabIndex] ? '顺序' : '倒序',
+          icon: !_isReversed[_currentTabIndex]
+              ? const Icon(MdiIcons.sortNumericAscending)
+              : const Icon(MdiIcons.sortNumericDescending),
+          onPressed: () => setState(() {
+            _isReversed[_currentTabIndex] = !_isReversed[_currentTabIndex];
+          }),
         ),
         if (widget.onClose != null)
           iconButton(
