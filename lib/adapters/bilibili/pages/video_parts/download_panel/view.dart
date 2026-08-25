@@ -17,6 +17,8 @@ import 'package:skf/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/page.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
@@ -62,7 +64,7 @@ class DownloadPanel extends StatefulWidget {
 }
 
 class _DownloadPanelState extends State<DownloadPanel> {
-  final DownloadService _downloadService = Get.find<DownloadService>();
+  final DownloadService _downloadService = appRead(downloadServiceProvider);
   final ListController _listController = ListController();
 
   late final cidSet = widget.cidSet;
