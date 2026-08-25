@@ -407,7 +407,7 @@ class PgcIntroController extends CommonIntroController {
   }
 
   Future<void> queryIsFollowed() async {
-    final res = await Get.find<PgcRepository>().seasonStatus(seasonId!);
+    final res = await appRead(pgcRepositoryProvider).seasonStatus(seasonId!);
     if (res case Success(:final response)) {
       isFollowed = response['follow'] == 1;
       followStatus = response['follow_status'];
