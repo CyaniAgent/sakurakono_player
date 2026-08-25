@@ -12,6 +12,7 @@ import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
 import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_sign.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -100,7 +101,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   GStorage.userInfo.put('userInfoCache', userInfo);
                 } catch (_) {}
                 try {
-                  final ctr = Get.find<MineController>();
+              final ctr = appRead(mineControllerProvider);
                   ctr.userInfo.uname = data.name;
                   ctr.userInfo.face = data.face;
                   ctr.notifyListeners();
@@ -390,7 +391,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 GStorage.userInfo.put('userInfoCache', userInfo);
               } catch (_) {}
               try {
-                final ctr = Get.find<MineController>();
+              final ctr = appRead(mineControllerProvider);
                 ctr.userInfo.uname = _textController.text;
                 ctr.notifyListeners();
               } catch (_) {}
