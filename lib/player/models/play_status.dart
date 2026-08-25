@@ -10,10 +10,3 @@ enum PlayerStatus {
   bool get isPaused => this == PlayerStatus.paused;
 }
 
-typedef PlPlayerStatus = Rx<PlayerStatus>;
-
-extension PlPlayerStatusExt on PlPlayerStatus {
-  bool get isPlaying => value.isPlaying;
-  bool get isPaused => value.isPaused;
-  bool get isCompleted => value.isCompleted;
-}

@@ -6,7 +6,6 @@ import 'package:skf/player/player_controller.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 /// 通用播放器底部控制栏：进度条 + 分段/分段信息/高能进度条覆盖层。
 ///
