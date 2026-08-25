@@ -1,5 +1,7 @@
 import 'dart:io' show Platform;
 
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/common/widgets/animated_height.dart';
 import 'package:skf/common/widgets/color_palette.dart';
 import 'package:skf/main.dart' show MyApp;
@@ -145,7 +147,7 @@ class ColorSelectPage extends ConsumerWidget {
               );
               if (result != null) {
                 try {
-                  Get.find<MineController>().themeType = result;
+                  appRead(mineControllerProvider).themeType = result;
                 } catch (_) {}
                 notifier.setThemeType(result);
                 GStorage.setting.put(SettingBoxKey.themeMode, result.index);

@@ -1,6 +1,8 @@
 import 'dart:io' show Platform;
 import 'package:skf/router/app_navigator.dart';
 
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/setting/models/model.dart';
@@ -149,7 +151,7 @@ List<SettingsModel> get playSettings => [
       defaultVal: false,
       onChanged: (value) {
         try {
-          Get.find<MainControllerNotifier>().pauseOnMinimize = value;
+          appRead(mainControllerProvider).pauseOnMinimize = value;
         } catch (_) {}
       },
     ),

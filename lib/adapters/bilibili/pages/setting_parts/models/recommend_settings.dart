@@ -1,3 +1,5 @@
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/utils/recommend_filter.dart';
 import 'package:skf/pages/setting/models/model.dart';
@@ -23,7 +25,7 @@ List<SettingsModel> get recommendSettings => [
     defaultVal: true,
     onChanged: (value) {
       try {
-        Get.find<RcmdController>()
+        appRead(rcmdControllerProvider)
           ..enableSaveLastData = value
           ..lastRefreshAt = null;
       } catch (e) {
@@ -39,7 +41,7 @@ List<SettingsModel> get recommendSettings => [
     defaultVal: true,
     onChanged: (value) {
       try {
-        Get.find<RcmdController>()
+        appRead(rcmdControllerProvider)
           ..savedRcmdTip = value
           ..lastRefreshAt = null;
       } catch (e) {

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:skf/router/app_navigator.dart';
 import 'dart:math' as math;
 
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/common/widgets/color_palette.dart';
 import 'package:skf/common/widgets/custom_toast.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
@@ -365,7 +367,7 @@ List<SettingsModel> get styleSettings => [
     leading: const Icon(Icons.exit_to_app_outlined),
     setKey: SettingBoxKey.directExitOnBack,
     defaultVal: false,
-    onChanged: (value) => Get.find<MainControllerNotifier>().directExitOnBack = value,
+    onChanged: (value) => appRead(mainControllerProvider).directExitOnBack = value,
   ),
   if (Platform.isAndroid)
     NormalModel(
@@ -723,7 +725,7 @@ Future<void> _showDynBadgeDialog(
     ),
   );
   if (res != null) {
-    final mainController = Get.find<MainControllerNotifier>()
+    final mainController = appRead(mainControllerProvider)
       ..dynamicBadgeMode = DynamicBadgeMode.values[res.index];
     if (mainController.dynamicBadgeMode != DynamicBadgeMode.hidden) {
       mainController.getUnreadDynamic();
@@ -750,7 +752,7 @@ Future<void> _showMsgBadgeDialog(
     ),
   );
   if (res != null) {
-    final mainController = Get.find<MainControllerNotifier>()
+    final mainController = appRead(mainControllerProvider)
       ..msgBadgeMode = DynamicBadgeMode.values[res.index];
     if (mainController.msgBadgeMode != DynamicBadgeMode.hidden) {
       mainController.queryUnreadMsg(true);
@@ -776,7 +778,7 @@ Future<void> _showMsgUnReadDialog(
     ),
   );
   if (res != null) {
-    final mainController = Get.find<MainControllerNotifier>()..msgUnReadTypes = res;
+    final mainController = appRead(mainControllerProvider)..msgUnReadTypes = res;
     if (mainController.msgBadgeMode != DynamicBadgeMode.hidden) {
       mainController.queryUnreadMsg();
     }
@@ -876,7 +878,7 @@ Future<void> _showThemeTypeDialog(
   );
   if (res != null) {
     try {
-      Get.find<MineController>().themeType = res;
+      appRead(mineControllerProvider).themeType = res;
     } catch (_) {}
     GStorage.setting.put(SettingBoxKey.themeMode, res.index);
     Get.changeThemeMode(ThemeUtils.themeMode = res.toThemeMode);

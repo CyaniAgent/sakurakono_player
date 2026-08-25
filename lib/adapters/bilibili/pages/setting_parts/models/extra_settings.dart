@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'dart:math' show max;
 
 import 'package:skf/common/widgets/custom_icon.dart';
@@ -60,7 +61,7 @@ List<SettingsModel> get extraSettings => [
       defaultVal: true,
       onChanged: (value) {
         try {
-          Get.find<MainControllerNotifier>().minimizeOnExit = value;
+          appRead(mainControllerProvider).minimizeOnExit = value;
         } catch (_) {}
       },
     ),
@@ -101,7 +102,7 @@ List<SettingsModel> get extraSettings => [
     switchModel: SwitchModel.split(
       defaultVal: true,
       setKey: SettingBoxKey.checkDynamic,
-      onChanged: (value) => Get.find<MainControllerNotifier>().checkDynamic = value,
+      onChanged: (value) => appRead(mainControllerProvider).checkDynamic = value,
       onTap: _showDynDialog,
     ),
   ),
@@ -485,7 +486,7 @@ List<SettingsModel> get extraSettings => [
     defaultVal: false,
     onChanged: (val) {
       try {
-        final controller = Get.find<HomeControllerNotifier>()..enableSearchWord = val;
+        final controller = appRead(homeControllerProvider)..enableSearchWord = val;
         if (val) {
           controller.querySearchDefault();
         } else {
@@ -730,7 +731,7 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
             if (downloadPath == defPath) return;
             downloadPath = defPath;
             setState();
-            Get.find<DownloadService>().initDownloadList();
+            appRead(downloadServiceProvider).initDownloadList();
             GStorage.setting.delete(SettingBoxKey.downloadPath);
           },
           child: const Text('重置', style: TextStyle(fontSize: 14)),
@@ -742,7 +743,7 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
             if (path == null || path == downloadPath) return;
             downloadPath = path;
             setState();
-            Get.find<DownloadService>().initDownloadList();
+            appRead(downloadServiceProvider).initDownloadList();
             GStorage.setting.put(SettingBoxKey.downloadPath, path);
           },
           child: const Text('设置新路径', style: TextStyle(fontSize: 14)),
@@ -780,7 +781,7 @@ void _showDynDialog(BuildContext context) {
               final val = int.parse(dynamicPeriod);
               AppNavigator.back();
               GStorage.setting.put(SettingBoxKey.dynamicPeriod, val);
-              Get.find<MainControllerNotifier>().dynamicPeriod = val * 60 * 1000;
+              appRead(mainControllerProvider).dynamicPeriod = val * 60 * 1000;
             } catch (e) {
               SmartDialog.showToast(e.toString());
             }
