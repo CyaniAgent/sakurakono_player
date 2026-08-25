@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:math' show max;
 
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
-import 'package:skf/core/repository/fav_repository.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
@@ -78,7 +77,7 @@ class PgcIntroController extends CommonIntroController {
 
   // \u83b7\u53d6\u70b9\u8d5e/\u6295\u5e01/\u6536\u85cf\u72b6\u6001
   Future<void> queryPgcLikeCoinFav() async {
-    final result = await Get.find<VideoRepository>().pgcLikeCoinFav(epId: '${epId!}');
+    final result = await appRead(videoRepositoryProvider).pgcLikeCoinFav(epId: '${epId!}');
     if (result case Success(:final response)) {
       final hasLike = response.like == 1;
       final hasFav = response.favorite == 1;
@@ -105,7 +104,7 @@ class PgcIntroController extends CommonIntroController {
       return;
     }
     final newVal = !hasLike;
-    final result = await Get.find<VideoRepository>().likeVideo(bvid: bvid, type: newVal);
+    final result = await appRead(videoRepositoryProvider).likeVideo(bvid: bvid, type: newVal);
     if (result case Success(:final response)) {
       SmartDialog.showToast(newVal ? response : '\u53d6\u6d88\u8d5e');
       pgcItem.stat?.like += newVal ? 1 : -1;
@@ -240,7 +239,7 @@ class PgcIntroController extends CommonIntroController {
       final String bvid = episode.bvid ?? this.bvid;
       final int aid = episode.aid ?? IdUtils.bv2av(bvid);
       final int? cid =
-          episode.cid ?? await Get.find<SearchRepository>().ab2c(aid: aid, bvid: bvid);
+          episode.cid ?? await appRead(searchRepositoryProvider).ab2c(aid: aid, bvid: bvid);
       if (cid == null) {
         return false;
       }
@@ -289,7 +288,7 @@ class PgcIntroController extends CommonIntroController {
 
   // \u8ffd\u756a
   Future<void> pgcAdd() async {
-    final result = await Get.find<VideoRepository>().pgcAdd(seasonId: pgcItem.seasonId);
+    final result = await appRead(videoRepositoryProvider).pgcAdd(seasonId: pgcItem.seasonId);
     if (result case Success(:final response)) {
       isFollowed = true;
       followStatus = 2;
@@ -301,7 +300,7 @@ class PgcIntroController extends CommonIntroController {
 
   // \u53d6\u6d88\u8ffd\u756a
   Future<void> pgcDel() async {
-    final result = await Get.find<VideoRepository>().pgcDel(seasonId: pgcItem.seasonId);
+    final result = await appRead(videoRepositoryProvider).pgcDel(seasonId: pgcItem.seasonId);
     if (result case Success(:final response)) {
       isFollowed = false;
       SmartDialog.showToast(response);
@@ -311,7 +310,7 @@ class PgcIntroController extends CommonIntroController {
   }
 
   Future<void> pgcUpdate(int status) async {
-    final result = await Get.find<VideoRepository>().pgcUpdate(
+    final result = await appRead(videoRepositoryProvider).pgcUpdate(
       seasonId: pgcItem.seasonId.toString(),
       status: status,
     );
@@ -381,7 +380,7 @@ class PgcIntroController extends CommonIntroController {
       SmartDialog.showToast('\u5df2\u4e09\u8fde');
       return;
     }
-    final result = await Get.find<VideoRepository>().pgcTriple(epId: '${epId!}', seasonId: seasonId?.toString());
+    final result = await appRead(videoRepositoryProvider).pgcTriple(epId: '${epId!}', seasonId: seasonId?.toString());
     if (result case Success(:final response)) {
       late final stat = pgcItem.stat;
       if (response.like == 1 && !hasLike) {
@@ -431,8 +430,8 @@ class PgcIntroController extends CommonIntroController {
 
   Future<void> onFavPugv(bool isFav) async {
     final res = isFav
-      ? await Get.find<FavRepository>().delFavPugv(seasonId!)
-      : await Get.find<FavRepository>().addFavPugv(seasonId!);
+      ? await appRead(favRepositoryProvider).delFavPugv(seasonId!)
+      : await appRead(favRepositoryProvider).addFavPugv(seasonId!);
     if (res.isSuccess) {
       isFav = !isFav;
       SmartDialog.showToast('${isFav ? '\u53d6\u6d88' : ''}\u6536\u85cf\u6210\u529f');

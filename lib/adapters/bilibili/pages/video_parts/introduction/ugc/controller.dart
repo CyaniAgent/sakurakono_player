@@ -11,7 +11,7 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models_new/media_list/media_list.dart';
@@ -811,7 +811,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       return null;
     }
     SmartDialog.showLoading(msg: '正在获取AI总结');
-    final res = await Get.find<VideoRepository>().aiConclusion(
+    final res = await appRead(videoRepositoryProvider).aiConclusion(
       bvid: bvid,
       cid: cid,
       upMid: mid,

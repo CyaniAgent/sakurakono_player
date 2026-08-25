@@ -1,7 +1,6 @@
 import 'package:skf/core/models/reply_types.dart';
-import 'package:skf/core/repository/reply_repository.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
@@ -33,7 +32,7 @@ class ReplySearchChildController
   @override
   Future<LoadingState<CoreSearchItemReply>> customGetData() async {
     final result = await (_ref?.read(replyRepositoryProvider) ??
-            Get.find<ReplyRepository>())
+            appRead(replyRepositoryProvider))
         .searchItem(
       page: page,
       itemType: searchType == ReplySearchType.video
