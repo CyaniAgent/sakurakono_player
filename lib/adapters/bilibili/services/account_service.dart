@@ -1,6 +1,7 @@
 
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:get/get.dart';
 
 /// Deprecated - use [Get.find]<[AccountProvider]>() instead.
@@ -24,7 +25,7 @@ class AccountService extends GetxService {
 /// Deprecated - use [AccountMixin] from
 /// `package:skf/core/account/account_mixin.dart` instead.
 mixin AccountMixin on GetLifeCycleBase {
-  AccountService get accountService => Get.find<AccountService>();
+  AccountService get accountService => appRead(accountServiceProvider);
 
   void onChangeAccount(bool isLogin);
 }

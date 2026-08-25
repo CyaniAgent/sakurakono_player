@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skf/router/app_navigator.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/pages/home/view.dart' show msgBadge;
 import 'package:skf/adapters/bilibili/pages/login/controller.dart';
@@ -43,17 +44,17 @@ class BiliMineActions implements MineActions {
   ];
 
   @override
-  bool get hasHome => Get.find<MainControllerNotifier>().hasHome;
+  bool get hasHome => appRead(mainControllerProvider).hasHome;
 
   @override
   bool get isMainMineTab {
-    final mainController = Get.find<MainControllerNotifier>();
+    final mainController = appRead(mainControllerProvider);
     return mainController.navigationBars.first.id != MainTabIds.mine &&
         mainController.selectedIndex == 0;
   }
 
   @override
-  Widget? buildMsgBadge() => msgBadge(Get.find<MainControllerNotifier>());
+  Widget? buildMsgBadge() => msgBadge(appRead(mainControllerProvider));
 
   @override
   void openSearch() => AppNavigator.toNamed('/search');

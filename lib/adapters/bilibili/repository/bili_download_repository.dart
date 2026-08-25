@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/http/download.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_media_file_info.dart'
@@ -50,7 +51,7 @@ class BiliDownloadRepository implements DownloadRepository {
   @override
   Future<LoadingState<List<CoreDownloadEntryInfo>>> downloadList() async {
     try {
-      final service = Get.find<DownloadService>();
+      final service = appRead(downloadServiceProvider);
       return Success([
         for (final e in service.downloadList)
           CoreDownloadEntryInfo.fromJson(e.toJson())
@@ -73,7 +74,7 @@ class BiliDownloadRepository implements DownloadRepository {
   @override
   Future<LoadingState<void>> removeDownload(String entryDirPath) async {
     try {
-      final service = Get.find<DownloadService>();
+      final service = appRead(downloadServiceProvider);
       final entry = service.downloadList
               .where((e) => e.entryDirPath == entryDirPath)
               .firstOrNull ??
@@ -97,7 +98,7 @@ class BiliDownloadRepository implements DownloadRepository {
   @override
   Future<LoadingState<void>> clearCompletedDownloads() async {
     try {
-      final service = Get.find<DownloadService>();
+      final service = appRead(downloadServiceProvider);
       // Snapshot: deleteDownload() mutates downloadList while iterating.
       final completed = List<BiliDownloadEntryInfo>.of(service.downloadList);
       for (final e in completed) {

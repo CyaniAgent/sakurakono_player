@@ -6,6 +6,7 @@ import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/pages/download/controller.dart';
 import 'package:skf/pages/fav/video/controller.dart';
+import 'package:skf/adapters/bilibili/services/account_service.dart';
 
 final mainControllerProvider = Provider<MainControllerNotifier>((ref) {
   throw UnimplementedError('Obtained via Get.find in adapter bridge');
@@ -32,5 +33,9 @@ final downloadPageControllerProvider = Provider<DownloadPageController>((ref) {
 });
 
 final favControllerProvider = Provider<FavController>((ref) {
+  throw UnimplementedError('Obtained via Get.find in adapter bridge');
+});
+
+final accountServiceProvider = Provider<AccountService>((ref) {
   throw UnimplementedError('Obtained via Get.find in adapter bridge');
 });
