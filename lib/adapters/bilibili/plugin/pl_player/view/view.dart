@@ -244,8 +244,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 时间进度
-      BottomControlType.time => Obx(
-        () => VideoTime(
+      BottomControlType.time => ListenableBuilder(
+        listenable: plPlayerController,
+        builder: (context, _) => VideoTime(
           position: DurationUtils.formatDuration(
             plPlayerController.position,
           ),
@@ -256,8 +257,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 高能进度条
-      BottomControlType.dmChart => Obx(
-        () {
+      BottomControlType.dmChart => ListenableBuilder(
+        listenable: videoDetailController,
+        builder: (context, _) {
           final list = videoDetailController.dmTrend.value?.dataOrNull;
           if (list != null && list.isNotEmpty) {
             final show = videoDetailController.showDmTrendChart.value;
@@ -282,8 +284,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 超分辨率
-      BottomControlType.superResolution => Obx(
-        () {
+      BottomControlType.superResolution => ListenableBuilder(
+        listenable: plPlayerController,
+        builder: (context, _) {
           final type = plPlayerController.superResolutionType.value;
           return PopupMenuButton<SuperResolutionType>(
             tooltip: '超分辨率',
@@ -321,8 +324,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 分段信息
-      BottomControlType.viewPoints => Obx(
-        () {
+      BottomControlType.viewPoints => ListenableBuilder(
+        listenable: videoDetailController,
+        builder: (context, _) {
           if (videoDetailController.viewPointList.isNotEmpty) {
             return ComBtn(
               width: widgetWidth,
@@ -409,8 +413,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 画面比例
-      BottomControlType.fit => Obx(
-        () {
+      BottomControlType.fit => ListenableBuilder(
+        listenable: plPlayerController,
+        builder: (context, _) {
           final fit = plPlayerController.videoFit;
           return PopupMenuButton<VideoFitType>(
             tooltip: '画面比例',
@@ -447,8 +452,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         },
       ),
 
-      BottomControlType.aiTranslate => Obx(
-        () {
+      BottomControlType.aiTranslate => ListenableBuilder(
+        listenable: videoDetailController,
+        builder: (context, _) {
           final list = videoDetailController.languages.value;
           if (list != null && list.isNotEmpty) {
             return PopupMenuButton<String>(
@@ -502,8 +508,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 字幕
-      BottomControlType.subtitle => Obx(
-        () {
+      BottomControlType.subtitle => ListenableBuilder(
+        listenable: videoDetailController,
+        builder: (context, _) {
           if (videoDetailController.subtitles.isNotEmpty) {
             final val = videoDetailController.vttSubtitlesIndex.value;
             return PopupMenuButton<int>(
@@ -562,8 +569,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       ),
 
       /// 播放速度
-      BottomControlType.speed => Obx(
-        () => PopupMenuButton<double>(
+      BottomControlType.speed => ListenableBuilder(
+        listenable: plPlayerController,
+        builder: (context, _) =>
           tooltip: '倍速',
           requestFocus: false,
           initialValue: plPlayerController.playbackSpeed,
