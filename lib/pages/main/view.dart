@@ -21,7 +21,8 @@ import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:win32/win32.dart' as kernel32;
@@ -41,7 +42,7 @@ class _MainAppState extends PopScopeState<MainApp>
         WidgetsBindingObserver,
         WindowListener,
         TrayListener {
-  final _mainController = Get.find<MainControllerNotifier>();
+  final _mainController = appRead(mainControllerProvider);
   late final _host = MainHost.of();
   late final _setting = GStorage.setting;
   late EdgeInsets _padding;

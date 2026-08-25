@@ -9,7 +9,8 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 class FavVideoPage extends StatefulWidget {
   const FavVideoPage({super.key, this.actions});
 
@@ -21,7 +22,7 @@ class FavVideoPage extends StatefulWidget {
 }
 class _FavVideoPageState extends State<FavVideoPage>
     with AutomaticKeepAliveClientMixin, GridMixin {
-  final FavController _favController = Get.find<FavController>();
+  final FavController _favController = appRead(favControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

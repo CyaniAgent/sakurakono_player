@@ -13,7 +13,7 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 
 
 // ---------------------------------------------------------------------------
@@ -109,7 +109,7 @@ class HomeControllerNotifier extends ChangeNotifier
 
     if (hideTopBar) {
       try {
-        final mainCtr = Get.find<MainControllerNotifier>();
+        final mainCtr = appRead(mainControllerProvider);
         switch (mainCtr.barHideType) {
           case BarHideType.instant:
             _showTopBar = true;

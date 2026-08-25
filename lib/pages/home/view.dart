@@ -11,7 +11,8 @@ import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -24,8 +25,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends CommonPageState<HomePage>
     with AutomaticKeepAliveClientMixin {
-  final _homeController = Get.find<HomeControllerNotifier>();
-  final _mainController = Get.find<MainControllerNotifier>();
+  final _homeController = appRead(homeControllerProvider);
+  final _mainController = appRead(mainControllerProvider);
   late final _host = MainHost.of();
 
   @override
