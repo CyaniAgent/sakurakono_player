@@ -362,8 +362,9 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
                   updatePanelType(PanelType.keyboard);
                 }
               },
-              child: Obx(
-                () => TextField(
+              ListenableBuilder(
+                listenable: this,
+                builder: (context, _) => TextField(
                   controller: editController,
                   autofocus: false,
                   readOnly: readOnly.value,
@@ -387,8 +388,9 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
               ),
             ),
           ),
-          Obx(
-            () => enablePublish.value
+          ListenableBuilder(
+            listenable: this,
+            builder: (context, _) => enablePublish.value
                 ? iconButton(
                     iconSize: 22,
                     iconColor: themeData.colorScheme.onSurfaceVariant,
@@ -401,8 +403,9 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
                 : const SizedBox.shrink(),
           ),
           const SizedBox(width: 12),
-          Obx(
-            () => iconButton(
+          ListenableBuilder(
+            listenable: this,
+            builder: (context, _) => iconButton(
               tooltip: '发送',
               iconSize: 22,
               iconColor: enablePublish.value

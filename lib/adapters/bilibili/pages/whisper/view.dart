@@ -44,8 +44,9 @@ class _WhisperPageState extends State<WhisperPage> {
             ),
             icon: const Icon(Icons.account_circle_outlined),
           ),
-          Obx(() {
-            final outsideItem = _controller.outsideItem.value;
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) {
             if (outsideItem != null && outsideItem.isNotEmpty) {
               return Row(
                 mainAxisSize: .min,
@@ -64,8 +65,9 @@ class _WhisperPageState extends State<WhisperPage> {
             }
             return const SizedBox.shrink();
           }),
-          Obx(() {
-            final threeDotItems = _controller.threeDotItems.value;
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) {
             if (threeDotItems != null && threeDotItems.isNotEmpty) {
               return PopupMenuButton(
                 itemBuilder: (context) {
@@ -175,8 +177,9 @@ class _WhisperPageState extends State<WhisperPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Obx(
-                      () {
+                    ListenableBuilder(
+                      listenable: _controller,
+                      builder: (context, _) {
                         final count = _controller.unreadCounts[index];
                         return Badge(
                           isLabelVisible: count > 0,

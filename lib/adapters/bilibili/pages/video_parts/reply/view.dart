@@ -96,8 +96,9 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                   backgroundColor: colorScheme.surface,
                   child: Padding(
                     padding: const .fromLTRB(12, 2.5, 6, 2.5),
-                    child: Obx(() {
-                      final sortType = _videoReplyController.sortType.value;
+                    ListenableBuilder(
+                      listenable: _videoReplyController,
+                      builder: (context, _) {
                       return Row(
                         mainAxisAlignment: .spaceBetween,
                         children: [
@@ -126,7 +127,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                     }),
                   ),
                 ),
-                Obx(() => _buildBody(_videoReplyController.loadingState)),
+                ListenableBuilder(listenable: _videoReplyController, builder: (context, _) => _buildBody(_videoReplyController.loadingState)),
               ],
             ),
             Positioned(

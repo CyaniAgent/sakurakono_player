@@ -312,8 +312,9 @@ class _WhisperDetailPageState
                   updatePanelType(PanelType.keyboard);
                 }
               },
-              child: Obx(
-                () => RichTextField(
+              ListenableBuilder(
+                listenable: this,
+                builder: (context, _) => RichTextField(
                   key: key,
                   readOnly: readOnly.value,
                   focusNode: focusNode,
@@ -339,8 +340,9 @@ class _WhisperDetailPageState
               ),
             ),
           ),
-          Obx(
-            () {
+          ListenableBuilder(
+            listenable: this,
+            builder: (context, _) {
               final enablePublish = this.enablePublish.value;
               return IconButton(
                 onPressed: () async {
