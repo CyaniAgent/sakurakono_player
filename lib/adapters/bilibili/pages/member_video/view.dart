@@ -132,44 +132,9 @@ class _MemberVideoState extends State<MemberVideo>
             },
             child: child,
           ),
-          Obx(
-            () => !_controller.isLocating.value
-                ? Positioned(
-                    right: kFloatingActionButtonMargin,
-                    bottom: 0,
-                    child: SlideTransition(
-                      position: fabAnimation,
-                      child: Padding(
-                        padding: .only(
-                          bottom: padding.bottom + kFloatingActionButtonMargin,
-                        ),
-                        child: FloatingActionButton.extended(
-                          onPressed: () {
-                            final fromViewAid = _controller.fromViewAid;
-                            _controller.isLocating.value = true;
-                            final locatedIndex =
-                                _controller.loadingState.dataOrNull
-                                    ?.indexWhere(
-                                      (i) => i.param == fromViewAid,
-                                    ) ??
-                                -1;
-                            if (locatedIndex == -1) {
-                              _controller
-                                ..lastAid = fromViewAid
-                                ..reload = true
-                                ..page = 0
-                                ..loadingState = LoadingState.loading()
-                                ..queryData();
-                            } else {
-                              _jumpToIndex(locatedIndex);
-                            }
-                          },
-                          label: const Text('定位至上次观看'),
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (_, __) => !_controller.isLocating
           ),
         ],
       );

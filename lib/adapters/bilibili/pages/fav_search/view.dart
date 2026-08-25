@@ -60,27 +60,17 @@ class _FavSearchPageState
 
   @override
   List<Widget>? get extraActions => [
-    Obx(
-      () {
+    ListenableBuilder(
+      listenable: controller,
+      builder: (_, __) {
         return PopupMenuButton<CoreFavOrderType>(
           icon: const Icon(Icons.sort),
           requestFocus: false,
-          initialValue: controller.order.value,
+          initialValue: controller.order,
           tooltip: '排序方式',
           onSelected: (value) => controller
-            ..order.value = value
+            ..order = value
             ..onReload(),
-          itemBuilder: (context) => CoreFavOrderType.values
-              .map(
-                (e) => PopupMenuItem(
-                  value: e,
-                  child: Text(e.label),
-                ),
-              )
-              .toList(),
-        );
-      },
-    ),
   ];
 
   @override

@@ -16,11 +16,11 @@ class LiveFollowController
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
 
-  final count = RxnInt();
+  int? count;
 
   @override
   void checkIsEnd(int length) {
-    final count = this.count.value;
+    final count = this.count;
     if (count != null && length >= count) {
       isEnd = true;
     }
@@ -28,7 +28,7 @@ class LiveFollowController
 
   @override
   List<CoreLiveFollowItem>? getDataList(CoreLiveFollowData response) {
-    count.value = response.liveCount;
+    count = response.liveCount;
     return response.list;
   }
 

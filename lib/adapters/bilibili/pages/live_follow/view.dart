@@ -26,9 +26,10 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Obx(
-          () {
-            final count = _controller.count.value;
+        title: ListenableBuilder(
+          listenable: _controller,
+          builder: (_, __) {
+            final count = _controller.count;
             return Text(count != null ? '$count人正在直播' : '关注直播');
           },
         ),

@@ -128,12 +128,12 @@ class _MemberOpusState extends State<MemberOpus>
                     ),
                   ),
                   icon: const Icon(size: 20, Icons.sort),
-                  label: Obx(
-                    () {
-                      final type = _controller.type.value;
+                  label: ListenableBuilder(
+                    listenable: _controller,
+                    builder: (_, __) {
+                      final type = _controller.type;
                       return Text(type.text ?? type.tabName!);
                     },
-                  ),
                 ),
               ),
             ),

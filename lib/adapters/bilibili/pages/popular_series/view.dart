@@ -34,13 +34,15 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Obx(() {
-          final config = _controller.config.value;
-          if (config != null) {
-            return Text(config['name'] as String? ?? '');
-          }
-          return const Text('每周必看');
-        }),
+        title: ListenableBuilder(
+          listenable: _controller,
+          builder: (_, __) {
+            final config = _controller.config;
+            if (config != null) {
+              return Text(config['name'] as String? ?? '');
+            }
+            return const Text('每周必看');
+          },
       ),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,

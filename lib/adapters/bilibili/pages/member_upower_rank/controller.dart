@@ -19,7 +19,7 @@ class UpowerRankController
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
 
-  late final Rx<List<CoreLevelInfo>?> tabs = Rx<List<CoreLevelInfo>?>(null);
+  late final List<CoreLevelInfo>? tabs;
 
   @override
   List<CoreUpowerRankInfo>? getDataList(CoreUpowerRankData response) {
@@ -27,7 +27,7 @@ class UpowerRankController
     if (privilegeType == null &&
         response.coreLevelInfo != null &&
         response.coreLevelInfo!.length > 1) {
-      tabs.value = response.coreLevelInfo;
+      tabs = response.coreLevelInfo;
     }
     return response.rankInfo;
   }

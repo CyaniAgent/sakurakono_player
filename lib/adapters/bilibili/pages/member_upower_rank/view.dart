@@ -109,65 +109,11 @@ class _UpowerRankPageState extends State<UpowerRankPage>
         ),
         body: Padding(
           padding: EdgeInsets.only(left: padding.left, right: padding.right),
-          child: Obx(
-            () {
-              final tabs = _controller.tabs.value;
+          child: ListenableBuilder(
+            listenable: _controller,
+            builder: (_, __) {
+              final tabs = _controller.tabs;
               return tabs != null
-                  ? DefaultTabController(
-                      length: tabs.length,
-                      child: Builder(
-                        builder: (context) {
-                          return Column(
-                            children: [
-                              TabBar(
-                                isScrollable: true,
-                                tabAlignment: TabAlignment.start,
-                                tabs: tabs
-                                    .map(
-                                      (e) => Tab(
-                                        text:
-                                            '${e.name!}(${e.memberTotal ?? 0})',
-                                      ),
-                                    )
-                                    .toList(),
-                                onTap: (index) {
-                                  if (!DefaultTabController.of(
-                                    context,
-                                  ).indexIsChanging) {
-                                    try {
-                                      if (index == 0) {
-                                        _controller.animateToTop();
-                                      } else {
-                                        Get.find<UpowerRankController>(
-                                          tag:
-                                              '$_upMid${tabs[index].privilegeType}',
-                                        ).animateToTop();
-                                      }
-                                    } catch (_) {}
-                                  }
-                                },
-                              ),
-                              Expanded(
-                                child: tabBarView(
-                                  children: [
-                                    KeepAliveWrapper(child: child),
-                                    ...tabs
-                                        .skip(1)
-                                        .map(
-                                          (e) => UpowerRankPage(
-                                            privilegeType: e.privilegeType,
-                                          ),
-                                        ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    )
-                  : child;
-            },
           ),
         ).constraintWidth(),
       );

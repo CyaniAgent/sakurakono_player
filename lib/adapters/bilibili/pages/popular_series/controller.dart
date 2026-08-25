@@ -14,7 +14,7 @@ class PopularSeriesController
   void attachRef(Ref ref) { _ref = ref; }
   late int number;
 
-  final config = Rxn<Map<String, dynamic>>();
+  Map<String, dynamic>? config;
   String? reminder;
   List<CorePopularSeriesListItem>? seriesList;
 
@@ -39,7 +39,7 @@ class PopularSeriesController
 
   @override
   List<CoreHotVideoItemModel>? getDataList(CorePopularSeriesOneData response) {
-    config.value = response.config;
+    config = response.config;
     reminder = response.reminder;
     return response.list;
   }
