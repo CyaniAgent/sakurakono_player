@@ -1,7 +1,7 @@
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -17,9 +17,9 @@ class FavController
   /// Call this during controller initialization after construction.
   void attachRef(Ref ref) { _ref = ref; }
 
-  late final bool isLogin = Get.find<AccountProvider>().isLogin;
+  late final bool isLogin = appRead(accountProvider).isLogin;
 
-  late final int mid = Get.find<AccountProvider>().userId ?? 0;
+  late final int mid = appRead(accountProvider).userId ?? 0;
 
 
   @override

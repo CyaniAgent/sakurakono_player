@@ -4,7 +4,7 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/core/models/fav_types.dart';
@@ -23,7 +23,7 @@ class PgcController
   late final showPgcTimeline =
       tabType == HomeTabType.bangumi && Pref.showPgcTimeline;
 
-  AccountProvider get accountService => Get.find<AccountProvider>();
+  AccountProvider get accountService => appRead(accountProvider);
 
   PgcController({required this.tabType}) : indexType = tabType == HomeTabType.cinema ? 102 : null {
     accountService.onAuthStateChanged({});

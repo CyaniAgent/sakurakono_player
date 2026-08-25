@@ -1,11 +1,11 @@
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 
 /// Mixin for controllers that need to react to auth state changes.
 /// Substitutes the old Bilibili-specific AccountMixin.
 mixin AccountMixin {
-  AccountProvider get accountService => Get.find<AccountProvider>();
+  AccountProvider get accountService => appRead(accountProvider);
 
   void onChangeAccount(bool isLogin);
 

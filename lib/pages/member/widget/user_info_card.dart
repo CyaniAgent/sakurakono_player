@@ -33,7 +33,7 @@ import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class UserInfoCard extends StatelessWidget {
   const UserInfoCard({
@@ -418,7 +418,7 @@ class UserInfoCard extends StatelessWidget {
           if (!isOwner)
             IconButton.outlined(
               onPressed: () {
-                if (Get.find<AccountProvider>().isLogin) {
+                if (appRead(accountProvider).isLogin) {
                   int mid = int.parse(card.mid.toString());
                   AppNavigator.toNamed(
                     '/whisperDetail',

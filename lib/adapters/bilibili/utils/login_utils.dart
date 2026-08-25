@@ -15,7 +15,7 @@ import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart' show Digest;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 abstract final class LoginUtils {
   static FutureOr setWebCookie([Account? account]) {
@@ -51,7 +51,7 @@ abstract final class LoginUtils {
       setWebCookie(account);
       RequestUtils.syncHistoryStatus();
       if (response.isLogin == true) {
-        final accountService = Get.find<AccountProvider>()
+        final accountService = appRead(accountProvider)
           ..rxFace.value = response.face!;
 
         if (accountService.isLogin) {
@@ -82,7 +82,7 @@ abstract final class LoginUtils {
   }
 
   static Future<void> onLogoutMain() {
-    Get.find<AccountProvider>()
+    appRead(accountProvider)
       ..rxFace.value = ''
       ..rxIsLogin.value = false;
 

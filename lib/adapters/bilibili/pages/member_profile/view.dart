@@ -11,6 +11,7 @@ import 'package:skf/adapters/bilibili/models/common/member/profile_type.dart';
 import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
 import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_sign.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -43,7 +44,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       LoadingState<AccountMyInfoData>.loading();
   late final TextEditingController _textController;
   late final _imagePicker = ImagePicker();
-  AccountProvider accountService = Get.find<AccountProvider>();
+  AccountProvider accountService = appRead(accountProvider);
 
   @override
   void initState() {

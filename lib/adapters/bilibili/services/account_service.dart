@@ -1,5 +1,6 @@
 
 import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:get/get.dart';
 
 /// Deprecated - use [Get.find]<[AccountProvider]>() instead.
@@ -14,7 +15,7 @@ class AccountService extends GetxService {
   @override
   void onInit() {
     super.onInit();
-    final provider = Get.find<AccountProvider>();
+    final provider = appRead(accountProvider);
     isLogin = provider.isLogin;
     face = provider.face ?? '';
   }

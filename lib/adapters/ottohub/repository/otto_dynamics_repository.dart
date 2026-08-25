@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/utils/pair.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/dynamics_types.dart';
@@ -108,7 +108,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   /// result in a 404 error from the server (no user with ID 0 exists).
   int get _currentUid {
     try {
-      final uid = Get.find<AccountProvider>().userId;
+      final uid = appRead(accountProvider).userId;
       if (uid != null) return uid;
     } catch (e) {
       debugPrint('OttoDynamicsRepository._currentUid error: $e');

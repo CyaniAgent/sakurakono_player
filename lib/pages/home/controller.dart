@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/pages/common/common_page.dart';
@@ -93,7 +94,7 @@ class HomeControllerNotifier extends ChangeNotifier
 
 
   // -- Account --
-  AccountProvider get accountService => Get.find<AccountProvider>();
+  AccountProvider get accountService => appRead(accountProvider);
 
   void _init() {
     final hideTopBar = !Pref.useSideBar && Pref.hideTopBar;
