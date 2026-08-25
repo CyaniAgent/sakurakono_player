@@ -273,8 +273,9 @@ class _DynamicDetailPageState
   PreferredSizeWidget _buildAppBar() => AppBar(
     title: Padding(
       padding: const EdgeInsets.only(right: 12),
-      child: Obx(
-        () {
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
           final showTitle = controller.showTitle.value;
           return AnimatedOpacity(
             opacity: showTitle ? 1 : 0,
@@ -330,16 +331,18 @@ class _DynamicDetailPageState
         },
         tabs: [
           Tab(
-            child: Obx(() {
-              final count = controller.count.value;
+            child: ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) {
               return Text(
                 '${DynType.reply.label}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
               );
             }),
           ),
           Tab(
-            child: Obx(() {
-              final count = _reactController.count.value;
+            child: ListenableBuilder(
+              listenable: _reactController,
+              builder: (context, _) {
               return Text(
                 '${DynType.reaction.label}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
               );
@@ -356,7 +359,7 @@ class _DynamicDetailPageState
       physics: ReloadScrollPhysics(controller: controller),
       slivers: [
         buildReplyHeader(isPortrait),
-        Obx(() => replyList(controller.loadingState)),
+        ListenableBuilder(listenable: controller, builder: (context, _) => replyList(controller.loadingState)),
       ],
     );
     final child = tabBarView(
@@ -657,8 +660,9 @@ class _DynamicDetailPageState
     final secondary = theme.colorScheme.secondary;
     final child = Padding(
       padding: const .fromLTRB(12, 2.5, 6, 2.5),
-      child: Obx(
-        () {
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
           final sortType = controller.sortType.value;
           return Row(
             mainAxisAlignment: .spaceBetween,
