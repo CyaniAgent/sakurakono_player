@@ -14,6 +14,8 @@ import 'package:skf/adapters/bilibili/pages/rank/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:get/get.dart';
 
 class HotPage extends StatefulWidget {
@@ -79,7 +81,7 @@ class _HotPageState extends State<HotPage>
                       title: '排行榜',
                       onTap: () {
                         try {
-                          final homeController = Get.find<HomeControllerNotifier>();
+                          final homeController = appRead(homeControllerProvider);
                           final index = homeController.tabs.indexWhere(
                             (t) => t.id == HomeTabType.rank.name,
                           );

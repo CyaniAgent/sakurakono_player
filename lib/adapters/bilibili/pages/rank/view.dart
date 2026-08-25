@@ -8,6 +8,8 @@ import 'package:skf/adapters/bilibili/pages/rank/zone/view.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:get/get.dart';
 
 class RankPage extends ConsumerStatefulWidget {
@@ -20,7 +22,7 @@ class RankPage extends ConsumerStatefulWidget {
 class _RankPageState extends ConsumerState<RankPage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final MainControllerNotifier _mainCtr = Get.find<MainControllerNotifier>();
+  final MainControllerNotifier _mainCtr = appRead(mainControllerProvider);
 
   @override
   bool get wantKeepAlive => true;
