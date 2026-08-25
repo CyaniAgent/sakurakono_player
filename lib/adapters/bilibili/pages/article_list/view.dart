@@ -41,7 +41,10 @@ class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            Obx(() => _buildHeader(theme, _controller.list.value)),
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (_, __) => _buildHeader(theme, _controller.list),
+            ),
             SliverPadding(
               padding: EdgeInsets.only(
                 left: padding.left,

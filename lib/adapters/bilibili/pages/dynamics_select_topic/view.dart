@@ -72,7 +72,7 @@ class _SelectTopicPanelState
 
   @override
   void onValueChanged(String value) => _controller
-    ..enableClear.value = value.isNotEmpty
+    ..enableClear = value.isNotEmpty
     ..onRefresh().whenComplete(
       () => WidgetsBinding.instance.addPostFrameCallback(
         (_) => widget.scrollController?.jumpToTop(),
@@ -127,8 +127,9 @@ class _SelectTopicPanelState
                 horizontal: 16,
                 vertical: 6,
               ),
-              suffixIcon: Obx(
-                () => _controller.enableClear.value
+              suffixIcon: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => _controller.enableClear
                     ? Padding(
                         padding: const EdgeInsets.only(right: 12),
                         child: GestureDetector(
@@ -145,7 +146,7 @@ class _SelectTopicPanelState
                             ),
                           ),
                           onTap: () => _controller
-                            ..enableClear.value = false
+                            ..enableClear = false
                             ..controller.clear()
                             ..onRefresh().whenComplete(
                               () =>

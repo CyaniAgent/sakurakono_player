@@ -17,12 +17,12 @@ class ArticleListController
     queryData();
   }
 
-  final list = Rxn<CoreArticleListInfo>();
+  CoreArticleListInfo? list;
   CoreOwner? author;
 
   @override
   List<CoreArticleListItemModel>? getDataList(CoreArticleListData response) {
-    list.value = response.list;
+    list = response.list;
     author = response.author;
     return response.articles;
   }
