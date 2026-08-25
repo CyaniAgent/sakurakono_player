@@ -308,7 +308,7 @@ class _WhisperDetailPageState
             child: Listener(
               onPointerUp: (event) {
                 // Currently it may be emojiPanel.
-                if (readOnly.value) {
+                if (readOnly) {
                   updatePanelType(PanelType.keyboard);
                 }
               },
@@ -316,7 +316,7 @@ class _WhisperDetailPageState
                 listenable: this,
                 builder: (context, _) => RichTextField(
                   key: key,
-                  readOnly: readOnly.value,
+                  readOnly: readOnly,
                   focusNode: focusNode,
                   controller: editController,
                   minLines: 1,
@@ -343,7 +343,7 @@ class _WhisperDetailPageState
           ListenableBuilder(
             listenable: this,
             builder: (context, _) {
-              final enablePublish = this.enablePublish.value;
+              final enablePublish = this.enablePublish;
               return IconButton(
                 onPressed: () async {
                   if (enablePublish) {
@@ -351,7 +351,7 @@ class _WhisperDetailPageState
                       message: editController.rawText,
                       onClearText: () {
                         editController.clear();
-                        this.enablePublish.value = false;
+                        this.enablePublish = false;
                       },
                     );
                   } else {

@@ -384,7 +384,9 @@ class _DynamicDetailPageState
             left: 0,
             right: 0,
             top: displacement,
-            child: Obx(() {
+            child: ListenableBuilder(
+              listenable: _refreshController,
+              builder: (context, _) {
               final isRefreshing = _isRefreshing;
               return AnimatedScale(
                 scale: isRefreshing ? 1 : 0,

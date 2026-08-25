@@ -90,7 +90,9 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
         slivers: [
           if (_controller.newTags?.isNotEmpty == true)
             SliverToBoxAdapter(
-              child: Obx(() {
+              child: ListenableBuilder(
+                listenable: _controller,
+                builder: (context, _) {
                 final tagIndex = _controller.tagIndex.value;
                 return SelfSizedHorizontalList(
                   padding: const .only(bottom: 12),

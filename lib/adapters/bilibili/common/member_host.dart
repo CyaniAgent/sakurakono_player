@@ -77,7 +77,9 @@ class BiliMemberHost implements MemberHost {
     return switch (param) {
       'home' => MemberHome(heroTag: heroTag),
       'dynamic' => MemberDynamicsPage(mid: mid),
-      'contribute' => Obx(
+      'contribute' => ListenableBuilder(
+          listenable: MemberContributeNotifier?
+          builder: (context, _) => MemberContribute(
           () => MemberContribute(
             heroTag: heroTag,
             initialIndex: contributeInitialIndex,

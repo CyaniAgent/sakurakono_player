@@ -232,11 +232,13 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
 
   Widget _buildEditWidget(ThemeData theme) => Listener(
     onPointerUp: (event) {
-      if (readOnly.value) {
+      if (readOnly) {
         updatePanelType(PanelType.keyboard);
       }
     },
-    child: Obx(
+    ListenableBuilder(
+      listenable: this,
+      builder: (context, _) => RichTextField(
       () => RichTextField(
         key: key,
         controller: editController,
@@ -244,7 +246,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
         maxLines: null,
         focusNode: focusNode,
         onSubmitted: onSubmitted,
-        readOnly: readOnly.value,
+        readOnly: readOnly,
         decoration: InputDecoration(
           hintText: '说点什么吧',
           hintStyle: TextStyle(color: theme.colorScheme.outline),

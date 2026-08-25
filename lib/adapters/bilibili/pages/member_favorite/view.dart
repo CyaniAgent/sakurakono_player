@@ -158,7 +158,9 @@ class _MemberFavoriteState extends State<MemberFavorite>
             ),
           ),
         ),
-        Obx(() {
+        ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) {
           final list = data.value.mediaListResponse?.list;
           if (!_controller.isExpand(isFav)) {
             return const SliverToBoxAdapter();
@@ -187,7 +189,9 @@ class _MemberFavoriteState extends State<MemberFavorite>
           }
           return const SliverToBoxAdapter();
         }),
-        Obx(
+        ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) =>
           () => isEnd.value || !_controller.isExpand(isFav)
               ? const SliverToBoxAdapter()
               : SliverToBoxAdapter(child: _buildLoadMoreItem(theme, isFav)),

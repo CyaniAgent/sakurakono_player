@@ -130,7 +130,9 @@ class _MediaListPanelState extends State<MediaListPanel>
             top: 7,
             bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
           ),
-          sliver: Obx(
+          sliver: ListenableBuilder(
+            listenable: widget.mediaList,
+            builder: (context, _) => SliverFixedExtentList.builder(
             () => SliverFixedExtentList.builder(
               itemExtent: 112,
               itemCount: widget.mediaList.length,

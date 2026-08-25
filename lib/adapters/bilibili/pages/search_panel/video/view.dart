@@ -59,7 +59,9 @@ class _SearchVideoPanelState
                 child: Wrap(
                   children: [
                     for (final e in ArchiveFilterType.values)
-                      Obx(
+                      ListenableBuilder(
+                        listenable: controller,
+                        builder: (context, _) => SearchText(
                         () => SearchText(
                           fontSize: 13,
                           text: e.desc,

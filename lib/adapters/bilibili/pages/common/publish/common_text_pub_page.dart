@@ -21,7 +21,7 @@ abstract class CommonTextPubPageState<T extends CommonTextPubPage>
       text: widget.initialValue,
     );
     if (widget.initialValue?.trim().isNotEmpty == true) {
-      enablePublish.value = true;
+      enablePublish = true;
     }
   }
 

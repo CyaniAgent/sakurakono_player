@@ -52,7 +52,9 @@ class _SearchUserPanelState
         padding: const .fromLTRB(25, 0, 12, 4),
         child: Row(
           children: [
-            Obx(
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => Text(
               () => Text(
                 '排序: ${controller.userOrderType!.value.label}',
                 maxLines: 1,
@@ -60,7 +62,9 @@ class _SearchUserPanelState
               ),
             ),
             const Spacer(),
-            Obx(
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => Text(
               () => Text(
                 '用户类型: ${controller.userType!.value.label}',
                 maxLines: 1,

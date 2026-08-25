@@ -45,7 +45,9 @@ abstract class BaseVideoWebState<
       appBar: AppBar(
         title: Text(name),
         actions: [
-          Obx(
+          ListenableBuilder(
+            listenable: controller,
+            builder: (context, _) {
             () {
               final order = controller.order.value;
               return PopupMenuButton<V>(
@@ -71,7 +73,9 @@ abstract class BaseVideoWebState<
               padding: .only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: Obx(
+              ListenableBuilder(
+                listenable: controller,
+                builder: (context, _) =>
                 () => buildBody(colorScheme, controller.loadingState),
               ),
             ),

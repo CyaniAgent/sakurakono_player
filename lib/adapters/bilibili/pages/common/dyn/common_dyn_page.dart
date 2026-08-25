@@ -96,8 +96,9 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
         child: Row(
           mainAxisAlignment: .spaceBetween,
           children: [
-            Obx(
-              () {
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) {
                 final count = controller.count.value;
                 return Text(
                   '${count == -1 ? 0 : NumUtils.numFormat(count)}条回复',
@@ -108,8 +109,9 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
               style: Style.buttonStyle,
               onPressed: controller.queryBySort,
               icon: Icon(Icons.sort, size: 16, color: secondary),
-              label: Obx(
-                () => Text(
+              ListenableBuilder(
+                listenable: controller,
+                builder: (context, _) => Text(
                   controller.sortType.value.label,
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),

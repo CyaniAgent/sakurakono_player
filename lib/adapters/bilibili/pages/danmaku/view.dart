@@ -173,7 +173,9 @@ class _PlDanmakuState extends State<PlDanmaku> {
       notFullscreen: widget.notFullscreen,
       speed: playerController.playbackSpeed,
     );
-    return Obx(
+    return ListenableBuilder(
+      listenable: playerController,
+      builder: (context, _) => AnimatedOpacity(
       () => AnimatedOpacity(
         opacity: playerController.enableShowDanmaku.value
             ? playerController.danmakuOpacity.value

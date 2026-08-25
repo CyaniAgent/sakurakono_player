@@ -358,7 +358,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
           Expanded(
             child: Listener(
               onPointerUp: (event) {
-                if (readOnly.value) {
+                if (readOnly) {
                   updatePanelType(PanelType.keyboard);
                 }
               },
@@ -367,7 +367,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
                 builder: (context, _) => TextField(
                   controller: editController,
                   autofocus: false,
-                  readOnly: readOnly.value,
+                  readOnly: readOnly,
                   inputFormatters: [
                     LengthLimitingTextInputFormatter(100),
                   ],
@@ -390,13 +390,13 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
           ),
           ListenableBuilder(
             listenable: this,
-            builder: (context, _) => enablePublish.value
+            builder: (context, _) => enablePublish
                 ? iconButton(
                     iconSize: 22,
                     iconColor: themeData.colorScheme.onSurfaceVariant,
                     onPressed: () {
                       editController.clear();
-                      enablePublish.value = false;
+                      enablePublish = false;
                     },
                     icon: const Icon(Icons.clear),
                   )
@@ -408,10 +408,10 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
             builder: (context, _) => iconButton(
               tooltip: '发送',
               iconSize: 22,
-              iconColor: enablePublish.value
+              iconColor: enablePublish
                   ? themeData.colorScheme.primary
                   : themeData.colorScheme.outline,
-              onPressed: enablePublish.value ? onPublishThrottle : null,
+              onPressed: enablePublish ? onPublishThrottle : null,
               icon: const Icon(Icons.send),
             ),
           ),

@@ -103,11 +103,11 @@ class CreateDynPanel extends CommonRichTextPubPage {
 class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   late final bool _isEdit;
   late bool _isPrivate;
-  late final Rx<Pair<int, String>?> _topic;
+  Pair<int, String>? _topic;
   late ReplyOptionType _replyOption;
   late final TextEditingController _titleEditCtr;
-  late final _publishTime = Rxn<DateTime>();
-  final _reserveCard = Rxn<ReserveInfoData>();
+  DateTime? _publishTime;
+  ReserveInfoData? _reserveCard;
 
   @override
   void initState() {
@@ -115,7 +115,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
     _isEdit = widget.editConfig != null;
     _isPrivate = widget.isPrivate;
     _replyOption = widget.replyOption;
-    _topic = Rx<Pair<int, String>?>(widget.topic);
+    _topic = widget.topic;
     _titleEditCtr = TextEditingController(text: widget.title);
   }
 
@@ -144,9 +144,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Obx(
-                  () {
-                    final hasTopic = _topic.value != null;
+                child: Builder(builder: (context) {
+                    final hasTopic = _topic != null;
                     return Row(
                       spacing: 10,
                       children: [
@@ -195,7 +194,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                                 ),
                                 TextSpan(
                                   text: hasTopic
-                                      ? _topic.value!.second
+                                      ? _topic!.second
                                       : '选择话题',
                                   style: TextStyle(
                                     color: hasTopic
@@ -214,12 +213,11 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                             icon: const Icon(Icons.clear),
                             bgColor: theme.colorScheme.onInverseSurface,
                             iconColor: theme.colorScheme.onSurfaceVariant,
-                            onPressed: () => _topic.value = null,
+                            onPressed: () => setState(() { _topic = null; }),
                           ),
                       ],
                     );
-                  },
-                ),
+                  }
               ),
               const SizedBox(height: 5),
               Padding(
@@ -256,14 +254,14 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Obx(() => _buildPubTimeWidget),
+                    _buildPubTimeWidget,
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Obx(() => _buildReplyOptionWidget(theme)),
+                        _buildReplyOptionWidget(theme),
                         const SizedBox(height: 5),
-                        Obx(() => _buildPrivateWidget(theme)),
+                        _buildPrivateWidget(theme),
                       ],
                     ),
                   ],
@@ -282,8 +280,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
   Widget _buildImageList(ThemeData theme) => SizedBox(
     height: 100,
-    child: Obx(
-      () => CustomScrollView(
+    child: ListenableBuilder(listenable: imageList, builder: (context, _) => CustomScrollView(
         scrollDirection: Axis.horizontal,
         slivers: [
           const SliverToBoxAdapter(child: SizedBox(width: 16)),
@@ -303,8 +300,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                 child: InkWell(
                   borderRadius: Style.mdRadius,
                   onTap: () => onPickImage(() {
-                    if (imageList.isNotEmpty && !enablePublish.value) {
-                      enablePublish.value = true;
+                    if (imageList.isNotEmpty && !enablePublish) {
+                      setState(() { enablePublish = true; });
                     }
                   }),
                   child: Ink(
@@ -361,9 +358,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: Obx(
-            () => FilledButton.tonal(
-              onPressed: enablePublish.value ? onPublishThrottle : null,
+          child: FilledButton.tonal(
+              onPressed: enablePublish ? onPublishThrottle : null,
               style: FilledButton.styleFrom(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 padding: const EdgeInsets.symmetric(
@@ -372,7 +368,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                 ),
                 visualDensity: VisualDensity.compact,
               ),
-              child: Text(_publishTime.value == null ? '发布' : '定时发布'),
+              child: Text(_publishTime == null ? '发布' : '定时发布'),
             ),
           ),
         ),
@@ -391,7 +387,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       itemBuilder: (context) => List.generate(
         2,
         (index) => PopupMenuItem<bool>(
-          enabled: _publishTime.value != null && index == 1 ? false : true,
+          enabled: _publishTime != null && index == 1 ? false : true,
           value: index == 0 ? false : true,
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -492,7 +488,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
     );
   }
 
-  Widget get _buildPubTimeWidget => _publishTime.value == null
+  Widget get _buildPubTimeWidget => _publishTime == null
       ? FilledButton.tonal(
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(
@@ -540,13 +536,15 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                           }
                         }
                       }
-                      _publishTime.value = DateTime(
-                        selectedDate.year,
-                        selectedDate.month,
-                        selectedDate.day,
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      );
+                      setState(() {
+                        _publishTime = DateTime(
+                          selectedDate.year,
+                          selectedDate.month,
+                          selectedDate.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+                      });
                     }
                   }
                 },
@@ -560,8 +558,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
             ),
             visualDensity: VisualDensity.compact,
           ),
-          onPressed: () => _publishTime.value = null,
-          label: Text(DateFormatUtils.longFormatD.format(_publishTime.value!)),
+          onPressed: () => setState(() { _publishTime = null; }),
+          label: Text(DateFormatUtils.longFormatD.format(_publishTime!)),
           icon: const Icon(Icons.clear, size: 20),
           iconAlignment: IconAlignment.end,
         );
@@ -705,18 +703,17 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
   Widget _buildEditWidget(ThemeData theme) => Listener(
     onPointerUp: (event) {
-      if (readOnly.value) {
+      if (readOnly) {
         updatePanelType(PanelType.keyboard);
       }
     },
-    child: Obx(
-      () => RichTextField(
+    child: RichTextField(
         key: key,
         controller: editController,
         minLines: 4,
         maxLines: null,
         focusNode: focusNode,
-        readOnly: readOnly.value,
+        readOnly: readOnly,
         onChanged: onChanged,
         onSubmitted: onSubmitted,
         decoration: InputDecoration(
@@ -730,7 +727,6 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
           contentPadding: EdgeInsets.zero,
         ),
         // inputFormatters: [LengthLimitingTextInputFormatter(1000)],
-      ),
     ),
   );
 
@@ -753,7 +749,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
         replyOption: CoreReplyOptionType.values.byName(_replyOption.name),
         privatePub: _isPrivate ? 1 : null,
         title: _titleEditCtr.text,
-        topic: _topic.value,
+        topic: _topic,
         extraContent: extraContent,
       );
       SmartDialog.dismiss();
@@ -768,18 +764,18 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       return;
     }
 
-    final reserveCard = _reserveCard.value;
+    final reserveCard = _reserveCard;
     final res = await appRead(dynamicsRepositoryProvider).createDynamic(
       mid: Accounts.main.mid,
       rawText: hasRichText ? null : editController.text,
       pics: pictures,
-      publishTime: _publishTime.value != null
-          ? _publishTime.value!.millisecondsSinceEpoch ~/ 1000
+      publishTime: _publishTime != null
+          ? _publishTime!.millisecondsSinceEpoch ~/ 1000
           : null,
       replyOption: CoreReplyOptionType.values.byName(_replyOption.name),
       privatePub: _isPrivate ? 1 : null,
       title: _titleEditCtr.text,
-      topic: _topic.value,
+      topic: _topic,
       extraContent: extraContent,
       attachCard: reserveCard == null
           ? null
@@ -799,7 +795,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       SmartDialog.showToast('发布成功');
       final id = response?['dyn_id'];
       RequestUtils.insertCreatedDyn(id);
-      if (!_isPrivate && _publishTime.value == null) {
+      if (!_isPrivate && _publishTime == null) {
         RequestUtils.checkCreatedDyn(
           id: id,
           dynText: editController.rawText,
@@ -818,7 +814,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
       onCachePos: (offset) => _topicOffset = offset,
     );
     if (res != null) {
-      _topic.value = Pair(first: res.id, second: res.name);
+      setState(() { _topic = Pair(first: res.id, second: res.name); });
     }
   }
 
@@ -826,9 +822,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   void onSave() {}
 
   Widget _buildReserveItem(ThemeData theme) {
-    return Obx(
-      () {
-        final reserveCard = _reserveCard.value;
+    final reserveCard = _reserveCard;
         if (reserveCard == null) {
           return const SizedBox.shrink();
         }
@@ -866,24 +860,23 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                 size: 30,
                 iconSize: 18,
                 icon: const Icon(Icons.clear),
-                onPressed: () => _reserveCard.value = null,
+                onPressed: () => setState(() { _reserveCard = null; }),
                 iconColor: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
         );
-      },
     );
   }
 
   Future<void> _onReserve() async {
     final ReserveInfoData? reserveInfo = await Navigator.of(context).push(
       GetPageRoute(
-        page: () => CreateReservePage(sid: _reserveCard.value?.id),
+        page: () => CreateReservePage(sid: _reserveCard?.id),
       ),
     );
     if (reserveInfo != null) {
-      _reserveCard.value = reserveInfo;
+      setState(() { _reserveCard = reserveInfo; });
     }
   }
 }

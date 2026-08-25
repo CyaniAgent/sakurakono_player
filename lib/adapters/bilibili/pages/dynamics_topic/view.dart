@@ -78,15 +78,17 @@ class _DynTopicPageState extends State<DynTopicPage>
                 controller: _controller.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
-                  Obx(
-                    () => _buildAppBar(
+                  ListenableBuilder(
+                    listenable: _controller,
+                    builder: (context, _) => _buildAppBar(
                       colorScheme,
                       padding,
                       _controller.topState.value,
                     ),
                   ),
-                  Obx(() {
-                    final allSortBy =
+                  ListenableBuilder(
+                    listenable: _controller,
+                    builder: (context, _) {
                         _controller.topicSortByConf.value?.allSortBy;
                     if (allSortBy != null && allSortBy.isNotEmpty) {
                       return SliverPinnedHeader(

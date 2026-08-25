@@ -71,7 +71,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
       onMention: onMention,
     );
     if (editController.rawText.trim().isNotEmpty) {
-      enablePublish.value = true;
+      enablePublish = true;
     }
     imageList = RxList<PicModel>(widget.pics ?? <PicModel>[]);
   }
@@ -107,7 +107,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
         }
       }
       if (imageList.isEmpty && editController.rawText.trim().isEmpty) {
-        enablePublish.value = false;
+        enablePublish = false;
       }
     }
 
@@ -369,7 +369,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
       return;
     }
 
-    enablePublish.value = true;
+    enablePublish = true;
 
     final oldValue = editController.value;
     final selection = oldValue.selection;
@@ -463,9 +463,10 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
   @override
   void onSave() => widget.onSave?.call(editController.items);
 
-  Widget get emojiBtn => Obx(
-    () {
-      final isEmoji = panelType.value == PanelType.emoji;
+  Widget get emojiBtn => ListenableBuilder(
+    listenable: this,
+    builder: (context, _) {
+      final isEmoji = panelType == PanelType.emoji;
       return ToolbarIconButton(
         tooltip: isEmoji ? '输入' : '表情',
         onPressed: () {
@@ -490,9 +491,10 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     selected: false,
   );
 
-  Widget get moreBtn => Obx(
-    () {
-      final isMore = panelType.value == PanelType.more;
+  Widget get moreBtn => ListenableBuilder(
+    listenable: this,
+    builder: (context, _) {
+      final isMore = panelType == PanelType.more;
       return ToolbarIconButton(
         tooltip: isMore ? '输入' : '更多',
         onPressed: () {

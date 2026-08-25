@@ -51,7 +51,9 @@ class _SearchArticlePanelState
         padding: const .fromLTRB(25, 0, 12, 4),
         child: Row(
           children: [
-            Obx(
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => Text(
               () => Text(
                 '排序: ${controller.articleOrderType.value.label}',
                 maxLines: 1,
@@ -59,7 +61,9 @@ class _SearchArticlePanelState
               ),
             ),
             const Spacer(),
-            Obx(
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => Text(
               () => Text(
                 '分区: ${controller.articleZoneType!.value.label}',
                 maxLines: 1,

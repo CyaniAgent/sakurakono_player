@@ -381,7 +381,9 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
       child: Row(
         mainAxisAlignment: .spaceBetween,
         children: [
-          Obx(
+          ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) {
             () {
               final count = _controller.count.value;
               return count == null
@@ -400,7 +402,9 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
               size: 16,
               color: theme.colorScheme.secondary,
             ),
-            label: Obx(
+            label: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) => Text(
               () => Text(
                 _controller.sortType.value.label,
                 style: TextStyle(

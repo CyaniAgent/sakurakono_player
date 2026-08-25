@@ -129,8 +129,9 @@ class _DynMentionPanelState
                 horizontal: 16,
                 vertical: 6,
               ),
-              suffixIcon: Obx(
-                () => _controller.enableClear.value
+              suffixIcon: ListenableBuilder(
+                listenable: _controller,
+                builder: (context, _) => _controller.enableClear.value
                     ? Padding(
                         padding: const EdgeInsets.only(right: 12),
                         child: GestureDetector(
@@ -194,8 +195,9 @@ class _DynMentionPanelState
                   ],
                 ),
               ),
-              Obx(() {
-                return Positioned(
+              ListenableBuilder(
+                listenable: _controller,
+                builder: (context, _) {
                   right: kFloatingActionButtonMargin,
                   bottom:
                       padding +

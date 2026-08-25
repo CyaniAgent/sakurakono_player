@@ -34,7 +34,9 @@ class _LocalIntroPanelState extends State<LocalIntroPanel>
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
-    return Obx(() {
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, _) {
       final currIndex = _controller.index.value;
       return SliverFixedExtentList.builder(
         itemCount: _controller.list.length,

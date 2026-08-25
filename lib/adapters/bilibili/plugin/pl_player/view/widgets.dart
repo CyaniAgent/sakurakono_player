@@ -55,7 +55,9 @@ Widget buildSeekPreviewWidget(
   double maxHeight,
   ValueGetter<bool> isMounted,
 ) {
-  return Obx(
+  return ListenableBuilder(
+    listenable: plPlayerController,
+    builder: (context, _) {
     () {
       if (!plPlayerController.showPreview.value) {
         return const SizedBox.shrink();
@@ -83,7 +85,9 @@ Widget buildSeekPreviewWidget(
 
         return Align(
           alignment: Alignment.center,
-          child: Obx(
+          child: ListenableBuilder(
+            listenable: plPlayerController,
+            builder: (context, _) {
             () {
               final index = plPlayerController.previewIndex.value!;
               int pageIndex = (index ~/ totalPerImage).clamp(

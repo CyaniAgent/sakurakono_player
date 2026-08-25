@@ -98,18 +98,20 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
         ),
         child: Listener(
           onPointerUp: (event) {
-            if (readOnly.value) {
+            if (readOnly) {
               updatePanelType(PanelType.keyboard);
             }
           },
-          child: Obx(
+          ListenableBuilder(
+            listenable: this,
+            builder: (context, _) => RichTextField(
             () => RichTextField(
               key: key,
               controller: editController,
               minLines: 1,
               maxLines: 2,
               autofocus: false,
-              readOnly: readOnly.value,
+              readOnly: readOnly,
               onChanged: onChanged,
               onSubmitted: onSubmitted,
               focusNode: focusNode,
@@ -135,9 +137,11 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
           mainAxisAlignment: .spaceBetween,
           children: [
             emojiBtn,
-            Obx(
+            ListenableBuilder(
+              listenable: this,
+              builder: (context, _) => FilledButton.tonal(
               () => FilledButton.tonal(
-                onPressed: enablePublish.value ? onPublishThrottle : null,
+                onPressed: enablePublish ? onPublishThrottle : null,
                 style: FilledButton.styleFrom(
                   visualDensity: .compact,
                   padding: const .symmetric(horizontal: 20, vertical: 10),

@@ -28,7 +28,9 @@ class _SuperChatPanelState extends DebounceStreamState<SuperChatPanel, bool>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Obx(
+    return ListenableBuilder(
+      listenable: widget.controller,
+      builder: (context, _) => ListView.separated(
       () => ListView.separated(
         key: const PageStorageKey(_SuperChatPanelState),
         padding: const EdgeInsets.symmetric(horizontal: 12),
