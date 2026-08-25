@@ -97,10 +97,11 @@ class _FollowChildPageState extends State<FollowChildPage>
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             if (_followController.loadSameFollow)
-              Obx(
-                () => _buildSameFollowing(
+              ListenableBuilder(
+                listenable: _followController,
+                builder: (_, __) => _buildSameFollowing(
                   colorScheme,
-                  _followController.sameState.value,
+                  _followController.sameState,
                 ),
               ),
             SliverPadding(
@@ -149,9 +150,7 @@ class _FollowChildPageState extends State<FollowChildPage>
                     )
                     ..onReload(),
                   icon: const Icon(Icons.format_list_bulleted, size: 20),
-                  label: Obx(
-                    () => Text(_followController.orderType.value.title),
-                  ),
+                  label: Text(_followController.orderType.title),
                 ),
               ),
             ),

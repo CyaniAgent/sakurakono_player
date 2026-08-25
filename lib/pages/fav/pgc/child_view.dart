@@ -59,8 +59,9 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
             slivers: [
               SliverPadding(
                 padding: EdgeInsets.only(bottom: padding.bottom + 100),
-                sliver: Obx(
-                  () => _buildBody(_favPgcController.loadingState),
+                sliver: ListenableBuilder(
+                  listenable: _favPgcController,
+                  builder: (_, __) => _buildBody(_favPgcController.loadingState),
                 ),
               ),
             ],
@@ -70,9 +71,8 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
           left: 0,
           right: 0,
           bottom: -bottomH,
-          child: Obx(
-            () => AnimatedSlide(
-              offset: _favPgcController.enableMultiSelect.value
+          child: AnimatedSlide(
+              offset: _favPgcController.enableMultiSelect
                   ? const Offset(0, -1)
                   : Offset.zero,
               duration: const Duration(milliseconds: 150),
@@ -99,21 +99,19 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                       onPressed: _favPgcController.onDisable,
                     ),
                     const SizedBox(width: 12),
-                    Obx(
-                      () => Checkbox(
-                        value: _favPgcController.allSelected.value,
-                        onChanged: (value) {
-                          _favPgcController.handleSelect(
-                            checked: !_favPgcController.allSelected.value,
-                            disableSelect: false,
-                          );
-                        },
-                      ),
+                    Checkbox(
+                      value: _favPgcController.allSelected,
+                      onChanged: (value) {
+                        _favPgcController.handleSelect(
+                          checked: !_favPgcController.allSelected,
+                          disableSelect: false,
+                        );
+                      },
                     ),
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => _favPgcController.handleSelect(
-                        checked: !_favPgcController.allSelected.value,
+                        checked: !_favPgcController.allSelected,
                         disableSelect: false,
                       ),
                       child: const Padding(
@@ -165,7 +163,6 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                   ],
                 ),
               ),
-            ),
           ),
         ),
       ],

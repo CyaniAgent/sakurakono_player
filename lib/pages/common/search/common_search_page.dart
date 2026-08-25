@@ -19,8 +19,7 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
   @override
   Widget build(BuildContext context) {
     if (controller case final MultiSelectBase multiCtr) {
-      return Obx(() {
-        final enableMultiSelect = multiCtr.enableMultiSelect.value;
+      final enableMultiSelect = multiCtr.enableMultiSelect;
         return popScope(
           canPop: !enableMultiSelect,
           onPopInvokedWithResult: (didPop, result) {
@@ -30,7 +29,7 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
           },
           child: _build(true),
         );
-      });
+      );
     }
     return _build(false);
   }

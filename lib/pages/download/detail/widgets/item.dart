@@ -113,7 +113,7 @@ class DetailItem extends StatelessWidget {
     final outline = theme.colorScheme.outline;
     final cid = entry.source?.cid ?? entry.pageData?.cid;
     final canDel = onDelete != null;
-    final enableMultiSelect = controller.enableMultiSelect.value;
+    final enableMultiSelect = controller.enableMultiSelect;
     void onLongPress() => canDel && !enableMultiSelect
         ? showDialog(
             context: context,
@@ -393,8 +393,9 @@ class DetailItem extends StatelessWidget {
                         bottom: 0,
                         child: isCurr
                             ? RepaintBoundary(
-                                child: Obx(
-                                  () {
+                                child: ListenableBuilder(
+                                  listenable: actions,
+                                  builder: (_, __) {
                                     final curDownload =
                                         actions.curDownload.value;
                                     if (curDownload != null) {
@@ -422,7 +423,7 @@ class DetailItem extends StatelessWidget {
                                     }
                                     return entryProgress(theme);
                                   },
-                                ),
+                                  },
                               )
                             : entryProgress(theme),
                       ),

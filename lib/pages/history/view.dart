@@ -79,8 +79,9 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
               top: 7,
               bottom: padding.bottom + 100,
             ),
-            sliver: Obx(
-              () => _buildBody(_historyController.loadingState),
+            sliver: ListenableBuilder(
+              listenable: _historyController,
+              builder: (_, __) => _buildBody(_historyController.loadingState),
             ),
           ),
         ],
@@ -108,8 +109,10 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
             left: padding.left,
             right: padding.right,
           ),
-          child: Obx(() {
-            final tabs = _historyController.tabs;
+          child: ListenableBuilder(
+            listenable: _historyController,
+            builder: (_, __) {
+              final tabs = _historyController.tabs;
             if (tabs.isEmpty) {
               return child;
             }
@@ -155,7 +158,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
                 ),
               ],
             );
-          }),
+              },
         ),
       ),
     );

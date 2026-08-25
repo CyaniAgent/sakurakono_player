@@ -51,8 +51,9 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
             slivers: [
               SliverPadding(
                 padding: EdgeInsets.only(bottom: padding.bottom + 100),
-                sliver: Obx(
-                  () => _buildBody(_favNoteController.loadingState),
+                sliver: ListenableBuilder(
+                  listenable: _favNoteController,
+                  builder: (_, __) => _buildBody(_favNoteController.loadingState),
                 ),
               ),
             ],
@@ -62,9 +63,8 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
           left: 0,
           right: 0,
           bottom: -bottomH,
-          child: Obx(
-            () => AnimatedSlide(
-              offset: _favNoteController.enableMultiSelect.value
+          child: AnimatedSlide(
+              offset: _favNoteController.enableMultiSelect
                   ? const Offset(0, -1)
                   : Offset.zero,
               duration: const Duration(milliseconds: 150),
@@ -91,21 +91,19 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                       onPressed: _favNoteController.onDisable,
                     ),
                     const SizedBox(width: 12),
-                    Obx(
-                      () => Checkbox(
-                        value: _favNoteController.allSelected.value,
-                        onChanged: (value) {
-                          _favNoteController.handleSelect(
-                            checked: !_favNoteController.allSelected.value,
-                            disableSelect: false,
-                          );
-                        },
-                      ),
+                    Checkbox(
+                      value: _favNoteController.allSelected,
+                      onChanged: (value) {
+                        _favNoteController.handleSelect(
+                          checked: !_favNoteController.allSelected,
+                          disableSelect: false,
+                        );
+                      },
                     ),
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => _favNoteController.handleSelect(
-                        checked: !_favNoteController.allSelected.value,
+                        checked: !_favNoteController.allSelected,
                         disableSelect: false,
                       ),
                       child: const Padding(
@@ -138,7 +136,6 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                   ],
                 ),
               ),
-            ),
           ),
         ),
       ],

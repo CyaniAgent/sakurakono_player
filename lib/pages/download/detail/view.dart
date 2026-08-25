@@ -77,8 +77,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
-    return Obx(() {
-      final enableMultiSelect = this.enableMultiSelect.value;
+    final enableMultiSelect = this.enableMultiSelect;
       return popScope(
         canPop: !enableMultiSelect,
         onPopInvokedWithResult: (didPop, result) {
@@ -127,7 +126,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                     if (enableMultiSelect) {
                       handleSelect();
                     } else {
-                      this.enableMultiSelect.value = true;
+                      this.enableMultiSelect = true;
                     }
                   },
                   icon: const Icon(Icons.edit_note),
@@ -139,8 +138,11 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
           body: CustomScrollView(
             slivers: [
               ViewSliverSafeArea(
-                sliver: Obx(() {
-                  if (_downloadItems.isNotEmpty) {
+                sliver: ListenableBuilder(
+                  listenable: _downloadItems,
+                  builder: (_, __) {
+                  listenable: _downloadItems,
+                  builder: (_, __) {
                     return SliverGrid.builder(
                       gridDelegate: gridDelegate,
                       itemBuilder: (context, index) {
@@ -172,15 +174,14 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                       },
                       itemCount: _downloadItems.length,
                     );
-                  }
-                  return const HttpError();
-                }),
+                  },
+                ),
               ),
             ],
           ),
         ),
       );
-    });
+    );
   }
 
   @override
@@ -210,9 +211,9 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
             AppNavigator.back();
           }
         } else {
-          if (enableMultiSelect.value) {
-            rxCount.value = 0;
-            enableMultiSelect.value = false;
+          if (enableMultiSelect) {
+            rxCount = 0;
+            enableMultiSelect = false;
           }
           SmartDialog.dismiss();
         }

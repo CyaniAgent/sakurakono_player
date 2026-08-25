@@ -764,8 +764,9 @@ class _PlayerViewState extends State<PlayerView>
           Positioned.fill(
             child: IgnorePointer(
               ignoring: !plPlayerController.enableDragSubtitle,
-              child: Obx(
-                () => SubtitleView(
+              child: ListenableBuilder(
+                listenable: plPlayerController,
+                builder: (context, _) => SubtitleView(
                   controller: videoController,
                   configuration: plPlayerController.subtitleConfig,
                   enableDragSubtitle: plPlayerController.enableDragSubtitle,
@@ -788,8 +789,9 @@ class _PlayerViewState extends State<PlayerView>
                 translation: isFullScreen
                     ? const Offset(0.0, 1.2)
                     : const Offset(0.0, 0.8),
-                child: Obx(
-                  () => AnimatedOpacity(
+                child: ListenableBuilder(
+                  listenable: plPlayerController,
+                  builder: (context, _) => AnimatedOpacity(
                     curve: Curves.easeInOut,
                     opacity: plPlayerController.longPressStatus
                         ? 1.0
@@ -801,8 +803,9 @@ class _PlayerViewState extends State<PlayerView>
                         color: Color(0x88000000),
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
-                      child: Obx(
-                        () => Text(
+                      child: ListenableBuilder(
+                        listenable: plPlayerController,
+                        builder: (context, _) => Text(
                           '${plPlayerController.enableAutoLongPressSpeed ? (plPlayerController.longPressStatus ? plPlayerController.lastPlaybackSpeed : plPlayerController.playbackSpeed) * 2 : plPlayerController.longPressSpeed}倍速中',
                           style: const TextStyle(
                             color: Colors.white,
@@ -827,8 +830,9 @@ class _PlayerViewState extends State<PlayerView>
                 translation: isFullScreen
                     ? const Offset(0.0, 1.2)
                     : const Offset(0.0, 0.8),
-                child: Obx(
-                  () => AnimatedOpacity(
+                child: ListenableBuilder(
+                  listenable: plPlayerController,
+                  builder: (context, _) => AnimatedOpacity(
                     curve: Curves.easeInOut,
                     opacity: plPlayerController.isSeeking ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 150),
@@ -846,8 +850,9 @@ class _PlayerViewState extends State<PlayerView>
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Obx(
-                            () => Text(
+                          ListenableBuilder(
+                            listenable: plPlayerController,
+                            builder: (context, _) => Text(
                               DurationUtils.formatDuration(
                                 plPlayerController.position,
                               ),
@@ -855,8 +860,9 @@ class _PlayerViewState extends State<PlayerView>
                             ),
                           ),
                           const Text('/', style: textStyle),
-                          Obx(
-                            () => Text(
+                          ListenableBuilder(
+                            listenable: plPlayerController,
+                            builder: (context, _) => Text(
                               DurationUtils.formatDuration(
                                 plPlayerController.duration,
                               ),
@@ -877,8 +883,9 @@ class _PlayerViewState extends State<PlayerView>
           ignoring: true,
           child: Align(
             alignment: Alignment.center,
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) {
                 final volume = plPlayerController.volume;
                 return AnimatedOpacity(
                   curve: Curves.easeInOut,
@@ -928,8 +935,9 @@ class _PlayerViewState extends State<PlayerView>
           ignoring: true,
           child: Align(
             alignment: Alignment.center,
-            child: Obx(
-              () => AnimatedOpacity(
+            child: ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) => AnimatedOpacity(
                 curve: Curves.easeInOut,
                 opacity: _brightnessIndicator ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 150),
@@ -1017,8 +1025,9 @@ class _PlayerViewState extends State<PlayerView>
           ),
         ),
 
-        Obx(
-          () =>
+        ListenableBuilder(
+          listenable: plPlayerController,
+          builder: (context, _) =>
               showRestoreScaleBtn && plPlayerController.showControls
               ? Align(
                   alignment: Alignment.bottomCenter,
@@ -1072,8 +1081,9 @@ class _PlayerViewState extends State<PlayerView>
             bottom: -2.2,
             left: 0,
             right: 0,
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) {
                 final showControls = plPlayerController.showControls;
                 late final bool offstage;
                 switch (widget.progressType ?? BtmProgressBehavior.alwaysShow) {
@@ -1104,8 +1114,9 @@ class _PlayerViewState extends State<PlayerView>
                     clipBehavior: Clip.none,
                     alignment: Alignment.bottomCenter,
                     children: [
-                      Obx(
-                        () => ProgressBar(
+                      ListenableBuilder(
+                        listenable: plPlayerController,
+                        builder: (context, _) => ProgressBar(
                           progress: plPlayerController.position,
                           buffered: plPlayerController.buffered,
                           total: plPlayerController.duration,
@@ -1181,15 +1192,18 @@ class _PlayerViewState extends State<PlayerView>
                 alignment: Alignment.centerLeft,
                 child: FractionalTranslation(
                   translation: const Offset(1, -0.4),
-                  child: Obx(
-                    () => Offstage(
+                  child: ListenableBuilder(
+                    listenable: plPlayerController,
+                    builder: (context, _) => Offstage(
                       offstage: !plPlayerController.showControls,
                       child: DecoratedBox(
                         decoration: const BoxDecoration(
                           color: Color(0x45000000),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
-                        child: Obx(() {
+                        child: ListenableBuilder(
+                          listenable: plPlayerController,
+                          builder: (context, _) {
                           final controlsLock =
                               plPlayerController.controlsLock;
                           return ComBtn(
@@ -1221,8 +1235,9 @@ class _PlayerViewState extends State<PlayerView>
             ViewSafeArea(
               left: false,
               right: !plPlayerController.removeSafeArea,
-              child: Obx(
-                () => Align(
+              child: ListenableBuilder(
+                listenable: plPlayerController,
+                builder: (context, _) => Align(
                   alignment: Alignment.centerRight,
                   child: FractionalTranslation(
                     translation: const Offset(-1, -0.4),
@@ -1255,7 +1270,9 @@ class _PlayerViewState extends State<PlayerView>
             ),
         ],
 
-        Obx(() {
+        ListenableBuilder(
+          listenable: plPlayerController,
+          builder: (context, _) {
           if (plPlayerController.dataStatus == DataStatus.loading ||
               (plPlayerController.isBuffering &&
                   plPlayerController.playerStatus.isPlaying)) {
@@ -1281,7 +1298,9 @@ class _PlayerViewState extends State<PlayerView>
                         color: Colors.white,
                       ),
                       if (plPlayerController.isBuffering)
-                        Obx(() {
+                        ListenableBuilder(
+                          listenable: plPlayerController,
+                          builder: (context, _) {
                           final buffered = plPlayerController.buffered;
                           if (buffered == 0) {
                             return const Text(
@@ -1312,7 +1331,9 @@ class _PlayerViewState extends State<PlayerView>
 
         /// 点击 快进/快退
         if (!isLive)
-          Obx(() {
+          ListenableBuilder(
+            listenable: plPlayerController,
+            builder: (context, _) {
             final mountSeekBackwardButton =
                 plPlayerController.mountSeekBackwardButton;
             final mountSeekForwardButton =
@@ -1370,8 +1391,9 @@ class _PlayerViewState extends State<PlayerView>
       ],
     );
     if (PlatformUtils.isDesktop) {
-      return Obx(
-        () => MouseRegion(
+      return ListenableBuilder(
+        listenable: plPlayerController,
+        builder: (context, _) => MouseRegion(
           cursor: !plPlayerController.showControls && isFullScreen
               ? SystemMouseCursors.none
               : MouseCursor.defer,
@@ -1392,8 +1414,9 @@ class _PlayerViewState extends State<PlayerView>
       width: maxWidth,
       height: maxHeight,
       color: widget.fill,
-      child: Obx(
-        () => MouseInteractiveViewer(
+      child: ListenableBuilder(
+        listenable: plPlayerController,
+        builder: (context, _) => MouseInteractiveViewer(
           scaleEnabled: !plPlayerController.controlsLock,
           pointerSignalFallback: _onPointerSignal,
           onPointerPanZoomUpdate: _onPointerPanZoomUpdate,
@@ -1415,8 +1438,9 @@ class _PlayerViewState extends State<PlayerView>
           childKey: _videoKey,
           child: RepaintBoundary(
             key: _videoKey,
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) {
                 final videoFit = plPlayerController.videoFit;
                 return Transform.flip(
                   flipX: plPlayerController.flipX,
@@ -1453,8 +1477,9 @@ class _PlayerViewState extends State<PlayerView>
               width: widgetWidth,
               height: 30,
               tooltip: '播放/暂停',
-              icon: Obx(
-                () => Icon(
+              icon: ListenableBuilder(
+                listenable: plPlayerController,
+                builder: (context, _) => Icon(
                   plPlayerController.playerStatus.isPlaying
                       ? Icons.pause
                       : Icons.play_arrow,
@@ -1464,8 +1489,9 @@ class _PlayerViewState extends State<PlayerView>
               ),
               onTap: plPlayerController.onDoubleTapCenter,
             ),
-            Obx(
-              () => VideoTime(
+            ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) => VideoTime(
                 position: DurationUtils.formatDuration(
                   plPlayerController.position,
                 ),
@@ -1480,8 +1506,9 @@ class _PlayerViewState extends State<PlayerView>
           mainAxisSize: .min,
           children: [
             /// 画面比例
-            Obx(
-              () {
+            ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) {
                 final fit = plPlayerController.videoFit;
                 return PopupMenuButton<VideoFitType>(
                   tooltip: '画面比例',
@@ -1520,8 +1547,9 @@ class _PlayerViewState extends State<PlayerView>
             ),
 
             /// 倍速
-            Obx(
-              () => PopupMenuButton<double>(
+            ListenableBuilder(
+              listenable: plPlayerController,
+              builder: (context, _) => PopupMenuButton<double>(
                 tooltip: '倍速',
                 requestFocus: false,
                 initialValue: plPlayerController.playbackSpeed,

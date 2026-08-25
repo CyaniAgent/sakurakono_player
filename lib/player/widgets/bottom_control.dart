@@ -68,8 +68,9 @@ class BottomControl extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 7),
-            child: Obx(
-              () {
+            child: ListenableBuilder(
+              listenable: controller,
+              builder: (_, __) {
                 final viewPointsVisible = overlaySource.viewPointList.isNotEmpty &&
                     overlaySource.showVP.value;
                 return Offstage(
@@ -78,8 +79,9 @@ class BottomControl extends StatelessWidget {
                     clipBehavior: Clip.none,
                     alignment: Alignment.bottomCenter,
                     children: [
-                      Obx(
-                        () => ProgressBar(
+                      ListenableBuilder(
+                        listenable: controller,
+                        builder: (_, __) => ProgressBar(
                           progress: controller.position,
                           buffered: controller.buffered,
                           total: controller.duration,

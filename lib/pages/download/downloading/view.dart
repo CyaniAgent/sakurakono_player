@@ -32,8 +32,7 @@ class _DownloadingPageState extends State<DownloadingPage>
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final enableMultiSelect = this.enableMultiSelect.value;
+    final enableMultiSelect = this.enableMultiSelect;
       return popScope(
         canPop: !enableMultiSelect,
         onPopInvokedWithResult: (didPop, result) {
@@ -54,7 +53,7 @@ class _DownloadingPageState extends State<DownloadingPage>
                     if (enableMultiSelect) {
                       handleSelect();
                     } else {
-                      this.enableMultiSelect.value = true;
+                      this.enableMultiSelect = true;
                     }
                   },
                   icon: const Icon(Icons.edit_note),
@@ -66,7 +65,9 @@ class _DownloadingPageState extends State<DownloadingPage>
           body: CustomScrollView(
             slivers: [
               ViewSliverSafeArea(
-                sliver: Obx(() {
+                sliver: ListenableBuilder(
+                  listenable: _downloadActions,
+                  builder: (_, __) {
                   if (_waitDownloadQueue.isNotEmpty) {
                     return SliverGrid.builder(
                       gridDelegate: gridDelegate,
@@ -92,13 +93,13 @@ class _DownloadingPageState extends State<DownloadingPage>
                     );
                   }
                   return const HttpError();
-                }),
+                  },
               ),
             ],
           ),
         ),
       );
-    });
+    );
   }
 
   @override
@@ -123,9 +124,9 @@ class _DownloadingPageState extends State<DownloadingPage>
         if (isDownloading && _downloadActions.curDownload.value == null) {
           _downloadActions.nextDownload();
         }
-        if (enableMultiSelect.value) {
-          rxCount.value = 0;
-          enableMultiSelect.value = false;
+        if (enableMultiSelect) {
+          rxCount = 0;
+          enableMultiSelect = false;
         }
         SmartDialog.dismiss();
       },

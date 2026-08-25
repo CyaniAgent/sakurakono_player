@@ -118,7 +118,6 @@ class _VotePanelState extends State<VotePanel> {
         _checkBoxes,
         Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: Obx(
           child: OutlinedButton(
               onPressed: groupValue.isNotEmpty
                   ? () async {
@@ -152,8 +151,10 @@ class _VotePanelState extends State<VotePanel> {
         crossAxisAlignment: .start,
         children: [
           Expanded(child: title),
-          Obx(() {
-            final list = followeeVote.value;
+          ListenableBuilder(
+            listenable: followeeVote,
+            builder: (_, __) {
+              final list = followeeVote.value;
             if (list != null && list.isNotEmpty) {
               return GestureDetector(
                 behavior: .opaque,
@@ -230,7 +231,7 @@ class _VotePanelState extends State<VotePanel> {
               );
             }
             return const SizedBox.shrink();
-          }),
+              },
         ],
       );
     }
