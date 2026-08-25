@@ -10,7 +10,8 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/scheduler.dart' show SchedulerBinding;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 
 class LocalIntroController extends CommonIntroController {
   @override
@@ -53,7 +54,7 @@ class LocalIntroController extends CommonIntroController {
   void onInit() {
     super.onInit();
     videoDetail.title = videoDetailCtr.args['title'];
-    final controller = Get.find<DownloadPageController>();
+    final controller = appRead(downloadPageControllerProvider);
     final list = <BiliDownloadEntryInfo>[];
     for (final e in controller.pages) {
       final items = e.entries..sort((a, b) => a.sortKey.compareTo(b.sortKey));
