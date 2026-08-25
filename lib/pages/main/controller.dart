@@ -175,7 +175,7 @@ class MainControllerNotifier extends ChangeNotifier
 
   Future<int> _msgUnread() async {
     if (msgUnReadTypes.contains(MsgUnReadType.pm)) {
-      final res = await Get.find<MsgRepository>().msgUnread();
+      final res = await appRead(msgRepositoryProvider).msgUnread();
       if (res case Success(:final response)) {
         return response.followUnread +
             response.unfollowUnread +
@@ -193,7 +193,7 @@ class MainControllerNotifier extends ChangeNotifier
     final remainTypes = Set<MsgUnReadType>.from(msgUnReadTypes)
       ..remove(MsgUnReadType.pm);
     if (remainTypes.isNotEmpty) {
-      final res = await Get.find<MsgRepository>().msgFeedUnread();
+      final res = await appRead(msgRepositoryProvider).msgFeedUnread();
       if (res case Success(:final response)) {
         for (final item in remainTypes) {
           switch (item) {
