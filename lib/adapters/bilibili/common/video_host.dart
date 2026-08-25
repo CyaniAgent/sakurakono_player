@@ -662,8 +662,9 @@ class BiliVideoHost implements VideoHost {
       );
     }
     widgets.add(
-      Obx(
-        () {
+      ListenableBuilder(
+        listenable: ctr,
+        builder: (context, _) {
           if (!ctr.showSteinEdgeInfo.value) {
             return const SizedBox.shrink();
           }
@@ -832,8 +833,9 @@ class BiliVideoHost implements VideoHost {
               )
             else
               Expanded(
-                child: Obx(
-                  () => EpisodePanel(
+              ListenableBuilder(
+                listenable: ctr,
+                builder: (context, _) => EpisodePanel(
                     heroTag: heroTag,
                     enableSlide: false,
                     ugcIntroController: ctr.isUgc ? ugcIntroCtr : null,
@@ -865,8 +867,9 @@ class BiliVideoHost implements VideoHost {
             ],
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Obx(
-                () => SeasonPanel(
+              ListenableBuilder(
+                listenable: ugcIntroCtr,
+                builder: (context, _) => SeasonPanel(
                   key: ValueKey(ugcIntroCtr.videoDetail),
                   heroTag: heroTag,
                   canTap: false,
@@ -876,8 +879,9 @@ class BiliVideoHost implements VideoHost {
               ),
             ),
             Expanded(
-              child: Obx(
-                () => EpisodePanel(
+              ListenableBuilder(
+                listenable: ctr,
+                builder: (context, _) => EpisodePanel(
                   heroTag: heroTag,
                   enableSlide: false,
                   ugcIntroController: ctr.isUgc ? ugcIntroCtr : null,
@@ -933,8 +937,9 @@ class BiliVideoHost implements VideoHost {
   @override
   Widget buildReplyTabLabel({required String heroTag}) {
     _ensureReplyController(heroTag);
-    return Obx(() {
-      final count = Get.find<VideoReplyController>(tag: heroTag).count.value;
+    return ListenableBuilder(
+      listenable: Get.find<VideoReplyController>(tag: heroTag),
+      builder: (context, _) {
       return Text('评论${count == -1 ? '' : ' ${NumUtils.numFormat(count)}'}');
     });
   }
