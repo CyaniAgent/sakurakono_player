@@ -1,7 +1,8 @@
 import 'package:skf/common/style.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/pages/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Bar-state contract consumed by [CommonPageState].
@@ -38,9 +39,9 @@ abstract class CommonPageState<T extends StatefulWidget> extends State<T> {
   @override
   void initState() {
     super.initState();
-    _mainBarState = Get.find<MainBarState>();
+    _mainBarState = appRead(mainBarStateProvider);
     try {
-      _homeBarState = Get.find<HomeBarState>();
+      _homeBarState = appRead(homeBarStateProvider);
     } catch (_) {}
   }
 

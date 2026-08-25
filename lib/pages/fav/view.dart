@@ -9,6 +9,8 @@ import 'package:skf/pages/fav/topic/controller.dart';
 import 'package:skf/pages/fav/video/controller.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/pages/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -138,12 +140,12 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                   case FavTabType.video:
                     _favController.scrollController.animToTop();
                   case FavTabType.article:
-                    Get.find<FavArticleController>().scrollController
+                    appRead(favArticleControllerProvider).scrollController
                         .animToTop();
                   case FavTabType.topic:
-                    Get.find<FavTopicController>().scrollController.animToTop();
+                    appRead(favTopicControllerProvider).scrollController.animToTop();
                   case FavTabType.cheese:
-                    Get.find<FavCheeseController>().scrollController
+                    appRead(favCheeseControllerProvider).scrollController
                         .animToTop();
                   default:
                 }
