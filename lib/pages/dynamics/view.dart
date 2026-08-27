@@ -5,10 +5,9 @@ import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/dynamics/widgets/up_panel.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:flutter/material.dart' hide DraggableScrollableSheet;
-import 'package:get/get.dart';
 
 class DynamicsPage extends StatefulWidget {
   const DynamicsPage({super.key});
@@ -19,7 +18,7 @@ class DynamicsPage extends StatefulWidget {
 
 class _DynamicsPageState extends CommonPageState<DynamicsPage>
     with AutomaticKeepAliveClientMixin {
-  final _dynamicsController = Get.putOrFind(DynamicsController.new);
+  final _dynamicsController = appRead(dynamicsControllerProvider);
   UpPanelPosition get upPanelPosition => _dynamicsController.upPanelPosition;
 
   @override

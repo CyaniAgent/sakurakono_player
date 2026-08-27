@@ -201,3 +201,6 @@ class DynamicsController
     return true;
   }
 }
+
+/// Dynamics page controller (single instance).
+final dynamicsControllerProvider = Provider<DynamicsController>((ref) => DynamicsController());

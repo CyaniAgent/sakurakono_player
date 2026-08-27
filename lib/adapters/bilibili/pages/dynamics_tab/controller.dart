@@ -4,11 +4,11 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class DynamicsTabController
     extends CommonListControllerRiverpod<CoreDynamicsDataModel, CoreDynamicItemModel> {
@@ -21,8 +21,8 @@ class DynamicsTabController
 
   String? offset;
 
-  late final mainController = Get.find<MainControllerNotifier>();
-  final dynamicsController = Get.find<DynamicsController>();
+  late final mainController = appRead(mainControllerProvider);
+  final dynamicsController = appRead(dynamicsControllerProvider);
 
   @override
   Future<void> onRefresh() {
