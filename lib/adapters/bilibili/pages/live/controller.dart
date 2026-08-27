@@ -163,3 +163,6 @@ class LiveController extends CommonListControllerRiverpod {
     super.dispose();
   }
 }
+
+/// Live page controller (single instance).
+final liveControllerProvider = Provider<LiveController>((ref) => LiveController());

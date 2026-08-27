@@ -15,7 +15,6 @@ import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:get/get.dart';
 
 class HotPage extends StatefulWidget {
   const HotPage({super.key});
@@ -26,7 +25,7 @@ class HotPage extends StatefulWidget {
 
 class _HotPageState extends State<HotPage>
     with AutomaticKeepAliveClientMixin, GridMixin {
-  final HotController controller = Get.put(HotController());
+  final HotController controller = appRead(hotControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

@@ -34,6 +34,8 @@ import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_setting_host.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/core/account/account_provider.dart';
@@ -44,7 +46,6 @@ import 'package:skf/core/repository/repository_providers.dart'
     hide pgcRepositoryProvider;
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/adapters/riverpod_adapter_overrides.dart';
-import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/providers.dart';
@@ -77,12 +78,7 @@ class OttoAdapter implements AppAdapter {
     // Register repositories using the modern (non-Old) OttoHub API modules.
     Get
       ..lazyPut<DownloadService>(_StubDownloadService.new)
-      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client))
-      // Generic page bar-state bridges: interface -> Riverpod notifiers
-      ..lazyPut<MainControllerNotifier>(MainControllerNotifier.new)
-      ..lazyPut<HomeBarState>(() => Get.find<HomeControllerNotifier>())
-      ..lazyPut<HomeControllerNotifier>(HomeControllerNotifier.new)
-      ..lazyPut<MainBarState>(() => Get.find<MainControllerNotifier>());
+      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client));
     // Riverpod ProviderScope overrides — direct instantiation, no Get.find dependency
     adapterOverrides = <Override>[
       videoRepositoryProvider.overrideWithValue(OttoVideoRepository(client)),
@@ -120,6 +116,10 @@ class OttoAdapter implements AppAdapter {
       dynamicsHostProvider.overrideWithValue(OttoDynamicsHost()),
       mineActionsProvider.overrideWithValue(OttoMineActions()),
       downloadActionsProvider.overrideWithValue(OttoDownloadActions()),
+      downloadServiceProvider.overrideWithValue(_StubDownloadService()),
+      // Generic page bar-state bridges: interface -> Riverpod notifiers.
+      mainBarStateProvider.overrideWith((ref) => appRead(mainControllerProvider)),
+      homeBarStateProvider.overrideWith((ref) => appRead(homeControllerProvider)),
     ];
   }
 

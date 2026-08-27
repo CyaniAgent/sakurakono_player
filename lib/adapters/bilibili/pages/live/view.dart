@@ -20,7 +20,7 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LivePage extends StatefulWidget {
@@ -32,7 +32,7 @@ class LivePage extends StatefulWidget {
 
 class _LivePageState extends State<LivePage>
     with AutomaticKeepAliveClientMixin {
-  final LiveController controller = Get.put(LiveController());
+  final LiveController controller = appRead(liveControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

@@ -1,5 +1,4 @@
-import 'package:skf/player/models/enum_with_label.dart';
-import 'package:skf/pages/common/common_controller.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/pages/live/controller.dart';
@@ -8,8 +7,10 @@ import 'package:skf/adapters/bilibili/pages/pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc/view.dart';
 import 'package:skf/adapters/bilibili/pages/rank/controller.dart' show RankScrollBridge;
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';
-import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/view.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/player/models/enum_with_label.dart';
+import 'package:skf/pages/common/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,9 +28,9 @@ enum HomeTabType implements EnumWithLabel {
   const HomeTabType(this.label);
 
   ScrollOrRefreshMixin Function() get ctr => switch (this) {
-    HomeTabType.live => Get.find<LiveController>,
-    HomeTabType.rcmd => Get.find<RcmdController>,
-    HomeTabType.hot => Get.find<HotController>,
+    HomeTabType.live => () => appRead(liveControllerProvider),
+    HomeTabType.rcmd => () => appRead(rcmdControllerProvider),
+    HomeTabType.hot => () => appRead(hotControllerProvider),
     HomeTabType.rank => RankScrollBridge.new,
     HomeTabType.bangumi ||
     HomeTabType.cinema => () => Get.find<PgcController>(tag: name),

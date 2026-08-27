@@ -8,6 +8,7 @@ import 'package:skf/adapters/bilibili/common/mine_actions.dart';
 import 'package:skf/adapters/bilibili/common/setting_host.dart';
 import 'package:skf/adapters/bilibili/common/video_host.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule_adapter.dart';
@@ -22,6 +23,8 @@ import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/adapters/bilibili/pages/article/view.dart';
 import 'package:skf/adapters/bilibili/pages/article_list/view.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
+import 'package:skf/pages/main/controller.dart';
+import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/blacklist/view.dart';
 import 'package:skf/adapters/bilibili/pages/bubble/view.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku_block/view.dart';
@@ -202,6 +205,9 @@ class BiliBridge {
       downloadServiceProvider.overrideWith(
         (ref) => DownloadService()..onInit(),
       ),
+      // Generic page bar-state bridges: interface -> Riverpod notifiers.
+      mainBarStateProvider.overrideWith((ref) => appRead(mainControllerProvider)),
+      homeBarStateProvider.overrideWith((ref) => appRead(homeControllerProvider)),
     ];
   }
 

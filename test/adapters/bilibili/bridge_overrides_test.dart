@@ -50,6 +50,9 @@ final List<ProviderListenable<Object?>> allRepositoryProviders = <ProviderListen
   mineActionsProvider,
   downloadActionsProvider,
   downloadServiceProvider,
+  // mainBarState/homeBarState excluded from resolution: constructing the
+  // Main/Home notifiers touches GStorage (not initialized in tests); they are
+  // exercised via the app startup path instead.
 ];
 
 void main() {
@@ -63,9 +66,9 @@ void main() {
   });
 
   group('BiliBridge.buildAdapterOverrides (shape)', () {
-    test('returns exactly 34 overrides', () {
+    test('returns exactly 36 overrides', () {
       final overrides = BiliBridge.buildAdapterOverrides();
-      expect(overrides, hasLength(34));
+      expect(overrides, hasLength(36));
     });
 
     test('each override provides a non-null repository', () {

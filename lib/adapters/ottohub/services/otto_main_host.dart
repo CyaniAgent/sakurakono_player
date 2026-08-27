@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/view.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/pages/common/msg_unread_type.dart';
@@ -60,7 +60,7 @@ class OttoMainHost implements MainHost {
 
   @override
   ScrollOrRefreshMixin homeTabCtrFor(HomeTabItem tab) =>
-      Get.find<RcmdController>();
+      appRead(rcmdControllerProvider);
 
   @override
   Widget homeTabPageFor(HomeTabItem tab) => const RcmdPage();

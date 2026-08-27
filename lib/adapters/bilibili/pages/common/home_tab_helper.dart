@@ -8,15 +8,16 @@ import 'package:skf/adapters/bilibili/pages/pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/pgc/view.dart';
 import 'package:skf/adapters/bilibili/pages/rank/controller.dart' show RankScrollBridge;
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';
-import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/view.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 ScrollOrRefreshMixin homeTabCtrFor(HomeTabType type) => switch (type) {
-  HomeTabType.live => Get.find<LiveController>(),
-  HomeTabType.rcmd => Get.find<RcmdController>(),
-  HomeTabType.hot => Get.find<HotController>(),
+  HomeTabType.live => appRead(liveControllerProvider),
+  HomeTabType.rcmd => appRead(rcmdControllerProvider),
+  HomeTabType.hot => appRead(hotControllerProvider),
   HomeTabType.rank => RankScrollBridge(),
   HomeTabType.bangumi ||
   HomeTabType.cinema => Get.find<PgcController>(tag: type.name),

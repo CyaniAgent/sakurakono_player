@@ -15,7 +15,7 @@ final mineControllerProvider = Provider<MineController>((ref) {
 });
 
 final rcmdControllerProvider = Provider<RcmdController>((ref) {
-  throw UnimplementedError('Obtained via Get.find in adapter bridge');
+  return RcmdController();
 });
 
 final downloadServiceProvider = Provider<DownloadService>((ref) {

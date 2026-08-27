@@ -5,11 +5,12 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_v.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class RcmdPage extends StatefulWidget {
   const RcmdPage({super.key});
@@ -20,7 +21,7 @@ class RcmdPage extends StatefulWidget {
 
 class _RcmdPageState extends State<RcmdPage>
     with AutomaticKeepAliveClientMixin {
-  final RcmdController controller = Get.put(RcmdController());
+  final RcmdController controller = appRead(rcmdControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

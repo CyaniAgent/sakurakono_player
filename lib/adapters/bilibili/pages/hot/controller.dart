@@ -27,3 +27,6 @@ class HotController
     };
   }
 }
+
+/// Hot page controller (single instance).
+final hotControllerProvider = Provider<HotController>((ref) => HotController());
