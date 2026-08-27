@@ -10,6 +10,7 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 class MemberFavoriteCtr
     extends CommonControllerRiverpod<List<CoreSpaceFavData>?, List<CoreSpaceFavData>?> {

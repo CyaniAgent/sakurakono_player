@@ -6,6 +6,7 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:get/get.dart';
 
 abstract class FollowTypeController
     extends CommonListControllerRiverpod<CoreFollowData, CoreFollowItemModel> {

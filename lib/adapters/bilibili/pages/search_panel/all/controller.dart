@@ -8,6 +8,7 @@ import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:get/get.dart';
 
 class SearchAllController
     extends SearchPanelController<SearchAllData, dynamic> {

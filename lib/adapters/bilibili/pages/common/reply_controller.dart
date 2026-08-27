@@ -99,7 +99,7 @@ abstract class ReplyController<R>
   // 排序搜索评论
   void queryBySort() {
     if (isLoading) return;
-    switch (sortType)
+    switch (sortType) {
       case ReplySortType.time:
         sortType = ReplySortType.hot;
         mode = CoreMode.mainListHot;

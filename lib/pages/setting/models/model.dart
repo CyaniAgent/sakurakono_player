@@ -9,6 +9,7 @@ import 'package:skf/utils/storage.dart';
 import 'package:flutter/material.dart' hide PopupMenuItemSelected;
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 @immutable
 sealed class SettingsModel {

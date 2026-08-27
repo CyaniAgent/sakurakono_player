@@ -7,6 +7,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:get/get.dart';
 
 class LiveAreaChildController
     extends CommonListControllerRiverpod<CoreLiveSecondData, CoreCardLiveItem> {

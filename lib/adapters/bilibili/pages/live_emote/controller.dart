@@ -8,6 +8,7 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
+import 'package:get/get.dart';
 
 class LiveEmotePanelController
     extends CommonListControllerRiverpod<List<CoreLiveEmoteDatum>?, CoreLiveEmoteDatum>

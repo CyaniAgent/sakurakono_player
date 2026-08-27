@@ -240,7 +240,7 @@ class ArticleController extends CommonDynController {
 
   @override
   Future<void> onReload() {
-    if (!isLoaded)
+    if (!isLoaded) {
       return Future.syncValue(null);
     }
     return super.onReload();

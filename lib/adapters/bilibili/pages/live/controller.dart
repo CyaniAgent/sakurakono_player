@@ -9,6 +9,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
+import 'package:get/get.dart';
 
 class LiveController extends CommonListControllerRiverpod {
   Ref? _ref;

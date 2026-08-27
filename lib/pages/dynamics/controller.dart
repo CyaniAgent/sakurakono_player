@@ -16,6 +16,7 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
 
 class DynamicsController
     extends CommonDataControllerRiverpod<CoreFollowUpModel, CoreFollowUpModel>

@@ -5,6 +5,7 @@ import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class SelectTopicController
     extends CommonListControllerRiverpod<CoreTopicPubSearchData, CoreTopicItem> {

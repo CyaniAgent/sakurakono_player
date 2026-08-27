@@ -4,6 +4,7 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/pages/log_table/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:get/get.dart';
 
 class LoginLogController extends LogController<CoreLoginLogData, CoreLoginLogItem> {
 

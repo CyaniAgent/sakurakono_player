@@ -4,6 +4,7 @@ import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:get/get.dart';
 
 class MemberVideoWebCtr
     extends

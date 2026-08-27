@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:get/get.dart';
 
 class FollowedController extends FollowTypeController {
   @override

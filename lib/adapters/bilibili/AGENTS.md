@@ -39,7 +39,7 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 
 - One dir per page → view.dart + controller.dart (+ optional widgets/, models/, child/).
 - Shared infra pages/common/: common_controller.dart (CommonController<R,T> extends ChangeNotifier with ScrollOrRefreshMixin, migrated from GetxController), common_page.dart (CommonPageState), common_intro_controller, common_whisper_controller, reply_controller, home_tab_helper, dyn/.
-- Controllers: `late final Map args;` from GetPage arguments. Get.find<Repo>() (~203 sites across lib/, partially converted to ref.read), Obx eliminated (0), .obs eliminated (0). New controllers extend ChangeNotifier.
+- Controllers: `late final Map args;` from GetPage arguments. Get.find<Repo>() (~157 sites across lib/, partially converted to appRead), Obx eliminated (0), .obs eliminated (0). New controllers extend ChangeNotifier.
 - Pagination: onRefresh()→queryData(true), onLoadMore()→queryData(false), hasMore/pageInfo?.hasMore guards, cursor _offset. Custom scroll physics (NO EasyRefresh).
 
 ## model_converters.dart (utils/model_converters.dart, 1446ln)

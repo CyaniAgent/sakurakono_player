@@ -6,6 +6,7 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/common_whisper_controller.dart';
 import 'package:protobuf/protobuf.dart' show PbMap;
+import 'package:get/get.dart';
 
 CoreImSessionPageType _toCoreSessionPageType(SessionPageType type) {
   return switch (type) {

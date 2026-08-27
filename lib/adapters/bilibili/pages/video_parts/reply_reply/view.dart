@@ -196,7 +196,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
             if ((widget.firstFloor ?? _controller.firstFloor.value)
                 case final firstFloor?)
               _header(theme, firstFloor)
-            else
+            else {
               ListenableBuilder(
                 listenable: _controller,
                 builder: (context, _) {

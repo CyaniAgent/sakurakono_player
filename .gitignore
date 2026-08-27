@@ -159,3 +159,7 @@ test_results/
 
 # Version injection (CI writes skf_release.json - never commit)
 skf_release.json
+
+# Pix Agent
+.pi/
+.pi-lens/

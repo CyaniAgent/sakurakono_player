@@ -4,6 +4,7 @@ import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:get/get.dart';
 
 class UpowerRankController
     extends CommonListControllerRiverpod<CoreUpowerRankData, CoreUpowerRankInfo> {

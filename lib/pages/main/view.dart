@@ -27,6 +27,7 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:win32/win32.dart' as kernel32;
 import 'package:window_manager/window_manager.dart';
+import 'package:get/get.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});

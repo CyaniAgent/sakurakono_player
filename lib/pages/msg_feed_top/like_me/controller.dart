@@ -7,6 +7,7 @@ import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:get/get.dart';
 
 class LikeMeController
     extends

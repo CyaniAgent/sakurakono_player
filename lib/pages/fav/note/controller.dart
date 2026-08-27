@@ -5,6 +5,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 class FavNoteController
     extends MultiSelectController<List<CoreFavNoteItemModel>?, CoreFavNoteItemModel> {

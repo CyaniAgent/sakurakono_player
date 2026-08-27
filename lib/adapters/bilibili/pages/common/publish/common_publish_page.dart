@@ -7,6 +7,7 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:chat_bottom_container/chat_bottom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 abstract class CommonPublishPage<T> extends StatefulWidget {
   const CommonPublishPage({
@@ -156,7 +157,7 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   bool updateInputView({
     required bool isReadOnly,
   }) {
-    if (readOnly != isReadOnly)
+    if (readOnly != isReadOnly) {
       readOnly = isReadOnly;
       return true;
     }

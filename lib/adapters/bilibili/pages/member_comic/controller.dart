@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:get/get.dart';
 
 class MemberComicController
     extends CommonListControllerRiverpod<CoreSpaceArchiveData, CoreSpaceArchiveItem> {

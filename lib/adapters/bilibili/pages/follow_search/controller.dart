@@ -5,6 +5,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
+import 'package:get/get.dart';
 
 class FollowSearchController
     extends CommonSearchController<CoreFollowData, CoreFollowItemModel> {

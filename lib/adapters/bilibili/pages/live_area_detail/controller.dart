@@ -9,6 +9,7 @@ import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:get/get.dart';
 
 class LiveAreaDetailController
     extends CommonListControllerRiverpod<List<CoreAreaItem>?, CoreAreaItem>

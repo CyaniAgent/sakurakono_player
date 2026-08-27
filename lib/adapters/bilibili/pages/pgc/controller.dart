@@ -13,6 +13,7 @@ import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
+import 'package:get/get.dart';
 
 class PgcController
     extends CommonListControllerRiverpod<List<CorePgcIndexItem>?, CorePgcIndexItem> {

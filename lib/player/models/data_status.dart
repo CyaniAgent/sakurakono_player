@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 
 enum DataStatus { none, loading, loaded, error }
 

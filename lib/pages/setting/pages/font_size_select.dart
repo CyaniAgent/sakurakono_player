@@ -3,6 +3,7 @@ import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FontSizeSelectPage extends StatefulWidget {
   const FontSizeSelectPage({super.key});

@@ -30,7 +30,7 @@ Child of root AGENTS.md. Shared page framework + domain pages consumed by ALL ad
 ## Patterns
 
 - One dir per page → view.dart + controller.dart (+ optional widgets/, models/) — same shape as bilibili/pages/.
-- Controllers: Obx and .obs eliminated (0 remaining). Get.find partially converted to `ref.read` (~203 remaining across 81 files). New controllers extend ChangeNotifier + notifyListeners.
+- Controllers: Obx and .obs eliminated (0 remaining). Get.find partially converted to `ref.read` (~157 remaining across 62 files). New controllers extend ChangeNotifier + notifyListeners.
 - Data access via core repository interfaces (Riverpod providers or Get.find fallback) — never direct HTTP.
 
 ## Migration status (2026-08)

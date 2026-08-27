@@ -15,6 +15,7 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
