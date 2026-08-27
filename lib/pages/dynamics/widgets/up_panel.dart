@@ -9,7 +9,6 @@ import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class UpPanel extends StatefulWidget {
   const UpPanel({

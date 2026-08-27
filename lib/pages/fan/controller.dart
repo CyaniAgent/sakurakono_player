@@ -1,8 +1,5 @@
 import 'package:skf/router/app_navigator.dart';
-import 'package:skf/core/repository/fan_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
@@ -23,7 +20,7 @@ class FansController extends FollowTypeController {
     isOwner = ownerMid == this.mid;
     if (showName && !isOwner) {
       final String? name = args?['name'];
-      this.name = RxnString(name);
+      this.name = name;
       if (name == null) {
         queryUserName();
       }

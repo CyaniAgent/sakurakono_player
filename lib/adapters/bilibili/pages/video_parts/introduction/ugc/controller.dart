@@ -8,9 +8,6 @@ import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/search_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
@@ -52,6 +49,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 
 class UgcIntroController extends CommonIntroController with ReloadMixin {
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   late final RxBool expand;
   bool status = true;
@@ -142,7 +140,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         }
         if (videoDetailCtr.showReply) {
           try {
-            Get.find<VideoReplyController>(tag: heroTag).count.value =
+            Get.find<VideoReplyController>(tag: heroTag).count =
                 response.stat?['reply'] as int? ?? 0;
           } catch (_) {}
         }

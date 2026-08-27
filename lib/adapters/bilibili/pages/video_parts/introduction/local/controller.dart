@@ -3,7 +3,6 @@ import 'package:skf/adapters/bilibili/models_new/video/video_detail/stat_detail.
 import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/pages/download/controller.dart';
 import 'package:skf/player/models/play_repeat.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/utils/platform_utils.dart';
@@ -59,10 +58,9 @@ class LocalIntroController extends CommonIntroController {
     for (final e in controller.pages) {
       final items = e.entries..sort((a, b) => a.sortKey.compareTo(b.sortKey));
       final completed = items.where((e) => e.isCompleted);
-      list.addAllIf(
-        completed.isNotEmpty,
-        completed.map(ModelConverters.toBiliDownloadEntry),
-      );
+      if (completed.isNotEmpty) {
+        list.addAll(completed.map(ModelConverters.toBiliDownloadEntry));
+      }
       if (completed.length == 1) {
         aidSet.add(e.pageId);
       }
@@ -144,7 +142,7 @@ class LocalIntroController extends CommonIntroController {
       ..initFileSource(entry, isInit: false)
       ..playerInit();
     videoDetail
-      ..title = entry.showTitle;
+      .title = entry.showTitle;
     notifyListeners();
     this.index = index;
     if (PlatformUtils.isMobile) {

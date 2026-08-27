@@ -22,8 +22,8 @@ class FavNoteItem extends StatelessWidget {
   /// 打开笔记网页（适配器注入，见 FavActions.onHandleWebview）。
   final VoidCallback? onOpen;
   void onLongPress() {
-    if (!ctr.enableMultiSelect.value) {
-      ctr.enableMultiSelect.value = true;
+    if (!ctr.enableMultiSelect) {
+      ctr.enableMultiSelect = true;
       onSelect();
     }
   }
@@ -35,7 +35,7 @@ class FavNoteItem extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () {
-          if (ctr.enableMultiSelect.value) {
+          if (ctr.enableMultiSelect) {
             onSelect();
             return;
           }

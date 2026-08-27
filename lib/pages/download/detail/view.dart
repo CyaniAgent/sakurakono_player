@@ -6,7 +6,6 @@ import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/models/download_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
-import 'package:skf/pages/download/controller.dart';
 import 'package:skf/pages/download/detail/widgets/item.dart';
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/router/app_navigator.dart';
@@ -141,11 +140,10 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
             slivers: [
               ViewSliverSafeArea(
                 sliver: ListenableBuilder(
-                  listenable: _downloadItems,
-                  builder: (_, __) {
-                  listenable: _downloadItems,
-                  builder: (_, __) {
-                    return SliverGrid.builder(
+                  listenable: _controller,
+                  builder: (_, _) {
+                    if (_downloadItems.isNotEmpty) {
+                      return SliverGrid.builder(
                       gridDelegate: gridDelegate,
                       itemBuilder: (context, index) {
                         final entry = _downloadItems[index];
@@ -174,8 +172,10 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                           controller: this,
                         );
                       },
-                      itemCount: _downloadItems.length,
-                    );
+                        itemCount: _downloadItems.length,
+                      );
+                    }
+                    return const HttpError();
                   },
                 ),
               ),
@@ -183,7 +183,6 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
           ),
         ),
       );
-    );
   }
 
   @override

@@ -58,7 +58,7 @@ class _DynamicsTabPageState extends State<DynamicsTabPage>
           SliverPadding(
             padding: const EdgeInsets.only(bottom: 100),
             sliver: buildPage(
-              ListenableBuilder(listenable: controller, builder: (_, __) => _buildBody(controller.loadingState)),
+              ListenableBuilder(listenable: controller, builder: (_, _) => _buildBody(controller.loadingState)),
             ),
           ),
         ],

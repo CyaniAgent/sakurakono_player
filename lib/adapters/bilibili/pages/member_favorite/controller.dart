@@ -1,5 +1,4 @@
 import 'package:skf/adapters/bilibili/http/api.dart';
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +9,6 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class MemberFavoriteCtr
     extends CommonControllerRiverpod<List<CoreSpaceFavData>?, List<CoreSpaceFavData>?> {

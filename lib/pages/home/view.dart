@@ -12,10 +12,8 @@ import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -107,7 +105,7 @@ class _HomePageState extends CommonPageState<HomePage>
       if (_mainController.barOffset != null) {
         return ListenableBuilder(
           listenable: _mainController,
-          builder: (_, __) {
+          builder: (_, _) {
             final offset = _mainController.barOffset!;
             return CustomHeightWidget(
               offset: Offset(0, -offset),
@@ -123,7 +121,7 @@ class _HomePageState extends CommonPageState<HomePage>
       if (_homeController.showTopBar != null) {
         return ListenableBuilder(
           listenable: _homeController,
-          builder: (_, __) {
+          builder: (_, _) {
             final showSearchBar = _homeController.showTopBar!;
             return AnimatedOpacity(
               opacity: showSearchBar ? 1 : 0,
@@ -178,7 +176,7 @@ class _HomePageState extends CommonPageState<HomePage>
                 Expanded(
                   child: ListenableBuilder(
                     listenable: _homeController,
-                    builder: (_, __) => Text(
+                    builder: (_, _) => Text(
                       _homeController.defaultSearch,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -204,7 +202,7 @@ Widget userAvatar({
     label: "我的",
     child: ListenableBuilder(
       listenable: mainController,
-      builder: (_, __) {
+      builder: (_, _) {
         if (mainController.accountService.isLogin) {
           return Stack(
             clipBehavior: .none,
@@ -232,7 +230,7 @@ Widget userAvatar({
                 bottom: -4,
                 child: ValueListenableBuilder<bool>(
                   valueListenable: MineController.anonymity,
-                  builder: (_, anonymity, __) => anonymity
+                  builder: (_, anonymity, _) => anonymity
                       ? IgnorePointer(
                           child: Container(
                             padding: const .all(2),
@@ -278,7 +276,7 @@ Widget userAvatar({
 Widget msgBadge(MainControllerNotifier mainController) {
   return ListenableBuilder(
     listenable: mainController,
-    builder: (_, __) {
+    builder: (_, _) {
       if (mainController.accountService.isLogin) {
         final count = mainController.msgUnReadCount;
         final isNumBadge = mainController.msgBadgeMode == .number;

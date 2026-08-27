@@ -33,7 +33,7 @@ class CoreLoginDevicesPageState extends State<CoreLoginDevicesPage> {
             ViewSliverSafeArea(
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(colorScheme, _controller.loadingState),
+                builder: (_, _) => _buildBody(colorScheme, _controller.loadingState),
               ),
             ),
           ],

@@ -25,8 +25,8 @@ class FollowTagSortPage extends StatefulWidget {
 
 class _FollowTagSortPageState extends State<FollowTagSortPage>
     with ReorderMixin {
-  List<CoreMemberTagItemModel> _defTags = <CoreMemberTagItemModel>[];
-  List<CoreMemberTagItemModel> _customTags = <CoreMemberTagItemModel>[];
+  final List<CoreMemberTagItemModel> _defTags = <CoreMemberTagItemModel>[];
+  final List<CoreMemberTagItemModel> _customTags = <CoreMemberTagItemModel>[];
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
   @override
@@ -56,11 +56,7 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
                     );
                     if (res.isSuccess) {
                       SmartDialog.showToast('排序完成');
-                      final tabs = _defTags + _customTags;
-                      widget.notifier.state = widget.notifier.state.copyWith(
-                        tabs: tabs,
-                        currentTabIndex: 0,
-                      );
+                      widget.notifier.applySortedTabs(_defTags + _customTags, 0);
                       if (mounted) {
                         AppNavigator.back();
                       }

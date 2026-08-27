@@ -47,6 +47,7 @@ class _WhisperPageState extends State<WhisperPage> {
           ListenableBuilder(
             listenable: _controller,
             builder: (context, _) {
+            final outsideItem = _controller.outsideItem;
             if (outsideItem != null && outsideItem.isNotEmpty) {
               return Row(
                 mainAxisSize: .min,
@@ -68,6 +69,7 @@ class _WhisperPageState extends State<WhisperPage> {
           ListenableBuilder(
             listenable: _controller,
             builder: (context, _) {
+            final threeDotItems = _controller.threeDotItems;
             if (threeDotItems != null && threeDotItems.isNotEmpty) {
               return PopupMenuButton(
                 itemBuilder: (context) {
@@ -104,7 +106,7 @@ class _WhisperPageState extends State<WhisperPage> {
             _buildTopItems(theme, padding),
             SliverPadding(
               padding: EdgeInsets.only(bottom: padding.bottom + 100),
-              sliver: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
+              sliver: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState)),
             ),
           ],
         ),

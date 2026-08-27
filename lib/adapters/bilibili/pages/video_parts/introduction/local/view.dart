@@ -37,7 +37,7 @@ class _LocalIntroPanelState extends State<LocalIntroPanel>
     return ListenableBuilder(
       listenable: _controller,
       builder: (context, _) {
-      final currIndex = _controller.index.value;
+      final currIndex = _controller.index;
       return SliverFixedExtentList.builder(
         itemCount: _controller.list.length,
         itemBuilder: (context, index) {

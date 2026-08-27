@@ -96,7 +96,7 @@ class _DynamicDetailPageState
     }
     controller = Get.putOrFind(DynamicDetailController.new, tag: id);
     final stat = item.modules?.moduleStat;
-    controller.count.value = stat?.comment?.count ?? -1;
+    controller.count = stat?.comment?.count ?? -1;
     _reactController = Get.put(
       DynReactController(
         id,
@@ -276,7 +276,7 @@ class _DynamicDetailPageState
       child: ListenableBuilder(
         listenable: controller,
         builder: (context, _) {
-          final showTitle = controller.showTitle.value;
+          final showTitle = controller.showTitle;
           return AnimatedOpacity(
             opacity: showTitle ? 1 : 0,
             duration: const Duration(milliseconds: 300),
@@ -335,7 +335,7 @@ class _DynamicDetailPageState
               listenable: controller,
               builder: (context, _) {
               return Text(
-                '${DynType.reply.label}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
+                '${DynType.reply.label}${controller.count < 0 ? '' : ' ${NumUtils.numFormat(controller.count)}'}',
               );
             }),
           ),
@@ -344,7 +344,7 @@ class _DynamicDetailPageState
               listenable: _reactController,
               builder: (context, _) {
               return Text(
-                '${DynType.reaction.label}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
+                '${DynType.reaction.label}${controller.count < 0 ? '' : ' ${NumUtils.numFormat(controller.count)}'}',
               );
             }),
           ),
@@ -425,7 +425,7 @@ class _DynamicDetailPageState
           return [
             SliverToBoxWithOffsetAdapter(
               offset: 55,
-              onVisibilityChanged: controller.showTitle.call,
+              onVisibilityChanged: (visible) => controller.showTitle = visible,
               child: DynamicPanel(
                 item: controller.dynItem,
                 isDetail: true,
@@ -464,7 +464,7 @@ class _DynamicDetailPageState
                 ),
                 sliver: SliverToBoxWithOffsetAdapter(
                   offset: 55,
-                  onVisibilityChanged: controller.showTitle.call,
+                  onVisibilityChanged: (visible) => controller.showTitle = visible,
                   child: DynamicPanel(
                     item: controller.dynItem,
                     isDetail: true,
@@ -665,7 +665,7 @@ class _DynamicDetailPageState
       child: ListenableBuilder(
         listenable: controller,
         builder: (context, _) {
-          final sortType = controller.sortType.value;
+          final sortType = controller.sortType;
           return Row(
             mainAxisAlignment: .spaceBetween,
             children: [

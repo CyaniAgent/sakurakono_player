@@ -47,7 +47,7 @@ class _FavTopicPageState extends State<FavTopicPage>
             ),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(theme, _controller.loadingState),
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],

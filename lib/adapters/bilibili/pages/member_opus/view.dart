@@ -107,15 +107,15 @@ class _MemberOpusState extends State<MemberOpus>
                             (e) => ListTile(
                               dense: true,
                               onTap: () {
-                                if (e == _controller.type.value) {
+                                if (e == _controller.type) {
                                   return;
                                 }
                                 AppNavigator.back();
                                 _controller
-                                  ..type.value = e
+                                  ..type = e
                                   ..onReload();
                               },
-                              tileColor: e == _controller.type.value
+                              tileColor: e == _controller.type
                                   ? ColorScheme.of(context).onInverseSurface
                                   : null,
                               title: Text(
@@ -130,7 +130,7 @@ class _MemberOpusState extends State<MemberOpus>
                   icon: const Icon(size: 20, Icons.sort),
                   label: ListenableBuilder(
                     listenable: _controller,
-                    builder: (_, __) {
+                    builder: (_, _) {
                       final type = _controller.type;
                       return Text(type.text ?? type.tabName!);
                     },
@@ -138,6 +138,7 @@ class _MemberOpusState extends State<MemberOpus>
               ),
             ),
           ),
+            ),
       ],
     );
   }

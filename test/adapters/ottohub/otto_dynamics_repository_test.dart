@@ -1,15 +1,25 @@
 
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/ottohub/repository/otto_dynamics_repository.dart';
 import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import '../../helpers/fake_http_adapter.dart';
 import '../../helpers/fixtures.dart';
+
+/// AccountNotifier double exposing a fixed [userId] without touching Hive.
+class _FakeAccountNotifier extends AccountNotifier {
+  _FakeAccountNotifier(int uid) : super(AccountState(userId: uid));
+
+  /// Simulate login/logout state transitions in tests.
+  void setUid(int? uid) => state = AccountState(userId: uid);
+}
 
 /// AccountProvider double exposing a fixed [userId] without touching Hive.
 class _FakeAccountProvider extends AccountProvider {
@@ -18,9 +28,9 @@ class _FakeAccountProvider extends AccountProvider {
   final int? _uid;
 
   @override
-  RxString get rxFace => ''.obs;
+  String get rxFace => '';
   @override
-  RxBool get rxIsLogin => false.obs;
+  bool get rxIsLogin => false;
   @override
   String? get face => null;
   @override
@@ -54,8 +64,17 @@ void main() {
     return repo;
   }
 
+  setUpAll(() {
+    appContainer = ProviderContainer(
+      overrides: [
+        accountProvider.overrideWith((ref) => _FakeAccountNotifier(10086)),
+      ],
+    );
+  });
+
   setUp(() {
     Get.put<AccountProvider>(_FakeAccountProvider(10086));
+    (appContainer.read(accountProvider.notifier) as _FakeAccountNotifier).setUid(10086);
   });
 
   tearDown(Get.reset);
@@ -129,6 +148,7 @@ void main() {
     test('edge: followUp rejects when no account provider is registered',
         () async {
       Get.reset(); // simulate not being logged in.
+      (appContainer.read(accountProvider.notifier) as _FakeAccountNotifier).setUid(null);
       makeRepo(<String, String>{});
 
       final result = await repo.followUp();

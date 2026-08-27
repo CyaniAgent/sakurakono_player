@@ -136,7 +136,7 @@ mixin HeaderMixin<T extends StatefulWidget> on State<T> {
         }
 
         void updateOpacity(double val) {
-          plPlayerController.danmakuOpacity.value = val;
+          plPlayerController.danmakuOpacity = val;
           setState(() {});
         }
 
@@ -328,7 +328,7 @@ mixin HeaderMixin<T extends StatefulWidget> on State<T> {
                       child: Slider(
                         min: 0,
                         max: 1,
-                        value: plPlayerController.danmakuOpacity.value,
+                        value: plPlayerController.danmakuOpacity,
                         divisions: 10,
                         label: '${plPlayerController.danmakuOpacity * 100}%',
                         onChanged: updateOpacity,
@@ -531,7 +531,7 @@ mixin HeaderMixin<T extends StatefulWidget> on State<T> {
         );
       },
     )?.whenComplete(
-      () => DanmakuOptions.save(plPlayerController.danmakuOpacity.value),
+      () => DanmakuOptions.save(plPlayerController.danmakuOpacity),
     );
   }
 }

@@ -66,8 +66,8 @@ class _LivePageState extends State<LivePage>
               ),
               sliver: SliverMainAxisGroup(
                 slivers: [
-                  ListenableBuilder(listenable: controller, builder: (_, __) => _buildTop(theme, controller.topState.value)),
-                  ListenableBuilder(listenable: controller, builder: (_, __) => _buildBody(theme, controller.loadingState)),
+                  ListenableBuilder(listenable: controller, builder: (_, _) => _buildTop(theme, controller.topState)),
+                  ListenableBuilder(listenable: controller, builder: (_, _) => _buildBody(theme, controller.loadingState)),
                 ],
               ),
             ),
@@ -92,8 +92,8 @@ class _LivePageState extends State<LivePage>
                       child: SizedBox(
                         // 10+14*textScaler
                         height: 10.0 + textScaler.scale(14),
-                          child: ListenableBuilder(listenable: controller, builder: (_, __) {
-                          final areaIndex = controller.areaIndex.value;
+                          child: ListenableBuilder(listenable: controller, builder: (_, _) {
+                          final areaIndex = controller.areaIndex;
                           return ListView.separated(
                             scrollDirection: .horizontal,
                             padding: const .only(right: 8),
@@ -198,8 +198,8 @@ class _LivePageState extends State<LivePage>
                 child: SizedBox(
                   // 8+10+13*textScaler
                   height: 18.0 + textScaler.scale(13),
-                  child: ListenableBuilder(listenable: controller, builder: (_, __) {
-                    final tagIndex = controller.tagIndex.value;
+                  child: ListenableBuilder(listenable: controller, builder: (_, _) {
+                    final tagIndex = controller.tagIndex;
                     return ListView.separated(
                       scrollDirection: .horizontal,
                       padding: const .only(bottom: 8),

@@ -70,7 +70,7 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
               ),
               sliver: ListenableBuilder(
                 listenable: _subDetailController,
-                builder: (_, __) => _buildBody(_subDetailController.loadingState),
+                builder: (_, _) => _buildBody(_subDetailController.loadingState),
               ),
             ),
           ],
@@ -109,7 +109,7 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
     if (info != null) return _buildAppBar(theme, padding, info);
     return ListenableBuilder(
       listenable: _subDetailController,
-      builder: (_, __) {
+      builder: (_, _) {
         return switch (_subDetailController.loadingState) {
           Loading() || Error() => const SliverAppBar(),
           Success() => _buildAppBar(

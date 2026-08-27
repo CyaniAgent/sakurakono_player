@@ -1,6 +1,4 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
-import 'package:skf/core/repository/black_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/blacklist_data.dart';
 import 'package:skf/core/models/blacklist_item.dart';
@@ -10,7 +8,6 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class BlackListController
     extends CommonListControllerRiverpod<CoreBlackListData, CoreBlackListItem> {

@@ -68,7 +68,7 @@ class _MemberPageState extends State<MemberPage> {
       color: theme.surface,
       child: ListenableBuilder(
         listenable: _userController,
-        builder: (_, __) => switch (_userController.loadingState) {
+        builder: (_, _) => switch (_userController.loadingState) {
           Loading() => m3eLoading,
           Success(:final response) => ExtendedNestedScrollView(
             key: _userController.scrollKey,

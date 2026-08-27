@@ -32,7 +32,7 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel> with GridMixin {
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.only(top: 7, bottom: 100),
-      sliver: ListenableBuilder(listenable: _relatedController, builder: (_, __) => _buildBody(_relatedController.loadingState)),
+      sliver: ListenableBuilder(listenable: _relatedController, builder: (_, _) => _buildBody(_relatedController.loadingState)),
     );
   }
 

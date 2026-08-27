@@ -79,8 +79,8 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
       child: ListenableBuilder(
         listenable: controller,
         builder: (context, _) {
-          if (controller.infoState.value case Success(:final response)) {
-            final showTitle = controller.showTitle.value;
+          if (controller.infoState case Success(:final response)) {
+            final showTitle = controller.showTitle;
             return AnimatedOpacity(
               opacity: showTitle ? 1 : 0,
               duration: const Duration(milliseconds: 300),
@@ -116,7 +116,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
   Widget _buildBody() => ListenableBuilder(
     listenable: controller,
     builder: (context, _) {
-    switch (controller.infoState.value) {
+    switch (controller.infoState) {
       case Success(:final response):
         double padding = max(maxWidth / 2 - Grid.smallCardWidth, 0);
         final Widget child;
@@ -128,14 +128,14 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
               slivers: [
                 SliverToBoxWithOffsetAdapter(
                   offset: 45,
-                  onVisibilityChanged: controller.showTitle.call,
+                  onVisibilityChanged: (visible) => controller.showTitle = visible,
                   child: _buildCard(response, maxWidth),
                 ),
                 SliverToBoxAdapter(
                   child: _buildChart(response, maxWidth),
                 ),
                 buildReplyHeader(),
-                ListenableBuilder(listenable: controller, builder: (_, __) => replyList(controller.loadingState)),
+                ListenableBuilder(listenable: controller, builder: (_, _) => replyList(controller.loadingState)),
               ],
             ),
           );
@@ -188,7 +188,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                           buildReplyHeader(),
                           ListenableBuilder(
                             listenable: controller,
-                            builder: (_, __) => replyList(controller.loadingState),
+                            builder: (_, _) => replyList(controller.loadingState),
                           ),
                         ],
                       ),
@@ -295,7 +295,7 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                       icon: FontAwesomeIcons.shareFromSquare,
                       text: '转发',
                       onPressed: () {
-                        final data = controller.infoState.value.dataOrNull;
+                        final data = controller.infoState.dataOrNull;
                         if (data != null) {
                           showModalBottomSheet(
                             context: context,

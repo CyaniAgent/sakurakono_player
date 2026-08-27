@@ -123,7 +123,7 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
             child: CustomScrollView(
               slivers: [
                 ListenableBuilder(
-                  listenable: _downloadActions,
+                  listenable: _controller,
                   builder: (context, _) {
                     final entry =
                         _downloadActions.waitDownloadQueue.firstWhereOrNull(

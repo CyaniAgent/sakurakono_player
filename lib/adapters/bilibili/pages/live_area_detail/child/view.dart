@@ -93,7 +93,7 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
               child: ListenableBuilder(
                 listenable: _controller,
                 builder: (context, _) {
-                final tagIndex = _controller.tagIndex.value;
+                final tagIndex = _controller.tagIndex;
                 return SelfSizedHorizontalList(
                   padding: const .only(bottom: 12),
                   separatorBuilder: (_, _) => const SizedBox(width: 12),

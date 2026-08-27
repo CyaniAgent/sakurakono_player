@@ -70,7 +70,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
           sliver: buildPage(
             ListenableBuilder(
               listenable: _memberDynamicController,
-              builder: (_, __) => _buildContent(_memberDynamicController.loadingState),
+              builder: (_, _) => _buildContent(_memberDynamicController.loadingState),
             ),
           ),
         ),

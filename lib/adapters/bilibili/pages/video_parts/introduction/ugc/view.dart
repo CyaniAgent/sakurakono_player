@@ -144,7 +144,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                   if (isHorizontal && PlatformUtils.isDesktop)
                     ..._infos(videoDetail)
                   else
-                      () => AnimatedHeight(
+                      AnimatedHeight(
                         expand: introController.expand.value,
                         duration: const Duration(milliseconds: 300),
                         child: TranslucentColumn(
@@ -153,14 +153,14 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                           children: _infos(videoDetail),
                         ),
                       ),
-                    () => introController.status.value
+                    introController.status
                         ? const SizedBox.shrink()
                         : Center(
                             child: TextButton.icon(
                               icon: const Icon(Icons.refresh),
                               onPressed: () {
                                 introController
-                                  ..status.value = true
+                                  ..status = true
                                   ..queryVideoIntro();
                                 if (videoDetailCtr.videoUrl.isNullOrEmpty &&
                                     !videoDetailCtr.isQuerying) {
@@ -187,7 +187,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                           !videoDetailCtr
                               .plPlayerController
                               .horizontalSeasonPanel))
-                      () => SeasonPanel(
+                      SeasonPanel(
                         key: ValueKey(introController.videoDetail),
                         heroTag: widget.heroTag,
                         showEpisodes: widget.showEpisodes,
@@ -200,7 +200,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                           !videoDetailCtr
                               .plPlayerController
                               .horizontalSeasonPanel))
-                      () => PagesPanel(
+                      PagesPanel(
                         key: ValueKey(introController.videoDetail),
                         heroTag: widget.heroTag,
                         ugcIntroController: introController,
@@ -331,7 +331,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
     bool isSelectable = false,
   }) {
     Widget child() {
-      final videoLabel = videoDetailCtr.videoLabel.value;
+      final videoLabel = videoDetailCtr.videoLabel;
       final textSpan = TextSpan(
         children: [
           if (videoLabel.isNotEmpty) ...[
@@ -486,7 +486,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               onTap: () => introController.handleAction(
                 introController.actionDislikeVideo,
               ),
-              selectStatus: introController.hasDislike.value,
+              selectStatus: introController.hasDislike,
               semanticsLabel: '点踩',
               text: "点踩",
             ),
@@ -889,12 +889,12 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
     onSecondaryTap:
         PlatformUtils.isDesktop && introController.horizontalMemberPage
         ? () => AppNavigator.toNamed(
-            '/member?mid=${introController.userStat.value.card?.mid}&from_view_aid=${videoDetailCtr.aid}',
+            '/member?mid=${introController.userStat.card?.mid}&from_view_aid=${videoDetailCtr.aid}',
           )
         : null,
     child: ListenableBuilder(
       listenable: introController, builder: (context, _) {
-        final userStat = introController.userStat.value;
+        final userStat = introController.userStat;
         final isVip = (userStat.card?.coreVip?.status ?? 0) > 0;
         return Row(
           spacing: 10,

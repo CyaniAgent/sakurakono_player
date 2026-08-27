@@ -48,7 +48,7 @@ class _LiveSearchChildPageState extends ConsumerState<LiveSearchChildPage>
               right: padding,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
+            sliver: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState)),
           ),
         ],
       ),

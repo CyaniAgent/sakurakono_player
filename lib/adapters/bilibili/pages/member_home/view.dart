@@ -41,9 +41,10 @@ class _MemberHomeState extends State<MemberHome>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListenableBuilder(
       listenable: _ctr,
-      builder: (_, __) => _buildBody(_ctr.loadingState),
+      builder: (_, _) => _buildBody(_ctr.loadingState),
     );
   }
 

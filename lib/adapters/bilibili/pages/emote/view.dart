@@ -38,7 +38,7 @@ class _EmotePanelState extends State<EmotePanel>
     final ThemeData theme = Theme.of(context);
     return ListenableBuilder(
       listenable: _emotePanelController,
-      builder: (_, __) => _buildBody(theme, _emotePanelController.loadingState),
+      builder: (_, _) => _buildBody(theme, _emotePanelController.loadingState),
     );
   }
 

@@ -15,7 +15,6 @@ import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 abstract class BaseVideoWebState<
   S extends StatefulWidget,
@@ -48,7 +47,6 @@ abstract class BaseVideoWebState<
           ListenableBuilder(
             listenable: controller,
             builder: (context, _) {
-            () {
               final order = controller.order.value;
               return PopupMenuButton<V>(
                 tooltip: '排序',
@@ -73,10 +71,10 @@ abstract class BaseVideoWebState<
               padding: .only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              ListenableBuilder(
+              sliver: ListenableBuilder(
                 listenable: controller,
                 builder: (context, _) =>
-                () => buildBody(colorScheme, controller.loadingState),
+                    buildBody(colorScheme, controller.loadingState),
               ),
             ),
           ],

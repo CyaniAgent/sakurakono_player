@@ -16,7 +16,6 @@ import 'package:canvas_danmaku/models/danmaku_content_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class SendDanmakuPanel extends CommonTextPubPage {
   // video
@@ -90,7 +89,9 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
   }
 
   Widget get _buildColorPanel => Expanded(
-      () {
+    child: ListenableBuilder(
+      listenable: this,
+      builder: (context, _) {
         final bool isCustomColor = !_colorList.contains(_color);
         final int length = _colorList.length + (isCustomColor ? 1 : 0) + 1;
         return GridView.builder(
@@ -240,7 +241,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
-          _color != color
+          border: _color != color
               ? null
               : Border.all(
                   width: 2,
@@ -363,7 +364,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
                   updatePanelType(PanelType.keyboard);
                 }
               },
-              ListenableBuilder(
+              child: ListenableBuilder(
                 listenable: this,
                 builder: (context, _) => TextField(
                   controller: editController,
@@ -449,8 +450,8 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
       bvid: widget.bvid,
       progress: widget.progress,
       msg: editController.text,
-      mode: _mode.value,
-      fontSize: _fontSize.value,
+      mode: _mode,
+      fontSize: _fontSize,
       color: isColorful ? null : _color.toARGB32() & 0xFFFFFF,
       colorful: isColorful,
     );
@@ -470,7 +471,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
         DanmakuContentItem(
           editController.text,
           color: isColorful ? Colors.white : _color,
-          type: switch (_mode.value) {
+          type: switch (_mode) {
             5 => DanmakuItemType.top,
             4 => DanmakuItemType.bottom,
             _ => DanmakuItemType.scroll,

@@ -48,7 +48,7 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
               ),
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(_controller.loadingState),
+                builder: (_, _) => _buildBody(_controller.loadingState),
               ),
             ),
           ],
@@ -101,7 +101,7 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
               ),
               ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) {
+                builder: (_, _) {
                   final count = _controller.loadingState.dataOrNull?.length;
                   return count == null
                       ? const SizedBox.shrink()

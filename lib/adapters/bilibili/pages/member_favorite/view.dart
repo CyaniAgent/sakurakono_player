@@ -55,7 +55,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
             ),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(theme, _controller.loadingState),
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],
@@ -105,7 +105,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
   Widget _buildItem(
     ThemeData theme, {
     required dynamic data,
-    required RxBool isEnd,
+    required bool isEnd,
     required bool isFav,
   }) {
     return SliverMainAxisGroup(
@@ -120,9 +120,6 @@ class _MemberFavoriteState extends State<MemberFavorite>
                     _controller.setExpand(isFav);
                     (context as Element).markNeedsBuild();
                     data.refresh();
-                    if (!isEnd.value) {
-                      isEnd.refresh();
-                    }
                   },
                   child: Padding(
                     padding: const .symmetric(horizontal: 12, vertical: 10),
@@ -177,9 +174,8 @@ class _MemberFavoriteState extends State<MemberFavorite>
                     item: item,
                     onDelete: (isDeleted) {
                       if (isDeleted ?? false) {
-                        _controller.favState
-                          ..value.mediaListResponse?.list?.remove(item)
-                          ..refresh();
+                        _controller.favState.mediaListResponse?.list
+                            ?.remove(item);
                       }
                     },
                   ),
@@ -192,7 +188,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
         ListenableBuilder(
           listenable: _controller,
           builder: (context, _) =>
-          () => isEnd.value || !_controller.isExpand(isFav)
+          isEnd || !_controller.isExpand(isFav)
               ? const SliverToBoxAdapter()
               : SliverToBoxAdapter(child: _buildLoadMoreItem(theme, isFav)),
         ),

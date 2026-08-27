@@ -62,16 +62,15 @@ class _SearchVideoPanelState
                       ListenableBuilder(
                         listenable: controller,
                         builder: (context, _) => SearchText(
-                        () => SearchText(
                           fontSize: 13,
                           text: e.desc,
                           bgColor: Colors.transparent,
-                          textColor: controller.selectedType.value == e
+                          textColor: controller.selectedType == e
                               ? theme.colorScheme.primary
                               : theme.colorScheme.outline,
                           onTap: (_) => controller
                             ..order = e.name
-                            ..selectedType.value = e
+                            ..selectedType = e
                             ..onSortSearch(getBack: false),
                         ),
                       ),

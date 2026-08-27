@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/pages/home/view.dart' show msgBadge;
 import 'package:skf/adapters/bilibili/pages/login/controller.dart';

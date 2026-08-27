@@ -28,7 +28,7 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
       appBar: AppBar(
         title: ListenableBuilder(
           listenable: _controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final count = _controller.count;
             return Text(count != null ? '$count人正在直播' : '关注直播');
           },
@@ -47,7 +47,7 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
               ),
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(_controller.loadingState),
+                builder: (_, _) => _buildBody(_controller.loadingState),
               ),
             ),
           ],

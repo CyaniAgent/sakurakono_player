@@ -119,6 +119,11 @@ class FollowControllerNotifier extends StateNotifier<FollowState> {
     }
   }
 
+  /// Set tags after drag-sort (called from the sort page view).
+  void applySortedTabs(List<CoreMemberTagItemModel> tabs, int currentTabIndex) {
+    state = state.copyWith(tabs: tabs, currentTabIndex: currentTabIndex);
+  }
+
   // -- Data fetching --
 
   Future<void> _queryUserName() async {

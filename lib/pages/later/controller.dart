@@ -1,6 +1,5 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
 
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,11 +88,12 @@ mixin BaseLaterController
 class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItemModel>
     with BaseLaterController {
   LaterController(this.laterViewType, {this.actions}) {
-    ever(enableMultiSelect, (bool val) {
-      _ref?.read(laterBaseProvider.notifier).setEnableMultiSelect(val);
-    });
-    ever(rxCount, (int val) {
-      _ref?.read(laterBaseProvider.notifier).setCheckedCount(val);
+    // Mirror multi-select state into the shared provider (plain fields now,
+    // previously `ever()` on Rx values).
+    addListener(() {
+      _ref?.read(laterBaseProvider.notifier)
+        ?..setEnableMultiSelect(enableMultiSelect)
+        ..setCheckedCount(rxCount);
     });
     queryData();
   }

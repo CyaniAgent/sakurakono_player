@@ -69,9 +69,9 @@ class BottomControl extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 7),
             child: ListenableBuilder(
               listenable: controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 final viewPointsVisible = overlaySource.viewPointList.isNotEmpty &&
-                    overlaySource.showVP.value;
+                    overlaySource.showVP;
                 return Offstage(
                   offstage: !controller.showControls,
                   child: Stack(
@@ -80,7 +80,7 @@ class BottomControl extends StatelessWidget {
                     children: [
                       ListenableBuilder(
                         listenable: controller,
-                        builder: (_, __) => ProgressBar(
+                        builder: (_, _) => ProgressBar(
                           progress: controller.position,
                           buffered: controller.buffered,
                           total: controller.duration,
@@ -109,7 +109,7 @@ class BottomControl extends StatelessWidget {
                         ),
                       if (controller.showViewPoints &&
                           overlaySource.viewPointList.isNotEmpty &&
-                          overlaySource.showVP.value)
+                          overlaySource.showVP)
                         Padding(
                           padding: const .only(bottom: 8.75),
                           child: ViewPointSegmentProgressBar(

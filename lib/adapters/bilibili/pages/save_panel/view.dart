@@ -198,7 +198,7 @@ class _SavePanelState extends State<SavePanel> {
           );
           enterUri =
               'enterUri=${Uri.encodeComponent(ctr.shareUrl)}'; // official client cannot parse it
-          final data = ctr.infoState.value.dataOrNull;
+          final data = ctr.infoState.dataOrNull;
           if (data != null) {
             coverType = _CoverType.square;
             cover = data.mvCover;

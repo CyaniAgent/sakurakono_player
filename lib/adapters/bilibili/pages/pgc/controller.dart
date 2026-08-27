@@ -1,8 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/core/repository/repository_providers_batch2.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
@@ -13,7 +10,6 @@ import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
-import 'package:get/get.dart';
 
 class PgcController
     extends CommonListControllerRiverpod<List<CorePgcIndexItem>?, CorePgcIndexItem> {
@@ -24,10 +20,10 @@ class PgcController
   late final showPgcTimeline =
       tabType == HomeTabType.bangumi && Pref.showPgcTimeline;
 
-  AccountProvider get accountService => appRead(accountProvider);
+  AccountNotifier get accountService => appRead(accountProvider.notifier);
 
   PgcController({required this.tabType}) : indexType = tabType == HomeTabType.cinema ? 102 : null {
-    accountService.onAuthStateChanged({});
+    accountService.onAuthStateChanged();
     queryData();
     queryPgcFollow();
     if (showPgcTimeline) {

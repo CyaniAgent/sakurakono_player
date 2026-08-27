@@ -61,7 +61,7 @@ class _LikeMePageState extends State<LikeMePage> {
               ),
               sliver: ListenableBuilder(
                 listenable: _likeMeController,
-                builder: (_, __) => _buildBody(theme, _likeMeController.loadingState),
+                builder: (_, _) => _buildBody(theme, _likeMeController.loadingState),
               ),
             ),
           ],

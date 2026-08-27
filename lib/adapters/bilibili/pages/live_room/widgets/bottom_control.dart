@@ -88,9 +88,9 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
           const SizedBox(width: 3),
           ListenableBuilder(
             listenable: plPlayerController,
-            builder: (_, __) {
+            builder: (_, _) {
               final enableShowLiveDanmaku =
-                  plPlayerController.enableShowLiveDanmaku.value;
+                  plPlayerController.enableShowLiveDanmaku;
               return ComBtn(
                 height: 30,
                 tooltip: "${enableShowLiveDanmaku ? '关闭' : '开启'}弹幕",
@@ -107,7 +107,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
                       ),
                 onTap: () {
                   final newVal = !enableShowLiveDanmaku;
-                  plPlayerController.enableShowLiveDanmaku.value = newVal;
+                  plPlayerController.enableShowLiveDanmaku = newVal;
                   if (!plPlayerController.tempPlayerConf) {
                     GStorage.setting.put(
                       SettingBoxKey.enableShowLiveDanmaku,
@@ -130,7 +130,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
           ),
           ListenableBuilder(
             listenable: plPlayerController,
-            builder: (_, __) => PopupMenuButton<VideoFitType>(
+            builder: (_, _) => PopupMenuButton<VideoFitType>(
               tooltip: '画面比例',
               initialValue: plPlayerController.videoFit,
               color: Colors.black.withValues(alpha: 0.8),
@@ -164,7 +164,7 @@ class _BottomControlState extends State<BottomControl> with HeaderMixin {
           ),
           ListenableBuilder(
             listenable: liveRoomCtr,
-            builder: (_, __) => PopupMenuButton<int>(
+            builder: (_, _) => PopupMenuButton<int>(
               tooltip: '画质',
               padding: EdgeInsets.zero,
               initialValue: liveRoomCtr.currentQn,

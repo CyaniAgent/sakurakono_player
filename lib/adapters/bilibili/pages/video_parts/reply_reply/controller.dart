@@ -1,5 +1,4 @@
 import 'package:skf/core/models/reply_types.dart' show CoreMode;
-import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo, DetailListReply;
 import 'package:skf/core/result/loading_state.dart';
@@ -42,6 +41,7 @@ class VideoReplyReplyController extends ReplyController {
   final firstFloor = Rxn<ReplyInfo>();
 
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
 
   final index = RxnInt();
@@ -80,7 +80,7 @@ class VideoReplyReplyController extends ReplyController {
 
     // reply2Reply // isDialogue.not
     if (data is DetailListReply) {
-      count.value = data.root.count.toInt();
+      count = data.root.count.toInt();
       if (isRefresh && !hasRoot) {
         firstFloor.value ??= data.root;
       }
@@ -203,7 +203,7 @@ class VideoReplyReplyController extends ReplyController {
           if (replyInfo is ReplyInfo) {
             savedReplies.remove(key);
 
-            count.value += 1;
+            count += 1;
             loadingState.dataOrNull?.insert(index! + 1, replyInfo);
             notifyListeners();
             if (enableCommAntifraud) {

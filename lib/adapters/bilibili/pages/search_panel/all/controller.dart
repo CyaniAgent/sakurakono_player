@@ -3,12 +3,10 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
-import 'package:get/get.dart';
 
 class SearchAllController
     extends SearchPanelController<SearchAllData, dynamic> {
@@ -52,9 +50,9 @@ class SearchAllController
       order: order,
       duration: null,
       tids: videoZoneType?.tids,
-      orderSort: userOrderType?.value.orderSort,
-      userType: userType?.value.index,
-      categoryId: articleZoneType?.value.categoryId,
+      orderSort: userOrderType?.orderSort,
+      userType: userType?.index,
+      categoryId: articleZoneType?.categoryId,
       pubBegin: pubBegin,
       pubEnd: pubEnd,
     ) as LoadingState<SearchAllData>;

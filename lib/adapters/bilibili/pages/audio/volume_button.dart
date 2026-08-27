@@ -70,7 +70,7 @@ class _VolumeButtonState extends State<VolumeButton> {
         overlayChildBuilder: _overlayChildBuilder,
         child: ListenableBuilder(
           listenable: widget.controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final volume = widget.controller.desktopVolume;
             return InkWell(
               onTapUp: _onTapUp,
@@ -131,7 +131,7 @@ class _VolumeButtonState extends State<VolumeButton> {
             ),
             child: ListenableBuilder(
               listenable: widget.controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 final volume = widget.controller.desktopVolume;
                 return Column(
                   spacing: 2,

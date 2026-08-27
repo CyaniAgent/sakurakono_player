@@ -474,7 +474,7 @@ class HeaderControlState extends State<HeaderControl>
                   ),
                   title: const Text('超分辨率'),
                   value: () {
-                    final value = plPlayerController.superResolutionType.value;
+                    final value = plPlayerController.superResolutionType;
                     return (value, value.label);
                   },
                   itemBuilder: (_) => enumItemBuilder(
@@ -1938,13 +1938,13 @@ class HeaderControlState extends State<HeaderControl>
                     listenable: plPlayerController,
                     builder: (context, _) {
                       final enableShowDanmaku =
-                          plPlayerController.enableShowDanmaku.value;
+                          plPlayerController.enableShowDanmaku;
                       return IconButton(
                         tooltip: "${enableShowDanmaku ? '关闭' : '开启'}弹幕",
                         style: btnStyle,
                         onPressed: () {
                           final newVal = !enableShowDanmaku;
-                          plPlayerController.enableShowDanmaku.value = newVal;
+                          plPlayerController.enableShowDanmaku = newVal;
                           if (!plPlayerController.tempPlayerConf) {
                             setting.put(
                               SettingBoxKey.enableShowDanmaku,
@@ -2071,7 +2071,7 @@ class HeaderControlState extends State<HeaderControl>
                           FontAwesomeIcons.solidThumbsDown,
                         ),
                         onTap: () => ugc.handleAction(ugc.actionDislikeVideo),
-                        selectStatus: ugc.hasDislike.value,
+                        selectStatus: ugc.hasDislike,
                         semanticsLabel: '点踩',
                       ),
                     ),

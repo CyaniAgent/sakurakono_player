@@ -1,4 +1,3 @@
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +16,7 @@ class FavSearchController
         DeleteItemMixin,
         BaseFavController {
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   late int type;
   @override

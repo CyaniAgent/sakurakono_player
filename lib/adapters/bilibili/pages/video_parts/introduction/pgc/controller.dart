@@ -3,7 +3,6 @@ import 'dart:math' show max;
 
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -52,7 +51,7 @@ class PgcIntroController extends CommonIntroController {
 
   bool isFollowed = false;
   int followStatus = -1;
-  bool isFav = (pgcItem.userStatus?.favored == 1);
+  bool isFav = false;
 
   @override
   void onInit() {
@@ -61,6 +60,7 @@ class PgcIntroController extends CommonIntroController {
     epId = args['epId'];
     isPgc = args['videoType'] == CoreVideoType.pgc;
     pgcItem = args['pgcItem'];
+    isFav = pgcItem.userStatus?.favored == 1;
 
     super.onInit();
 
@@ -418,7 +418,7 @@ class PgcIntroController extends CommonIntroController {
   void queryVideoIntro([EpisodeItem? episode]) {
     episode ??= pgcItem.episodes!.firstWhere((e) => e.cid == cid);
     videoDetail
-      ..title = episode.showTitle;
+      .title = episode.showTitle;
     notifyListeners();
     videoPlayerServiceHandler?.onVideoDetailChange(
       episode,

@@ -84,7 +84,7 @@ class _MainReplyPageState extends State<MainReplyPage>
                 buildReplyHeader(colorScheme),
                 ListenableBuilder(
                   listenable: _controller,
-                  builder: (_, __) => _buildBody(colorScheme, _controller.loadingState),
+                  builder: (_, _) => _buildBody(colorScheme, _controller.loadingState),
                 ),
               ],
             ),
@@ -189,8 +189,8 @@ class _MainReplyPageState extends State<MainReplyPage>
           children: [
             ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) {
-                final count = _controller.count.value;
+              builder: (_, _) {
+                final count = _controller.count;
                 return Text(
                   '${count == -1 ? 0 : NumUtils.numFormat(count)}条回复',
                 );
@@ -202,8 +202,8 @@ class _MainReplyPageState extends State<MainReplyPage>
               icon: Icon(Icons.sort, size: 16, color: secondary),
               label: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => Text(
-                  _controller.sortType.value.label,
+                builder: (_, _) => Text(
+                  _controller.sortType.label,
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),

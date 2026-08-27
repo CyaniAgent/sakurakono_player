@@ -8,8 +8,6 @@ import 'dart:math' as math;
 
 import 'package:skf/adapters/bilibili/common/widgets/dialog/report.dart';
 import 'package:skf/common/widgets/flutter/text_field/controller.dart';
-import 'package:skf/core/repository/live_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/super_chat_type.dart'; // ignore: keep until CoreSuperChatType exists
 import 'package:skf/adapters/bilibili/models/common/video/live_quality.dart'; // ignore: keep until CoreLiveQuality exists
@@ -45,6 +43,11 @@ import 'package:get/get.dart';
 class LiveRoomController extends ChangeNotifier {
   Ref? _ref;
   void attachRef(Ref ref) { _ref = ref; }
+
+  /// Public notify wrapper — [notifyListeners] is protected in
+  /// [ChangeNotifier]; views call this to request a rebuild.
+  void notifyChange() => notifyListeners();
+
   final String heroTag;
 
   int roomId = Get.arguments;
@@ -76,7 +79,7 @@ class LiveRoomController extends ChangeNotifier {
 
   Widget get timeWidget => ListenableBuilder(
     listenable: this,
-    builder: (_, __) {
+    builder: (_, _) {
       final liveTime = this.liveTime;
       String text = '';
       if (liveTime != null) {
@@ -138,7 +141,7 @@ class LiveRoomController extends ChangeNotifier {
   String? watchedShow;
   Widget get watchedWidget => ListenableBuilder(
     listenable: this,
-    builder: (_, __) {
+    builder: (_, _) {
       if (watchedShow case final watchedShow?) {
         return Text(
           watchedShow,
@@ -509,7 +512,7 @@ class LiveRoomController extends ChangeNotifier {
 
   void addDm(dynamic msg, [DanmakuContentItem<DanmakuExtra>? item]) {
     if (plPlayerController.showDanmaku) {
-      if (item != null && plPlayerController.enableShowLiveDanmaku.value) {
+      if (item != null && plPlayerController.enableShowLiveDanmaku) {
         danmakuController?.addDanmaku(item);
       }
       if (autoScroll && !disableAutoScroll) {

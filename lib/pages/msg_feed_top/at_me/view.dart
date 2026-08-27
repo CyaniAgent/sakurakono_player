@@ -59,7 +59,7 @@ class _AtMePageState extends State<AtMePage> {
               ),
               sliver: ListenableBuilder(
                 listenable: _atMeController,
-                builder: (_, __) => _buildBody(theme, _atMeController.loadingState),
+                builder: (_, _) => _buildBody(theme, _atMeController.loadingState),
               ),
             ),
           ],

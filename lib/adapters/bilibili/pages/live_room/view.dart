@@ -120,7 +120,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     addObserverMobile(this);
     if (!plPlayerController.isLive) {
       plPlayerController.isLive = true;
-      _liveRoomController.notifyListeners();
+      _liveRoomController.notifyChange();
     }
     plPlayerController.danmakuController =
         _liveRoomController.danmakuController;
@@ -835,7 +835,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                   listenable: plPlayerController,
                   builder: (context, _) {
                     final enableShowLiveDanmaku =
-                        plPlayerController.enableShowLiveDanmaku.value;
+                        plPlayerController.enableShowLiveDanmaku;
                     return SizedBox(
                       width: 34,
                       height: 34,
@@ -843,7 +843,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                         style: IconButton.styleFrom(padding: .zero),
                         onPressed: () {
                           final newVal = !enableShowLiveDanmaku;
-                          plPlayerController.enableShowLiveDanmaku.value =
+                          plPlayerController.enableShowLiveDanmaku =
                               newVal;
                           if (!plPlayerController.tempPlayerConf) {
                             GStorage.setting.put(
@@ -1120,8 +1120,8 @@ class _LiveDanmakuState extends State<LiveDanmaku> {
     return ListenableBuilder(
       listenable: plPlayerController,
       builder: (context, _) => AnimatedOpacity(
-        opacity: plPlayerController.enableShowLiveDanmaku.value
-            ? plPlayerController.danmakuOpacity.value
+        opacity: plPlayerController.enableShowLiveDanmaku
+            ? plPlayerController.danmakuOpacity
             : 0,
         duration: const Duration(milliseconds: 100),
         child: DanmakuScreen<DanmakuExtra>(

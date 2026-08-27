@@ -22,12 +22,10 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:win32/win32.dart' as kernel32;
 import 'package:window_manager/window_manager.dart';
-import 'package:get/get.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -289,7 +287,7 @@ class _MainAppState extends PopScopeState<MainApp>
       if (_mainController.floatingNavBar) {
         bottomNav = ListenableBuilder(
           listenable: _mainController,
-          builder: (_, __) => FloatingNavigationBar(
+          builder: (_, _) => FloatingNavigationBar(
             onDestinationSelected: _mainController.setIndex,
             selectedIndex: _mainController.selectedIndex,
             destinations: _mainController.navigationBars
@@ -306,7 +304,7 @@ class _MainAppState extends PopScopeState<MainApp>
       } else if (_mainController.enableMYBar) {
         bottomNav = ListenableBuilder(
           listenable: _mainController,
-          builder: (_, __) => NavigationBar(
+          builder: (_, _) => NavigationBar(
             maintainBottomViewPadding: true,
             onDestinationSelected: _mainController.setIndex,
             selectedIndex: _mainController.selectedIndex,
@@ -324,7 +322,7 @@ class _MainAppState extends PopScopeState<MainApp>
       } else {
         bottomNav = ListenableBuilder(
           listenable: _mainController,
-          builder: (_, __) => BottomNavigationBar(
+          builder: (_, _) => BottomNavigationBar(
             currentIndex: _mainController.selectedIndex,
             onTap: _mainController.setIndex,
             iconSize: 16,
@@ -348,7 +346,7 @@ class _MainAppState extends PopScopeState<MainApp>
         if (_mainController.barOffset != null) {
           return ListenableBuilder(
             listenable: _mainController,
-            builder: (_, __) => FractionalTranslation(
+            builder: (_, _) => FractionalTranslation(
               translation: Offset(
                 0.0,
                 (_mainController.barOffset ?? 0.0) / Style.topBarHeight,
@@ -360,7 +358,7 @@ class _MainAppState extends PopScopeState<MainApp>
         if (_mainController.showBottomBar != null) {
           return ListenableBuilder(
             listenable: _mainController,
-            builder: (_, __) => AnimatedSlide(
+            builder: (_, _) => AnimatedSlide(
               curve: Curves.easeInOutCubicEmphasized,
               duration: const Duration(milliseconds: 500),
               offset: Offset(0, _mainController.showBottomBar == true ? 0 : 1),
@@ -388,7 +386,7 @@ class _MainAppState extends PopScopeState<MainApp>
                         width: 130,
                         child: ListenableBuilder(
                           listenable: _mainController,
-                          builder: (_, __) => NavigationDrawer(
+                          builder: (_, _) => NavigationDrawer(
                             backgroundColor: Colors.transparent,
                             tilePadding: const .symmetric(
                               vertical: 5,
@@ -419,7 +417,7 @@ class _MainAppState extends PopScopeState<MainApp>
                 )
               : ListenableBuilder(
                   listenable: _mainController,
-                  builder: (_, __) => NavigationRail(
+                  builder: (_, _) => NavigationRail(
                     groupAlignment: 0.5,
                     selectedIndex: _mainController.selectedIndex,
                     onDestinationSelected: _mainController.setIndex,
@@ -513,7 +511,7 @@ class _MainAppState extends PopScopeState<MainApp>
     return tab.id == MainTabIds.dynamics
         ? ListenableBuilder(
             listenable: _mainController,
-            builder: (_, __) {
+            builder: (_, _) {
               final dynCount = _mainController.dynCount;
               return Badge(
                 isLabelVisible: dynCount > 0,

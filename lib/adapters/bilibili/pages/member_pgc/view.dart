@@ -57,7 +57,7 @@ class _MemberBangumiState extends State<MemberBangumi>
               top: Style.safeSpace,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState as LoadingState<List<SpaceArchiveItem>?>)),
+            sliver: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState as LoadingState<List<SpaceArchiveItem>?>)),
           ),
         ],
       ),

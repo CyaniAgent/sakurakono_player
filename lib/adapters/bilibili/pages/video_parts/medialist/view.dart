@@ -1,3 +1,4 @@
+
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/button/icon_button.dart';
@@ -33,7 +34,7 @@ class MediaListPanel extends CommonSlidePage {
     this.onDelete,
   });
 
-  final RxList<MediaListItemModel> mediaList;
+  final List<MediaListItemModel> mediaList;
   final ValueChanged<BaseEpisodeItem> onChangeEpisode;
   final String? panelTitle;
   final String bvid;
@@ -51,6 +52,15 @@ class MediaListPanel extends CommonSlidePage {
 class _MediaListPanelState extends State<MediaListPanel>
     with SingleTickerProviderStateMixin, CommonSlideMixin {
   late final ScrollController _controller;
+  late final ValueNotifier<int> _mediaListNotifier = ValueNotifier<int>(0);
+
+  @override
+  void didUpdateWidget(covariant MediaListPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.mediaList, widget.mediaList)) {
+      _mediaListNotifier.value++;
+    }
+  }
 
   @override
   void initState() {
@@ -131,9 +141,8 @@ class _MediaListPanelState extends State<MediaListPanel>
             bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
           ),
           sliver: ListenableBuilder(
-            listenable: widget.mediaList,
+            listenable: _mediaListNotifier,
             builder: (context, _) => SliverFixedExtentList.builder(
-            () => SliverFixedExtentList.builder(
               itemExtent: 112,
               itemCount: widget.mediaList.length,
               itemBuilder: (context, index) {
@@ -151,6 +160,12 @@ class _MediaListPanelState extends State<MediaListPanel>
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _mediaListNotifier.dispose();
+    super.dispose();
   }
 
   Widget _buildItem(

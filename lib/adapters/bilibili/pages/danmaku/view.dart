@@ -9,7 +9,6 @@ import 'package:skf/player/utils/danmaku_options.dart';
 import 'package:skf/utils/danmaku_utils.dart';
 import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 /// 传入播放器控制器，监听播放进度，加载对应弹幕
 class PlDanmaku extends StatefulWidget {
@@ -51,7 +50,7 @@ class _PlDanmakuState extends State<PlDanmaku> {
       playerController,
       widget.isFileSource,
     );
-    if (playerController.enableShowDanmaku.value) {
+    if (playerController.enableShowDanmaku) {
       if (widget.isFileSource) {
         _plDanmakuController.initFileDmIfNeeded();
       } else {
@@ -91,7 +90,7 @@ class _PlDanmakuState extends State<PlDanmaku> {
 
   @pragma('vm:notify-debugger-on-exception')
   void videoPositionListen(Duration position) {
-    if (_controller == null || !playerController.enableShowDanmaku.value) {
+    if (_controller == null || !playerController.enableShowDanmaku) {
       return;
     }
 
@@ -176,9 +175,8 @@ class _PlDanmakuState extends State<PlDanmaku> {
     return ListenableBuilder(
       listenable: playerController,
       builder: (context, _) => AnimatedOpacity(
-      () => AnimatedOpacity(
-        opacity: playerController.enableShowDanmaku.value
-            ? playerController.danmakuOpacity.value
+        opacity: playerController.enableShowDanmaku
+            ? playerController.danmakuOpacity
             : 0,
         duration: const Duration(milliseconds: 100),
         child: DanmakuScreen<DanmakuExtra>(

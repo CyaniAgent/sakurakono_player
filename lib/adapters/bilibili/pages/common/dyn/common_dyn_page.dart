@@ -22,7 +22,6 @@ import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 enum DynType implements EnumWithLabel {
   reply('评论'),
@@ -99,7 +98,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
             ListenableBuilder(
               listenable: controller,
               builder: (context, _) {
-                final count = controller.count.value;
+                final count = controller.count;
                 return Text(
                   '${count == -1 ? 0 : NumUtils.numFormat(count)}条回复',
                 );
@@ -109,10 +108,10 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
               style: Style.buttonStyle,
               onPressed: controller.queryBySort,
               icon: Icon(Icons.sort, size: 16, color: secondary),
-              ListenableBuilder(
+              label: ListenableBuilder(
                 listenable: controller,
                 builder: (context, _) => Text(
-                  controller.sortType.value.label,
+                  controller.sortType.label,
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),

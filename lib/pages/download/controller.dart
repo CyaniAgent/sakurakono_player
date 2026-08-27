@@ -12,7 +12,7 @@ import 'package:flutter/foundation.dart';
 
 class DownloadPageController extends ChangeNotifier
     with BaseMultiSelectMixin<DownloadPageInfo> {
-  bool _isDisposed = false;
+  final bool _isDisposed = false;
   bool get isClosed => _isDisposed;
 
   final _downloadActions = DownloadActions.of();
@@ -24,9 +24,9 @@ class DownloadPageController extends ChangeNotifier
   @override
   void notifyStateChanged() => notifyListeners();
 
-  bool get isMultiSelectMode => enableMultiSelect.value;
+  bool get isMultiSelectMode => enableMultiSelect;
   set isMultiSelectMode(bool v) {
-    enableMultiSelect.value = v;
+    enableMultiSelect = v;
     notifyListeners();
   }
 
@@ -101,9 +101,9 @@ class DownloadPageController extends ChangeNotifier
           );
         }
         _downloadActions.refreshFlagListeners();
-        if (enableMultiSelect.value) {
-          rxCount.value = 0;
-          enableMultiSelect.value = false;
+        if (enableMultiSelect) {
+          rxCount = 0;
+          enableMultiSelect = false;
         }
         SmartDialog.dismiss();
       },

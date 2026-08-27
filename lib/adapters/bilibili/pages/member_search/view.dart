@@ -64,7 +64,7 @@ class _MemberSearchPageState extends State<MemberSearchPage>
           children: [
             ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 return Opacity(
                 opacity: _controller.hasData ? 1 : 0,
                 child: Column(
@@ -74,14 +74,14 @@ class _MemberSearchPageState extends State<MemberSearchPage>
                       tabs: [
                         ListenableBuilder(
                           listenable: _controller,
-                          builder: (_, __) => Tab(
+                          builder: (_, _) => Tab(
                             text:
                                 '视频 ${_controller.counts[0] != -1 ? _controller.counts[0] : ''}',
                           ),
                         ),
                         ListenableBuilder(
                           listenable: _controller,
-                          builder: (_, __) => Tab(
+                          builder: (_, _) => Tab(
                             text:
                                 '动态 ${_controller.counts[1] != -1 ? _controller.counts[1] : ''}',
                           ),
@@ -119,7 +119,7 @@ class _MemberSearchPageState extends State<MemberSearchPage>
             ),
             ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _controller.hasData
+              builder: (_, _) => _controller.hasData
                   ? const SizedBox.shrink()
                   : Align(
                       alignment: const Alignment(0, -0.5),

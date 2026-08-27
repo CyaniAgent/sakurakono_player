@@ -43,7 +43,7 @@ class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
           slivers: [
             ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildHeader(theme, _controller.list),
+              builder: (_, _) => _buildHeader(theme, _controller.list),
             ),
             SliverPadding(
               padding: EdgeInsets.only(
@@ -53,7 +53,7 @@ class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
               ),
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(theme, _controller.loadingState),
+                builder: (_, _) => _buildBody(theme, _controller.loadingState),
               ),
             ),
           ],

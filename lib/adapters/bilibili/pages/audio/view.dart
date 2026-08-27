@@ -180,7 +180,7 @@ class _AudioPageState extends State<AudioPage>
                       children: [
                         ListenableBuilder(
                           listenable: _controller,
-                          builder: (_, __) {
+                          builder: (_, _) {
                             final audioItem = _controller.audioItem;
                             if (audioItem != null) {
                               return _buildActions(audioItem);
@@ -680,7 +680,7 @@ class _AudioPageState extends State<AudioPage>
         children: [
           ListenableBuilder(
             listenable: _controller,
-            builder: (_, __) => ActionItem(
+            builder: (_, _) => ActionItem(
               animation: _controller.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.thumbsUp),
               selectIcon: const Icon(
@@ -695,7 +695,7 @@ class _AudioPageState extends State<AudioPage>
           ),
           ListenableBuilder(
             listenable: _controller,
-            builder: (_, __) => ActionItem(
+            builder: (_, _) => ActionItem(
               animation: _controller.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.b),
               selectIcon: const Icon(FontAwesomeIcons.b),
@@ -709,7 +709,7 @@ class _AudioPageState extends State<AudioPage>
           ),
           ListenableBuilder(
             listenable: _controller,
-            builder: (_, __) => ActionItem(
+            builder: (_, _) => ActionItem(
               animation: _controller.tripleAnimation,
               icon: const Icon(FontAwesomeIcons.star),
               selectIcon: const Icon(
@@ -790,7 +790,7 @@ class _AudioPageState extends State<AudioPage>
         : const Color(0x33999999);
     Widget child = ListenableBuilder(
       listenable: _controller,
-      builder: (_, __) => ProgressBar(
+      builder: (_, _) => ProgressBar(
         progress: _controller.position,
         total: _controller.duration,
         baseBarColor: baseBarColor,
@@ -851,7 +851,7 @@ class _AudioPageState extends State<AudioPage>
           children: [
             ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 final position = _controller.position;
                 if (_controller.player != null) {
                   return Text(
@@ -863,7 +863,7 @@ class _AudioPageState extends State<AudioPage>
             ),
             ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 final duration = _controller.duration;
                 if (_controller.player != null) {
                   return Text(
@@ -885,7 +885,7 @@ class _AudioPageState extends State<AudioPage>
       children: [
         ListenableBuilder(
           listenable: _controller,
-          builder: (_, __) => IconButton(
+          builder: (_, _) => IconButton(
             onPressed: _showPlaySettings,
             icon: Icon(
               size: 26,
@@ -929,7 +929,7 @@ class _AudioPageState extends State<AudioPage>
   Widget _buildInfo(ColorScheme colorScheme, bool isPortrait) {
     return ListenableBuilder(
       listenable: _controller,
-      builder: (_, __) {
+      builder: (_, _) {
         final audioItem = _controller.audioItem;
         if (audioItem != null) {
           final cover = audioItem.arc.cover.http2https;

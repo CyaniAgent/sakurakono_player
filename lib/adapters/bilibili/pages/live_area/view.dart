@@ -43,7 +43,8 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                   ),
                 child: ListenableBuilder(
                   listenable: _controller,
-                  builder: (context, _) => Text(_controller.isEditing.value ? '完成' : '编辑'),
+                  builder: (context, _) => Text(_controller.isEditing ? '完成' : '编辑'),
+                ),
                 ),
                 const SizedBox(width: 16),
               ]
@@ -55,7 +56,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_controller.isLogin)
-              ListenableBuilder(listenable: _controller, builder: (context, _) => _buildFavWidget(theme, _controller.favState.value)),
+              ListenableBuilder(listenable: _controller, builder: (context, _) => _buildFavWidget(theme, _controller.favState)),
             Expanded(
               child: ListenableBuilder(
                 listenable: _controller,
@@ -123,22 +124,17 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                                             if (isFav == true) {
                                               _controller.favInfo[item.id] =
                                                   false;
-                                              _controller.favState
-                                                ..value.data.remove(item)
-                                                ..refresh();
+                                              _controller.favState.data.remove(item);
                                               (context as Element)
                                                   .markNeedsBuild();
                                             } else {
                                               // check
                                               if (_controller
                                                   .favState
-                                                  .value
                                                   .isSuccess) {
                                                 _controller.favInfo[item.id] =
                                                     true;
-                                                _controller.favState
-                                                  ..value.data.add(item)
-                                                  ..refresh();
+                                                _controller.favState.data.add(item);
                                                 (context as Element)
                                                     .markNeedsBuild();
                                               }
@@ -189,7 +185,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
             const SizedBox(height: 8),
             if (response != null && response.isNotEmpty) ...[
               SortableWrap(
-                onSortStart: (index) => _controller.isEditing.value = true,
+                onSortStart: (index) => _controller.isEditing = true,
                 onSorted: (int oldIndex, int newIndex) {
                   response.insert(newIndex, response.removeAt(oldIndex));
                 },
@@ -202,9 +198,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                         item: item,
                         onPressed: () {
                           response.remove(item);
-                          _controller
-                            ..favInfo[item.id] = false
-                            ..favState.refresh();
+                          _controller.favInfo[item.id] = false;
                         },
                       ),
                     )
@@ -228,7 +222,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if (_controller.isEditing.value) {
+        if (_controller.isEditing) {
           if (item.id != 0) {
             onPressed();
           }
@@ -272,8 +266,8 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
             child: ListenableBuilder(
               listenable: _controller,
               builder: (context, _) {
-                if (_controller.isEditing.value) {
-                  if (_controller.favState.value case Success(
+                if (_controller.isEditing) {
+                  if (_controller.favState case Success(
                     :final response,
                   )) {
                     bool? isFav = _controller.favInfo[item.id];
@@ -299,6 +293,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                 }
                 return const SizedBox.shrink();
               },
+            ),
             ),
         ],
       ),
@@ -327,7 +322,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
             bgColor: Colors.transparent,
             padding: const .symmetric(horizontal: 12, vertical: 4),
             onTap: (value) {
-              if (_controller.isEditing.value) {
+              if (_controller.isEditing) {
                 onPressed();
                 return;
               }
@@ -348,7 +343,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
           child: ListenableBuilder(
             listenable: _controller,
             builder: (context, _) {
-              if (_controller.isEditing.value) {
+              if (_controller.isEditing) {
                 final isDark = theme.brightness == Brightness.dark;
                 return iconButton(
                   size: 16,

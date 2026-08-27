@@ -196,7 +196,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
             if ((widget.firstFloor ?? _controller.firstFloor.value)
                 case final firstFloor?)
               _header(theme, firstFloor)
-            else {
+            else
               ListenableBuilder(
                 listenable: _controller,
                 builder: (context, _) {
@@ -206,7 +206,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
                   }
                   return _header(theme, firstFloor);
                 },
-              )
+              ),
             _sortWidget(theme.colorScheme),
           ],
           ListenableBuilder(
@@ -258,7 +258,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
             ListenableBuilder(
               listenable: _controller,
               builder: (context, _) {
-                final count = _controller.count.value;
+                final count = _controller.count;
                 return count != -1
                     ? Text(
                         '相关回复共${NumUtils.numFormat(count)}条',
@@ -274,7 +274,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
               label: ListenableBuilder(
                 listenable: _controller,
                 builder: (context, _) => Text(
-                  _controller.sortType.value.text!,
+                  _controller.sortType.text!,
                   style: TextStyle(fontSize: 13, color: colorScheme.secondary),
                 ),
               ),

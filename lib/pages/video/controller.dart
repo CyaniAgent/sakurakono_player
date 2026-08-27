@@ -6,7 +6,6 @@ import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/models/video_types.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/video/video_host.dart';
@@ -48,7 +47,7 @@ class VideoDetailController extends ChangeNotifier {
   bool _isDisposed = false;
   bool get isClosed => _isDisposed;
 
-  VideoDetailController({TickerProvider? vsync}) : _vsync = vsync;
+  VideoDetailController({this._vsync});
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
@@ -97,6 +96,10 @@ class VideoDetailController extends ChangeNotifier {
   late final PlayerController plPlayerController =
       VideoHost.of().playerHost.acquirePlayer();
   bool get setSystemBrightness => plPlayerController.setSystemBrightness;
+
+  /// Public notify wrapper — [notifyListeners] is protected in
+  /// [ChangeNotifier]; external code (Host implementations) uses this.
+  void notifyChange() => notifyListeners();
   bool get removeSafeArea => plPlayerController.removeSafeArea;
   double get uiScale => plPlayerController.uiScale;
 
@@ -211,7 +214,7 @@ class VideoDetailController extends ChangeNotifier {
       var height = firstVideoHeight;
       if (width == null || height == null) {
         if (isUgc && !isFileSource) {
-          final dimension = VideoHost.of().partDimension(heroTag, cid);
+          final dimension = VideoHost.of().partDimension(heroTag, cid.value);
           if (dimension != null) {
             width = dimension.width;
             height = dimension.height;
@@ -225,14 +228,14 @@ class VideoDetailController extends ChangeNotifier {
       final isVertical = height > width;
       if (_scrollCtr?.hasClients != true) {
         videoHeight = isVertical ? maxVideoHeight : minVideoHeight;
-        if (this.isVertical != isVertical) {
-          this.isVertical = isVertical;
+        if (this.isVertical.value != isVertical) {
+          this.isVertical.value = isVertical;
           _needAnimOnDimensionChanged(isVertical);
         }
         return;
       }
-      if (this.isVertical != isVertical) {
-        this.isVertical = isVertical;
+      if (this.isVertical.value != isVertical) {
+        this.isVertical.value = isVertical;
         double videoHeight = isVertical ? maxVideoHeight : minVideoHeight;
         if (this.videoHeight != videoHeight) {
           if (videoHeight > this.videoHeight) {
@@ -468,7 +471,7 @@ class VideoDetailController extends ChangeNotifier {
 
   /// 发送弹幕
   Future<void> showShootDanmakuSheet() async {
-    if (VideoHost.of().playerHost.dmStateContains(cid)) {
+    if (VideoHost.of().playerHost.dmStateContains(cid.value)) {
       SmartDialog.showToast('UP主已关闭弹幕');
       return;
     }
@@ -480,7 +483,7 @@ class VideoDetailController extends ChangeNotifier {
     await VideoHost.of().showShootDanmakuSheet(
       heroTag: heroTag,
       bvid: bvid,
-      cid: cid,
+      cid: cid.value,
       progress: plPlayerController.positionInMilliseconds,
       initialValue: savedDanmaku,
       onSave: (danmaku) => savedDanmaku = danmaku,
@@ -557,10 +560,10 @@ class VideoDetailController extends ChangeNotifier {
       duration: data.timeLength == null
           ? null
           : Duration(milliseconds: data.timeLength!),
-      isVertical: isVertical,
+      isVertical: isVertical.value,
       aid: aid,
       bvid: bvid,
-      cid: cid,
+      cid: cid.value,
       autoplay: autoplay ?? _autoPlay,
       epid: isUgc ? null : epId,
       seasonId: isUgc ? null : seasonId,
@@ -624,7 +627,7 @@ class VideoDetailController extends ChangeNotifier {
     }
     isQuerying = true;
     if (VideoHost.of().playerHost.enableSponsorBlock && isBlock && !fromReset) {
-      querySponsorBlock(bvid: bvid, cid: cid);
+      querySponsorBlock(bvid: bvid, cid: cid.value);
     }
     if (plPlayerController.cacheVideoQa == null) {
       final isWiFi = await ConnectivityUtils.isWiFi;
@@ -638,7 +641,7 @@ class VideoDetailController extends ChangeNotifier {
     }
 
     final result = await (_ref!.read(videoRepositoryProvider)).videoUrl(
-      cid: cid,
+      cid: cid.value,
       bvid: bvid,
       epid: epId?.toString(),
       seasonId: seasonId?.toString(),
@@ -803,7 +806,7 @@ class VideoDetailController extends ChangeNotifier {
     }
     final res = await (_ref!.read(videoRepositoryProvider)).playInfo(
       bvid: bvid,
-      cid: cid,
+      cid: cid.value,
       seasonId: seasonId?.toString(),
       epId: epId?.toString(),
     );
@@ -825,7 +828,7 @@ class VideoDetailController extends ChangeNotifier {
         VideoHost.of().applyContinuePlayingPart(
           heroTag,
           lastPlayCid: response.lastPlayCid,
-          currentCid: cid,
+          currentCid: cid.value,
         );
       }
 
@@ -858,7 +861,7 @@ class VideoDetailController extends ChangeNotifier {
       } else if (!isLoginVideo) {
         final subs = await VideoHost.of().fetchDmSubtitles(
           aid: aid,
-          cid: cid,
+          cid: cid.value,
         );
         if (subs != null && subs.isNotEmpty) {
           _setSubtitle(subs);
@@ -909,7 +912,7 @@ class VideoDetailController extends ChangeNotifier {
           isManual: true,
           aid: aid,
           bvid: bvid,
-          cid: cid,
+          cid: cid.value,
           epid: isUgc ? null : epId,
           seasonId: isUgc ? null : seasonId,
           pgcType: isUgc ? null : pgcType,
@@ -998,7 +1001,7 @@ class VideoDetailController extends ChangeNotifier {
     dmTrend.value = LoadingState<List<double>>.loading();
     dmTrend.value = await VideoHost.of().fetchDmTrend(
       bvid: bvid,
-      cid: cid,
+      cid: cid.value,
     );
   }
 
@@ -1092,7 +1095,7 @@ class VideoDetailController extends ChangeNotifier {
   Future<void> onCast() async {
     SmartDialog.showLoading();
     final res = await (_ref!.read(videoRepositoryProvider)).tvPlayUrl(
-      cid: cid,
+      cid: cid.value,
       objectId: epId ?? aid,
       playurlType: epId != null ? 2 : 1,
       qn: currentVideoQa.value?.code,

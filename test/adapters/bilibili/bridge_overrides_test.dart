@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
 import 'package:skf/adapters/bilibili/repository/bili_video_repository.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart'
+    hide pgcRepositoryProvider;
 import 'package:skf/core/repository/video_repository.dart';
 
 /// All 26 core repository providers, in the same order as

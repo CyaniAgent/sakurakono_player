@@ -1,11 +1,11 @@
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_mixin.dart';
+import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/mine/theme_type.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
@@ -93,9 +93,9 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
         if (response != Pref.userInfoCache) {
           GStorage.userInfo.put('userInfoCache', response);
         }
-        accountService
-          ..rxFace.value = response.face!
-          ..rxIsLogin.value = true;
+        appRead(accountProvider.notifier)
+          ..updateFace(response.face!)
+          ..updateLogin(true);
       } else {
         _onLogoutMain();
         return;

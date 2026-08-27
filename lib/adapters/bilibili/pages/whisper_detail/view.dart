@@ -134,7 +134,7 @@ class _WhisperDetailPageState
                   alignment: Alignment.topCenter,
                   child: ListenableBuilder(
                     listenable: _whisperDetailController,
-                    builder: (_, __) =>
+                    builder: (_, _) =>
                         _buildBody(_whisperDetailController.loadingState),
                   ),
                 ),
@@ -297,7 +297,7 @@ class _WhisperDetailPageState
         children: [
           IconButton(
             onPressed: () => updatePanelType(
-              panelType.value == PanelType.emoji
+              panelType == PanelType.emoji
                   ? PanelType.keyboard
                   : PanelType.emoji,
             ),
@@ -312,7 +312,7 @@ class _WhisperDetailPageState
                   updatePanelType(PanelType.keyboard);
                 }
               },
-              ListenableBuilder(
+            child: ListenableBuilder(
                 listenable: this,
                 builder: (context, _) => RichTextField(
                   key: key,

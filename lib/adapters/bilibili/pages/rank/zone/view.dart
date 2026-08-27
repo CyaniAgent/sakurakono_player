@@ -48,7 +48,7 @@ class _ZonePageState extends State<ZonePage>
             padding: const EdgeInsets.only(top: 7, bottom: 100),
             sliver: ListenableBuilder(
               listenable: controller,
-              builder: (_, __) => _buildBody(controller.loadingState),
+              builder: (_, _) => _buildBody(controller.loadingState),
             ),
           ),
         ],

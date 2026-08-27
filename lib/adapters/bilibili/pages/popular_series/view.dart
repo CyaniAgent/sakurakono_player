@@ -36,13 +36,14 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
       appBar: AppBar(
         title: ListenableBuilder(
           listenable: _controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final config = _controller.config;
             if (config != null) {
               return Text(config['name'] as String? ?? '');
             }
             return const Text('每周必看');
           },
+        ),
       ),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,
@@ -52,7 +53,7 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
             ViewSliverSafeArea(
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(_controller.loadingState),
+                builder: (_, _) => _buildBody(_controller.loadingState),
               ),
             ),
           ],
@@ -76,7 +77,7 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
               return VideoCardH(
                 videoItem: ModelConverters.hotVideoItem(item),
                 onTap: () {
-                  final config = _controller.config.value;
+                  final config = _controller.config;
                   PageUtils.toVideoPage(
                     bvid: item.bvid,
                     cid: item.cid!,
@@ -102,7 +103,7 @@ class _PopularSeriesPageState extends State<PopularSeriesPage> with GridMixin {
         } else {
           sliver = HttpError(onReload: _controller.onReload);
         }
-        if (_controller.config.value case final config?) {
+        if (_controller.config case final config?) {
           sliver = SliverMainAxisGroup(
             slivers: [
               _buildSeriesList(config),

@@ -7,7 +7,6 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:chat_bottom_container/chat_bottom_container.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 abstract class CommonPublishPage<T> extends StatefulWidget {
   const CommonPublishPage({
@@ -26,7 +25,8 @@ abstract class CommonPublishPage<T> extends StatefulWidget {
 
 abstract class CommonPublishPageState<T extends CommonPublishPage>
     extends State<T>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver
+    implements Listenable {
   late bool _paused = false;
   final FocusNode focusNode = FocusNode();
   late final controller = ChatBottomPanelContainerController<PanelType>(
@@ -34,9 +34,51 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   );
   TextEditingController get editController;
 
-  PanelType panelType = PanelType.none;
-  late bool readOnly = false;
-  late bool enablePublish = false;
+  final _listeners = <VoidCallback>{};
+
+  @override
+  void addListener(VoidCallback listener) {
+    _listeners.add(listener);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    _listeners.remove(listener);
+  }
+
+  @protected
+  void notifyListeners() {
+    for (final listener in List.of(_listeners)) {
+      listener();
+    }
+  }
+
+  PanelType _panelType = PanelType.none;
+  PanelType get panelType => _panelType;
+  set panelType(PanelType value) {
+    if (_panelType != value) {
+      _panelType = value;
+      notifyListeners();
+    }
+  }
+
+  bool _readOnly = false;
+  bool get readOnly => _readOnly;
+  set readOnly(bool value) {
+    if (_readOnly != value) {
+      _readOnly = value;
+      notifyListeners();
+    }
+  }
+
+  bool _enablePublish = false;
+  bool get enablePublish => _enablePublish;
+  set enablePublish(bool value) {
+    if (_enablePublish != value) {
+      _enablePublish = value;
+      notifyListeners();
+    }
+  }
 
   bool isPublishing = false;
 
@@ -196,14 +238,14 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
       onPanelTypeChange: (panelType, data) {
         switch (panelType) {
           case ChatBottomPanelType.none:
-            panelType = PanelType.none;
+            this.panelType = PanelType.none;
             break;
           case ChatBottomPanelType.keyboard:
-            panelType = PanelType.keyboard;
+            this.panelType = PanelType.keyboard;
             break;
           case ChatBottomPanelType.other:
             if (data == null) return;
-            panelType = data;
+            this.panelType = data;
             break;
         }
       },
@@ -212,9 +254,7 @@ abstract class CommonPublishPageState<T extends CommonPublishPage>
   }
 
   void onSubmitted(String value) {
-    if (enablePublish)
-      onPublishThrottle();
-    }
+    if (enablePublish) onPublishThrottle();
   }
 
   void onPublishThrottle() {

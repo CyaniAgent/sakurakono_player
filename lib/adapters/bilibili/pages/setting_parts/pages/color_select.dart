@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/models/common/nav_bar_config.dart';
 import 'package:skf/adapters/bilibili/models/common/theme/theme_color_type.dart';
 import 'package:skf/pages/mine/theme_type.dart';
 import 'package:skf/pages/home/view.dart';
-import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/pages/setting/widgets/popup_item.dart';
 import 'package:skf/pages/setting/widgets/select_dialog.dart';
 import 'package:skf/utils/extension/get_ext.dart';

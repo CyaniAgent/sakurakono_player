@@ -54,8 +54,7 @@ class _SearchArticlePanelState
             ListenableBuilder(
               listenable: controller,
               builder: (context, _) => Text(
-              () => Text(
-                '排序: ${controller.articleOrderType.value.label}',
+                '排序: ${controller.articleOrderType.label}',
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
@@ -64,8 +63,7 @@ class _SearchArticlePanelState
             ListenableBuilder(
               listenable: controller,
               builder: (context, _) => Text(
-              () => Text(
-                '分区: ${controller.articleZoneType!.value.label}',
+                '分区: ${controller.articleZoneType!.label}',
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),

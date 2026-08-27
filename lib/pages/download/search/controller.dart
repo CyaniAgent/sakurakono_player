@@ -67,9 +67,9 @@ class DownloadSearchController
         loadingState.data!.removeWhere(allChecked.contains);
         notifyListeners();
         _downloadActions.refreshFlagListeners();
-        if (enableMultiSelect.value) {
-          rxCount.value = 0;
-          enableMultiSelect.value = false;
+        if (enableMultiSelect) {
+          rxCount = 0;
+          enableMultiSelect = false;
         }
         SmartDialog.dismiss();
       },

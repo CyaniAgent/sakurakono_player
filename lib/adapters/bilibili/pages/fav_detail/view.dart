@@ -51,7 +51,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
     final theme = Theme.of(context);
     padding = MediaQuery.viewPaddingOf(context);
     return ListenableBuilder(listenable: _favDetailController, builder: (context, _) {
-        final enableMultiSelect = _favDetailController.enableMultiSelect.value;
+        final enableMultiSelect = _favDetailController.enableMultiSelect;
         return popScope(
           canPop: !enableMultiSelect,
           onPopInvokedWithResult: (didPop, result) {
@@ -68,9 +68,9 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
               ),
               child: ListenableBuilder(
                 listenable: _favDetailController,
-                builder: (context, _) => _favDetailController.folderInfo.value.mediaCount > 0
+                builder: (context, _) => _favDetailController.folderInfo.mediaCount > 0
                     ? AnimatedSlide(
-                        offset: _favDetailController.isPlayAll.value
+                        offset: _favDetailController.isPlayAll
                             ? Offset.zero
                             : const Offset(0.75, 0),
                         duration: const Duration(milliseconds: 120),
@@ -85,7 +85,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                               ),
                           child: FloatingActionButton.extended(
                             onPressed: () {
-                              if (_favDetailController.isPlayAll.value) {
+                              if (_favDetailController.isPlayAll) {
                                 _favDetailController.toViewPlayAll();
                               } else {
                                 _favDetailController.setIsPlayAll(true);
@@ -162,11 +162,11 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _favDetailController.folderInfo.value.title,
+                  _favDetailController.folderInfo.title,
                   style: theme.textTheme.titleMedium,
                 ),
                 Text(
-                  '共${_favDetailController.folderInfo.value.mediaCount}条视频',
+                  '共${_favDetailController.folderInfo.mediaCount}条视频',
                   style: theme.textTheme.labelMedium,
                 ),
               ],
@@ -181,7 +181,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
       IconButton(
         tooltip: '搜索',
         onPressed: () {
-          final folderInfo = _favDetailController.folderInfo.value;
+          final folderInfo = _favDetailController.folderInfo;
           AppNavigator.toNamed(
             '/favSearch',
             arguments: {
@@ -198,7 +198,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
       ListenableBuilder(
         listenable: _favDetailController,
         builder: (context, _) {
-          final attr = _favDetailController.folderInfo.value.attr;
+          final attr = _favDetailController.folderInfo.attr;
         return attr == -1 || !BiliUtils.isPublicFav(attr)
             ? const SizedBox.shrink()
             : IconButton(
@@ -215,10 +215,10 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
         builder: (context, _) {
           return PopupMenuButton<CoreFavOrderType>(
             icon: const Icon(Icons.sort),
-            initialValue: _favDetailController.order.value,
+            initialValue: _favDetailController.order,
             tooltip: '排序方式',
             onSelected: (value) => _favDetailController
-              ..order.value = value
+              ..order = value
               ..onReload(),
             itemBuilder: (context) => CoreFavOrderType.values
                 .map(
@@ -236,7 +236,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
           icon: const Icon(Icons.more_vert),
           itemBuilder: (context) {
             final isOwner = _favDetailController.isOwner;
-            final folderInfo = _favDetailController.folderInfo.value;
+            final folderInfo = _favDetailController.folderInfo;
             return [
               if (isOwner) ...[
                 PopupMenuItem(
@@ -250,7 +250,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                         parameters: {'mediaId': mediaId},
                       )?.then((res) {
                         if (res is CoreFavFolderInfo) {
-                          _favDetailController.folderInfo.value = res;
+                          _favDetailController.folderInfo = res;
                         }
                       }),
                   child: const Text('编辑信息'),
@@ -376,7 +376,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
           child: ListenableBuilder(
             listenable: _favDetailController,
             builder: (context, _) {
-              final folderInfo = _favDetailController.folderInfo.value;
+              final folderInfo = _favDetailController.folderInfo;
               return Row(
                 spacing: 12,
                 crossAxisAlignment: CrossAxisAlignment.start,

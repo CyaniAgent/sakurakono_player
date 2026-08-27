@@ -21,7 +21,7 @@ void main() {
   group('MatchRepository', () {
     test('happy: matchInfo() returns Success with data', () async {
       when(mockRepo.matchInfo(any)).thenAnswer(
-        (_) async => Success(CoreMatchContest(
+        (_) async => const Success(CoreMatchContest(
           gameStage: 'group_stage',
           homeScore: 1,
           awayScore: 0,

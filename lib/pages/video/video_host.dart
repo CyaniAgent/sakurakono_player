@@ -405,7 +405,7 @@ class CoreFileEntryInfo {
 /// 片段跳过引擎（页面级状态，B站 BlockMixin 实现）。
 abstract class VideoBlock {
   /// 片段进度条列表。
-  RxList<Segment> get segmentProgressList;
+  List<Segment> get segmentProgressList;
 
   /// 跳过提示列表 key。
   GlobalKey<AnimatedListState> get listKey;

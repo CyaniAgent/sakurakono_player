@@ -55,8 +55,7 @@ class _SearchUserPanelState
             ListenableBuilder(
               listenable: controller,
               builder: (context, _) => Text(
-              () => Text(
-                '排序: ${controller.userOrderType!.value.label}',
+                '排序: ${controller.userOrderType!.label}',
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
@@ -65,8 +64,7 @@ class _SearchUserPanelState
             ListenableBuilder(
               listenable: controller,
               builder: (context, _) => Text(
-              () => Text(
-                '用户类型: ${controller.userType!.value.label}',
+                '用户类型: ${controller.userType!.label}',
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),

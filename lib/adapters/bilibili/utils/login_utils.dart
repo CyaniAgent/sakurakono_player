@@ -51,13 +51,11 @@ abstract final class LoginUtils {
       setWebCookie(account);
       RequestUtils.syncHistoryStatus();
       if (response.isLogin == true) {
-        final accountService = appRead(accountProvider)
-          ..rxFace.value = response.face!;
+        final accountNotifier = appRead(accountProvider.notifier)
+          ..updateFace(response.face!);
 
-        if (accountService.isLogin) {
-          accountService.rxIsLogin.refresh();
-        } else {
-          accountService.rxIsLogin.value = true;
+        if (!accountNotifier.isLogin) {
+          accountNotifier.updateLogin(true);
         }
 
         SmartDialog.showToast('main登录成功');
@@ -82,9 +80,9 @@ abstract final class LoginUtils {
   }
 
   static Future<void> onLogoutMain() {
-    appRead(accountProvider)
-      ..rxFace.value = ''
-      ..rxIsLogin.value = false;
+    appRead(accountProvider.notifier)
+      ..updateFace('')
+      ..updateLogin(false);
 
     return Future.wait([
       if (!Platform.isLinux)

@@ -96,9 +96,10 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                   backgroundColor: colorScheme.surface,
                   child: Padding(
                     padding: const .fromLTRB(12, 2.5, 6, 2.5),
-                    ListenableBuilder(
+                    child: ListenableBuilder(
                       listenable: _videoReplyController,
                       builder: (context, _) {
+                      final sortType = _videoReplyController.sortType;
                       return Row(
                         mainAxisAlignment: .spaceBetween,
                         children: [

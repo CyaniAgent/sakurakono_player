@@ -1,4 +1,3 @@
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/dynamics_types.dart';

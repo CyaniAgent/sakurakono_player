@@ -43,7 +43,7 @@ class _FavVideoPageState extends State<FavVideoPage>
             ),
             sliver: ListenableBuilder(
               listenable: _favController,
-              builder: (_, __) => _buildBody(_favController.loadingState),
+              builder: (_, _) => _buildBody(_favController.loadingState),
             ),
           ),
         ],

@@ -171,7 +171,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
             child: ListenableBuilder(
               listenable: introController,
               builder: (context, _) {
-                final isFav = introController.isFav.value;
+                final isFav = introController.isFav;
               return iconButton(
                 size: 28,
                 iconSize: 26,
@@ -202,8 +202,8 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
       Widget subBtn() => ListenableBuilder(
         listenable: introController,
         builder: (context, _) {
-          final isFollowed = introController.isFollowed.value;
-          final followStatus = introController.followStatus.value;
+          final isFollowed = introController.isFollowed;
+          final followStatus = introController.followStatus;
           return FilledButton.tonal(
             style: FilledButton.styleFrom(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,

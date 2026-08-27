@@ -67,7 +67,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
           },
           child: ListenableBuilder(
             listenable: _dynamicsController,
-            builder: (_, __) => _buildUpPanel(_dynamicsController.loadingState),
+            builder: (_, _) => _buildUpPanel(_dynamicsController.loadingState),
           ),
         ),
       ),

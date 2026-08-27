@@ -99,7 +99,7 @@ class _FollowChildPageState extends State<FollowChildPage>
             if (_followController.loadSameFollow)
               ListenableBuilder(
                 listenable: _followController,
-                builder: (_, __) => _buildSameFollowing(
+                builder: (_, _) => _buildSameFollowing(
                   colorScheme,
                   _followController.sameState,
                 ),
@@ -143,11 +143,10 @@ class _FollowChildPageState extends State<FollowChildPage>
                 ),
                 child: FloatingActionButton.extended(
                   onPressed: () => _followController
-                    ..setOrderType(
-                      _followController.orderType.value == FollowOrderType.def
-                          ? FollowOrderType.attention
-                          : FollowOrderType.def,
-                    )
+                    ..orderType =
+                        _followController.orderType == FollowOrderType.def
+                        ? FollowOrderType.attention
+                        : FollowOrderType.def
                     ..onReload(),
                   icon: const Icon(Icons.format_list_bulleted, size: 20),
                   label: Text(_followController.orderType.title),

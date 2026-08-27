@@ -51,12 +51,12 @@ class _ViewPointsPageState extends State<ViewPointsPage>
           ),
           ListenableBuilder(
             listenable: videoDetailController,
-            builder: (_, __) => Transform.scale(
+            builder: (_, _) => Transform.scale(
               alignment: Alignment.centerLeft,
               scale: 0.8,
               child: Switch(
-                value: videoDetailController.showVP.value,
-                onChanged: videoDetailController.showVP.call,
+                value: videoDetailController.showVP,
+                onChanged: (v) => videoDetailController.showVP = v,
               ),
             ),
           ),

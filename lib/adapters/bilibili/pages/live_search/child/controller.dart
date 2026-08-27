@@ -1,4 +1,3 @@
-import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +6,6 @@ import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/controller.dart';
-import 'package:get/get.dart';
 
 class LiveSearchChildController
     extends CommonListControllerRiverpod<CoreLiveSearchData, dynamic> {

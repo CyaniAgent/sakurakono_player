@@ -53,7 +53,7 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                 padding: EdgeInsets.only(bottom: padding.bottom + 100),
                 sliver: ListenableBuilder(
                   listenable: _favNoteController,
-                  builder: (_, __) => _buildBody(_favNoteController.loadingState),
+                  builder: (_, _) => _buildBody(_favNoteController.loadingState),
                 ),
               ),
             ],

@@ -1,10 +1,8 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
-import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
-import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_sort/view.dart';
@@ -88,7 +86,7 @@ class FavDetailController
   late final account = Accounts.main;
 
   late double dx = 0;
-  late final bool isPlayAll = Pref.enablePlayAll;
+  late bool isPlayAll = Pref.enablePlayAll;
 
   void setIsPlayAll(bool isPlayAll) {
     if (this.isPlayAll == isPlayAll) return;
@@ -183,7 +181,7 @@ class FavDetailController
 
     if (res.isSuccess) {
       folderInfo
-        ..favState = isFav ? 0 : 1;
+        .favState = isFav ? 0 : 1;
       SmartDialog.showToast('${isFav ? '取消' : ''}收藏成功');
     } else {
       SmartDialog.showToast(res.toString());

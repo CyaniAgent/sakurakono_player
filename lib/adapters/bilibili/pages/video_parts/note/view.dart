@@ -71,7 +71,7 @@ class _NoteListPageState extends State<NoteListPage>
               backgroundColor: Colors.transparent,
               title: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) {
+                builder: (_, _) {
                   final count = _controller.count;
                   return Text('笔记${count == -1 ? '' : '($count)'}');
                 },
@@ -120,7 +120,7 @@ class _NoteListPageState extends State<NoteListPage>
             padding: const EdgeInsets.only(bottom: 100),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(theme, _controller.loadingState),
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],

@@ -37,7 +37,13 @@ class AccountState {
 /// Adapter implementations should extend this class to provide
 /// platform-specific account behavior.
 class AccountNotifier extends StateNotifier<AccountState> {
-  AccountNotifier() : super(const AccountState());
+  AccountNotifier([AccountState? initial]) : super(initial ?? const AccountState());
+
+  /// Public accessors mirroring [AccountState] (`.state` is protected).
+  bool get isLogin => state.isLogin;
+  String get face => state.face;
+  int? get userId => state.userId;
+  String? get displayName => state.displayName;
 
   /// Restore login state from local cache on startup.
   /// Override in adapter implementations.

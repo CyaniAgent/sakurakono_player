@@ -43,7 +43,7 @@ class _LikeDetailPageState extends State<LikeDetailPage> {
               ),
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(theme, _controller.loadingState),
+                builder: (_, _) => _buildBody(theme, _controller.loadingState),
               ),
             ),
           ],

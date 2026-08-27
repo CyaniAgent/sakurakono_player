@@ -78,7 +78,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
             ),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(theme, _controller.loadingState),
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ],
@@ -384,8 +384,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
           ListenableBuilder(
             listenable: _controller,
             builder: (context, _) {
-            () {
-              final count = _controller.count.value;
+              final count = _controller.count;
               return count == null
                   ? const SizedBox.shrink()
                   : Text(
@@ -405,8 +404,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
             label: ListenableBuilder(
               listenable: _controller,
               builder: (context, _) => Text(
-              () => Text(
-                _controller.sortType.value.label,
+                _controller.sortType.label,
                 style: TextStyle(
                   fontSize: 13,
                   color: theme.colorScheme.secondary,

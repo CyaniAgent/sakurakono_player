@@ -46,7 +46,7 @@ class _SysMsgPageState extends State<SysMsgPage> {
               ),
               sliver: ListenableBuilder(
                 listenable: _sysMsgController,
-                builder: (_, __) => _buildBody(theme, _sysMsgController.loadingState),
+                builder: (_, _) => _buildBody(theme, _sysMsgController.loadingState),
               ),
             ),
           ],

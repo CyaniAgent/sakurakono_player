@@ -28,7 +28,7 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text('消息屏蔽词')),
-      body: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(theme, _controller.loadingState)),
+      body: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(theme, _controller.loadingState)),
     );
   }
 
@@ -64,8 +64,8 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                         if (_controller.listLimit != null)
                         ListenableBuilder(
                           listenable: _controller,
-                          builder: (_, __) => Text(
-                            '${_controller.count.value}/${_controller.listLimit}',
+                          builder: (_, _) => Text(
+                            '${_controller.count}/${_controller.listLimit}',
                             style: TextStyle(
                               fontSize: 13,
                               color: theme.colorScheme.outline,

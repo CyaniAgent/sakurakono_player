@@ -2,9 +2,6 @@ import 'dart:math';
 
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/member/member_host.dart';
@@ -43,7 +40,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   void attachRef(Ref ref) { _ref = ref; }
   int get currentUserId => MemberHost.of().currentUserId;
 
-  bool get isLogin => _ref?.read(accountProvider).isLogin == true || false;
+  bool get isLogin => (_ref?.read(accountProvider).isLogin == true);
 
   CoreLive? live;
   int? silence;
@@ -51,7 +48,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   int? isFollowed; // 被关注
   int _relation = 0;
   bool get isFollow {
-    final relation = this._relation;
+    final relation = _relation;
     return relation != 0 && relation != 128 && relation != -1;
   }
   int get relation => _relation;

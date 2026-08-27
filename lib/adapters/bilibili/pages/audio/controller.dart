@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:skf/adapters/bilibili/common/constants.dart';
 
 import 'package:skf/common/widgets/dialog/simple_dialog_option.dart';
-import 'package:skf/core/repository/audio_repository.dart';
 import 'package:skf/adapters/bilibili/grpc/audio.dart' show AudioGrpc;
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pb.dart'
     show
@@ -60,6 +59,7 @@ class AudioController extends ChangeNotifier
         BlockConfigMixin,
         BlockMixin {
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
 
   /// TripleMixin notification callback.
@@ -77,6 +77,7 @@ class AudioController extends ChangeNotifier
   DetailItem? audioItem;
 
   bool _hasInit = false;
+  @override
   bool isClosed = false;
   @override
   Player? player;

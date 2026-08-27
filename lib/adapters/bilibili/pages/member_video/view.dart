@@ -94,7 +94,7 @@ class _MemberVideoState extends State<MemberVideo>
       onRefresh: () async {
         final count = _controller.loadingState.dataOrNull?.length;
         await _controller.onRefresh();
-        if (_controller.isLocating.value && mounted) {
+        if (_controller.isLocating && mounted) {
           final newCount = _controller.loadingState.dataOrNull?.length;
           if (count != null && newCount != null && newCount > count) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -134,7 +134,43 @@ class _MemberVideoState extends State<MemberVideo>
           ),
           ListenableBuilder(
             listenable: _controller,
-            builder: (_, __) => !_controller.isLocating
+            builder: (_, _) => !_controller.isLocating
+                ? Positioned(
+                    right: kFloatingActionButtonMargin,
+                    bottom: 0,
+                    child: SlideTransition(
+                      position: fabAnimation,
+                      child: Padding(
+                        padding: .only(
+                          bottom: padding.bottom + kFloatingActionButtonMargin,
+                        ),
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            final fromViewAid = _controller.fromViewAid;
+                            _controller.isLocating = true;
+                            final locatedIndex =
+                                _controller.loadingState.dataOrNull
+                                    ?.indexWhere(
+                                      (i) => i.param == fromViewAid,
+                                    ) ??
+                                -1;
+                            if (locatedIndex == -1) {
+                              _controller
+                                ..lastAid = fromViewAid
+                                ..reload = true
+                                ..page = 0
+                                ..loadingState = LoadingState.loading()
+                                ..queryData();
+                            } else {
+                              _jumpToIndex(locatedIndex);
+                            }
+                          },
+                          label: const Text('定位至上次观看'),
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       );

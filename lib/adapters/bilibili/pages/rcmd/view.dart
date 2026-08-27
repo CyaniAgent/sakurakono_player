@@ -43,7 +43,7 @@ class _RcmdPageState extends State<RcmdPage>
               padding: const .only(top: Style.cardSpace, bottom: 100),
               sliver: ListenableBuilder(
                 listenable: controller,
-                builder: (_, __) => _buildBody(colorScheme, controller.loadingState),
+                builder: (_, _) => _buildBody(colorScheme, controller.loadingState),
               ),
             ),
           ],

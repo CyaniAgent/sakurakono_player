@@ -53,7 +53,7 @@ abstract class CommonSearchPanelState<
             padding: EdgeInsets.only(
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
-            sliver: ListenableBuilder(listenable: controller, builder: (_, __) => _buildBody(theme, controller.loadingState)),
+            sliver: ListenableBuilder(listenable: controller, builder: (_, _) => _buildBody(theme, controller.loadingState)),
           ),
         ],
       ),

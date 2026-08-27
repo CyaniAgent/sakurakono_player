@@ -4,7 +4,6 @@ import 'package:skf/adapters/bilibili/grpc/im.dart' show ImGrpc;
 import 'package:protobuf/protobuf.dart' show PbMap;
 import 'package:skf/core/models/im_types.dart';
 import 'package:skf/core/models/msg_types.dart';
-import 'package:skf/core/repository/im_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/common_whisper_controller.dart';
@@ -14,11 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
-import 'package:get/get.dart';
 
 class WhisperController extends CommonWhisperController<SessionMainReply> {
 
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   @override
   CoreImSessionPageType sessionPageType = CoreImSessionPageType.home;

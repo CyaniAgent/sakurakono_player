@@ -44,7 +44,7 @@ class _ReplySearchChildPageState extends State<ReplySearchChildPage>
             ),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(_controller.loadingState),
+              builder: (_, _) => _buildBody(_controller.loadingState),
             ),
           ),
         ],

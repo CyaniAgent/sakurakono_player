@@ -76,7 +76,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
     child = ListenableBuilder(
       key: titleKey,
       listenable: liveController,
-      builder: (_, __) => MarqueeText(
+      builder: (_, _) => MarqueeText(
         liveController.title,
         spacing: 30,
         velocity: 30,
@@ -138,7 +138,8 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           if (PlatformUtils.isDesktop && !plPlayerController.isDesktopPip)
             ListenableBuilder(
               listenable: plPlayerController,
-              builder: (_, __) {
+              builder: (_, _) {
+              final isAlwaysOnTop = plPlayerController.isAlwaysOnTop;
               return ComBtn(
                 height: 30,
                 tooltip: '${isAlwaysOnTop ? '取消' : ''}置顶',
@@ -188,7 +189,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
             ),
           ListenableBuilder(
             listenable: plPlayerController,
-            builder: (_, __) => ComBtn(
+            builder: (_, _) => ComBtn(
               height: 30,
               tooltip: '仅播放音频',
               onTap: () {
@@ -211,7 +212,8 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           if (PlatformUtils.isMobile)
             ListenableBuilder(
               listenable: plPlayerController,
-              builder: (_, __) {
+              builder: (_, _) {
+              final continuePlayInBackground =
                   plPlayerController.continuePlayInBackground;
               return ComBtn(
                 height: 30,

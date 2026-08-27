@@ -103,7 +103,7 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
                     padding: EdgeInsets.only(bottom: padding.bottom + 100),
                     sliver: ListenableBuilder(
                       listenable: _controller,
-                      builder: (_, __) => _buildBody(theme, _controller.loadingState),
+                      builder: (_, _) => _buildBody(theme, _controller.loadingState),
                     ),
                   ),
                 ],

@@ -1,8 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/core/repository/dynamics_repository.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
 import 'package:skf/core/models/dynamics_types.dart';
@@ -21,6 +18,7 @@ import 'package:get/get.dart';
 
 class ArticleController extends CommonDynController {
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   late String id;
   late String type;
@@ -186,7 +184,7 @@ class ArticleController extends CommonDynController {
       commentType = 12;
       isLoaded = await queryRead(commentId);
     }
-    if (isLoaded)
+    if (isLoaded) {
       queryData();
       if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
         (_ref!.read(videoRepositoryProvider)).historyReport(aid: commentId.toString(), type: 5);

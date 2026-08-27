@@ -1,12 +1,10 @@
 import 'package:skf/common/widgets/appbar/appbar.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
-import 'package:skf/common/widgets/view_sliver_safe_area.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
     extends State<S> {
@@ -20,15 +18,14 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
   Widget build(BuildContext context) {
     if (controller case final MultiSelectBase multiCtr) {
       final enableMultiSelect = multiCtr.enableMultiSelect;
-        return popScope(
-          canPop: !enableMultiSelect,
-          onPopInvokedWithResult: (didPop, result) {
-            if (enableMultiSelect) {
-              multiCtr.handleSelect();
-            }
-          },
-          child: _build(true),
-        );
+      return popScope(
+        canPop: !enableMultiSelect,
+        onPopInvokedWithResult: (didPop, result) {
+          if (enableMultiSelect) {
+            multiCtr.handleSelect();
+          }
+        },
+        child: _build(true),
       );
     }
     return _build(false);
@@ -43,7 +40,7 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
         slivers: [
           ListenableBuilder(
             listenable: controller,
-            builder: (_, __) => _buildBody(controller.loadingState),
+            builder: (_, _) => _buildBody(controller.loadingState),
           ),
         ],
       ),

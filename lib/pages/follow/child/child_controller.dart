@@ -1,19 +1,13 @@
 
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/follow_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/follow_models.dart' show FollowOrderType;
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/follow/controller.dart';
-import 'package:skf/utils/storage.dart';
-import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:get/get.dart';
 
 class FollowChildController
     extends CommonListControllerRiverpod<CoreFollowData, CoreFollowItemModel> {
@@ -59,13 +53,13 @@ class FollowChildController
   bool customHandleResponse(bool isRefresh, Success<CoreFollowData> response) {
     if (_followState != null && _notifier != null) {
       try {
-        if (_followState!.isOwner &&
+        if (_followState.isOwner &&
             tagid == null &&
             isRefresh &&
-            _followState!.hasLoadedTags) {
+            _followState.hasLoadedTags) {
           final total = response.response.total;
           if (total != null) {
-            _notifier!.updateTabCount(total);
+            _notifier.updateTabCount(total);
           }
         }
       } catch (_) {}

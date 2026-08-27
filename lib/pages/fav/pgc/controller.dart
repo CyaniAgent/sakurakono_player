@@ -1,5 +1,3 @@
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +55,7 @@ class FavPgcController
     if (checkedCount != 0) {
       handleSelect();
     }
-    enableMultiSelect.value = false;
+    enableMultiSelect = false;
   }
 
   // 取消追番

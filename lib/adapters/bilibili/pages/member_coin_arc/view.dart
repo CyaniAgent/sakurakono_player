@@ -61,7 +61,7 @@ class _MemberCoinArcPageState extends State<MemberCoinArcPage> {
                 right: Style.safeSpace + padding.right,
                 bottom: padding.bottom + 100,
               ),
-              sliver: ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildBody(_ctr.loadingState as LoadingState<List<CoinLikeArcItem>?>)),
+              sliver: ListenableBuilder(listenable: _ctr, builder: (_, _) => _buildBody(_ctr.loadingState as LoadingState<List<CoinLikeArcItem>?>)),
             ),
           ],
         ),

@@ -115,7 +115,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
 
   Widget buildImagePreview() {
     return ListenableBuilder(
-      listenable: imageList,
+      listenable: this,
       builder: (context, _) {
         if (imageList.isNotEmpty) {
           return SizedBox(

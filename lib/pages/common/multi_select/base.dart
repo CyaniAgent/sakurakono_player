@@ -63,7 +63,7 @@ mixin CommonMultiSelectMixin<T extends MultiSelectData>
     implements MultiSelectBase<T> {
   @override
   bool enableMultiSelect = false;
-  bool? allSelected;
+  bool allSelected = false;
 
   List<T>? get dataList;
   void notifyStateChanged();

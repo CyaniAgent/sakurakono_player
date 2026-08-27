@@ -79,7 +79,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
     final theme = Theme.of(context);
     return ListenableBuilder(
       listenable: _controller,
-      builder: (_, __) => _buildUserPage(theme, _controller.userState),
+      builder: (_, _) => _buildUserPage(theme, _controller.userState),
     );
   }
 
@@ -102,7 +102,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                     ),
                     sliver: ListenableBuilder(
                       listenable: _controller,
-                      builder: (_, __) => _buildVideoList(
+                      builder: (_, _) => _buildVideoList(
                         theme,
                         _controller.loadingState,
                       ),
@@ -270,7 +270,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
       const SizedBox(height: 4),
       ListenableBuilder(
         listenable: _controller,
-        builder: (_, __) => Row(
+        builder: (_, _) => Row(
           children: UserInfoType.values
               .map(
                 (e) => _buildChildInfo(
@@ -327,7 +327,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                     afterMod: (attribute) {
                       _controller
                         ..userState.data.isFollowed = attribute != 0
-                        ..notifyListeners();
+                        ..notifyChange();
                     },
                   );
                 }

@@ -49,9 +49,9 @@ class _PgcIndexPageState extends State<PgcIndexPage>
         ? Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(title: const Text('索引')),
-            body: ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildBody(theme, _ctr.conditionState.value)),
+            body: ListenableBuilder(listenable: _ctr, builder: (_, _) => _buildBody(theme, _ctr.conditionState)),
           )
-        : ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildBody(theme, _ctr.conditionState.value));
+        : ListenableBuilder(listenable: _ctr, builder: (_, _) => _buildBody(theme, _ctr.conditionState));
   }
 
   Widget _buildBody(
@@ -80,7 +80,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                     alignment: Alignment.topCenter,
                     duration: const Duration(milliseconds: 200),
                     child: count > 5
-                        ? ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildSortsWidget(theme, count, response))
+                        ? ListenableBuilder(listenable: _ctr, builder: (_, _) => _buildSortsWidget(theme, count, response))
                         : _buildSortsWidget(theme, count, response),
                   ),
                 ),
@@ -91,7 +91,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
                     top: 12,
                     bottom: padding.bottom + 100,
                   ),
-                  sliver: ListenableBuilder(listenable: _ctr, builder: (_, __) => _buildList(_ctr.loadingState)),
+                  sliver: ListenableBuilder(listenable: _ctr, builder: (_, _) => _buildList(_ctr.loadingState)),
                 ),
               ],
             ),
@@ -101,7 +101,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
       Error(:final errMsg) => scrollErrorWidget(
         errMsg: errMsg,
         onReload: () => _ctr
-          ..conditionState.value = LoadingState.loading()
+          ..conditionState = LoadingState.loading()
           ..getPgcIndexCondition(),
       ),
     };
@@ -162,7 +162,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
     children: [
       ...List.generate(
         count > 5
-            ? _ctr.isExpand.value
+            ? _ctr.isExpand
                   ? count
                   : count ~/ 2
             : count,
@@ -176,9 +176,9 @@ class _PgcIndexPageState extends State<PgcIndexPage>
           if (item != null && item.isNotEmpty) {
             return ListenableBuilder(
               listenable: _ctr,
-              builder: (_, __) {
+              builder: (_, _) {
               // ignore: invalid_use_of_protected_member
-              final indexParams = _ctr.indexParams.value;
+              final indexParams = _ctr.indexParams;
               return SelfSizedHorizontalList(
                 padding: isFirst
                     ? const .symmetric(horizontal: 12)
@@ -203,19 +203,19 @@ class _PgcIndexPageState extends State<PgcIndexPage>
         const SizedBox(height: 8),
         GestureDetector(
           behavior: .opaque,
-          onTap: _ctr.isExpand.toggle,
+          onTap: () => _ctr.isExpand = !_ctr.isExpand,
           child: Center(
             child: Row(
               mainAxisSize: .min,
               children: [
                 Text(
-                  _ctr.isExpand.value ? '收起' : '展开',
+                  _ctr.isExpand ? '收起' : '展开',
                   style: TextStyle(
                     color: theme.colorScheme.outline,
                   ),
                 ),
                 Icon(
-                  _ctr.isExpand.value
+                  _ctr.isExpand
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
                   color: theme.colorScheme.outline,

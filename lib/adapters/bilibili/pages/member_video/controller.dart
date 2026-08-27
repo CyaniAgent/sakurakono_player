@@ -1,6 +1,4 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
-import 'package:skf/core/repository/member_repository.dart';
-import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

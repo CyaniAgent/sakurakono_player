@@ -59,7 +59,7 @@ class _ReplyMePageState extends State<ReplyMePage> {
               ),
               sliver: ListenableBuilder(
                 listenable: _replyMeController,
-                builder: (_, __) => _buildBody(theme, _replyMeController.loadingState),
+                builder: (_, _) => _buildBody(theme, _replyMeController.loadingState),
               ),
             ),
           ],

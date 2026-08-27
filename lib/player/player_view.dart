@@ -1105,7 +1105,7 @@ class _PlayerViewState extends State<PlayerView>
                             ?.viewPointList
                             .isNotEmpty ==
                         true &&
-                    overlaySource?.showVP.value == true;
+                    overlaySource?.showVP == true;
                 return Offstage(
                   offstage: offstage,
                   child: Stack(
@@ -1139,7 +1139,7 @@ class _PlayerViewState extends State<PlayerView>
                         ),
                       if (plPlayerController.showViewPoints &&
                           overlaySource?.viewPointList.isNotEmpty == true &&
-                          overlaySource?.showVP.value == true)
+                          overlaySource?.showVP == true)
                         Padding(
                           padding: const .only(bottom: 4.25),
                           child: ViewPointSegmentProgressBar(

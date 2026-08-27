@@ -1,5 +1,4 @@
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
-import 'package:get/get.dart';
 
 /// 播放器进度条覆盖层数据源。
 ///
@@ -17,7 +16,7 @@ abstract class PlayerOverlaySource {
   List<ViewPointSegment> get viewPointList;
 
   /// 分段信息显示开关（B站: `showVP`）。
-  RxBool get showVP;
+  bool get showVP;
 
   /// 高能进度条显示开关（B站: `showDmTrendChart`）。
   bool get showDmTrendChart;

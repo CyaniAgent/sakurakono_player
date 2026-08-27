@@ -18,7 +18,6 @@ import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:media_kit/media_kit.dart';
 
@@ -51,7 +50,7 @@ mixin BlockMixin {
   late final listKey = GlobalKey<AnimatedListState>();
   late final List<Object> listData = [];
 
-  RxString? get videoLabel => null;
+  String? get videoLabel => null;
   Player? get player;
   bool get autoPlay;
   int? get timeLength;
@@ -142,8 +141,8 @@ mixin BlockMixin {
                     isBlock ? blockConfig : null,
                   );
                   if (segmentModel.segment == const (0, 0)) {
-                    videoLabel?.value +=
-                        '${videoLabel!.value.isNotEmpty ? '/' : ''}${segmentModel.segmentType.title}';
+                    // videoLabel is a plain String? getter (base null, no overrides) —
+                    // the Rx-era label concatenation no longer applies.
                   }
 
                   if (_blockListener == null && autoPlay && player != null) {
@@ -482,7 +481,6 @@ mixin BlockMixin {
   void resetBlock() {
     cancelBlockListener();
     _lastBlockPos = null;
-    videoLabel?.value = '';
     _segmentList.clear();
     segmentProgressList.clear();
   }

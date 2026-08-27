@@ -37,14 +37,15 @@ class VideoCardHLater extends StatelessWidget {
 
   /// 导航契约（适配器注入），null 时对应导航动作禁用。
   final LaterActions? actions;
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final enableMultiSelect = ctr.enableMultiSelect.value;
+    final enableMultiSelect = ctr.enableMultiSelect;
 
     final onLongPress = enableMultiSelect
         ? null
         : () => ctr
-            ..enableMultiSelect.value = true
+            ..enableMultiSelect = true
             ..onSelect(videoItem);
 
     return Material(

@@ -4,7 +4,6 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/models/member_types.dart' show CoreMemberTagItemModel;
-import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/child/child_controller.dart';
 import 'package:skf/pages/follow/child/child_view.dart';
 import 'package:skf/pages/follow/controller.dart';

@@ -6,7 +6,6 @@ library;
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/core/models/member_types.dart';
-import 'package:skf/core/repository/member_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/follow/follow_actions.dart';
 import 'package:skf/router/app_navigator.dart';

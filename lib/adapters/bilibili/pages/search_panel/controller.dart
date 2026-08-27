@@ -46,11 +46,11 @@ class SearchPanelController<R extends SearchNumData<T>, T>
   int? pubEnd;
 
   // user
-  Rx<UserOrderType>? userOrderType;
-  Rx<UserType>? userType;
+  UserOrderType? userOrderType;
+  UserType? userType;
 
   // article
-  Rx<ArticleZoneType>? articleZoneType; // int? categoryId;
+  ArticleZoneType? articleZoneType; // int? categoryId;
 
   SearchResultController? searchResultController;
 
@@ -101,9 +101,9 @@ class SearchPanelController<R extends SearchNumData<T>, T>
       order: order,
       duration: videoDurationType?.index,
       tids: videoZoneType?.tids,
-      orderSort: userOrderType?.value.orderSort,
-      userType: userType?.value.index,
-      categoryId: articleZoneType?.value.categoryId,
+      orderSort: userOrderType?.orderSort,
+      userType: userType?.index,
+      categoryId: articleZoneType?.categoryId,
       pubBegin: pubBegin,
       pubEnd: pubEnd,
       gaiaVtoken: gaiaVtoken,

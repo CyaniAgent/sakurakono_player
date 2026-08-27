@@ -2,7 +2,6 @@ import 'package:skf/core/models/reply_types.dart' show CoreMainListReply;
 import 'package:skf/core/models/video_types.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:skf/core/result/loading_state.dart';
@@ -16,6 +15,7 @@ import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 class VideoReplyController extends ReplyController<CoreMainListReply>
     with ReplyVoteMixin<CoreMainListReply> {
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   VideoReplyController({
     required this.aid,

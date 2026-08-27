@@ -33,7 +33,7 @@ class _SubPageState extends State<SubPage> with GridMixin {
             ViewSliverSafeArea(
               sliver: ListenableBuilder(
                 listenable: _subController,
-                builder: (_, __) => _buildBody(_subController.loadingState),
+                builder: (_, _) => _buildBody(_subController.loadingState),
               ),
             ),
           ],

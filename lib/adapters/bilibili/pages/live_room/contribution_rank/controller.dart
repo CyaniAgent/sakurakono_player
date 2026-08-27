@@ -1,13 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
-import 'package:skf/core/repository/live_repository.dart';
 
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
-import 'package:get/get.dart';
 
 class ContributionRankController
     extends

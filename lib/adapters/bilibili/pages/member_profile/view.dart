@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/member/profile_type.dart';
 import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
-import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
@@ -45,7 +44,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       LoadingState<AccountMyInfoData>.loading();
   late final TextEditingController _textController;
   late final _imagePicker = ImagePicker();
-  AccountProvider accountService = appRead(accountProvider);
+  AccountNotifier accountService = appRead(accountProvider.notifier);
 
   @override
   void initState() {
@@ -93,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   res.data['data'],
                 );
                 _loadingState = Success(data);
-                accountService.rxFace.value = data.face!;
+                accountService.updateFace(data.face!);
                 try {
                   UserInfoData userInfo = BiliPref.userInfoCache!
                     ..uname = data.name
@@ -104,7 +103,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               final ctr = appRead(mineControllerProvider);
                   ctr.userInfo.uname = data.name;
                   ctr.userInfo.face = data.face;
-                  ctr.notifyListeners();
+                  ctr.notifyChange();
                 } catch (_) {}
               } else {
                 _loadingState = Error(res.data['message']);
@@ -393,7 +392,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               try {
               final ctr = appRead(mineControllerProvider);
                 ctr.userInfo.uname = _textController.text;
-                ctr.notifyListeners();
+                ctr.notifyChange();
               } catch (_) {}
             } else if (type == ProfileType.sign) {
               data.sign = _textController.text;

@@ -3,7 +3,6 @@ import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
 import 'package:skf/pages/search/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class SuperChatPanel extends StatefulWidget {
   const SuperChatPanel({
@@ -31,7 +30,6 @@ class _SuperChatPanelState extends DebounceStreamState<SuperChatPanel, bool>
     return ListenableBuilder(
       listenable: widget.controller,
       builder: (context, _) => ListView.separated(
-      () => ListView.separated(
         key: const PageStorageKey(_SuperChatPanelState),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         physics: const ClampingScrollPhysics(),

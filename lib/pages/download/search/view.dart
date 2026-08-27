@@ -43,10 +43,10 @@ class _DownloadSearchPageState
         if (controller.loadingState is! Success) {
           return;
         }
-        if (controller.enableMultiSelect.value) {
+        if (controller.enableMultiSelect) {
           controller.handleSelect();
         } else {
-          controller.enableMultiSelect.value = true;
+          controller.enableMultiSelect = true;
         }
       },
       icon: const Icon(Icons.edit_note),

@@ -2,7 +2,6 @@ import 'dart:io' show Platform;
 import 'package:skf/router/app_navigator.dart';
 
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/setting/models/model.dart';
@@ -17,7 +16,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/bili_storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 List<SettingsModel> get playSettings => [

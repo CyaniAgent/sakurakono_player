@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:skf/common/widgets/appbar/appbar.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
@@ -14,6 +16,22 @@ import 'package:flutter/material.dart'
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
+/// Bridges a GetX [RxList] to Flutter [Listenable] so [ListenableBuilder]
+/// can react to list changes (RxList is not a [Listenable] in this fork).
+class _RxListListenable<T> extends ChangeNotifier {
+  _RxListListenable(RxList<T> list) {
+    _sub = list.stream.listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription _sub;
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
+
 class DownloadingPage extends StatefulWidget {
   const DownloadingPage({super.key});
 
@@ -25,10 +43,19 @@ class _DownloadingPageState extends State<DownloadingPage>
     with BaseMultiSelectMixin<CoreDownloadEntryInfo>, GridMixin {
   final _downloadActions = DownloadActions.of();
   late final _waitDownloadQueue = _downloadActions.waitDownloadQueue;
+  final _queueListenable = _RxListListenable<CoreDownloadEntryInfo>(
+    DownloadActions.of().waitDownloadQueue,
+  );
   @override
   List<CoreDownloadEntryInfo> get list => _waitDownloadQueue;
   @override
   void notifyStateChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    _queueListenable.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,40 +93,41 @@ class _DownloadingPageState extends State<DownloadingPage>
             slivers: [
               ViewSliverSafeArea(
                 sliver: ListenableBuilder(
-                  listenable: _downloadActions,
-                  builder: (_, __) {
-                  if (_waitDownloadQueue.isNotEmpty) {
-                    return SliverGrid.builder(
-                      gridDelegate: gridDelegate,
-                      itemCount: _waitDownloadQueue.length,
-                      itemBuilder: (context, index) {
-                        final entry = _waitDownloadQueue[index];
-                        final isCurr = entry.cid == _downloadActions.curCid;
-                        return DetailItem(
-                          entry: entry,
-                          actions: _downloadActions,
-                          showTitle: true,
-                          isCurr: isCurr,
-                          onDelete: () => _downloadActions.deleteDownload(
+                  listenable: _queueListenable,
+                  builder: (_, _) {
+                    if (_waitDownloadQueue.isNotEmpty) {
+                      return SliverGrid.builder(
+                        gridDelegate: gridDelegate,
+                        itemCount: _waitDownloadQueue.length,
+                        itemBuilder: (context, index) {
+                          final entry = _waitDownloadQueue[index];
+                          final isCurr = entry.cid == _downloadActions.curCid;
+                          return DetailItem(
                             entry: entry,
-                            removeQueue: true,
-                            downloadNext:
-                                isCurr &&
-                                entry.status == CoreDownloadStatus.downloading,
-                          ),
-                          controller: this,
-                        );
-                      },
-                    );
-                  }
-                  return const HttpError();
+                            actions: _downloadActions,
+                            showTitle: true,
+                            isCurr: isCurr,
+                            onDelete: () => _downloadActions.deleteDownload(
+                              entry: entry,
+                              removeQueue: true,
+                              downloadNext:
+                                  isCurr &&
+                                  entry.status ==
+                                      CoreDownloadStatus.downloading,
+                            ),
+                            controller: this,
+                          );
+                        },
+                      );
+                    }
+                    return const HttpError();
                   },
+                ),
               ),
             ],
           ),
         ),
       );
-    );
   }
 
   @override

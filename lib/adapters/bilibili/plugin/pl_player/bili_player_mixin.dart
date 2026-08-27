@@ -78,8 +78,8 @@ mixin BiliPlayerMixin on PlayerController {
   bool enableHeart = true;
 
   /// 弹幕开关
-  late final bool enableShowDanmaku = Pref.enableShowDanmaku;
-  late final bool enableShowLiveDanmaku = Pref.enableShowLiveDanmaku;
+  late bool enableShowDanmaku = Pref.enableShowDanmaku;
+  late bool enableShowLiveDanmaku = Pref.enableShowLiveDanmaku;
   bool get enableShowDanmakuAdaptive =>
       isLive ? enableShowLiveDanmaku : enableShowDanmaku;
 
@@ -95,7 +95,7 @@ mixin BiliPlayerMixin on PlayerController {
     ascii.encode(Accounts.main.mid.toString()),
     0,
   ).toRadixString(16);
-  late final double danmakuOpacity = Pref.danmakuOpacity;
+  late double danmakuOpacity = Pref.danmakuOpacity;
   final bool showVipDanmaku = Pref.showVipDanmaku; // loop unswitching
 
   late final progressType = BiliPref.btmProgressBehavior;

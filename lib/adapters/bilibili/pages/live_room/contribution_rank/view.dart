@@ -140,7 +140,7 @@ class _ContributionRankTypeState extends State<_ContributionRankType>
             ViewSliverSafeArea(
               sliver: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _buildBody(showScore, _controller.loadingState),
+                builder: (_, _) => _buildBody(showScore, _controller.loadingState),
               ),
             ),
           ],

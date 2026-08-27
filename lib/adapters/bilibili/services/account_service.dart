@@ -18,7 +18,7 @@ class AccountService extends GetxService {
     super.onInit();
     final provider = appRead(accountProvider);
     isLogin = provider.isLogin;
-    face = provider.face ?? '';
+    face = provider.face;
   }
 }
 

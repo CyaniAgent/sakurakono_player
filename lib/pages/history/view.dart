@@ -81,7 +81,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
             ),
             sliver: ListenableBuilder(
               listenable: _historyController,
-              builder: (_, __) => _buildBody(_historyController.loadingState),
+              builder: (_, _) => _buildBody(_historyController.loadingState),
             ),
           ),
         ],
@@ -111,7 +111,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
           ),
           child: ListenableBuilder(
             listenable: _historyController,
-            builder: (_, __) {
+            builder: (_, _) {
               final tabs = _historyController.tabs;
             if (tabs.isEmpty) {
               return child;
@@ -158,7 +158,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
                 ),
               ],
             );
-              },
+          }),
         ),
       ),
     );

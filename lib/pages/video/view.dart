@@ -164,8 +164,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
     if (status.isCompleted) {
       try {
-        if (videoDetailController.hasSteinChoices.value) {
-          videoDetailController.showSteinEdgeInfo.value = true;
+        if (videoDetailController.hasSteinChoices) {
+          videoDetailController.showSteinEdgeInfo = true;
           return;
         }
       } catch (_) {}
@@ -283,7 +283,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     host.cancelIntroTimer(heroTag);
 
     videoDetailController
-      ..videoState.value = false
+      ..videoState = false
       ..cancelBlockListener()
       ..playerStatus = plPlayerController.playerStatus
       ..brightness = plPlayerController.brightness;
@@ -400,7 +400,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                   child: ListenableBuilder(
                     listenable: videoDetailController, builder: (context, _) {
                       final scrollRatio =
-                          videoDetailController.scrollRatio.value;
+                          videoDetailController.scrollRatio;
                       return AppBar(
                         toolbarHeight: 0,
                         backgroundColor: isPortrait && scrollRatio > 0
@@ -444,7 +444,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                   videoDetailController.animationController.value == 1) {
                 videoDetailController.isExpanding = false;
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  videoDetailController.scrollRatio.value = 0;
+                  videoDetailController.scrollRatio = 0;
                   videoDetailController.refreshPage();
                 });
               } else if (videoDetailController.isCollapsing &&
@@ -468,7 +468,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                   minExtent: kToolbarHeight,
                   maxExtent: height,
                   minVideoHeight: videoDetailController.minVideoHeight,
-                  onScrollRatioChanged: videoDetailController.scrollRatio.call,
+                  onScrollRatioChanged: (value) =>
+                      videoDetailController.scrollRatio = value,
                   child: Stack(
                     clipBehavior: .none,
                     children: [
@@ -539,7 +540,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       ],
     );
     return Opacity(
-      opacity: videoDetailController.scrollRatio.value,
+      opacity: videoDetailController.scrollRatio,
       child: Container(
         color: themeData.colorScheme.surface,
         alignment: .topCenter,
@@ -617,7 +618,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   Widget _buildHeaderOverlay() {
     return ListenableBuilder(
       listenable: videoDetailController, builder: (context, _) {
-        final scrollRatio = videoDetailController.scrollRatio.value;
+        final scrollRatio = videoDetailController.scrollRatio;
         if (scrollRatio == 0) {
           return const SizedBox.shrink();
         }
@@ -1131,7 +1132,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         videoDetailController.plPlayerController.onPopInvokedWithResult,
     child: ListenableBuilder(
       listenable: videoDetailController, builder: (context, _) =>
-          !videoDetailController.videoState.value ||
+          !videoDetailController.videoState ||
               !videoDetailController.autoPlay ||
               plPlayerController.videoController == null
           ? const SizedBox.shrink()

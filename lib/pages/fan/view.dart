@@ -57,7 +57,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
       ? AppBar(
           title: controller.isOwner
               ? const Text('我的粉丝')
-              ListenableBuilder(
+              : ListenableBuilder(
                 listenable: controller,
                 builder: (context, _) {
                   final name = controller.name;

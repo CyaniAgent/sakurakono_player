@@ -50,7 +50,7 @@ class LiveRoomChatPanel extends StatelessWidget {
       children: [
         ListenableBuilder(
           listenable: liveRoomController,
-          builder: (_, __) => ListView.separated(
+          builder: (_, _) => ListView.separated(
             key: const PageStorageKey(LiveRoomChatPanel),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             controller: liveRoomController.scrollController,
@@ -194,7 +194,7 @@ class LiveRoomChatPanel extends StatelessWidget {
           Positioned(
             top: 12,
             right: 12,
-            child: ListenableBuilder(listenable: liveRoomController, builder: (_, __) {
+            child: ListenableBuilder(listenable: liveRoomController, builder: (_, _) {
               final isEmpty = liveRoomController.superChatMsg.isEmpty;
               return AnimatedOpacity(
                 opacity: isEmpty ? 0 : 1,
@@ -241,7 +241,7 @@ class LiveRoomChatPanel extends StatelessWidget {
           ),
         ListenableBuilder(
           listenable: liveRoomController,
-          builder: (_, __) => liveRoomController.disableAutoScroll
+          builder: (_, _) => liveRoomController.disableAutoScroll
               ? Positioned(
                   right: 12,
                   bottom: 0,

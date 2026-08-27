@@ -82,7 +82,7 @@ class PlayerController extends ChangeNotifier implements CorePlayerService {
 
   late double lastPlaybackSpeed = 1.0;
   late double _playbackSpeed = Pref.playSpeedDefault;
-  late double _longPressSpeed = Pref.longPressSpeedDefault;
+  late final double _longPressSpeed = Pref.longPressSpeedDefault;
 
   double volume = PlatformUtils.isDesktop ? Pref.desktopVolume : 1.0;
   final setSystemBrightness = Pref.setSystemBrightness;

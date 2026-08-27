@@ -193,12 +193,12 @@ class BiliVideoPlayerHost implements VideoPlayerHost {
   void setPlayerDanmakuVisible(bool value) => _player.showDanmaku = value;
 
   @override
-  bool get danmakuEnabled => _player.enableShowDanmaku.value;
+  bool get danmakuEnabled => _player.enableShowDanmaku;
 
   @override
   void toggleDanmakuEnabled() {
-    final newVal = !_player.enableShowDanmaku.value;
-    _player.enableShowDanmaku.value = newVal;
+    final newVal = !_player.enableShowDanmaku;
+    _player.enableShowDanmaku = newVal;
     if (!_player.tempPlayerConf) {
       GStorage.setting.put(SettingBoxKey.enableShowDanmaku, newVal);
     }
@@ -374,7 +374,7 @@ class BiliVideoBlockNotifier extends StateNotifier<BiliVideoBlockState>
       _ctr.plPlayerController.seekTo(duration, isSeek: isSeek);
 
   @override
-  RxString? get videoLabel => _ctr.videoLabel;
+  String? get videoLabel => _ctr.videoLabel;
 
   @override
   Widget buildItem(Object item, Animation<double> animation) {
@@ -617,7 +617,7 @@ class BiliVideoHost implements VideoHost {
           ? null
           : ListenableBuilder(
               listenable: player,
-              builder: (_, __) => PlDanmaku(
+              builder: (_, _) => PlDanmaku(
                 key: ValueKey(ctr.cid.value),
                 isPipMode: isPipMode,
                 cid: ctr.cid.value,
@@ -665,7 +665,7 @@ class BiliVideoHost implements VideoHost {
       ListenableBuilder(
         listenable: ctr,
         builder: (context, _) {
-          if (!ctr.showSteinEdgeInfo.value) {
+          if (!ctr.showSteinEdgeInfo) {
             return const SizedBox.shrink();
           }
           return _buildSteinEdges(ctr, heroTag, context);
@@ -833,7 +833,7 @@ class BiliVideoHost implements VideoHost {
               )
             else
               Expanded(
-              ListenableBuilder(
+              child: ListenableBuilder(
                 listenable: ctr,
                 builder: (context, _) => EpisodePanel(
                     heroTag: heroTag,
@@ -867,7 +867,7 @@ class BiliVideoHost implements VideoHost {
             ],
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              ListenableBuilder(
+              child: ListenableBuilder(
                 listenable: ugcIntroCtr,
                 builder: (context, _) => SeasonPanel(
                   key: ValueKey(ugcIntroCtr.videoDetail),
@@ -879,14 +879,14 @@ class BiliVideoHost implements VideoHost {
               ),
             ),
             Expanded(
-              ListenableBuilder(
+              child: ListenableBuilder(
                 listenable: ctr,
                 builder: (context, _) => EpisodePanel(
                   heroTag: heroTag,
                   enableSlide: false,
                   ugcIntroController: ctr.isUgc ? ugcIntroCtr : null,
                   type: EpisodeType.season,
-                  initialTabIndex: ctr.seasonIndex.value,
+                  initialTabIndex: ctr.seasonIndex,
                   cover: ctr.cover.value,
                   seasonId: videoDetail.ugcSeason!.id,
                   list: videoDetail.ugcSeason!.sections!,
@@ -896,7 +896,7 @@ class BiliVideoHost implements VideoHost {
                   isReversed: ugcIntroCtr
                       .videoDetail
                       .ugcSeason!
-                      .sections![ctr.seasonIndex.value]
+                      .sections![ctr.seasonIndex]
                       .isReversed,
                   onChangeEpisode: ctr.isUgc
                       ? ugcIntroCtr.onChangeEpisode
@@ -940,8 +940,9 @@ class BiliVideoHost implements VideoHost {
     return ListenableBuilder(
       listenable: Get.find<VideoReplyController>(tag: heroTag),
       builder: (context, _) {
-      return Text('评论${count == -1 ? '' : ' ${NumUtils.numFormat(count)}'}');
-    });
+        final ctr = Get.find<VideoReplyController>(tag: heroTag);
+        return Text('评论${ctr.count == -1 ? '' : ' ${NumUtils.numFormat(ctr.count)}'}');
+      });
   }
 
   @override
@@ -1378,7 +1379,7 @@ class BiliVideoHost implements VideoHost {
           ? Get.find<UgcIntroController>(tag: heroTag)
                 .videoDetail
                 .ugcSeason!
-                .sections![ctr.seasonIndex.value]
+                .sections![ctr.seasonIndex]
                 .isReversed
           : Get.find<UgcIntroController>(tag: heroTag).videoDetail.isPageReversed,
       isSupportReverse: ctr.isUgc,
@@ -1494,20 +1495,20 @@ class BiliVideoHost implements VideoHost {
     if (isSeason) {
       final item = videoDetail
           .ugcSeason!
-          .sections![ctr.seasonIndex.value];
+          .sections![ctr.seasonIndex];
       item
         ..isReversed = !item.isReversed
         ..episodes = item.episodes!.reversed.toList();
 
       if (!ctr.plPlayerController.reverseFromFirst) {
         ctr
-          ..seasonIndex.refresh()
+          ..notifyChange()
           ..cid.refresh();
       } else {
         final episode = Get.find<UgcIntroController>(tag: heroTag)
             .videoDetail
             .ugcSeason!
-            .sections![ctr.seasonIndex.value]
+            .sections![ctr.seasonIndex]
             .episodes!
             .first;
         if (episode.cid != ctr.cid.value) {
@@ -1515,7 +1516,7 @@ class BiliVideoHost implements VideoHost {
           ctr.seasonCid = episode.cid;
         } else {
           ctr
-            ..seasonIndex.refresh()
+            ..notifyChange()
             ..cid.refresh();
         }
       }

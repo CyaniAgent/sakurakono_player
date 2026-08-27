@@ -63,7 +63,7 @@ class _BubblePageState extends State<BubblePage>
             padding: EdgeInsets.only(bottom: padding.bottom + 100),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(_controller.loadingState),
+              builder: (_, _) => _buildBody(_controller.loadingState),
             ),
           ),
         ],
@@ -81,7 +81,7 @@ class _BubblePageState extends State<BubblePage>
             bottom: kFloatingActionButtonMargin + padding.bottom,
             child: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) {
+              builder: (_, _) {
                 final sortInfo = _controller.sortInfo.value;
                 if (sortInfo == null || sortInfo.showSort != true) {
                   return const SizedBox.shrink();
@@ -135,7 +135,7 @@ class _BubblePageState extends State<BubblePage>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: ListenableBuilder(listenable: _controller, builder: (_, __) {
+        title: ListenableBuilder(listenable: _controller, builder: (_, _) {
           final tribeName = _controller.tribeName.value;
           if (tribeName == null) {
             return const SizedBox.shrink();
@@ -145,7 +145,7 @@ class _BubblePageState extends State<BubblePage>
       ),
       body: Padding(
         padding: EdgeInsets.only(left: padding.left, right: padding.right),
-        child: ListenableBuilder(listenable: _controller, builder: (_, __) {
+        child: ListenableBuilder(listenable: _controller, builder: (_, _) {
           final tabs = _controller.tabs.value;
           if (tabs == null || tabs.isEmpty) {
             return child;

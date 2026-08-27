@@ -3,7 +3,6 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
 
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/adapters/bilibili/common/widgets/dialog/report_member.dart';
@@ -77,14 +76,10 @@ class BiliMemberHost implements MemberHost {
     return switch (param) {
       'home' => MemberHome(heroTag: heroTag),
       'dynamic' => MemberDynamicsPage(mid: mid),
-      'contribute' => ListenableBuilder(
-          listenable: MemberContributeNotifier?
-          builder: (context, _) => MemberContribute(
-          () => MemberContribute(
-            heroTag: heroTag,
-            initialIndex: contributeInitialIndex,
-            mid: mid,
-          ),
+      'contribute' => MemberContribute(
+          heroTag: heroTag,
+          initialIndex: contributeInitialIndex,
+          mid: mid,
         ),
       'bangumi' => MemberBangumi(heroTag: heroTag, mid: mid),
       'favorite' => MemberFavorite(heroTag: heroTag, mid: mid),

@@ -58,8 +58,7 @@ Widget buildSeekPreviewWidget(
   return ListenableBuilder(
     listenable: plPlayerController,
     builder: (context, _) {
-    () {
-      if (!plPlayerController.showPreview.value) {
+      if (!plPlayerController.showPreview) {
         return const SizedBox.shrink();
       }
 
@@ -88,7 +87,6 @@ Widget buildSeekPreviewWidget(
           child: ListenableBuilder(
             listenable: plPlayerController,
             builder: (context, _) {
-            () {
               final index = plPlayerController.previewIndex.value!;
               int pageIndex = (index ~/ totalPerImage).clamp(
                 0,

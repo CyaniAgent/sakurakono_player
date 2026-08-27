@@ -49,7 +49,7 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              ListenableBuilder(listenable: controller, builder: (context, _) => _buildInfo(controller.infoState.value)),
+              ListenableBuilder(listenable: controller, builder: (context, _) => _buildInfo(controller.infoState)),
               buildReplyHeader(),
               ListenableBuilder(listenable: controller, builder: (context, _) => replyList(controller.loadingState)),
             ],

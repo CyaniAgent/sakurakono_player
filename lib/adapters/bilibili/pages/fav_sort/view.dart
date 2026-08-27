@@ -51,7 +51,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('排序: ${_favDetailController.folderInfo.value.title}'),
+        title: Text('排序: ${_favDetailController.folderInfo.title}'),
         actions: [
           TextButton(
             onPressed: () {

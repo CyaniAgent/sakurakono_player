@@ -129,7 +129,7 @@ class _SelectTopicPanelState
               ),
               suffixIcon: ListenableBuilder(
                 listenable: _controller,
-                builder: (_, __) => _controller.enableClear
+                builder: (_, _) => _controller.enableClear
                     ? Padding(
                         padding: const EdgeInsets.only(right: 12),
                         child: GestureDetector(
@@ -179,7 +179,7 @@ class _SelectTopicPanelState
             },
             child: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(theme, _controller.loadingState),
+              builder: (_, _) => _buildBody(theme, _controller.loadingState),
             ),
           ),
         ),

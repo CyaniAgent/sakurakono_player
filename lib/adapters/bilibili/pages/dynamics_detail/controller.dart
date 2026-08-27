@@ -1,6 +1,4 @@
 import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
-import 'package:skf/core/repository/dynamics_repository.dart';
-import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
@@ -12,6 +10,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 
 class DynamicDetailController extends CommonDynController with ReloadMixin {
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   @override
   late int oid;

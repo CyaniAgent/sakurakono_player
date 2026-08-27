@@ -219,6 +219,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                     );
                   }
               ),
+              ),
               const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -280,7 +281,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
   Widget _buildImageList(ThemeData theme) => SizedBox(
     height: 100,
-    child: ListenableBuilder(listenable: imageList, builder: (context, _) => CustomScrollView(
+    child: Obx(() => CustomScrollView(
         scrollDirection: Axis.horizontal,
         slivers: [
           const SliverToBoxAdapter(child: SizedBox(width: 16)),
@@ -370,7 +371,6 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
               ),
               child: Text(_publishTime == null ? '发布' : '定时发布'),
             ),
-          ),
         ),
       ],
     ),
@@ -866,7 +866,6 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
             ),
           ],
         );
-    );
   }
 
   Future<void> _onReserve() async {

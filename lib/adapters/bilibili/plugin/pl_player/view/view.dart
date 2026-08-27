@@ -28,7 +28,6 @@ import 'package:skf/common/widgets/player_bar.dart';
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/player/models/bottom_control_type.dart';
-import 'package:skf/player/models/play_status.dart';
 import 'package:skf/player/models/video_fit_type.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/common/video_host.dart';
@@ -141,7 +140,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       buildBottomBar: _buildBottomBar,
       onControlsVisibilityChanged: _onControlVisibilityChanged,
       onPointerExitControls: () =>
-          widget.videoDetailController?.showSteinEdgeInfo.value ?? false,
+          widget.videoDetailController?.showSteinEdgeInfo ?? false,
       onScreenshotTap: widget.plPlayerController.takeScreenshot,
       onScreenshotLongPress: screenshotWebp,
       progressType: widget.plPlayerController.progressType,
@@ -168,7 +167,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
     }
 
     if (widget.videoDetailController case final controller?) {
-      if (controller.vttSubtitlesIndex.value != 0) {
+      if (controller.vttSubtitlesIndex != 0) {
         if (visible) {
           const int minPadding = 70;
           if (plPlayerController.subtitlePaddingB < minPadding) {
@@ -262,7 +261,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         builder: (context, _) {
           final list = videoDetailController.dmTrend.value?.dataOrNull;
           if (list != null && list.isNotEmpty) {
-            final show = videoDetailController.showDmTrendChart.value;
+            final show = videoDetailController.showDmTrendChart;
             return ComBtn(
               width: widgetWidth,
               height: 30,
@@ -275,8 +274,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
                   color: Colors.white,
                 ),
               ),
-              onTap: () =>
-                  videoDetailController.showDmTrendChart.value = !show,
+              onTap: () => videoDetailController.showDmTrendChart = !show,
             );
           }
           return const SizedBox.shrink();
@@ -287,7 +285,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       BottomControlType.superResolution => ListenableBuilder(
         listenable: plPlayerController,
         builder: (context, _) {
-          final type = plPlayerController.superResolutionType.value;
+          final type = plPlayerController.superResolutionType;
           return PopupMenuButton<SuperResolutionType>(
             tooltip: '超分辨率',
             requestFocus: false,
@@ -335,7 +333,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
               icon: DisabledIcon(
                 iconSize: 22,
                 color: Colors.white,
-                disable: !videoDetailController.showVP.value,
+                disable: !videoDetailController.showVP,
                 child: const Icon(
                   CustomIcons.view_headline_rotate_90,
                   size: 22,
@@ -345,11 +343,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
               onTap: widget.showViewPoints,
               onLongPress: () {
                 Feedback.forLongPress(context);
-                videoDetailController.showVP.toggle();
+                videoDetailController.showVP = !videoDetailController.showVP;
               },
               onSecondaryTap: PlatformUtils.isMobile
                   ? null
-                  : () => videoDetailController.showVP.toggle(),
+                  : () => videoDetailController.showVP =
+                        !videoDetailController.showVP,
             );
           }
           return const SizedBox.shrink();
@@ -512,7 +511,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         listenable: videoDetailController,
         builder: (context, _) {
           if (videoDetailController.subtitles.isNotEmpty) {
-            final val = videoDetailController.vttSubtitlesIndex.value;
+            final val = videoDetailController.vttSubtitlesIndex;
             return PopupMenuButton<int>(
               tooltip: '字幕',
               requestFocus: false,
@@ -571,7 +570,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       /// 播放速度
       BottomControlType.speed => ListenableBuilder(
         listenable: plPlayerController,
-        builder: (context, _) =>
+        builder: (context, _) => PopupMenuButton<double>(
           tooltip: '倍速',
           requestFocus: false,
           initialValue: plPlayerController.playbackSpeed,
@@ -848,7 +847,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       file,
       model.segment.first,
       model.segment.second,
-      progress: progress,
+      progress: RxDouble(progress),
       preset: preset,
     );
     final future = mpv.convert().whenComplete(
@@ -899,11 +898,10 @@ class _BiliDmTapInteraction implements PlayerDmTapInteraction {
   bool get enabled => true;
 
   @override
-  bool get visible => _plPlayerController.enableShowDanmaku.value;
+  bool get visible => _plPlayerController.enableShowDanmaku;
 
   @override
-  Stream<bool> get visibilityChanges =>
-      _plPlayerController.enableShowDanmaku.stream;
+  Stream<bool> get visibilityChanges => const Stream<bool>.empty();
 
   @override
   void handleTapDown(TapDownDetails details) {
@@ -952,7 +950,7 @@ class _BiliDmTapInteraction implements PlayerDmTapInteraction {
   @override
   Widget buildOverlay(BuildContext context) {
     return ListenableBuilder(listenable: _plPlayerController, builder: (context, _) {
-      if (!_plPlayerController.enableShowDanmaku.value) {
+      if (!_plPlayerController.enableShowDanmaku) {
         return const SizedBox.shrink();
       }
       final dmOffset = _dmOffset.value;
@@ -1183,7 +1181,7 @@ class _BiliSeekPreview implements PlayerSeekPreview {
   );
 
   @override
-  void hide() => _plPlayerController.showPreview.value = false;
+  void hide() => _plPlayerController.showPreview = false;
 
   @override
   Widget build(
@@ -1217,10 +1215,10 @@ class _VideoOverlaySource implements PlayerOverlaySource {
   List<ViewPointSegment> get viewPointList => _controller.viewPointList;
 
   @override
-  RxBool get showVP => _controller.showVP;
+  bool get showVP => _controller.showVP;
 
   @override
-  bool get showDmTrendChart => _controller.showDmTrendChart.value;
+  bool get showDmTrendChart => _controller.showDmTrendChart;
 
   @override
   List<double>? get dmTrend => _controller.dmTrend.value?.dataOrNull;

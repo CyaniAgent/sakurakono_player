@@ -75,7 +75,7 @@ class _DynMentionPanelState
 
   @override
   void onValueChanged(String value) => _controller
-    ..enableClear.value = value.isNotEmpty
+    ..enableClear = value.isNotEmpty
     ..onRefresh().whenComplete(
       () => WidgetsBinding.instance.addPostFrameCallback(
         (_) => widget.scrollController?.jumpToTop(),
@@ -131,7 +131,7 @@ class _DynMentionPanelState
               ),
               suffixIcon: ListenableBuilder(
                 listenable: _controller,
-                builder: (context, _) => _controller.enableClear.value
+                builder: (context, _) => _controller.enableClear
                     ? Padding(
                         padding: const EdgeInsets.only(right: 12),
                         child: GestureDetector(
@@ -148,7 +148,7 @@ class _DynMentionPanelState
                             ),
                           ),
                           onTap: () => _controller
-                            ..enableClear.value = false
+                            ..enableClear = false
                             ..controller.clear()
                             ..onRefresh().whenComplete(
                               () =>
@@ -187,7 +187,7 @@ class _DynMentionPanelState
                   slivers: [
                     ListenableBuilder(
                       listenable: _controller,
-                      builder: (_, __) => _buildBody(theme, _controller.loadingState),
+                      builder: (_, _) => _buildBody(theme, _controller.loadingState),
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(height: padding + viewInset + 100),
@@ -197,31 +197,31 @@ class _DynMentionPanelState
               ),
               ListenableBuilder(
                 listenable: _controller,
-                builder: (context, _) {
+                builder: (context, _) => Positioned(
                   right: kFloatingActionButtonMargin,
                   bottom:
                       padding +
                       kFloatingActionButtonMargin +
-                      (_controller.showBtn.value ? viewInset : 0),
+                      (_controller.showBtn ? viewInset : 0),
                   child: AnimatedSlide(
-                    offset: _controller.showBtn.value
+                    offset: _controller.showBtn
                         ? Offset.zero
                         : const Offset(0, 3),
                     duration: const Duration(milliseconds: 120),
                     child: FloatingActionButton(
                       onPressed: () {
                         if (_controller.mentionList.isNullOrEmpty) {
-                          _controller.showBtn.value = false;
+                          _controller.showBtn = false;
                           return;
                         }
                         AppNavigator.back(result: _controller.mentionList);
-                        _controller.showBtn.value = false;
+                        _controller.showBtn = false;
                       },
                       child: const Icon(Icons.check),
                     ),
                   ),
-                );
-              }),
+                ),
+              ),
             ],
           ),
         ),

@@ -102,10 +102,9 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
               updatePanelType(PanelType.keyboard);
             }
           },
-          ListenableBuilder(
+          child: ListenableBuilder(
             listenable: this,
             builder: (context, _) => RichTextField(
-            () => RichTextField(
               key: key,
               controller: editController,
               minLines: 1,
@@ -140,7 +139,6 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
             ListenableBuilder(
               listenable: this,
               builder: (context, _) => FilledButton.tonal(
-              () => FilledButton.tonal(
                 onPressed: enablePublish ? onPublishThrottle : null,
                 style: FilledButton.styleFrom(
                   visualDensity: .compact,

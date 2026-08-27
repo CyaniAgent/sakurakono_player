@@ -61,7 +61,7 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                 padding: EdgeInsets.only(bottom: padding.bottom + 100),
                 sliver: ListenableBuilder(
                   listenable: _favPgcController,
-                  builder: (_, __) => _buildBody(_favPgcController.loadingState),
+                  builder: (_, _) => _buildBody(_favPgcController.loadingState),
                 ),
               ),
             ],

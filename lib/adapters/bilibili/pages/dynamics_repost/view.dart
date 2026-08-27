@@ -236,10 +236,9 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
         updatePanelType(PanelType.keyboard);
       }
     },
-    ListenableBuilder(
+    child: ListenableBuilder(
       listenable: this,
       builder: (context, _) => RichTextField(
-      () => RichTextField(
         key: key,
         controller: editController,
         minLines: 4,

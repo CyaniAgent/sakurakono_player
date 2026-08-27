@@ -21,6 +21,11 @@ abstract class CommonControllerRiverpod<R, T> extends ChangeNotifier
 
   bool isLoading = false;
 
+  /// Public notify wrapper — [notifyListeners] is protected in
+  /// [ChangeNotifier]; external code (Host implementations, views)
+  /// that need to request a rebuild use this.
+  void notifyChange() => notifyListeners();
+
   /// Current loading state. Subclasses should update this and call
   /// [notifyListeners] to trigger rebuilds.
   LoadingState get loadingState;
@@ -82,7 +87,7 @@ abstract class CommonDataControllerRiverpod<R, T>
     if (isLoading) return;
     isLoading = true;
     final LoadingState<R> res = await customGetData();
-    if (res case Success(:final response)) {
+    if (res case Success()) {
       if (!customHandleResponse(isRefresh, res)) {
         loadingState = res as LoadingState<T>;
       }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -36,6 +37,23 @@ class VotePanel extends StatefulWidget {
   State<VotePanel> createState() => _VotePanelState();
 }
 
+/// Bridges a GetX [RxInterface] stream to Flutter [Listenable] so
+/// [ListenableBuilder] can react to rx changes (Rx is not a [Listenable]
+/// in this fork).
+class _RxListenable<T> extends ChangeNotifier {
+  _RxListenable(Stream<T> stream) {
+    _sub = stream.listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription _sub;
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
+
 class _VotePanelState extends State<VotePanel> {
   late bool anonymous = false;
 
@@ -49,7 +67,15 @@ class _VotePanelState extends State<VotePanel> {
   late bool _showPercentage = !_enabled;
   late final _maxCnt = _voteInfo.choiceCnt ?? _voteInfo.options.length;
   late final isLogin = appRead(accountProvider).isLogin;
-  late Listenable followeeVote;
+  late final followeeVote = Rxn<List<CoreFolloweeVote>>();
+  late final _followeeVoteListenable = _RxListenable(followeeVote.stream);
+
+  @override
+  @override
+  void dispose() {
+    _followeeVoteListenable.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -61,7 +87,7 @@ class _VotePanelState extends State<VotePanel> {
           .then((res) {
         if (!mounted) return;
         if (res case Success(:final response)) {
-          followeeVote = response;
+          followeeVote.value = response;
         }
       });
     }
@@ -138,6 +164,7 @@ class _VotePanelState extends State<VotePanel> {
                   : null,
               child: const Center(child: Text('投票')),
             ),
+        ),
       ],
     ];
     Widget title = Text(
@@ -151,8 +178,8 @@ class _VotePanelState extends State<VotePanel> {
         children: [
           Expanded(child: title),
           ListenableBuilder(
-            listenable: followeeVote,
-            builder: (_, __) {
+            listenable: _followeeVoteListenable,
+            builder: (_, _) {
               final list = followeeVote.value;
             if (list != null && list.isNotEmpty) {
               return GestureDetector(
@@ -230,7 +257,7 @@ class _VotePanelState extends State<VotePanel> {
               );
             }
             return const SizedBox.shrink();
-              },
+          }),
         ],
       );
     }

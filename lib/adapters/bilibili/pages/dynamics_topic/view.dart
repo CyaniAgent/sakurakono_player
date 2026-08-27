@@ -83,13 +83,13 @@ class _DynTopicPageState extends State<DynTopicPage>
                     builder: (context, _) => _buildAppBar(
                       colorScheme,
                       padding,
-                      _controller.topState.value,
+                      _controller.topState,
                     ),
                   ),
                   ListenableBuilder(
                     listenable: _controller,
                     builder: (context, _) {
-                        _controller.topicSortByConf.value?.allSortBy;
+                        final allSortBy = _controller.topicSortByConf?.allSortBy;
                     if (allSortBy != null && allSortBy.isNotEmpty) {
                       return SliverPinnedHeader(
                         backgroundColor: colorScheme.surface,
@@ -147,7 +147,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                       bottom: padding.bottom + 100,
                     ),
                     sliver: buildPage(
-                      ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
+                      ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState)),
                     ),
                   ),
                 ],
@@ -281,7 +281,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                         width: 1,
                         color: colorScheme.outline.withValues(alpha: 0.2),
                       ),
-                      foregroundColor: _controller.isLike.value
+                      foregroundColor: _controller.isLike
                           ? null
                           : colorScheme.onSurfaceVariant,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -292,7 +292,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: _controller.onLike,
-                    icon: _controller.isLike.value
+                    icon: _controller.isLike
                         ? const Icon(FontAwesomeIcons.solidThumbsUp, size: 13)
                         : const Icon(FontAwesomeIcons.thumbsUp, size: 13),
                     label: Text(
@@ -308,7 +308,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                         width: 1,
                         color: colorScheme.outline.withValues(alpha: 0.2),
                       ),
-                      foregroundColor: _controller.isFav.value
+                      foregroundColor: _controller.isFav
                           ? null
                           : colorScheme.onSurfaceVariant,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -316,7 +316,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: _controller.onFav,
-                    icon: _controller.isFav.value
+                    icon: _controller.isFav
                         ? const Icon(FontAwesomeIcons.solidStar, size: 13)
                         : const Icon(FontAwesomeIcons.star, size: 13),
                     label: Text(
@@ -345,7 +345,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                 PopupMenuItem(
                   onTap: _controller.onFav,
                   child: Text(
-                    '${_controller.isFav.value ? '取消' : ''}收藏',
+                    '${_controller.isFav ? '取消' : ''}收藏',
                   ),
                 ),
                 PopupMenuItem(

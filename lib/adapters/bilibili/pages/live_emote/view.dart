@@ -45,7 +45,7 @@ class _LiveEmotePanelState extends State<LiveEmotePanel>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListenableBuilder(listenable: _emotePanelController, builder: (_, __) => _buildBody(_emotePanelController.loadingState));
+    return ListenableBuilder(listenable: _emotePanelController, builder: (_, _) => _buildBody(_emotePanelController.loadingState));
   }
 
   Widget _buildBody(LoadingState<List<CoreLiveEmoteDatum>?> loadingState) {

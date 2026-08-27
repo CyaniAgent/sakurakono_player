@@ -44,13 +44,14 @@ class HistoryItem extends StatelessWidget {
     final int aid = item.history.oid!;
     final String? bvid = item.history.bvid;
     final business = item.history.business;
-    final enableMultiSelect = ctr.enableMultiSelect.value;
+    final enableMultiSelect = ctr.enableMultiSelect;
 
     final onLongPress = enableMultiSelect
         ? null
-        : () => ctr
-            ..enableMultiSelect.value = true
-            ..onSelect(item);
+        : () {
+            (ctr as dynamic).enableMultiSelect = true;
+            ctr.onSelect(item);
+          };
 
     return Material(
       type: MaterialType.transparency,

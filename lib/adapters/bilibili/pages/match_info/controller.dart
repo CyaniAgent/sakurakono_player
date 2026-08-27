@@ -1,4 +1,3 @@
-import 'package:skf/core/repository/match_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/match_contest.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
@@ -9,6 +8,7 @@ import 'package:skf/core/repository/repository_providers_batch2.dart';
 class MatchInfoController extends CommonDynController {
 
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
   @override
   final int oid = int.parse(Get.parameters['cid']!);

@@ -62,7 +62,7 @@ class _FavSearchPageState
   List<Widget>? get extraActions => [
     ListenableBuilder(
       listenable: controller,
-      builder: (_, __) {
+      builder: (_, _) {
         return PopupMenuButton<CoreFavOrderType>(
           icon: const Icon(Icons.sort),
           requestFocus: false,
@@ -71,6 +71,17 @@ class _FavSearchPageState
           onSelected: (value) => controller
             ..order = value
             ..onReload(),
+          itemBuilder: (context) => CoreFavOrderType.values
+              .map(
+                (e) => PopupMenuItem(
+                  value: e,
+                  child: Text(e.label),
+                ),
+              )
+              .toList(),
+        );
+      },
+    ),
   ];
 
   @override

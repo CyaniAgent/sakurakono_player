@@ -53,7 +53,7 @@ class _MemberAudioState extends State<MemberAudio>
             ),
             sliver: ListenableBuilder(
               listenable: _controller,
-              builder: (_, __) => _buildBody(colorScheme, _controller.loadingState as LoadingState<List<SpaceAudioItem>?>),
+              builder: (_, _) => _buildBody(colorScheme, _controller.loadingState as LoadingState<List<SpaceAudioItem>?>),
             ),
           ),
         ],

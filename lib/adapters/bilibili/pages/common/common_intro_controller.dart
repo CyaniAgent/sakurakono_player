@@ -2,9 +2,6 @@ import 'dart:async' show FutureOr, Timer;
 
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/core/repository/fav_repository.dart';
-import 'package:skf/core/repository/user_repository.dart';
-import 'package:skf/core/repository/video_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/data.dart';

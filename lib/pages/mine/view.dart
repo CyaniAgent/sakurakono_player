@@ -81,7 +81,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                     _buildActions(secondary),
                     ListenableBuilder(
                       listenable: controller,
-                      builder: (_, __) => controller.loadingState is Loading
+                      builder: (_, _) => controller.loadingState is Loading
                           ? const SizedBox.shrink()
                           : _buildFav(theme, secondary),
                     ),
@@ -170,7 +170,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           ),
         ValueListenableBuilder<bool>(
           valueListenable: MineController.anonymity,
-          builder: (_, anonymity, __) => IconButton(
+          builder: (_, anonymity, _) => IconButton(
             iconSize: iconSize,
             padding: padding,
             style: style,
@@ -191,7 +191,7 @@ class _MediaPageState extends CommonPageState<MinePage>
         ),
         ListenableBuilder(
           listenable: controller,
-          builder: (_, __) => IconButton(
+          builder: (_, _) => IconButton(
             iconSize: iconSize,
             padding: padding,
             style: style,
@@ -230,7 +230,7 @@ class _MediaPageState extends CommonPageState<MinePage>
       fontWeight: FontWeight.bold,
       color: secondary,
     );
-    return ListenableBuilder(listenable: controller, builder: (_, __) {
+    return ListenableBuilder(listenable: controller, builder: (_, _) {
       final userInfo = controller.userInfo;
       final levelInfo = userInfo.levelInfo;
       final hasLevel = levelInfo != null;

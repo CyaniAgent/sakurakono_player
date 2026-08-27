@@ -164,7 +164,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
     sliver: ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        if (controller.isLoaded.value) {
+        if (controller.isLoaded) {
           final Widget content;
           if (controller.opus != null) {
             // if (kDebugMode) debugPrint('json page');
@@ -232,7 +232,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                 ),
               if (controller.summary.title != null)
                 SliverToBoxWithVisibilityAdapter(
-                  onVisibilityChanged: controller.showTitle.call,
+                  onVisibilityChanged: (visible) => controller.showTitle = visible,
                   child: Text(
                     controller.summary.title!,
                     style: const TextStyle(fontSize: 17, fontWeight: .bold),
@@ -262,7 +262,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
     title: ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        if (controller.isLoaded.value && controller.showTitle.value) {
+        if (controller.isLoaded && controller.showTitle) {
         return Text(controller.summary.title!);
       }
       return const SizedBox.shrink();
@@ -520,7 +520,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             physics: clampingScrollPhysics,
             horizontalDragGestureRecognizer:
                 CustomHorizontalDragGestureRecognizer.new,
-            onPageChanged: controller.topIndex.call,
+            onPageChanged: (i) => controller.topIndex = i,
             itemCount: length,
             itemBuilder: (context, index) {
               final pic = pics[index];
@@ -582,7 +582,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             top: 12,
             right: 12,
             type: .gray,
-            text: '${controller.topIndex.value + 1}/$length',
+            text: '${controller.topIndex + 1}/$length',
           ),
         ),
       ],

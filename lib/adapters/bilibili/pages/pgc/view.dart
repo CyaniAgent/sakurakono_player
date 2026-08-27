@@ -74,7 +74,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                     MediaQuery.textScalerOf(context).scale(96),
                 child: ListenableBuilder(
                   listenable: controller,
-                  builder: (_, __) => _buildTimeline(theme, controller.timelineState),
+                  builder: (_, _) => _buildTimeline(theme, controller.timelineState),
                 ),
               ),
             ),
@@ -219,7 +219,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
       ),
       sliver: ListenableBuilder(
         listenable: controller,
-        builder: (_, __) => _buildRcmdBody(controller.loadingState),
+        builder: (_, _) => _buildRcmdBody(controller.loadingState),
       ),
     ),
   ];
@@ -340,7 +340,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
   Widget _buildFollow(ThemeData theme) => SliverToBoxAdapter(
     child: ListenableBuilder(
           listenable: controller,
-          builder: (_, __) => controller.accountService.isLogin
+          builder: (_, _) => controller.accountService.isLogin
           ? Column(
               children: [
                 _buildFollowTitle(theme),
@@ -350,7 +350,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                       MediaQuery.textScalerOf(context).scale(50),
                   child: ListenableBuilder(
                     listenable: controller,
-                    builder: (_, __) => _buildFollowBody(controller.followState),
+                    builder: (_, _) => _buildFollowBody(controller.followState),
                   ),
                 ),
               ],
@@ -365,7 +365,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
       children: [
         ListenableBuilder(
           listenable: controller,
-          builder: (_, __) => Text(
+          builder: (_, _) => Text(
             '最近${widget.tabType == HomeTabType.bangumi ? '追番' : '追剧'}${controller.followCount == -1 ? '' : ' ${controller.followCount}'}',
             style: theme.textTheme.titleMedium,
           ),
@@ -384,7 +384,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
         ),
         ListenableBuilder(
           listenable: controller,
-          builder: (_, __) => controller.accountService.isLogin
+          builder: (_, _) => controller.accountService.isLogin
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: moreTextButton(

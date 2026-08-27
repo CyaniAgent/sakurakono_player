@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/core/repository/msg_repository.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/pages/common/common_page.dart';
@@ -127,7 +127,7 @@ class MainControllerNotifier extends ChangeNotifier
   int _lastSelectTime = 0;
 
   // -- Account --
-  AccountProvider get accountService => appRead(accountProvider);
+  AccountState get accountService => appRead(accountProvider);
 
   // -- Child controllers --
   late final homeController = Get.putOrFind(HomeControllerNotifier.new);

@@ -1,4 +1,3 @@
-import 'package:skf/core/repository/music_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +18,7 @@ class CoreMusicDetailController extends CommonDynController {
 
   late final String musicId;
   Ref? _ref;
+  @override
   void attachRef(Ref ref) { _ref = ref; }
 
   String get shareUrl =>
@@ -35,7 +35,7 @@ class CoreMusicDetailController extends CommonDynController {
       final comment = response.musicComment!;
       oid = comment.oid!;
       replyType = comment.pageType ?? 47;
-      count.value = comment.nums ?? -1;
+      count = comment.nums ?? -1;
       queryData();
     }
     infoState = switch (res) {

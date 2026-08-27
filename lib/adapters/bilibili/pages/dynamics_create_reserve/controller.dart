@@ -118,5 +118,5 @@ class CreateReserveNotifier extends StateNotifier<CreateReserveState> {
 
 final createReserveProvider =
     StateNotifierProvider.family<CreateReserveNotifier, CreateReserveState, int?>(
-  (ref, sid) => CreateReserveNotifier(ref, sid),
+  CreateReserveNotifier.new,
 );

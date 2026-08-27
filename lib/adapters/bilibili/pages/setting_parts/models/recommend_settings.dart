@@ -1,12 +1,10 @@
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
-import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/utils/recommend_filter.dart';
 import 'package:skf/pages/setting/models/model.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 List<SettingsModel> get recommendSettings => [
   const SwitchModel(

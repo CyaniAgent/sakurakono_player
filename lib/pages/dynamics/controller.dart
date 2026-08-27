@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
@@ -16,7 +15,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:get/get.dart';
 
 class DynamicsController
     extends CommonDataControllerRiverpod<CoreFollowUpModel, CoreFollowUpModel>
@@ -193,7 +191,7 @@ class DynamicsController
         if (_showAllUp && _cacheUpList != null) {
           upList.removeWhere(_cacheUpList!.contains);
         }
-        if (loadingState case Success(:final response?)) {
+        if (loadingState case Success(:final response)) {
           response.addAllUpList(upList);
           loadingState = Success(response);
         }

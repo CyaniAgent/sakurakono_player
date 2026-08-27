@@ -42,7 +42,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image, PageView;
 import 'package:flutter/services.dart' show HapticFeedback, SystemChrome, SystemUiMode, SystemUiOverlay;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
@@ -124,7 +123,7 @@ class _GalleryViewerState extends State<GalleryViewer>
       return;
     }
     _player = player;
-    final currItem = widget.sources[_currIndex.value];
+    final currItem = widget.sources[_currIndex];
     if (currItem.sourceType == .livePhoto) {
       player.open(Media(currItem.liveUrl!));
       setState(() {});
@@ -503,6 +502,26 @@ class _GalleryViewerState extends State<GalleryViewer>
           key: _key,
           builder: (context) => _currIndex == index && _videoController != null
               ? Viewer(
+                  minScale: widget.minScale,
+                  maxScale: widget.maxScale,
+                  containerSize: _containerSize,
+                  childSize: _containerSize,
+                  onDragStart: _onDragStart,
+                  onDragUpdate: _onDragUpdate,
+                  onDragEnd: _onDragEnd,
+                  doubleTapGestureRecognizer: _doubleTapGestureRecognizer,
+                  horizontalDragGestureRecognizer:
+                      _horizontalDragGestureRecognizer,
+                  onChangePage: _onChangePage,
+                  child: FittedBox(
+                    child: SimpleVideo(
+                      controller: _videoController!,
+                      fill: Colors.transparent,
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        );
     }
     return Hero(tag: '${item.url}${widget.tag}', child: child);
   }
@@ -516,7 +535,7 @@ class _GalleryViewerState extends State<GalleryViewer>
   }
 
   void _onLongPress() {
-    final item = widget.sources[_currIndex.value];
+    final item = widget.sources[_currIndex];
     if (item.sourceType == .fileImage) return;
     HapticFeedback.mediumImpact();
     showDialog(
@@ -587,7 +606,7 @@ class _GalleryViewerState extends State<GalleryViewer>
   }
 
   void _showDesktopMenu(TapUpDetails details) {
-    final item = widget.sources[_currIndex.value];
+    final item = widget.sources[_currIndex];
     if (item.sourceType == .fileImage) return;
     showMenu(
       context: context,

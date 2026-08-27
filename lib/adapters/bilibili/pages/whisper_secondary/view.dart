@@ -45,7 +45,7 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
         actions: [
           ListenableBuilder(
             listenable: _controller,
-            builder: (_, __) {
+            builder: (_, _) {
               final threeDotItems = _controller.threeDotItems.value;
               if (threeDotItems != null && threeDotItems.isNotEmpty) {
                 return PopupMenuButton(
@@ -84,7 +84,7 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
               ),
-              sliver: ListenableBuilder(listenable: _controller, builder: (_, __) => _buildBody(_controller.loadingState)),
+              sliver: ListenableBuilder(listenable: _controller, builder: (_, _) => _buildBody(_controller.loadingState)),
             ),
           ],
         ),

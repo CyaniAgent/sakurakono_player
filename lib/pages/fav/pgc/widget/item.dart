@@ -5,7 +5,7 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/select_mask.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/pages/common/multi_select/base.dart';
+import 'package:skf/pages/fav/pgc/controller.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 class FavPgcItem extends StatelessWidget {
@@ -19,15 +19,15 @@ class FavPgcItem extends StatelessWidget {
   });
 
   final CoreFavPgcItemModel item;
-  final MultiSelectBase ctr;
+  final FavPgcController ctr;
   final VoidCallback onSelect;
   final VoidCallback onUpdateStatus;
 
   /// 打开 PGC（适配器注入，见 FavActions.onViewPgc）。
   final VoidCallback? onOpen;
   void onLongPress() {
-    if (!ctr.enableMultiSelect.value) {
-      ctr.enableMultiSelect.value = true;
+    if (!ctr.enableMultiSelect) {
+      ctr.enableMultiSelect = true;
       onSelect();
     }
   }
@@ -42,7 +42,7 @@ class FavPgcItem extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              if (ctr.enableMultiSelect.value) {
+              if (ctr.enableMultiSelect) {
                 onSelect();
                 return;
               }

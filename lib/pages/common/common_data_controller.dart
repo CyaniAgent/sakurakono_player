@@ -30,7 +30,7 @@ abstract class CommonDataController<R, T> extends ChangeNotifier
     if (isLoading) return;
     isLoading = true;
     final LoadingState<R> res = await customGetData();
-    if (res case Success(:final response)) {
+    if (res case Success()) {
       if (!customHandleResponse(isRefresh, res)) {
         loadingState = res as LoadingState<T>;
       }

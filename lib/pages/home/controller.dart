@@ -13,7 +13,6 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 
 
 // ---------------------------------------------------------------------------
@@ -94,7 +93,7 @@ class HomeControllerNotifier extends ChangeNotifier
 
 
   // -- Account --
-  AccountProvider get accountService => appRead(accountProvider);
+  AccountState get accountService => appRead(accountProvider);
 
   void _init() {
     final hideTopBar = !Pref.useSideBar && Pref.hideTopBar;

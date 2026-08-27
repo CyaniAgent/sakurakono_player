@@ -2,11 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
-import 'package:skf/core/repository/pgc_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class PgcReviewController
     extends CommonListControllerRiverpod<CorePgcReviewData, CorePgcReviewItemModel> {
