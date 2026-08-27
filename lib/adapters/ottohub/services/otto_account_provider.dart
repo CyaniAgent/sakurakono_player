@@ -1,6 +1,13 @@
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/utils/storage.dart';
+
+/// OttoHub's [AccountProvider] implementation instance — provided via
+/// adapter override (needs the shared [OttohubClient]).
+final ottoAccountProvider = Provider<OttoAccountProvider>((ref) {
+  throw UnimplementedError('Override via appRead');
+});
 
 /// OttoHub implementation of [AccountProvider].
 ///

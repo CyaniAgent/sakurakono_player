@@ -1,6 +1,8 @@
 import 'dart:async' show StreamSubscription;
 
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/search_types.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 
 import 'package:get/get.dart';
@@ -94,7 +96,9 @@ class SearchPanelController<R extends SearchNumData<T>, T>
 
   @override
   Future<LoadingState<R>> customGetData() async {
-    final result = await Get.find<BiliSearchRepository>().searchByType<R>(
+    final result =
+        await (appRead(searchRepositoryProvider) as BiliSearchRepository)
+            .searchByType<R>(
       searchType: searchType,
       keyword: keyword,
       page: page,

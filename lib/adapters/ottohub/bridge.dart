@@ -112,6 +112,7 @@ class OttoAdapter implements AppAdapter {
       msgRepositoryProvider.overrideWithValue(OttoMsgRepository(client)),
       blackRepositoryProvider.overrideWithValue(OttoBlackRepository(client)),
       // Page hosts / actions (previously Get.lazyPut).
+      ottoAccountProvider.overrideWithValue(OttoAccountProvider(client)),
       videoHostProvider.overrideWithValue(OttoVideoHost()),
       settingHostProvider.overrideWithValue(OttoSettingHost()),
       memberHostProvider.overrideWithValue(OttoMemberHost()),

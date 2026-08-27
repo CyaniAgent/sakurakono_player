@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/auth_types.dart';
 
 import '../../helpers/fake_http_adapter.dart';
@@ -52,8 +53,7 @@ void main() {
   late OttoAuthRepository repo;
   late _FakeAccountProvider provider;
 
-  OttoAuthRepository makeRepo(Map<String, String> routes) {
-    fake = FakeHttpAdapter(routes);
+  OttoAuthRepository makeRepo(Map<String, String> routes) {    fake = FakeHttpAdapter(routes);
     final dio = Dio(
       BaseOptions(
         baseUrl: 'http://localhost',
@@ -64,12 +64,28 @@ void main() {
       ..httpClientAdapter = fake;
     client = OttohubClient(dio: dio);
     repo = OttoAuthRepository(client);
-    provider = _FakeAccountProvider(client);
-    Get.put<OttoAccountProvider>(provider);
     return repo;
   }
 
-  tearDown(Get.reset);
+  setUpAll(() {
+    // Global container for appRead(ottoAccountProvider) inside the repo.
+    // Single shared fake instance (Provider caches its value); counters
+    // reset per-test in setUp.
+    provider = _FakeAccountProvider(OttohubClient(dio: Dio()));
+    appContainer = ProviderContainer(
+      overrides: [ottoAccountProvider.overrideWithValue(provider)],
+    );
+  });
+
+  setUp(() {
+    provider
+      ..updateCalls = 0
+      ..clearCalls = 0
+      ..lastUid = null
+      ..lastToken = null
+      ..lastUname = null
+      ..lastFace = null;
+  });
 
   group('OttoAuthRepository (implementation-level)', () {
     test('happy: loginByPassword stores the token and notifies the provider',

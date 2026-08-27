@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/core/models/auth_types.dart';
 import 'package:skf/core/repository/auth_repository.dart';
@@ -80,7 +80,7 @@ class OttoAuthRepository implements AuthRepository {
 
       // Notify account provider so it persists the token and updates
       // reactive auth state (rxIsLogin, rxFace, etc.).
-      Get.find<OttoAccountProvider>().updateCredentials(
+      appRead(ottoAccountProvider).updateCredentials(
         uid: result.uid,
         token: result.token,
         uname: result.email,
@@ -165,7 +165,7 @@ class OttoAuthRepository implements AuthRepository {
     // Clearing the token locally is sufficient — all subsequent API
     // calls will be unauthenticated.
     _client.token = null;
-    Get.find<OttoAccountProvider>().clearCredentials();
+    appRead(ottoAccountProvider).clearCredentials();
     return _okMap();
   }
 

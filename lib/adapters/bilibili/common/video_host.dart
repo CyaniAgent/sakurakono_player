@@ -5,7 +5,7 @@
 // 通过 [VideoHost] 注入。OttoHub 侧见 ottohub/services/otto_video_host.dart。
 
 import 'dart:math' show max, min;
-import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -69,7 +69,6 @@ import 'package:skf/adapters/bilibili/pages/video_parts/widgets/header_control.d
 import 'package:skf/adapters/bilibili/pages/video_parts/widgets/player_focus.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/view/view.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/services/shutdown_timer_service.dart'
     show shutdownTimerService;
@@ -1208,7 +1207,7 @@ class BiliVideoHost implements VideoHost {
     if (episodes == null || episodes.isEmpty) {
       return;
     }
-    final downloadService = Get.find<DownloadService>();
+    final downloadService = appRead(downloadServiceProvider);
     await downloadService.waitForInitialization;
     if (!context.mounted) {
       return;
