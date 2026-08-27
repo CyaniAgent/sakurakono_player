@@ -34,6 +34,8 @@ import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_setting_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
@@ -42,18 +44,10 @@ import 'package:skf/core/repository/repository_providers.dart'
     hide pgcRepositoryProvider;
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/adapters/riverpod_adapter_overrides.dart';
-import 'package:skf/pages/dynamics/dynamics_host.dart';
-import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/common/common_page.dart';
-import 'package:skf/pages/download/download_actions.dart';
 import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/controller.dart';
-import 'package:skf/pages/main/main_host.dart';
-import 'package:skf/pages/mine/mine_actions.dart';
-import 'package:skf/pages/setting/setting_host.dart';
-import 'package:skf/pages/video/video_host.dart';
-import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
-import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
+import 'package:skf/pages/providers.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -88,21 +82,7 @@ class OttoAdapter implements AppAdapter {
       ..lazyPut<MainControllerNotifier>(MainControllerNotifier.new)
       ..lazyPut<HomeBarState>(() => Get.find<HomeControllerNotifier>())
       ..lazyPut<HomeControllerNotifier>(HomeControllerNotifier.new)
-      ..lazyPut<MainBarState>(() => Get.find<MainControllerNotifier>())
-      // Main shell host (OttoHub 自定 tab 集)
-      ..lazyPut<MainHost>(OttoMainHost.new)
-      // Dynamics page host (crash-prevention stub)
-      ..lazyPut<DynamicsHost>(OttoDynamicsHost.new)
-      // Mine page host (navigation via shared routes; account ops stub)
-      ..lazyPut<MineActions>(OttoMineActions.new)
-      // Member page host (crash-prevention stub)
-      ..lazyPut<MemberHost>(OttoMemberHost.new)
-      // Download page host (empty-state stub, no download support)
-      ..lazyPut<DownloadActions>(OttoDownloadActions.new)
-      // Video page host (crash-prevention stub)
-      ..lazyPut<VideoHost>(OttoVideoHost.new)
-      // Setting page host (framework rows; account ops stub)
-      ..lazyPut<SettingHost>(OttoSettingHost.new);
+      ..lazyPut<MainBarState>(() => Get.find<MainControllerNotifier>());
     // Riverpod ProviderScope overrides — direct instantiation, no Get.find dependency
     adapterOverrides = <Override>[
       videoRepositoryProvider.overrideWithValue(OttoVideoRepository(client)),
@@ -131,6 +111,14 @@ class OttoAdapter implements AppAdapter {
       danmakuFilterRepositoryProvider.overrideWithValue(OttoDanmakuFilterRepository()),
       msgRepositoryProvider.overrideWithValue(OttoMsgRepository(client)),
       blackRepositoryProvider.overrideWithValue(OttoBlackRepository(client)),
+      // Page hosts / actions (previously Get.lazyPut).
+      videoHostProvider.overrideWithValue(OttoVideoHost()),
+      settingHostProvider.overrideWithValue(OttoSettingHost()),
+      memberHostProvider.overrideWithValue(OttoMemberHost()),
+      mainHostProvider.overrideWithValue(OttoMainHost()),
+      dynamicsHostProvider.overrideWithValue(OttoDynamicsHost()),
+      mineActionsProvider.overrideWithValue(OttoMineActions()),
+      downloadActionsProvider.overrideWithValue(OttoDownloadActions()),
     ];
   }
 

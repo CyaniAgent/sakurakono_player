@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/pages/providers.dart';
 
 /// 设置页菜单项（渲染与导航由设置框架负责，内容由宿主注入）。
 class SettingMenuItem {
@@ -28,7 +29,7 @@ class SettingMenuItem {
 ///   经 [SettingMenuItem.contentBuilder] 提供）
 /// - OttoHub: [OttoSettingHost]（通用项，账号操作 stub）
 abstract class SettingHost {
-  static SettingHost of() => Get.find<SettingHost>();
+  static SettingHost of() => appRead(settingHostProvider);
 
   /// 主菜单项（隐私/推荐/音视频/播放器/外观/其它/WebDAV 等）。
   List<SettingMenuItem> get menuItems;

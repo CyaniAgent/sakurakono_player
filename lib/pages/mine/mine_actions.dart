@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/fav_types.dart';
+import 'package:skf/pages/providers.dart';
 
 /// mine 页菜单项（导航动作由调用方注入）。
 class MineMenuItem {
@@ -26,7 +27,7 @@ class MineMenuItem {
 /// - Bilibili: [BiliMineActions]（bridge `register()` 注入）
 /// - OttoHub: [OttoMineActions]（stub，导航复用共享路由表）
 abstract class MineActions {
-  static MineActions of() => Get.find<MineActions>();
+  static MineActions of() => appRead(mineActionsProvider);
 
   // ---- 菜单项（页面渲染通用框架，菜单由调用方注入）----
 

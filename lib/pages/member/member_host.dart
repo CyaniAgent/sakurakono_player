@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/member_types.dart';
+import 'package:skf/pages/providers.dart';
 
 /// Adapter-provided integrations for the generic member page.
 ///
@@ -15,7 +16,7 @@ import 'package:skf/core/models/member_types.dart';
 /// Each adapter registers its own implementation via Get (`Get.lazyPut`).
 /// OttoHub registers a stub that throws `not_implemented`.
 abstract class MemberHost {
-  static MemberHost of() => Get.find<MemberHost>();
+  static MemberHost of() => appRead(memberHostProvider);
 
   /// Current user id (Bilibili: `Accounts.main.mid`).
   int get currentUserId;

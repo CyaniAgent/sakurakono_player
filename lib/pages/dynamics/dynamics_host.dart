@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/search_types.dart' show CoreDimension;
+import 'package:skf/pages/providers.dart';
 
 /// Adapter-provided integrations for the generic dynamics page.
 ///
@@ -16,7 +17,7 @@ import 'package:skf/core/models/search_types.dart' show CoreDimension;
 /// Each adapter registers its own implementation via Get (`Get.lazyPut`).
 /// OttoHub registers a stub that throws `not_implemented`.
 abstract class DynamicsHost {
-  static DynamicsHost of() => Get.find<DynamicsHost>();
+  static DynamicsHost of() => appRead(dynamicsHostProvider);
 
   // ---- page composition (top-level view) ----
 

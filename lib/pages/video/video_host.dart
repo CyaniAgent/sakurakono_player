@@ -6,7 +6,7 @@
 // OttoHub 实验实现：lib/adapters/ottohub/services/otto_video_host.dart。
 //
 // 接入方式（与 W3 member/mine host 一致）：双端 bridge register() 里
-// `Get.lazyPut<VideoHost>(() => BiliVideoHost())`，页面用 `VideoHost.of()` 获取。
+// `videoHostProvider.overrideWith(...)`，页面用 `VideoHost.of()` 获取。
 
 import 'dart:async' show Future;
 import 'dart:ui' show Color;
@@ -31,7 +31,8 @@ import 'package:skf/player/models/data_source.dart';
 import 'package:skf/player/models/heart_beat_type.dart';
 import 'package:skf/player/models/play_repeat.dart';
 import 'package:skf/player/player_controller.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/pages/providers.dart';
 import 'package:skf/pages/video/controller.dart';
 import 'package:skf/pages/video/video_models.dart';
 
@@ -130,7 +131,7 @@ abstract class VideoPlayerHost {
 /// 视频页面宿主：主框架（view/controller）的全部 B站 注入点。
 abstract class VideoHost {
   /// 获取当前宿主（双端 bridge 注册）。
-  static VideoHost of() => Get.find<VideoHost>();
+  static VideoHost of() => appRead(videoHostProvider);
 
   /// 播放器宿主（B站 扩展播放器表面）。
   VideoPlayerHost get playerHost;

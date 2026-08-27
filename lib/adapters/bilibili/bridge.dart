@@ -1,9 +1,18 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/adapters/bilibili/common/download_actions.dart';
+import 'package:skf/adapters/bilibili/common/dynamics_host.dart';
+import 'package:skf/adapters/bilibili/common/main_host.dart';
+import 'package:skf/adapters/bilibili/common/member_host.dart';
+import 'package:skf/adapters/bilibili/common/mine_actions.dart';
+import 'package:skf/adapters/bilibili/common/setting_host.dart';
+import 'package:skf/adapters/bilibili/common/video_host.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/user/danmaku_rule_adapter.dart';
 import 'package:skf/adapters/bilibili/models/user/info.dart';
+import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/bilibili/services/service_locator.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account_adapter.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account_type_adapter.dart';
@@ -111,6 +120,7 @@ import 'package:skf/adapters/bilibili/repository/bili_user_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_validate_repository.dart';
 import 'package:skf/adapters/bilibili/repository/bili_video_repository.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/pages/providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart'
     hide pgcRepositoryProvider;
 import 'package:hive_ce/hive.dart';
@@ -181,6 +191,17 @@ class BiliBridge {
       danmakuFilterRepositoryProvider.overrideWith((ref) => BiliDanmakuFilterRepository()),
       msgRepositoryProvider.overrideWith((ref) => BiliMsgRepository()),
       blackRepositoryProvider.overrideWith((ref) => BiliBlackRepository()),
+      // Page hosts / actions (previously Get.lazyPut in the removed GetX DI).
+      videoHostProvider.overrideWith((ref) => BiliVideoHost()),
+      settingHostProvider.overrideWith((ref) => BiliSettingHost()),
+      memberHostProvider.overrideWith((ref) => BiliMemberHost()),
+      mainHostProvider.overrideWith((ref) => BiliMainHost()),
+      dynamicsHostProvider.overrideWith((ref) => BiliDynamicsHost()),
+      mineActionsProvider.overrideWith((ref) => BiliMineActions()),
+      downloadActionsProvider.overrideWith((ref) => BiliDownloadActions()),
+      downloadServiceProvider.overrideWith(
+        (ref) => DownloadService()..onInit(),
+      ),
     ];
   }
 

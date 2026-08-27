@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/adapters/bilibili/models/common/video/video_type.dart';
 import 'package:skf/adapters/bilibili/models_new/download/bili_download_entry_info.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/download_types.dart';
 import 'package:skf/pages/download/download_actions.dart';
 import 'package:flutter/foundation.dart' show VoidCallback;
@@ -17,7 +19,7 @@ import 'package:flutter/foundation.dart' show VoidCallback;
 /// core 模型与 adapter DTO 之间做 JSON round-trip 转换（字段 1:1）。
 class BiliDownloadActions implements DownloadActions {
   BiliDownloadActions() {
-    _service = Get.find<DownloadService>();
+    _service = appRead(downloadServiceProvider);
     _syncQueue();
     _service.waitDownloadQueue.listen((_) => _syncQueue());
     _service.curDownload.listen((_) => _syncCur());

@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart' show VoidCallback;
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/download_types.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/pages/providers.dart';
 
 /// download 域页面动作契约（页面通用，动作由适配器注入）。
 ///
@@ -11,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// - Bilibili: `BiliDownloadActions`（bridge `register()` 注入，委托 DownloadService）
 /// - OttoHub: `OttoDownloadActions`（stub，空状态防崩溃）
 abstract class DownloadActions {
-  static DownloadActions of({Ref? ref}) => Get.find<DownloadActions>();
+  static DownloadActions of() => appRead(downloadActionsProvider);
 
   /// 初始化完成信号（Bilibili: `DownloadService.waitForInitialization`）。
   Future<void> get waitForInitialization;

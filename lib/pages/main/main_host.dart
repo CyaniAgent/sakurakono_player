@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/pages/common/msg_unread_type.dart';
+import 'package:skf/pages/providers.dart';
 
 /// Main shell host — tab list + tab pages + shell behaviors injected by adapter.
 ///
@@ -19,7 +20,7 @@ import 'package:skf/pages/common/msg_unread_type.dart';
 /// 接入方式（与 W3 member/mine/video host 一致）：双端 bridge register() 里
 /// `Get.lazyPut<MainHost>(() => BiliMainHost())`，外壳用 `MainHost.of()` 获取。
 abstract class MainHost {
-  static MainHost of() => Get.find<MainHost>();
+  static MainHost of() => appRead(mainHostProvider);
 
   /// 主框架导航 tab 列表（B站: 首页/动态/我的）。
   List<MainTab> get tabs;

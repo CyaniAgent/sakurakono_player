@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:skf/adapters/bilibili/bridge.dart';
@@ -6,8 +8,12 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart'
     hide pgcRepositoryProvider;
 import 'package:skf/core/repository/video_repository.dart';
+import 'package:skf/pages/providers.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/utils/path_utils.dart';
 
-/// All 26 core repository providers, in the same order as
+/// All 34 core repository + host/actions/service providers, in the same order as
 /// [BiliBridge.buildAdapterOverrides].
 final List<ProviderListenable<Object?>> allRepositoryProviders = <ProviderListenable<Object?>>[
   videoRepositoryProvider,
@@ -36,13 +42,30 @@ final List<ProviderListenable<Object?>> allRepositoryProviders = <ProviderListen
   danmakuFilterRepositoryProvider,
   msgRepositoryProvider,
   blackRepositoryProvider,
+  videoHostProvider,
+  settingHostProvider,
+  memberHostProvider,
+  mainHostProvider,
+  dynamicsHostProvider,
+  mineActionsProvider,
+  downloadActionsProvider,
+  downloadServiceProvider,
 ];
 
 void main() {
+  setUpAll(() {
+    // Global container used by appRead (e.g. BiliDownloadActions ->
+    // downloadServiceProvider).
+    downloadPath = Directory.systemTemp.path;
+    appContainer = ProviderContainer(
+      overrides: BiliBridge.buildAdapterOverrides(),
+    );
+  });
+
   group('BiliBridge.buildAdapterOverrides (shape)', () {
-    test('returns exactly 26 overrides', () {
+    test('returns exactly 34 overrides', () {
       final overrides = BiliBridge.buildAdapterOverrides();
-      expect(overrides, hasLength(26));
+      expect(overrides, hasLength(34));
     });
 
     test('each override provides a non-null repository', () {
