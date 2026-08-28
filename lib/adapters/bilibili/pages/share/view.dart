@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class UserModel {
   UserModel({
@@ -179,7 +178,7 @@ class _SharePanelState extends State<SharePanel> {
                 onTap: () async {
                   _focusNode.unfocus();
                   final UserModel? userModel = await Navigator.of(context).push(
-                    GetPageRoute(page: () => const ContactPage()),
+                    MaterialPageRoute(builder: (_) => const ContactPage()),
                   );
                   if (userModel != null) {
                     _userList

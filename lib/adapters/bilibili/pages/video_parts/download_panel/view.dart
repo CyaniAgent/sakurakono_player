@@ -32,7 +32,6 @@ import 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class DownloadPanel extends StatefulWidget {
@@ -571,7 +570,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
           _buildBottomBtn(
             text: '查看缓存',
             onTap: () => Navigator.of(context).push(
-              GetPageRoute(page: () => const DownloadPage()),
+              MaterialPageRoute(builder: (_) => const DownloadPage()),
             ),
           ),
         ],

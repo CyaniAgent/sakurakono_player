@@ -6,7 +6,6 @@ import 'package:skf/adapters/bilibili/pages/follow_search/view.dart';
 import 'package:skf/pages/follow/follow_models.dart' show UserModel;
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key, this.isFromSelect = true});
@@ -55,8 +54,8 @@ class _ContactPageState extends State<ContactPage>
           IconButton(
             onPressed: () async {
               final UserModel? userModel = await Navigator.of(context).push(
-                GetPageRoute(
-                  page: () => FollowSearchPage(
+                MaterialPageRoute(
+                  builder: (_) => FollowSearchPage(
                     mid: mid,
                     isFromSelect: widget.isFromSelect,
                   ),

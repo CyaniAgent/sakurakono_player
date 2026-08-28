@@ -29,7 +29,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback, DeviceOrientation;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
-import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -37,6 +36,7 @@ import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:skf/router/app_router.dart';
 
 typedef PlayCallback = Future<void>? Function();
 
@@ -225,11 +225,9 @@ class PlayerController extends ChangeNotifier implements CorePlayerService {
   bool get isAutoEnterPip => _isAutoEnterPip;
 
   static bool get _isCurrVideoPage {
-    final routing = Get.routing;
-    if (routing.route is! GetPageRoute) {
-      return false;
-    }
-    return _isVideoPage(routing.current);
+    final location =
+        AppRouter.instance.routerDelegate.currentConfiguration.uri.path;
+    return _isVideoPage(location);
   }
 
   static bool _isVideoPage(String routeName) {

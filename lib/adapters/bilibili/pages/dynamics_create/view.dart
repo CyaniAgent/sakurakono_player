@@ -655,8 +655,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
         (e) => e.type == RichTextType.vote,
       );
       final voteInfo = await Navigator.of(context).push<VoteInfo>(
-        GetPageRoute(
-          page: () => CreateVotePage(
+        MaterialPageRoute(
+          builder: (_) => CreateVotePage(
             voteId: voteItem?.id == null ? null : int.parse(voteItem!.id!),
           ),
         ),
@@ -870,8 +870,8 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
   Future<void> _onReserve() async {
     final ReserveInfoData? reserveInfo = await Navigator.of(context).push(
-      GetPageRoute(
-        page: () => CreateReservePage(sid: _reserveCard?.id),
+      MaterialPageRoute(
+        builder: (_) => CreateReservePage(sid: _reserveCard?.id),
       ),
     );
     if (reserveInfo != null) {
