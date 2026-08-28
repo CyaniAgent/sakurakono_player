@@ -1130,3 +1130,18 @@ class VideoDetailController extends ChangeNotifier {
     }
   }
 }
+
+
+/// 每视频页实例注册表 — view 创建 [VideoDetailController] 后登记，
+/// host/部件按 [heroTag] 经 [videoDetailControllerProvider] 读取。
+///
+/// 注册表替代了 GetX 的 tag 注册（`Get.put(..., tag: heroTag)`）：
+/// 页面 view 的 initState 写入、dispose 移除；family provider 查不到时
+/// 抛出带上下文的 [StateError]（编译期类型安全，运行期错误信息明确）。
+final Map<String, VideoDetailController> videoDetailRegistry = {};
+
+final videoDetailControllerProvider =
+    Provider.family<VideoDetailController, String>(
+  (ref, heroTag) => videoDetailRegistry[heroTag] ??
+      (throw StateError('VideoDetailController not registered for heroTag: $heroTag')),
+);

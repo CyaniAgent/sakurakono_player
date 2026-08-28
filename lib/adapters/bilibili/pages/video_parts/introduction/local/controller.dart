@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LocalIntroController extends CommonIntroController {
   @override
@@ -154,3 +155,8 @@ class LocalIntroController extends CommonIntroController {
     videoPlayerServiceHandler?.onVideoDetailChange(entry, entry.cid, heroTag);
   }
 }
+/// 本地离线简介控制器（每视频页一实例，按 heroTag 键控）。
+final localIntroControllerProvider = ChangeNotifierProvider
+    .family<LocalIntroController, String>(
+  (ref, heroTag) => LocalIntroController(),
+);

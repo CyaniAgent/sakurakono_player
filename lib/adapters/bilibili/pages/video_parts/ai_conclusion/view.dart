@@ -7,6 +7,7 @@ import 'package:skf/utils/duration_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class AiConclusionPanel extends CommonSlidePage {
   final AiConclusionResult item;
@@ -100,8 +101,8 @@ class AiConclusionPanel extends CommonSlidePage {
                                         ? (NoDeadlineTapGestureRecognizer()
                                             ..onTap = () {
                                               try {
-                                                Get.find<VideoDetailController>(
-                                                  tag: AppNavigator.arguments['heroTag'],
+                                                appRead(
+                                                  videoDetailControllerProvider(AppNavigator.arguments['heroTag'] as String),
                                                 ).plPlayerController.seekTo(
                                                   Duration(
                                                     seconds: item.timestamp!,

@@ -14,7 +14,7 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PgcPanel extends StatefulWidget {
   const PgcPanel({
@@ -58,7 +58,7 @@ class _PgcPanelState extends State<PgcPanel> {
 
     vipStatus = Pref.userInfoCache?.vipStatus != 1;
 
-    videoDetailCtr = Get.find<VideoDetailController>(tag: widget.heroTag);
+    videoDetailCtr = appRead(videoDetailControllerProvider(widget.heroTag));
 
     _listener = videoDetailCtr.cid.listen((int p0) {
       cid = p0;

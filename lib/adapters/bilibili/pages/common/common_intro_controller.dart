@@ -22,6 +22,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 /// Abstract base controller for video intro pages.
 ///
@@ -110,7 +111,7 @@ abstract class CommonIntroController extends ChangeNotifier
     }
   }
 
-  late final videoDetailCtr = Get.find<VideoDetailController>(tag: heroTag);
+  late final videoDetailCtr = appRead(videoDetailControllerProvider(heroTag));
 
   /// TripleMixin notification callback — delegates to [notifyListeners].
   @override

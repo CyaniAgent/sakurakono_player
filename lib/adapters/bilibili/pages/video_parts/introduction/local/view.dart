@@ -11,8 +11,8 @@ import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
+import 'package:skf/core/container/app_container.dart';
 
 class LocalIntroPanel extends StatefulWidget {
   const LocalIntroPanel({super.key, required this.heroTag});
@@ -28,7 +28,7 @@ class _LocalIntroPanelState extends State<LocalIntroPanel>
   @override
   bool get wantKeepAlive => true;
 
-  late final _controller = Get.find<LocalIntroController>(tag: widget.heroTag);
+  late final _controller = appRead(localIntroControllerProvider(widget.heroTag));
 
   @override
   Widget build(BuildContext context) {

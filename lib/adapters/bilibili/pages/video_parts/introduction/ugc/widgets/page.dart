@@ -10,7 +10,7 @@ import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PagesPanel extends StatefulWidget {
   const PagesPanel({
@@ -53,9 +53,7 @@ class _PagesPanelState extends State<PagesPanel> {
   @override
   void initState() {
     super.initState();
-    _videoDetailController = Get.find<VideoDetailController>(
-      tag: widget.heroTag,
-    );
+    _videoDetailController = appRead(videoDetailControllerProvider(widget.heroTag));
     double offset = 0;
     if (widget.list == null) {
       cid = widget.ugcIntroController.cid;

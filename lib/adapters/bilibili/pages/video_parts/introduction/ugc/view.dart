@@ -50,6 +50,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class UgcIntroPanel extends StatefulWidget {
   const UgcIntroPanel({
@@ -76,7 +77,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
   late ColorScheme colorScheme;
   late final UgcIntroController introController;
   late final VideoDetailController videoDetailCtr =
-      Get.find<VideoDetailController>(tag: widget.heroTag);
+      appRead(videoDetailControllerProvider(widget.heroTag));
 
   @override
   void initState() {
@@ -659,9 +660,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                     recognizer: NoDeadlineTapGestureRecognizer()
                       ..onTap = () {
                         try {
-                          Get.find<VideoDetailController>(
-                            tag: widget.heroTag,
-                          ).plPlayerController.seekTo(
+                          appRead(videoDetailControllerProvider(widget.heroTag)).plPlayerController.seekTo(
                             Duration(
                               seconds: DurationUtils.parseDuration(matchStr),
                             ),

@@ -85,7 +85,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     // 每页访问获取播放器实例（已销毁则重建），必须先于 setPlayCallBack
     plPlayerController = host.playerHost.acquirePlayer();
     host.playerHost.setPlayCallBack(playCallBack);
-    videoDetailController = Get.put(VideoDetailController(vsync: this), tag: heroTag);
+    videoDetailController = VideoDetailController(vsync: this);
+    videoDetailRegistry[heroTag] = videoDetailController;
     videoDetailController.initController();
 
     if (videoDetailController.removeSafeArea) {
@@ -243,6 +244,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
   @override
   void dispose() {
+    videoDetailRegistry.remove(heroTag);
     videoDetailController.dispose();
     plPlayerController
       ..removeStatusLister(playerListener)

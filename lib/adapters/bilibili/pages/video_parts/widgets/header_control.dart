@@ -365,11 +365,11 @@ class HeaderControlState extends State<HeaderControl>
   void initState() {
     super.initState();
     if (isFileSource) {
-      introController = Get.find<LocalIntroController>(tag: heroTag);
+      introController = appRead(localIntroControllerProvider(heroTag));
     } else if (videoDetailCtr.isUgc) {
-      introController = Get.find<UgcIntroController>(tag: heroTag);
+      introController = appRead(ugcIntroControllerProvider(heroTag));
     } else {
-      introController = Get.find<PgcIntroController>(tag: heroTag);
+      introController = appRead(pgcIntroControllerProvider(heroTag));
     }
   }
 

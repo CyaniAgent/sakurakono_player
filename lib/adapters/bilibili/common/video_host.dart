@@ -408,8 +408,8 @@ class BiliVideoBlockNotifier extends StateNotifier<BiliVideoBlockState>
               onTap: (_) {
                 if (item is int) {
                   try {
-                    final ugcIntroController = Get.find<UgcIntroController>(
-                      tag: _ctr.heroTag,
+                    final ugcIntroController = appRead(
+                      ugcIntroControllerProvider(_ctr.heroTag),
                     );
                     final part = ugcIntroController.videoDetail.pages![item];
                     ugcIntroController.onChangeEpisode(part);
@@ -558,31 +558,25 @@ class BiliVideoHost implements VideoHost {
   // ---------- 简介控制器管理 ----------
 
   void _ensureIntroController(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     if (ctr.isFileSource) {
-      if (!Get.isRegistered<LocalIntroController>(tag: heroTag)) {
-        Get.put(LocalIntroController(), tag: heroTag);
-      }
+      appRead(localIntroControllerProvider(heroTag));
     } else if (ctr.isUgc) {
-      if (!Get.isRegistered<UgcIntroController>(tag: heroTag)) {
-        Get.put(UgcIntroController(), tag: heroTag);
-      }
+      appRead(ugcIntroControllerProvider(heroTag));
     } else {
-      if (!Get.isRegistered<PgcIntroController>(tag: heroTag)) {
-        Get.put(PgcIntroController(), tag: heroTag);
-      }
+      appRead(pgcIntroControllerProvider(heroTag));
     }
   }
 
   CommonIntroController _introController(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     if (ctr.isFileSource) {
-      return Get.find<LocalIntroController>(tag: heroTag);
+      return appRead(localIntroControllerProvider(heroTag));
     }
     if (ctr.isUgc) {
-      return Get.find<UgcIntroController>(tag: heroTag);
+      return appRead(ugcIntroControllerProvider(heroTag));
     }
-    return Get.find<PgcIntroController>(tag: heroTag);
+    return appRead(pgcIntroControllerProvider(heroTag));
   }
 
   // ---------- 播放器 / 覆盖层 ----------
@@ -595,7 +589,7 @@ class BiliVideoHost implements VideoHost {
     bool isPipMode = false,
     required bool isPortrait,
   }) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     _ensureIntroController(heroTag);
     final player = ctr.plPlayerController as PlPlayerController;
     final introCtr = _introController(heroTag);
@@ -638,7 +632,7 @@ class BiliVideoHost implements VideoHost {
     required bool isFullScreen,
     required double maxHeight,
   }) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     final context = AppNavigator.context!;
     final widgets = <Widget>[];
     if (ctr.enableBlock || ctr.continuePlayingPart) {
@@ -716,9 +710,7 @@ class BiliVideoHost implements VideoHost {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () {
-                      Get.find<UgcIntroController>(
-                        tag: heroTag,
-                      ).onChangeEpisode(item, isStein: true);
+                      appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(item, isStein: true);
                       ctr.getSteinEdgeInfo(item.id);
                     },
                     child: Text(item.option!),
@@ -742,7 +734,7 @@ class BiliVideoHost implements VideoHost {
     required bool Function() canPlay,
     required bool Function() onSkipSegment,
   }) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     return PlayerFocus(
       plPlayerController: ctr.plPlayerController as PlPlayerController,
       introController: _introController(heroTag),
@@ -813,8 +805,8 @@ class BiliVideoHost implements VideoHost {
 
   @override
   Widget buildSeasonPanel({required String heroTag}) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
-    final ugcIntroCtr = Get.find<UgcIntroController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
+    final ugcIntroCtr = appRead(ugcIntroControllerProvider(heroTag));
     final videoDetail = ugcIntroCtr.videoDetail;
     return KeepAliveWrapper(
       child: Column(
@@ -847,7 +839,7 @@ class BiliVideoHost implements VideoHost {
                     isReversed: videoDetail.isPageReversed,
                     onChangeEpisode: ctr.isUgc
                         ? ugcIntroCtr.onChangeEpisode
-                        : Get.find<PgcIntroController>(tag: heroTag).onChangeEpisode,
+                        : appRead(pgcIntroControllerProvider(heroTag)).onChangeEpisode,
                     showTitle: false,
                     isSupportReverse: ctr.isUgc,
                     onReverse: () => onReversePlay(heroTag, isSeason: false),
@@ -899,7 +891,7 @@ class BiliVideoHost implements VideoHost {
                       .isReversed,
                   onChangeEpisode: ctr.isUgc
                       ? ugcIntroCtr.onChangeEpisode
-                      : Get.find<PgcIntroController>(tag: heroTag).onChangeEpisode,
+                      : appRead(pgcIntroControllerProvider(heroTag)).onChangeEpisode,
                   showTitle: false,
                   isSupportReverse: ctr.isUgc,
                   onReverse: () => onReversePlay(heroTag, isSeason: true),
@@ -919,27 +911,16 @@ class BiliVideoHost implements VideoHost {
   }
 
   void _ensureReplyController(String heroTag) {
-    if (Get.isRegistered<VideoReplyController>(tag: heroTag)) {
-      return;
-    }
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
-    Get.put(
-      VideoReplyController(
-        aid: ctr.aid,
-        videoType: ctr.videoType,
-        heroTag: heroTag,
-      ),
-      tag: heroTag,
-    );
+    appRead(videoReplyControllerProvider(heroTag));
   }
 
   @override
   Widget buildReplyTabLabel({required String heroTag}) {
     _ensureReplyController(heroTag);
     return ListenableBuilder(
-      listenable: Get.find<VideoReplyController>(tag: heroTag),
+      listenable: appRead(videoReplyControllerProvider(heroTag)),
       builder: (context, _) {
-        final ctr = Get.find<VideoReplyController>(tag: heroTag);
+        final ctr = appRead(videoReplyControllerProvider(heroTag));
         return Text('评论${ctr.count == -1 ? '' : ' ${NumUtils.numFormat(ctr.count)}'}');
       });
   }
@@ -947,17 +928,17 @@ class BiliVideoHost implements VideoHost {
   @override
   void animateReplyToTop(String heroTag) {
     if (Get.isRegistered<VideoReplyController>(tag: heroTag)) {
-      Get.find<VideoReplyController>(tag: heroTag).animateToTop();
+      appRead(videoReplyControllerProvider(heroTag)).animateToTop();
     }
   }
 
   @override
   bool shouldShowSeasonPanel(String heroTag, {required bool isPortrait}) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     if (ctr.isFileSource || isPortrait || !ctr.isUgc) {
       return false;
     }
-    final videoDetail = Get.find<UgcIntroController>(tag: heroTag).videoDetail;
+    final videoDetail = appRead(ugcIntroControllerProvider(heroTag)).videoDetail;
     return ctr.plPlayerController.horizontalSeasonPanel &&
         (videoDetail.ugcSeason != null ||
             ((videoDetail.pages?.length ?? 0) > 1));
@@ -976,7 +957,7 @@ class BiliVideoHost implements VideoHost {
     ({int? mode, int? fontSize, Color? color})? dmConfig,
     ValueChanged<({int mode, int fontSize, Color color})>? onSaveDmConfig,
   }) async {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     final player = ctr.plPlayerController as PlPlayerController;
     await AppNavigator.push(
       PublishRoute(
@@ -1019,14 +1000,14 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void disposeIntro(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     try {
       if (ctr.isUgc) {
-        Get.find<UgcIntroController>(tag: heroTag)
+        appRead(ugcIntroControllerProvider(heroTag))
           ..cancelTimer()
           ..videoDetail;
       } else {
-        Get.find<PgcIntroController>(tag: heroTag).cancelTimer();
+        appRead(pgcIntroControllerProvider(heroTag)).cancelTimer();
       }
     } catch (_) {}
   }
@@ -1051,7 +1032,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void showMediaListPanel(BuildContext context, String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     if (ctr.mediaList.isEmpty) {
       ctr.getMediaList();
       return;
@@ -1075,7 +1056,7 @@ class BiliVideoHost implements VideoHost {
       mediaList: mediaList,
       onChangeEpisode: (episode) {
         try {
-          Get.find<UgcIntroController>(tag: heroTag).onChangeEpisode(episode);
+          appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(episode);
         } catch (_) {}
       },
       panelTitle: ctr.watchLaterTitle,
@@ -1133,12 +1114,10 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void showNoteList(BuildContext context, String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     String? title;
     try {
-      title = Get.find<UgcIntroController>(
-        tag: heroTag,
-      ).videoDetail.title;
+      title = appRead(ugcIntroControllerProvider(heroTag)).videoDetail.title;
     } catch (_) {}
     final child = NoteListPage(
       oid: ctr.aid,
@@ -1170,14 +1149,14 @@ class BiliVideoHost implements VideoHost {
 
   @override
   Future<void> showDownloadPanel(BuildContext context, String heroTag) async {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     VideoDetailData? videoDetail;
     List<ugc.BaseEpisodeItem>? episodes;
     UgcIntroController? ugcIntroController;
     PgcInfoModel? pgcItem;
     if (ctr.isUgc) {
       try {
-        ugcIntroController = Get.find<UgcIntroController>(tag: heroTag);
+        ugcIntroController = appRead(ugcIntroControllerProvider(heroTag));
         videoDetail = ugcIntroController.videoDetail;
         if (videoDetail.ugcSeason?.sections case final sections?) {
           episodes = <ugc.BaseEpisodeItem>[];
@@ -1196,7 +1175,7 @@ class BiliVideoHost implements VideoHost {
       }
     } else {
       try {
-        pgcItem = Get.find<PgcIntroController>(tag: heroTag).pgcItem;
+        pgcItem = appRead(pgcIntroControllerProvider(heroTag)).pgcItem;
         episodes = pgcItem.episodes;
       } catch (e, s) {
         if (kDebugMode) {
@@ -1257,7 +1236,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void openAudioPage(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     final args = ctr.args;
     int? id;
     int? extraId;
@@ -1271,7 +1250,7 @@ class BiliVideoHost implements VideoHost {
           : PlaylistSource.UP_ARCHIVE;
     } else if (ctr.isUgc) {
       try {
-        final introCtr = Get.find<UgcIntroController>(tag: heroTag);
+        final introCtr = appRead(ugcIntroControllerProvider(heroTag));
         id = introCtr.videoDetail.ugcSeason?.id;
         if (id != null) {
           extraId = 8;
@@ -1294,7 +1273,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void onBlock(BuildContext context, String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     if (ctr.postList.isEmpty) {
       ctr.postList.add(
         CorePostSegmentModel(
@@ -1333,7 +1312,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void showSBDetail(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     ctr.block.showSBDetail();
   }
 
@@ -1348,7 +1327,7 @@ class BiliVideoHost implements VideoHost {
     int? aid,
     int? cid,
   }) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     assert((cid == null) == (bvid == null));
     if (cid == null) {
       ctr.showMediaListPanel(AppNavigator.context!);
@@ -1357,7 +1336,7 @@ class BiliVideoHost implements VideoHost {
     Widget listSheetContent({bool enableSlide = true}) => EpisodePanel(
       heroTag: heroTag,
       ugcIntroController: ctr.isUgc
-          ? Get.find<UgcIntroController>(tag: heroTag)
+          ? appRead(ugcIntroControllerProvider(heroTag))
           : null,
       type: season != null
           ? EpisodeType.season
@@ -1375,16 +1354,16 @@ class BiliVideoHost implements VideoHost {
       isReversed: !ctr.isUgc
           ? null
           : season != null
-          ? Get.find<UgcIntroController>(tag: heroTag)
+          ? appRead(ugcIntroControllerProvider(heroTag))
                 .videoDetail
                 .ugcSeason!
                 .sections![ctr.seasonIndex]
                 .isReversed
-          : Get.find<UgcIntroController>(tag: heroTag).videoDetail.isPageReversed,
+          : appRead(ugcIntroControllerProvider(heroTag)).videoDetail.isPageReversed,
       isSupportReverse: ctr.isUgc,
       onChangeEpisode: ctr.isUgc
-          ? Get.find<UgcIntroController>(tag: heroTag).onChangeEpisode
-          : Get.find<PgcIntroController>(tag: heroTag).onChangeEpisode,
+          ? appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode
+          : appRead(pgcIntroControllerProvider(heroTag)).onChangeEpisode,
       onClose: Get.back,
       onReverse: () {
         AppNavigator.back();
@@ -1410,7 +1389,7 @@ class BiliVideoHost implements VideoHost {
   }
 
   void showViewPoints(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     final player = ctr.plPlayerController as PlPlayerController;
     final child = ViewPointsPage(
       enableSlide: false,
@@ -1437,10 +1416,8 @@ class BiliVideoHost implements VideoHost {
   }
 
   void showAiBottomSheet(String heroTag) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
-    final aiConclusionResult = Get.find<UgcIntroController>(
-      tag: heroTag,
-    ).aiConclusionResult;
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
+    final aiConclusionResult = appRead(ugcIntroControllerProvider(heroTag)).aiConclusionResult;
     ctr.childKey.currentState?.showBottomSheet(
       backgroundColor: Colors.transparent,
       constraints: const BoxConstraints(),
@@ -1454,7 +1431,7 @@ class BiliVideoHost implements VideoHost {
     PgcInfoModel videoDetail,
     List<VideoTagItem>? videoTags,
   ) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     ctr.childKey.currentState?.showBottomSheet(
       backgroundColor: Colors.transparent,
       constraints: const BoxConstraints(),
@@ -1466,8 +1443,8 @@ class BiliVideoHost implements VideoHost {
   }
 
   void showMemberPage(String heroTag, int? mid) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
-    final ugcIntroCtr = Get.find<UgcIntroController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
+    final ugcIntroCtr = appRead(ugcIntroControllerProvider(heroTag));
     ctr.childKey.currentState?.showBottomSheet(
       shape: const RoundedRectangleBorder(),
       constraints: const BoxConstraints(),
@@ -1482,15 +1459,13 @@ class BiliVideoHost implements VideoHost {
   }
 
   void onReversePlay(String heroTag, {required bool isSeason}) {
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     if (isSeason && ctr.isPlayAll) {
       SmartDialog.showToast('当前为播放全部，合集不支持倒序');
       return;
     }
 
-    final videoDetail = Get.find<UgcIntroController>(
-      tag: heroTag,
-    ).videoDetail;
+    final videoDetail = appRead(ugcIntroControllerProvider(heroTag)).videoDetail;
     if (isSeason) {
       final item = videoDetail
           .ugcSeason!
@@ -1504,14 +1479,14 @@ class BiliVideoHost implements VideoHost {
           ..notifyChange()
           ..cid.refresh();
       } else {
-        final episode = Get.find<UgcIntroController>(tag: heroTag)
+        final episode = appRead(ugcIntroControllerProvider(heroTag))
             .videoDetail
             .ugcSeason!
             .sections![ctr.seasonIndex]
             .episodes!
             .first;
         if (episode.cid != ctr.cid.value) {
-          Get.find<UgcIntroController>(tag: heroTag).onChangeEpisode(episode);
+          appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(episode);
           ctr.seasonCid = episode.cid;
         } else {
           ctr
@@ -1528,7 +1503,7 @@ class BiliVideoHost implements VideoHost {
       } else {
         final episode = videoDetail.pages!.first;
         if (episode.cid != ctr.cid.value) {
-          Get.find<UgcIntroController>(tag: heroTag).onChangeEpisode(episode);
+          appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(episode);
         } else {
           ctr.cid.refresh();
         }
@@ -1642,7 +1617,7 @@ class BiliVideoHost implements VideoHost {
   @override
   ({int width, int height})? partDimension(String heroTag, int cid) {
     try {
-      final part = Get.find<UgcIntroController>(tag: heroTag)
+      final part = appRead(ugcIntroControllerProvider(heroTag))
           .videoDetail
           .pages
           ?.firstWhereOrNull((e) => e.cid == cid);
@@ -1661,7 +1636,7 @@ class BiliVideoHost implements VideoHost {
     if (clipInfoList == null || clipInfoList.isEmpty) {
       return;
     }
-    final ctr = Get.find<VideoDetailController>(tag: heroTag);
+    final ctr = appRead(videoDetailControllerProvider(heroTag));
     ctr.block
       ..resetBlock()
       ..handleSBData(
@@ -1684,13 +1659,13 @@ class BiliVideoHost implements VideoHost {
       return;
     }
     try {
-      final pages = Get.find<UgcIntroController>(tag: heroTag)
+      final pages = appRead(ugcIntroControllerProvider(heroTag))
           .videoDetail
           .pages;
       if (pages != null && pages.length > 1) {
         final index = pages.indexWhere((item) => item.cid == lastPlayCid);
         if (index != -1) {
-          Get.find<VideoDetailController>(tag: heroTag).block.onAddItem(index);
+          appRead(videoDetailControllerProvider(heroTag)).block.onAddItem(index);
         }
       }
     } catch (_) {}
@@ -1699,7 +1674,7 @@ class BiliVideoHost implements VideoHost {
   @override
   bool isSteinGate(String heroTag) {
     try {
-      return Get.find<UgcIntroController>(tag: heroTag)
+      return appRead(ugcIntroControllerProvider(heroTag))
           .videoDetail
           .rights
           ?.isSteinGate == 1;
@@ -1711,12 +1686,12 @@ class BiliVideoHost implements VideoHost {
   @override
   String? videoTitle(String heroTag) {
     try {
-      return Get.find<UgcIntroController>(tag: heroTag)
+      return appRead(ugcIntroControllerProvider(heroTag))
           .videoDetail
           .title;
     } catch (_) {
       try {
-        return Get.find<PgcIntroController>(tag: heroTag)
+        return appRead(pgcIntroControllerProvider(heroTag))
             .videoDetail
             .title;
       } catch (_) {
@@ -1727,7 +1702,7 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void onChangeEpisodeFromMedia(String heroTag, CoreMediaListItemModel item) {
-    Get.find<UgcIntroController>(tag: heroTag).onChangeEpisode(
+    appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(
       MediaListItemModel(
         aid: item.aid,
         bvid: item.bvid,

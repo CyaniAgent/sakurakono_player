@@ -51,6 +51,7 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class AudioController extends ChangeNotifier
     with
@@ -154,7 +155,7 @@ class AudioController extends ChangeNotifier
     }
     if (args['heroTag'] case String heroTag) {
       try {
-        _videoDetailController = Get.find<VideoDetailController>(tag: heroTag);
+        _videoDetailController = appRead(videoDetailControllerProvider(heroTag));
       } catch (_) {}
     }
 

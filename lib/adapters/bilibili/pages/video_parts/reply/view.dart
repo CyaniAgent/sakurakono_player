@@ -15,7 +15,7 @@ import 'package:skf/utils/feed_back.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class VideoReplyPanel extends StatefulWidget {
   const VideoReplyPanel({
@@ -50,7 +50,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
   @override
   void initState() {
     super.initState();
-    _videoReplyController = Get.find<VideoReplyController>(tag: heroTag);
+    _videoReplyController = appRead(videoReplyControllerProvider(heroTag));
     if (_videoReplyController.loadingState is Loading) {
       _videoReplyController.queryData();
     }

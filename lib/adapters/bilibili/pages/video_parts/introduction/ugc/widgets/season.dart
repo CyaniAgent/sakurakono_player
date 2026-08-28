@@ -8,7 +8,7 @@ import 'package:skf/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/controller.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SeasonPanel extends StatefulWidget {
   const SeasonPanel({
@@ -40,9 +40,7 @@ class _SeasonPanelState extends State<SeasonPanel> {
   @override
   void initState() {
     super.initState();
-    _videoDetailController = Get.find<VideoDetailController>(
-      tag: widget.heroTag,
-    );
+    _videoDetailController = appRead(videoDetailControllerProvider(widget.heroTag));
 
     _videoDetailController.seasonCid = ugcIntroController.cid != 0
         ? (videoDetail.pages?.isNotEmpty == true

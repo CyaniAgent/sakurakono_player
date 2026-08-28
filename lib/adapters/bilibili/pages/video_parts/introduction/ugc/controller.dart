@@ -140,7 +140,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         }
         if (videoDetailCtr.showReply) {
           try {
-            Get.find<VideoReplyController>(tag: heroTag).count =
+            appRead(videoReplyControllerProvider(heroTag)).count =
                 response.stat?['reply'] as int? ?? 0;
           } catch (_) {}
         }
@@ -541,7 +541,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         // 重新请求相关视频
         if (videoDetailCtr.plPlayerController.showRelatedVideo) {
           try {
-            Get.find<RelatedController>(tag: heroTag)
+            appRead(relatedControllerProvider(heroTag))
               ..bvid = bvid
               ..queryData();
           } catch (_) {}
@@ -550,7 +550,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         // 重新请求评论
         if (videoDetailCtr.showReply) {
           try {
-            final replyCtr = Get.find<VideoReplyController>(tag: heroTag)
+            final replyCtr = appRead(videoReplyControllerProvider(heroTag))
               ..aid = aid;
             if (replyCtr.loadingState is! Loading) {
               replyCtr.onReload();
@@ -769,12 +769,9 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   }
 
   bool playRelated() {
-    RelatedController relatedCtr;
-    if (Get.isRegistered<RelatedController>(tag: heroTag)) {
-      relatedCtr = Get.find<RelatedController>(tag: heroTag);
-    } else {
-      relatedCtr = Get.put(RelatedController(autoQuery: false), tag: heroTag)
-        ..queryData().whenComplete(playRelated);
+    final relatedCtr = appRead(relatedControllerProvider(heroTag));
+    if (relatedCtr.loadingState is Loading) {
+      relatedCtr.queryData().whenComplete(playRelated);
       return false;
     }
 
@@ -833,4 +830,8 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
     );
   }
 }
-
+/// 投稿视频简介控制器（每视频页一实例，按 heroTag 键控，替代 GetX tag 注册）。
+final ugcIntroControllerProvider = ChangeNotifierProvider
+    .family<UgcIntroController, String>(
+  (ref, heroTag) => UgcIntroController(),
+);

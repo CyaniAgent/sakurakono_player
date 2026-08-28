@@ -862,8 +862,10 @@ class ReplyItemGrpc extends StatelessWidget {
           matchStr = matchStr.replaceAll('：', ':');
           bool isValid = false;
           try {
-            final ctr = Get.find<VideoDetailController>(
-              tag: getTag?.call() ?? AppNavigator.arguments['heroTag'],
+            final ctr = appRead(
+              videoDetailControllerProvider(
+                getTag?.call() ?? AppNavigator.arguments['heroTag'] as String,
+              ),
             );
             isValid =
                 DurationUtils.parseDuration(matchStr) * 1000 <=
@@ -881,8 +883,10 @@ class ReplyItemGrpc extends StatelessWidget {
                         // 跳转到指定位置
                         try {
                           SmartDialog.showToast('跳转至：$matchStr');
-                          Get.find<VideoDetailController>(
-                            tag: AppNavigator.arguments['heroTag'],
+                          appRead(
+                            videoDetailControllerProvider(
+                              AppNavigator.arguments['heroTag'] as String,
+                            ),
                           ).plPlayerController.seekTo(
                             Duration(
                               seconds: DurationUtils.parseDuration(matchStr),

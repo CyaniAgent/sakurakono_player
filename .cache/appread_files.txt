@@ -1,0 +1,11 @@
+lib\adapters\bilibili\pages\audio\controller.dart
+lib\adapters\bilibili\pages\common\common_intro_controller.dart
+lib\adapters\bilibili\pages\save_panel\view.dart
+lib\adapters\bilibili\pages\video_parts\introduction\local\view.dart
+lib\adapters\bilibili\pages\video_parts\introduction\pgc\view.dart
+lib\adapters\bilibili\pages\video_parts\introduction\pgc\widgets\pgc_panel.dart
+lib\adapters\bilibili\pages\video_parts\introduction\ugc\view.dart
+lib\adapters\bilibili\pages\video_parts\introduction\ugc\widgets\page.dart
+lib\adapters\bilibili\pages\video_parts\introduction\ugc\widgets\season.dart
+lib\adapters\bilibili\pages\video_parts\reply\controller.dart
+lib\adapters\bilibili\pages\video_parts\reply\view.dart

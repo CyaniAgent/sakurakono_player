@@ -22,6 +22,7 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PgcIntroPage extends StatefulWidget {
   final int? cid;
@@ -56,7 +57,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
       PgcIntroController.new,
       tag: widget.heroTag,
     );
-    videoDetailCtr = Get.find<VideoDetailController>(tag: widget.heroTag);
+    videoDetailCtr = appRead(videoDetailControllerProvider(widget.heroTag));
   }
 
   @override

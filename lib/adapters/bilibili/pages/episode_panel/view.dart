@@ -35,7 +35,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class EpisodePanel extends CommonSlidePage {
@@ -449,8 +448,8 @@ class _EpisodePanelState extends State<EpisodePanel>
                   }
                   if (widget.type == EpisodeType.season) {
                     try {
-                      Get.find<VideoDetailController>(
-                        tag: widget.ugcIntroController!.heroTag,
+                      appRead(
+                        videoDetailControllerProvider(widget.ugcIntroController!.heroTag),
                       ).seasonCid = episode.cid;
                     } catch (_) {
                       if (kDebugMode) rethrow;

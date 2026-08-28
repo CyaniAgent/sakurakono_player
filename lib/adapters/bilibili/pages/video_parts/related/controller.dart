@@ -27,3 +27,8 @@ class RelatedController
     };
   }
 }
+/// 相关推荐控制器（每视频页一实例，按 heroTag 键控）。
+final relatedControllerProvider = ChangeNotifierProvider
+    .family<RelatedController, String>(
+  (ref, heroTag) => RelatedController(autoQuery: false),
+);

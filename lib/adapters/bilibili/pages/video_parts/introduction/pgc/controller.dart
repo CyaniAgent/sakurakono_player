@@ -30,6 +30,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 class PgcIntroController extends CommonIntroController {
@@ -263,7 +264,7 @@ class PgcIntroController extends CommonIntroController {
 
       if (videoDetailCtr.showReply) {
         try {
-          final replyCtr = Get.find<VideoReplyController>(tag: heroTag)
+          final replyCtr = appRead(videoReplyControllerProvider(heroTag))
             ..aid = aid;
           if (replyCtr.loadingState is! Loading) {
             replyCtr.onReload();
@@ -440,3 +441,8 @@ class PgcIntroController extends CommonIntroController {
     }
   }
 }
+/// 番剧简介控制器（每视频页一实例，按 heroTag 键控）。
+final pgcIntroControllerProvider = ChangeNotifierProvider
+    .family<PgcIntroController, String>(
+  (ref, heroTag) => PgcIntroController(),
+);

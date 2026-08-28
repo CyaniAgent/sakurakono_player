@@ -307,7 +307,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             //     onTap: () {
             //       AppNavigator.back();
             //       try {
-            //         Get.find<VideoDetailController>(tag: heroTag)
+            //         appRead(videoDetailControllerProvider(heroTag))
             //             .showNoteList(context);
             //       } catch (e) {
             //         debugPrint(e.toString());
@@ -319,9 +319,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             item(
               onTap: () {
                 try {
-                  final plPlayerController = Get.find<VideoDetailController>(
-                    tag: heroTag,
-                  );
+                  final plPlayerController = appRead(videoDetailControllerProvider(heroTag));
                   onInsertText(
                     ' ${DurationUtils.formatDuration((plPlayerController.playedTime ?? Duration.zero).inSeconds)} ',
                     RichTextType.common,
@@ -342,9 +340,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                     return;
                   }
                   try {
-                    final plPlayerController = Get.find<VideoDetailController>(
-                      tag: heroTag,
-                    );
+                    final plPlayerController = appRead(videoDetailControllerProvider(heroTag));
                     final res = await plPlayerController
                         .plPlayerController
                         .videoPlayerController

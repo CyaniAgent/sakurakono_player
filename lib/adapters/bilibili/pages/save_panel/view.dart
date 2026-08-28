@@ -32,6 +32,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SavePanel extends StatefulWidget {
   const SavePanel({
@@ -103,7 +104,7 @@ class _SavePanelState extends State<SavePanel> {
           final heroTag = AppNavigator.arguments['heroTag'];
           final videoType = AppNavigator.arguments['videoType'];
           if (videoType == VideoType.pgc || videoType == VideoType.pugv) {
-            final ctr = Get.find<PgcIntroController>(tag: heroTag);
+            final ctr = appRead(pgcIntroControllerProvider(heroTag));
             final pgcItem = ctr.pgcItem;
             final cid = ctr.cid;
             final episode = pgcItem.episodes!.firstWhere(
@@ -122,7 +123,7 @@ class _SavePanelState extends State<SavePanel> {
             uri =
                 'bilibili://comment/detail/$type/$oid/$rootId/?${anchor}enterUri=bilibili://pgc/season/ep/${ctr.epId}';
           } else {
-            final ctr = Get.find<UgcIntroController>(tag: heroTag);
+            final ctr = appRead(ugcIntroControllerProvider(heroTag));
             final videoDetail = ctr.videoDetail;
             cover = videoDetail.pic;
             title = videoDetail.title;
