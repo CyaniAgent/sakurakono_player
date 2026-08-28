@@ -96,3 +96,13 @@ class DynamicsTabController
   }
 
   }
+
+/// 每实例注册表 — 动态 tab 页 view 创建后登记，按 tab 名（dynamicsType.name）
+/// 经 [dynamicsTabControllerProvider] 读取（替代 GetX tag 注册）。
+final Map<String, DynamicsTabController> dynamicsTabControllerRegistry = {};
+
+final dynamicsTabControllerProvider =
+    Provider.family<DynamicsTabController, String>(
+  (ref, key) => dynamicsTabControllerRegistry[key] ??
+      (throw StateError('DynamicsTabController not registered for key: $key')),
+);

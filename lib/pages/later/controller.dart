@@ -1,7 +1,6 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
 
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/later/later_view_type.dart';
@@ -15,6 +14,7 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 mixin BaseLaterController
     on
@@ -152,7 +152,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
             ..remove(laterViewType);
           for (final item in restTypes) {
             try {
-              Get.find<LaterController>(tag: item.type.toString()).onReload();
+              appRead(laterProvider(item.type.toString())).onReload();
             } catch (_) {}
           }
           SmartDialog.showToast('已清空');
@@ -204,3 +204,13 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
     return super.onReload();
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, LaterController> laterRegistry = {};
+
+final laterProvider = Provider.family<LaterController, String>(
+  (ref, key) => laterRegistry[key] ??
+      (throw StateError('LaterController not registered for key: $key')),
+);
+

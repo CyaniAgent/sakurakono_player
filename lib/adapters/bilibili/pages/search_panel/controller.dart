@@ -24,7 +24,7 @@ class SearchPanelController<R extends SearchNumData<T>, T>
     required this.tag,
   }) {
     try {
-      searchResultController = Get.find<SearchResultController>(tag: tag);
+      searchResultController = appRead(searchResultControllerProvider(tag));
       _listener = searchResultController!.toTopIndex.listen((index) {
         if (index == searchType.index) {
           scrollController.animToTop();

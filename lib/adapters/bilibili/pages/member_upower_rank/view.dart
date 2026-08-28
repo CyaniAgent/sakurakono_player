@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/models_new/upower_rank/rank_info.dart';
 import 'package:skf/adapters/bilibili/pages/member_upower_rank/controller.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class UpowerRankPage extends StatefulWidget {
   const UpowerRankPage({
@@ -57,13 +57,11 @@ class _UpowerRankPageState extends State<UpowerRankPage>
       _name = params['name'];
       _count = params['count'];
     }
-    _controller = Get.put(
-      UpowerRankController(
-        privilegeType: widget.privilegeType,
-        upMid: _upMid,
-      ),
-      tag: '$_upMid${widget.privilegeType}',
+    _controller = UpowerRankController(
+      privilegeType: widget.privilegeType,
+      upMid: _upMid,
     );
+    upowerRankRegistry['$_upMid${widget.privilegeType}'] = _controller;
   }
 
   @override
@@ -139,9 +137,10 @@ class _UpowerRankPageState extends State<UpowerRankPage>
                                       if (index == 0) {
                                         _controller.animateToTop();
                                       } else {
-                                        Get.find<UpowerRankController>(
-                                          tag:
-                                              '$_upMid${tabs[index].privilegeType}',
+                                        appRead(
+                                          upowerRankProvider(
+                                            '$_upMid${tabs[index].privilegeType}',
+                                          ),
                                         ).animateToTop();
                                       }
                                     } catch (_) {}

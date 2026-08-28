@@ -17,7 +17,7 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FollowPage extends ConsumerStatefulWidget {
   const FollowPage({super.key});
@@ -197,8 +197,8 @@ class _FollowPageState extends ConsumerState<FollowPage>
               if (_tabController != null && !_tabController!.indexIsChanging) {
                 final item = followState.tabs[value];
                 try {
-                  Get.find<FollowChildController>(
-                    tag: '$_tag${item.tagid}',
+                  appRead(
+                    followChildControllerProvider('$_tag${item.tagid}'),
                   ).animateToTop();
                 } catch (_) {}
               }

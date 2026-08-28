@@ -49,15 +49,13 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
   void initState() {
     super.initState();
     _tag = '${widget.mediaId}${widget.type.name}';
-    _controller = Get.put(
-      PgcReviewController(type: widget.type, mediaId: widget.mediaId),
-      tag: _tag,
-    );
+    _controller = PgcReviewController(type: widget.type, mediaId: widget.mediaId);
+    pgcReviewRegistry[_tag] = _controller;
   }
 
   @override
   void dispose() {
-    Get.delete<PgcReviewController>(tag: _tag);
+    pgcReviewRegistry.remove(_tag);
     super.dispose();
   }
 

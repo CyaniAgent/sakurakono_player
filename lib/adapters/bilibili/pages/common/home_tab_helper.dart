@@ -12,7 +12,6 @@ import 'package:skf/adapters/bilibili/pages/rcmd/view.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 ScrollOrRefreshMixin homeTabCtrFor(HomeTabType type) => switch (type) {
   HomeTabType.live => appRead(liveControllerProvider),
@@ -20,7 +19,7 @@ ScrollOrRefreshMixin homeTabCtrFor(HomeTabType type) => switch (type) {
   HomeTabType.hot => appRead(hotControllerProvider),
   HomeTabType.rank => RankScrollBridge(),
   HomeTabType.bangumi ||
-  HomeTabType.cinema => Get.find<PgcController>(tag: type.name),
+  HomeTabType.cinema => appRead(pgcControllerProvider(type.name)),
 };
 
 Widget homeTabPageFor(HomeTabType type) => switch (type) {

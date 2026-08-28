@@ -5,8 +5,8 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/rank/zone/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 // ---------------------------------------------------------------------------
 // Immutable state
@@ -62,10 +62,10 @@ class RankScrollBridge implements ScrollOrRefreshMixin {
     if (index < 0 || index >= RankType.values.length) {
       // Fallback to first zone
       final item = RankType.values.first;
-      return Get.find<ZoneController>(tag: '${item.rid}${item.seasonType}');
+      return appRead(zoneControllerProvider('${item.rid}${item.seasonType}'));
     }
     final item = RankType.values[index];
-    return Get.find<ZoneController>(tag: '${item.rid}${item.seasonType}');
+    return appRead(zoneControllerProvider('${item.rid}${item.seasonType}'));
   }
 
   @override

@@ -9,7 +9,6 @@ import 'package:skf/pages/fav/note/controller.dart';
 import 'package:skf/pages/fav/note/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 class FavNoteChildPage extends StatefulWidget {
   const FavNoteChildPage({super.key, required this.isPublish, this.actions});
 
@@ -28,10 +27,8 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
   @override
   void initState() {
     super.initState();
-    _favNoteController = Get.put(
-      FavNoteController(widget.isPublish),
-      tag: widget.isPublish.toString(),
-    );
+    _favNoteController = FavNoteController(widget.isPublish);
+    favNoteRegistry[widget.isPublish.toString()] = _favNoteController;
   }
 
   @override

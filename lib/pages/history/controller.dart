@@ -158,3 +158,12 @@ class HistoryController
     return super.onReload();
   }
 }
+
+/// 每实例注册表 — 历史页 view 创建后登记，按 type（null -> 'all'）经
+/// [historyControllerProvider] 读取（替代 GetX tag 注册）。
+final Map<String, HistoryController> historyControllerRegistry = {};
+
+final historyControllerProvider = Provider.family<HistoryController, String>(
+  (ref, key) => historyControllerRegistry[key] ??
+      (throw StateError('HistoryController not registered for key: $key')),
+);

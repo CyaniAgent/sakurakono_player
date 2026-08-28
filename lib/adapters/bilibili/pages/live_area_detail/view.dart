@@ -12,6 +12,7 @@ import 'package:skf/adapters/bilibili/pages/live_search/view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveAreaDetailPage extends StatefulWidget {
   const LiveAreaDetailPage({
@@ -95,8 +96,8 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
                             try {
                               if (!_controller.tabController!.indexIsChanging) {
                                 final item = response[index];
-                                Get.find<LiveAreaChildController>(
-                                  tag: '${item.id}${item.parentId}',
+                                appRead(
+                                  liveAreaChildProvider('${item.id}${item.parentId}'),
                                 ).animateToTop();
                               }
                             } catch (_) {}

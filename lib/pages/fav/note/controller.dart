@@ -65,3 +65,13 @@ class FavNoteController
     enableMultiSelect = false;
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, FavNoteController> favNoteRegistry = {};
+
+final favNoteProvider = Provider.family<FavNoteController, String>(
+  (ref, key) => favNoteRegistry[key] ??
+      (throw StateError('FavNoteController not registered for key: $key')),
+);
+

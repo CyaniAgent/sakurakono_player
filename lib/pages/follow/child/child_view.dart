@@ -14,7 +14,7 @@ import 'package:skf/pages/follow/widgets/follow_item.dart';
 import 'package:skf/pages/follow_type/follow_same/view.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FollowChildPage extends StatefulWidget {
   const FollowChildPage({
@@ -58,15 +58,13 @@ class _FollowChildPageState extends State<FollowChildPage>
 
   void _initController() {
     _tag = _newTag;
-    _followController = Get.put(
-      FollowChildController(
-        widget.followState,
-        widget.notifier,
-        widget.mid,
-        widget.tagid,
-      ),
-      tag: _tag,
+    _followController = FollowChildController(
+      widget.followState,
+      widget.notifier,
+      widget.mid,
+      widget.tagid,
     );
+    followChildControllerRegistry[_tag] = _followController;
   }
 
   @override
@@ -74,10 +72,10 @@ class _FollowChildPageState extends State<FollowChildPage>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.tagid != widget.tagid) {
       final newTag = _newTag;
-      if (Get.isRegistered<FollowChildController>(tag: newTag)) {
-        _followController = Get.find<FollowChildController>(tag: newTag);
+      if (followChildControllerRegistry.containsKey(newTag)) {
+        _followController = appRead(followChildControllerProvider(newTag));
       } else {
-        Get.delete<FollowChildController>(tag: _tag);
+        followChildControllerRegistry.remove(_tag);
         _initController();
       }
     }

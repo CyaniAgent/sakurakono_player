@@ -34,9 +34,9 @@ class _DynamicsTabPageState extends State<DynamicsTabPage>
 
   @override
   void initState() {
-    controller = Get.putOrFind(
+    controller = dynamicsTabControllerRegistry.putIfAbsent(
+      widget.dynamicsType.name,
       () => DynamicsTabController(dynamicsType: widget.dynamicsType),
-      tag: widget.dynamicsType.name,
     );
     super.initState();
   }

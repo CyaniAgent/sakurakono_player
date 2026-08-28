@@ -194,8 +194,8 @@ class _SavePanelState extends State<SavePanel> {
         final anchor = hasRoot ? 'anchor=${reply.id}&' : '';
         String enterUri = '';
         try {
-          final ctr = Get.find<CoreMusicDetailController>(
-            tag: AppNavigator.parameters['musicId'],
+          final ctr = appRead(
+            coreMusicDetailProvider(AppNavigator.parameters['musicId']!),
           );
           enterUri =
               'enterUri=${Uri.encodeComponent(ctr.shareUrl)}'; // official client cannot parse it

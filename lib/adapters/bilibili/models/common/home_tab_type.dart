@@ -12,7 +12,6 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 enum HomeTabType implements EnumWithLabel {
   live('直播'),
@@ -33,7 +32,7 @@ enum HomeTabType implements EnumWithLabel {
     HomeTabType.hot => () => appRead(hotControllerProvider),
     HomeTabType.rank => RankScrollBridge.new,
     HomeTabType.bangumi ||
-    HomeTabType.cinema => () => Get.find<PgcController>(tag: name),
+    HomeTabType.cinema => () => appRead(pgcControllerProvider(name)),
   };
 
   Widget get page => switch (this) {

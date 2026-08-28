@@ -68,3 +68,13 @@ class PgcIndexController
     return response.list;
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, PgcIndexController> pgcIndexRegistry = {};
+
+final pgcIndexProvider = Provider.family<PgcIndexController, String>(
+  (ref, key) => pgcIndexRegistry[key] ??
+      (throw StateError('PgcIndexController not registered for key: $key')),
+);
+

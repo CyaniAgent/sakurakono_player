@@ -69,3 +69,13 @@ class LiveAreaChildController
     onRefresh();
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, LiveAreaChildController> liveAreaChildRegistry = {};
+
+final liveAreaChildProvider = Provider.family<LiveAreaChildController, String>(
+  (ref, key) => liveAreaChildRegistry[key] ??
+      (throw StateError('LiveAreaChildController not registered for key: $key')),
+);
+

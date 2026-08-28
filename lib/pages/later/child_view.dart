@@ -9,7 +9,6 @@ import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/pages/later/widgets/video_card_h_later.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LaterViewChildPage extends ConsumerStatefulWidget {
@@ -35,13 +34,11 @@ class _LaterViewChildPageState extends ConsumerState<LaterViewChildPage>
   @override
   void initState() {
     super.initState();
-    _laterController = Get.put(
-      LaterController(
-        widget.laterViewType,
-        actions: widget.actions,
-      ),
-      tag: widget.laterViewType.type.toString(),
+    _laterController = LaterController(
+      widget.laterViewType,
+      actions: widget.actions,
     );
+    laterRegistry[widget.laterViewType.type.toString()] = _laterController;
     _laterController.attachRef(ProviderScope.containerOf(context));
   }
 

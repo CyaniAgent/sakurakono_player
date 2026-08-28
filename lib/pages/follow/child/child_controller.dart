@@ -96,3 +96,13 @@ class FollowChildController
     }
   }
 }
+
+/// 每实例注册表 — 关注子页 view 创建后登记，按 `tag+tagid` 经
+/// [followChildControllerProvider] 读取（替代 GetX tag 注册）。
+final Map<String, FollowChildController> followChildControllerRegistry = {};
+
+final followChildControllerProvider =
+    Provider.family<FollowChildController, String>(
+  (ref, key) => followChildControllerRegistry[key] ??
+      (throw StateError('FollowChildController not registered for key: $key')),
+);

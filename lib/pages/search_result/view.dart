@@ -6,7 +6,7 @@ import 'package:skf/pages/search/controller.dart';
 import 'package:skf/pages/search_result/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 /// 搜索结果面板构造器。
 ///
@@ -43,7 +43,8 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
     // resolve via Get.find<SearchResultController>(tag: tag).
     final keyword = AppNavigator.arguments?['keyword'] ?? '';
     final notifier = ref.read(searchResultProvider(_tag).notifier);
-    Get.put(SearchResultController(keyword, notifier), tag: _tag);
+    searchResultControllerRegistry[_tag] =
+        SearchResultController(keyword, notifier);
 
     _tabController = TabController(
       vsync: this,
@@ -53,8 +54,8 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
 
     if (_isFromSearch) {
       try {
-        sSearchController = Get.find<SSearchController>(
-          tag: AppNavigator.parameters['tag'],
+        sSearchController = appRead(
+          sSearchByTagProvider(AppNavigator.parameters['tag'] as String),
         );
         _tabController.addListener(listener);
       } catch (_) {}
@@ -82,7 +83,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
     _tabController
       ..removeListener(listener)
       ..dispose();
-    Get.delete<SearchResultController>(tag: _tag, force: true);
+    searchResultControllerRegistry.remove(_tag);
     super.dispose();
   }
 

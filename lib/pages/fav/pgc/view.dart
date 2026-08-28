@@ -3,7 +3,7 @@ import 'package:skf/pages/fav/pgc/child_view.dart';
 import 'package:skf/pages/fav/pgc/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavPgcPage extends StatefulWidget {
   const FavPgcPage({super.key, required this.type, this.actions});
@@ -82,8 +82,8 @@ class _FavPgcPageState extends State<FavPgcPage>
                 onTap: (index) {
                   try {
                     if (!_tabController.indexIsChanging) {
-                      Get.find<FavPgcController>(
-                        tag: '${widget.type}${index + 1}',
+                      appRead(
+                        favPgcControllerProvider('${widget.type}${index + 1}'),
                       ).scrollController.animToTop();
                     }
                   } catch (_) {}

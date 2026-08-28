@@ -12,10 +12,8 @@ import 'package:skf/pages/later/child_view.dart';
 import 'package:skf/pages/later/controller.dart';
 import 'package:skf/pages/later/later_actions.dart';
 import 'package:skf/router/app_navigator.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart' hide TabBarView;
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,10 +33,8 @@ class _LaterPageState extends ConsumerState<LaterPage>
 
   LaterController currCtr([int? index]) {
     final type = LaterViewType.values[index ?? _tabController.index];
-    return Get.putOrFind(
-      () => LaterController(type, actions: widget.actions),
-      tag: type.type.toString(),
-    );
+    final key = type.type.toString();
+    return laterRegistry[key] ??= LaterController(type, actions: widget.actions);
   }
 
   final _sortKey = GlobalKey();

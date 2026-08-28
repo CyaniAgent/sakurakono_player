@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skf/router/app_navigator.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/common/widgets/dialog/report.dart';
 import 'package:skf/adapters/bilibili/common/widgets/image/image_save.dart';
@@ -34,7 +33,7 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 class BiliDynamicsHost implements DynamicsHost {
   DynamicsTabController? _tab(CoreDynamicsTabType type) {
     try {
-      return Get.find<DynamicsTabController>(tag: type.name);
+      return appRead(dynamicsTabControllerProvider(type.name));
     } catch (_) {
       return null;
     }

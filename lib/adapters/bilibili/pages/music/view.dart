@@ -23,7 +23,6 @@ import 'package:skf/adapters/bilibili/pages/music/video/view.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/android/android_helper.dart';
 import 'package:skf/utils/date_utils.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
@@ -36,7 +35,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 class MusicDetailPage extends StatefulWidget {
   const MusicDetailPage({super.key});
@@ -47,10 +45,12 @@ class MusicDetailPage extends StatefulWidget {
 
 class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
   @override
-  final CoreMusicDetailController controller = Get.putOrFind(
-    CoreMusicDetailController.new,
-    tag: AppNavigator.parameters['musicId']!,
-  );
+  late final CoreMusicDetailController controller = _initController();
+
+  CoreMusicDetailController _initController() {
+    final key = AppNavigator.parameters['musicId']!;
+    return coreMusicDetailRegistry[key] ??= CoreMusicDetailController();
+  }
 
   @override
   dynamic get arguments => null;

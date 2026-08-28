@@ -303,7 +303,7 @@ abstract final class RequestUtils {
         await Future.delayed(const Duration(milliseconds: 450));
         final res = await DynamicsHttp.dynamicDetail(id: id);
         if (res case final Success<CoreDynamicItemModel> e) {
-          final ctr = Get.find<DynamicsTabController>(tag: 'all');
+          final ctr = appRead(dynamicsTabControllerProvider('all'));
           if (ctr.loadingState case Success(:final response?)) {
             response.insert(0, e.response);
             ctr.refreshState();

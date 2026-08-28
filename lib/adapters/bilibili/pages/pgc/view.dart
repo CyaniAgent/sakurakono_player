@@ -26,7 +26,7 @@ import 'package:skf/adapters/bilibili/pages/pgc_index/widgets/pgc_card_v_pgc_ind
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PgcPage extends StatefulWidget {
   const PgcPage({
@@ -45,10 +45,8 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-    controller = Get.put(
-      PgcController(tabType: widget.tabType),
-      tag: widget.tabType.name,
-    );
+    controller = PgcController(tabType: widget.tabType);
+    pgcControllerRegistry[widget.tabType.name] = controller;
     super.initState();
   }
 
@@ -273,8 +271,8 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                                       if (!DefaultTabController.of(
                                         context,
                                       ).indexIsChanging) {
-                                        Get.find<PgcIndexController>(
-                                          tag: types[index].toString(),
+                                        appRead(
+                                          pgcIndexProvider(types[index].toString()),
                                         ).animateToTop();
                                       }
                                     } catch (_) {}

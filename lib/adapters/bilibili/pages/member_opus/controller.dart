@@ -6,7 +6,7 @@ import 'package:skf/pages/member/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberOpusController
     extends CommonListControllerRiverpod<CoreOpusSpaceFlowResp, dynamic> {
@@ -14,7 +14,7 @@ class MemberOpusController
     required this.heroTag,
     required this.mid,
   }) {
-    filter = Get.find<MemberController>(tag: heroTag).tab2
+    filter = appRead(memberControllerProvider(heroTag!)).tab2
         ?.firstWhereOrNull((e) => e.param == 'contribute')
         ?.items
         ?.firstWhereOrNull((e) => e.param == 'opus')

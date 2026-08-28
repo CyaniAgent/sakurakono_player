@@ -122,3 +122,15 @@ class SearchResultController {
     _notifier.setToTopIndex(index);
   }
 }
+
+/// GetX shim 注册表 — search_result 页 view 创建后登记（替代 Get.put(tag)），
+/// adapter 侧 SearchPanelController 经 provider 按 tag 读取。
+final Map<String, SearchResultController> searchResultControllerRegistry = {};
+
+final searchResultControllerProvider =
+    Provider.family<SearchResultController, String>(
+  (ref, key) => searchResultControllerRegistry[key] ??
+      (throw StateError(
+        'SearchResultController not registered for key: $key',
+      )),
+);

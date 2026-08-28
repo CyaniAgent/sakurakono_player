@@ -89,3 +89,13 @@ class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, Core
     onReload();
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, BubbleController> bubbleRegistry = {};
+
+final bubbleProvider = Provider.family<BubbleController, String>(
+  (ref, key) => bubbleRegistry[key] ??
+      (throw StateError('BubbleController not registered for key: $key')),
+);
+

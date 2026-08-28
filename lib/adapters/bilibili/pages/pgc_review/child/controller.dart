@@ -127,3 +127,13 @@ class PgcReviewController
     onReload();
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, PgcReviewController> pgcReviewRegistry = {};
+
+final pgcReviewProvider = Provider.family<PgcReviewController, String>(
+  (ref, key) => pgcReviewRegistry[key] ??
+      (throw StateError('PgcReviewController not registered for key: $key')),
+);
+

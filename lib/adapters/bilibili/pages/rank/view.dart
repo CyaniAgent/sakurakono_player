@@ -9,7 +9,6 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:get/get.dart';
 
 class RankPage extends ConsumerStatefulWidget {
   const RankPage({super.key});
@@ -81,7 +80,7 @@ class _RankPageState extends ConsumerState<RankPage>
           final item = RankType.values[_tabController.index];
           final tag = '${item.rid}${item.seasonType}';
           try {
-            final zoneCtr = Get.find<ZoneController>(tag: tag);
+            final zoneCtr = appRead(zoneControllerProvider(tag));
             zoneCtr.scrollController.animToTop();
           } catch (_) {}
         } else {

@@ -8,6 +8,7 @@ import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:get/get.dart';
 
 class PgcReviewPage extends StatefulWidget {
@@ -86,8 +87,8 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                 try {
                   if (!_tabController.indexIsChanging) {
                     final item = PgcReviewType.values[index];
-                    Get.find<PgcReviewController>(
-                      tag: '${widget.mediaId}${item.name}',
+                    appRead(
+                      pgcReviewProvider('${widget.mediaId}${item.name}'),
                     ).scrollController.animToTop();
                   }
                 } catch (_) {}

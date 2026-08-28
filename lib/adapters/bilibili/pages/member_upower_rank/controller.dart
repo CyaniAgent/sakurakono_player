@@ -45,3 +45,13 @@ class UpowerRankController
     };
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// 
+final Map<String, UpowerRankController> upowerRankRegistry = {};
+
+final upowerRankProvider = Provider.family<UpowerRankController, String>(
+  (ref, key) => upowerRankRegistry[key] ??
+      (throw StateError('UpowerRankController not registered for key: $key')),
+);
+

@@ -219,6 +219,7 @@ class SSearchController extends ChangeNotifier
       GStorage.historyWord.put('cacheList', historyList);
     }
 
+    sSearchByTagRegistry[_params.tag] = this;
     _searchFocusNode.unfocus();
     await AppNavigator.toNamed(
       '/searchResult',
@@ -320,4 +321,14 @@ final sSearchProvider =
     final controller = SSearchController(ref, params);
     return controller;
   },
+);
+
+/// SSearchController 注册表 — 搜索页导航到结果页前按 [SSearchParams.tag] 登记，
+/// 供 search_result 页按 tag 读取同一实例（替代 GetX tag 注册；
+/// family 按完整 params 键控，结果页只有 tag 无法重建）。
+final Map<String, SSearchController> sSearchByTagRegistry = {};
+
+final sSearchByTagProvider = Provider.family<SSearchController, String>(
+  (ref, tag) => sSearchByTagRegistry[tag] ??
+      (throw StateError('SSearchController not registered for tag: $tag')),
 );

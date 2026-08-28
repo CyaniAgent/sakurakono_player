@@ -14,7 +14,6 @@ import 'package:skf/adapters/bilibili/pages/pgc_index/widgets/pgc_card_v_pgc_ind
 import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class PgcIndexPage extends StatefulWidget {
   const PgcIndexPage({super.key, this.indexType});
@@ -32,10 +31,8 @@ class _PgcIndexPageState extends State<PgcIndexPage>
   @override
   void initState() {
     super.initState();
-    _ctr = Get.put(
-      PgcIndexController(widget.indexType),
-      tag: widget.indexType.toString(),
-    );
+    _ctr = PgcIndexController(widget.indexType);
+    pgcIndexRegistry[widget.indexType.toString()] = _ctr;
   }
 
   @override

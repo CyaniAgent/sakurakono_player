@@ -3,7 +3,7 @@ import 'package:skf/pages/fav/note/child_view.dart';
 import 'package:skf/pages/fav/note/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavNotePage extends StatefulWidget {
   const FavNotePage({super.key, this.actions});
@@ -79,8 +79,8 @@ class _FavNotePageState extends State<FavNotePage>
                 onTap: (index) {
                   try {
                     if (!_tabController.indexIsChanging) {
-                      Get.find<FavNoteController>(
-                        tag: index == 0 ? 'false' : 'true',
+                      appRead(
+                        favNoteProvider(index == 0 ? 'false' : 'true'),
                       ).scrollController.animToTop();
                     }
                   } catch (_) {}

@@ -157,3 +157,12 @@ class PgcController
     }
   }
 }
+
+/// 每实例注册表 — pgc 页 view 创建后登记，按 tab 名（tabType.name）经
+/// [pgcControllerProvider] 读取（替代 GetX tag 注册）。
+final Map<String, PgcController> pgcControllerRegistry = {};
+
+final pgcControllerProvider = Provider.family<PgcController, String>(
+  (ref, key) => pgcControllerRegistry[key] ??
+      (throw StateError('PgcController not registered for key: $key')),
+);

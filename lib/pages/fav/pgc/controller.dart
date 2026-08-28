@@ -1,5 +1,4 @@
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
@@ -7,6 +6,7 @@ import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavPgcController
     extends MultiSelectController<CoreFavPgcData, CoreFavPgcItemModel> {
@@ -83,7 +83,7 @@ class FavPgcController
     );
     if (res case Success(:final response)) {
       try {
-        final ctr = Get.find<FavPgcController>(tag: '$type$followStatus');
+        final ctr = appRead(favPgcControllerProvider('$type$followStatus'));
         if (ctr.loadingState case Success(:final response)) {
           response?.insertAll(
             0,
@@ -113,7 +113,7 @@ class FavPgcController
       final item = list.removeAt(index);
       notifyListeners();
       try {
-        final ctr = Get.find<FavPgcController>(tag: '$type$followStatus');
+        final ctr = appRead(favPgcControllerProvider('$type$followStatus'));
         if (ctr.loadingState case Success(:final response)) {
           response?.insert(0, item);
           ctr
@@ -129,3 +129,12 @@ class FavPgcController
     }
   }
 }
+
+/// 每实例注册表 — 收藏番剧子页 view 创建后登记，按 `${type}${followStatus}` 经
+/// [favPgcControllerProvider] 读取（替代 GetX tag 注册）。
+final Map<String, FavPgcController> favPgcControllerRegistry = {};
+
+final favPgcControllerProvider = Provider.family<FavPgcController, String>(
+  (ref, key) => favPgcControllerRegistry[key] ??
+      (throw StateError('FavPgcController not registered for key: $key')),
+);

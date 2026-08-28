@@ -15,7 +15,7 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class ContributionRankPanel extends StatefulWidget {
   const ContributionRankPanel({
@@ -66,9 +66,10 @@ class _ContributionRankPanelState extends State<ContributionRankPanel>
             ).colorScheme.outline.withValues(alpha: 0.3),
             onTap: (index) {
               if (!_tabController.indexIsChanging) {
-                Get.find<ContributionRankController>(
-                  tag:
-                      '${widget.roomId}${CoreLiveContributionRankType.values[index].name}',
+                appRead(
+                  contributionRankProvider(
+                    '${widget.roomId}${CoreLiveContributionRankType.values[index].name}',
+                  ),
                 ).scrollController.animToTop();
               }
             },
@@ -115,14 +116,12 @@ class _ContributionRankTypeState extends State<_ContributionRankType>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      ContributionRankController(
-        ruid: widget.ruid,
-        roomId: widget.roomId,
-        type: widget.type,
-      ),
-      tag: '${widget.roomId}${widget.type.name}',
+    _controller = ContributionRankController(
+      ruid: widget.ruid,
+      roomId: widget.roomId,
+      type: widget.type,
     );
+    contributionRankRegistry['${widget.roomId}${widget.type.name}'] = _controller;
   }
 
   @override

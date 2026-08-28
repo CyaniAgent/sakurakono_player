@@ -27,3 +27,12 @@ class ZoneController extends CommonListControllerRiverpod<dynamic, dynamic> {
     };
   }
 }
+
+/// 每实例注册表 — zone 页 view 创建后登记，按 `${rid}${seasonType}` 经
+/// [zoneControllerProvider] 读取（替代 GetX tag 注册）。
+final Map<String, ZoneController> zoneRegistry = {};
+
+final zoneControllerProvider = Provider.family<ZoneController, String>(
+  (ref, key) => zoneRegistry[key] ??
+      (throw StateError('ZoneController not registered for key: $key')),
+);

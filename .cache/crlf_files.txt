@@ -1,0 +1,5 @@
+lib/adapters/bilibili/pages/dynamics_tab/view.dart
+lib/adapters/bilibili/pages/rank/controller.dart
+lib/adapters/bilibili/utils/request_utils.dart
+lib/pages/fav/pgc/view.dart
+lib/pages/follow/view.dart

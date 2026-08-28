@@ -45,3 +45,13 @@ class CoreMusicDetailController extends CommonDynController {
     };
   }
 }
+
+/// 每实例注册表 — 页面 view 创建后登记，按 key 经 provider 读取（替代 GetX tag 注册）。
+/// key = musicId 参数
+final Map<String, CoreMusicDetailController> coreMusicDetailRegistry = {};
+
+final coreMusicDetailProvider = Provider.family<CoreMusicDetailController, String>(
+  (ref, key) => coreMusicDetailRegistry[key] ??
+      (throw StateError('CoreMusicDetailController not registered for key: $key')),
+);
+

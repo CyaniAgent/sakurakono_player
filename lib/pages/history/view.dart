@@ -17,7 +17,7 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class HistoryPage extends ConsumerStatefulWidget {
   const HistoryPage({super.key, this.type, this.actions});
@@ -38,10 +38,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
   @override
   void initState() {
     super.initState();
-    _historyController = Get.put(
-      HistoryController(widget.type),
-      tag: widget.type ?? 'all',
-    );
+    _historyController = HistoryController(widget.type);
+    historyControllerRegistry[widget.type ?? 'all'] = _historyController;
     _historyController.attachRef(ref);
   }
 
@@ -49,8 +47,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
     try {
       index ??= _historyController.tabController!.index;
       if (index != 0) {
-        return Get.find<HistoryController>(
-          tag: _historyController.tabs[index - 1].type,
+        return appRead(
+          historyControllerProvider(_historyController.tabs[index - 1].type!),
         );
       }
     } catch (_) {}
@@ -192,8 +190,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
                   if (_historyController.tabController != null) {
                     for (final item in _historyController.tabs) {
                       try {
-                        Get.find<HistoryController>(
-                          tag: item.type,
+                        appRead(
+                          historyControllerProvider(item.type!),
                         ).loadingState = const Success(
                           null,
                         );
