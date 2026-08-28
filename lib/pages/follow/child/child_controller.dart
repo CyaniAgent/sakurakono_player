@@ -8,6 +8,7 @@ import 'package:skf/pages/follow/controller.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FollowChildController
     extends CommonListControllerRiverpod<CoreFollowData, CoreFollowItemModel> {
@@ -23,11 +24,9 @@ class FollowChildController
   final int mid;
   int? total;
 
-  ProviderContainer? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
 
   late final loadSameFollow = _followState?.isOwner == false;
   LoadingState<List<CoreFollowItemModel>?> sameState =
@@ -70,7 +69,7 @@ class FollowChildController
   @override
   Future<LoadingState<CoreFollowData>> customGetData() async {
     if (tagid != null) {
-      final biliResult = await (_ref!.read(memberRepositoryProvider)).followUpGroup(
+      final biliResult = await (appRead(memberRepositoryProvider)).followUpGroup(
         mid: mid,
         tagid: tagid,
         pn: page,
@@ -82,7 +81,7 @@ class FollowChildController
       };
     }
 
-    return (_ref!.read(followRepositoryProvider)).followings(
+    return (appRead(followRepositoryProvider)).followings(
       vmid: mid,
       pn: page,
       orderType: orderType.type,
@@ -90,7 +89,7 @@ class FollowChildController
   }
 
   Future<void> _loadSameFollow() async {
-    final res = await (_ref!.read(userRepositoryProvider)).sameFollowing(mid: mid);
+    final res = await (appRead(userRepositoryProvider)).sameFollowing(mid: mid);
     if (res case Success(:final response)) {
       sameState = Success(response.list);
     }

@@ -5,6 +5,7 @@ import 'package:skf/adapters/bilibili/models_new/emote/package.dart'; // ignore:
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
+import 'package:skf/core/container/app_container.dart';
 
 class EmotePanelController extends CommonListControllerRiverpod<List<Package>?, Package>
     implements TickerProvider {
@@ -12,8 +13,7 @@ class EmotePanelController extends CommonListControllerRiverpod<List<Package>?, 
   EmotePanelController() {
     queryData();
   }
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   TabController? tabController;
 
   @override
@@ -37,7 +37,7 @@ class EmotePanelController extends CommonListControllerRiverpod<List<Package>?, 
 
   @override
   Future<LoadingState<List<Package>?>> customGetData() async {
-    final result = await (_ref!.read(replyRepositoryProvider))
+    final result = await (appRead(replyRepositoryProvider))
         .getEmoteList(business: 'reply');
     return switch (result) {
       Loading _ => LoadingState.loading(),

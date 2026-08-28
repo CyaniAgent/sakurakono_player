@@ -4,11 +4,11 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/pgc_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PgcIndexController
     extends CommonListControllerRiverpod<CorePgcIndexResult, CorePgcIndexItem> {
-  ProviderContainer? _ref;
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   final int? indexType;
   PgcIndexController(this.indexType) {
     getPgcIndexCondition();
@@ -21,7 +21,7 @@ class PgcIndexController
 
 
   Future<void> getPgcIndexCondition() async {
-    final res = await (_ref!.read(pgcRepositoryProvider)).pgcIndexCondition(
+    final res = await (appRead(pgcRepositoryProvider)).pgcIndexCondition(
       seasonType: indexType == null ? 1 : null,
       type: 0,
       indexType: indexType,
@@ -46,7 +46,7 @@ class PgcIndexController
 
   @override
   Future<LoadingState<CorePgcIndexResult>> customGetData() async {
-    final result = await (_ref!.read(pgcRepositoryProvider)).pgcIndexResult(
+    final result = await (appRead(pgcRepositoryProvider)).pgcIndexResult(
       page: page,
       params: indexParams,
       seasonType: indexType == null ? 1 : null,

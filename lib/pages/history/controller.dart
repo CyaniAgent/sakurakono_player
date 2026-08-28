@@ -14,6 +14,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class HistoryController
     extends MultiSelectController<CoreHistoryData, CoreHistoryItemModel>
@@ -77,7 +78,7 @@ class HistoryController
 
   // 观看历史暂停状态
   Future<void> historyStatus() async {
-    final res = await (_ref!.read(userRepositoryProvider)).historyStatus(account: account);
+    final res = await (appRead(userRepositoryProvider)).historyStatus(account: account);
     if (res case Success(:final response)) {
       _ref?.read(historyBaseProvider.notifier).setPauseStatus(response);
       GStorage.localCache.put(LocalCacheKey.historyPause, response);
@@ -105,7 +106,7 @@ class HistoryController
 
   Future<void> _onDelete(Set<CoreHistoryItemModel> removeList) async {
     SmartDialog.showLoading(msg: '请求中');
-    final res = await (_ref!.read(userRepositoryProvider)).delHistory(
+    final res = await (appRead(userRepositoryProvider)).delHistory(
       removeList
           .map((item) => '${item.history.business}_${item.kid}')
           .join(','),
@@ -133,7 +134,7 @@ class HistoryController
 
   @override
   Future<LoadingState<CoreHistoryData>> customGetData() async {
-    final result = await (_ref!.read(userRepositoryProvider)).historyList(
+    final result = await (appRead(userRepositoryProvider)).historyList(
     type: type ?? 'all',
     max: max,
     viewAt: viewAt,

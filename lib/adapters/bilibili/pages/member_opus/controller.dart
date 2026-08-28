@@ -24,9 +24,7 @@ class MemberOpusController
 
   final String? heroTag;
   final int mid;
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   String offset = '';
   SpaceTabFilter type = const SpaceTabFilter(
@@ -52,7 +50,7 @@ class MemberOpusController
 
   @override
   Future<LoadingState<CoreOpusSpaceFlowResp>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).spaceOpus(
+    final result = await (appRead(memberRepositoryProvider)).spaceOpus(
       hostMid: mid,
       page: page,
       offset: offset,

@@ -11,6 +11,7 @@ import 'package:skf/utils/extension/dimension_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberVideoCtr
     extends CommonListControllerRiverpod<CoreSpaceArchiveData, CoreSpaceArchiveItem>
@@ -49,8 +50,7 @@ class MemberVideoCtr
   bool isLocating = false;
   bool isLoadPrevious = false;
   bool? hasPrev;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   @override
   Future<void> onRefresh() async {
@@ -108,7 +108,7 @@ class MemberVideoCtr
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
+    final result = await (appRead(memberRepositoryProvider)).spaceArchive(
       type: type,
       mid: mid,
       aid: isVideo
@@ -159,7 +159,7 @@ class MemberVideoCtr
       String? oid = params['oid'];
       if (oid != null) {
         final bvid = IdUtils.av2bv(int.parse(oid));
-        final res = await (_ref!.read(searchRepositoryProvider)).ab2cWithDimension(aid: int.tryParse(oid), bvid: bvid);
+        final res = await (appRead(searchRepositoryProvider)).ab2cWithDimension(aid: int.tryParse(oid), bvid: bvid);
         final cid = res?.cid;
         if (cid != null) {
           PageUtils.toVideoPage(

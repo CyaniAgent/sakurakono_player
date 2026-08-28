@@ -39,10 +39,10 @@ import 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveRoomController extends ChangeNotifier {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   /// Public notify wrapper — [notifyListeners] is protected in
   /// [ChangeNotifier]; views call this to request a rebuild.
@@ -184,7 +184,7 @@ class LiveRoomController extends ChangeNotifier {
     queryLiveUrl(autoFullScreenFlag: true);
     queryLiveInfoH5();
     if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
-      (_ref!.read(videoRepositoryProvider)).roomEntryAction(roomId: roomId);
+      (appRead(videoRepositoryProvider)).roomEntryAction(roomId: roomId);
     }
     if (showSuperChat) {
       pageController = PageController();
@@ -211,7 +211,7 @@ class LiveRoomController extends ChangeNotifier {
     currentQn ??= await ConnectivityUtils.isWiFi
         ? Pref.liveQuality
         : Pref.liveQualityCellular;
-    final res = await (_ref!.read(liveRepositoryProvider)).liveRoomInfo(
+    final res = await (appRead(liveRepositoryProvider)).liveRoomInfo(
       roomId: roomId,
       qn: currentQn,
       onlyAudio: plPlayerController.onlyPlayAudio,
@@ -313,7 +313,7 @@ class LiveRoomController extends ChangeNotifier {
   }
 
   Future<void> queryLiveInfoH5() async {
-    final res = await (_ref!.read(liveRepositoryProvider)).liveRoomInfoH5(roomId: roomId);
+    final res = await (appRead(liveRepositoryProvider)).liveRoomInfoH5(roomId: roomId);
     if (res case Success(:final response)) {
       roomInfoH5 = response;
       title = response.roomInfo?.title ?? '';
@@ -397,7 +397,7 @@ class LiveRoomController extends ChangeNotifier {
 
   @pragma('vm:notify-debugger-on-exception')
   Future<void> prefetch() async {
-    final res = await (_ref!.read(liveRepositoryProvider)).liveRoomDmPrefetch(roomId: roomId);
+    final res = await (appRead(liveRepositoryProvider)).liveRoomDmPrefetch(roomId: roomId);
     if (res case Success(:final response)) {
       if (response != null && response.isNotEmpty) {
         messages.addAll(response);
@@ -411,7 +411,7 @@ class LiveRoomController extends ChangeNotifier {
   }
 
   Future<void> getSuperChatMsg() async {
-    final res = await (_ref!.read(liveRepositoryProvider)).superChatMsg(roomId);
+    final res = await (appRead(liveRepositoryProvider)).superChatMsg(roomId);
     if (res.dataOrNull?.list case final list?) {
       superChatMsg.addAll(list);
     }
@@ -435,7 +435,7 @@ class LiveRoomController extends ChangeNotifier {
       initDm(dmInfo!);
       return;
     }
-      (_ref!.read(liveRepositoryProvider)).liveRoomGetDanmakuToken(roomId: roomId).then((res) {
+      (appRead(liveRepositoryProvider)).liveRoomGetDanmakuToken(roomId: roomId).then((res) {
         if (res case Success(:final response)) {
           initDm(dmInfo = response);
         }
@@ -670,7 +670,7 @@ class LiveRoomController extends ChangeNotifier {
       likeClickTime = 0;
       return;
     }
-    final res = await (_ref!.read(liveRepositoryProvider)).liveLikeReport(
+    final res = await (appRead(liveRepositoryProvider)).liveLikeReport(
       clickTime: likeClickTime,
       roomId: roomId,
       uid: mid,
@@ -729,7 +729,7 @@ class LiveRoomController extends ChangeNotifier {
       ban: false,
       ReportOptions.liveDanmakuReport,
       (reasonType, reasonDesc, banUid) {
-        return (_ref!.read(liveRepositoryProvider)).superChatReport(
+        return (appRead(liveRepositoryProvider)).superChatReport(
           id: item.id,
           roomId: roomId,
           uid: item.uid,

@@ -9,11 +9,11 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DynTopicController
     extends CommonListControllerRiverpod<CoreTopicCardList?, CoreTopicCardItem> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   final topicId = Get.parameters['id']!;
   String topicName = Get.parameters['name'] ?? '';
 
@@ -37,7 +37,7 @@ class DynTopicController
   }
 
   Future<void> queryTop() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).topicTop(topicId: topicId);
+    final result = await (appRead(dynamicsRepositoryProvider)).topicTop(topicId: topicId);
     topState = switch (result) {
       Loading _ => LoadingState<CoreTopDetails?>.loading(),
       Success(:final response) => Success(response),
@@ -87,7 +87,7 @@ class DynTopicController
 
   @override
   Future<LoadingState<CoreTopicCardList?>> customGetData() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).topicFeed(
+    final result = await (appRead(dynamicsRepositoryProvider)).topicFeed(
       topicId: topicId,
       offset: offset,
       sortBy: sortBy,
@@ -111,8 +111,8 @@ class DynTopicController
     }
     final isFav = this.isFav;
     final res = isFav
-        ? await (_ref!.read(favRepositoryProvider)).delFavTopic(topicId)
-        : await (_ref!.read(favRepositoryProvider)).addFavTopic(topicId);
+        ? await (appRead(favRepositoryProvider)).delFavTopic(topicId)
+        : await (appRead(favRepositoryProvider)).addFavTopic(topicId);
     if (res.isSuccess) {
       if (isFav) {
         topState.data!.topicItem!.fav -= 1;
@@ -132,7 +132,7 @@ class DynTopicController
       return;
     }
     final isLike = this.isLike;
-    final res = await (_ref!.read(favRepositoryProvider)).likeTopic(topicId, isLike);
+    final res = await (appRead(favRepositoryProvider)).likeTopic(topicId, isLike);
     if (res.isSuccess) {
       if (isLike) {
         topState.data!.topicItem!.like -= 1;
@@ -147,7 +147,7 @@ class DynTopicController
   }
 
   Future<void> topicFold() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).topicFold(topicId: topicId, sortBy: sortBy);
+    final result = await (appRead(dynamicsRepositoryProvider)).topicFold(topicId: topicId, sortBy: sortBy);
     if (result case Success(:final response)) {
       if (response?.items case final items? when items.isNotEmpty) {
         loadingState.data!

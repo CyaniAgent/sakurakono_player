@@ -6,6 +6,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class ContributionRankController
     extends
@@ -13,8 +14,7 @@ class ContributionRankController
           CoreLiveContributionRankData,
           CoreLiveContributionRankItem
         > {
-  ProviderContainer? _ref;
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   final int ruid;
   final int roomId;
   final CoreLiveContributionRankType type;
@@ -36,7 +36,7 @@ class ContributionRankController
 
   @override
   Future<LoadingState<CoreLiveContributionRankData>> customGetData() async {
-    final result = await (_ref!.read(liveRepositoryProvider)).liveContributionRank(
+    final result = await (appRead(liveRepositoryProvider)).liveContributionRank(
         ruid: ruid,
         roomId: roomId,
         page: page,

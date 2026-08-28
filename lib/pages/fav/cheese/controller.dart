@@ -5,19 +5,19 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavCheeseController
     extends CommonListControllerRiverpod<CoreSpaceCheeseData, CoreSpaceCheeseItem> {
   FavCheeseController() {
     queryData();
   }
-  Ref? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
-  late final int mid = (_ref!.read(accountProvider).userId) ?? 0;
+  late final int mid = (appRead(accountProvider).userId) ?? 0;
 
 
   @override
@@ -28,7 +28,7 @@ class FavCheeseController
 
   @override
   Future<LoadingState<CoreSpaceCheeseData>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).favPugv(mid: mid, page: page);
+    final result = await (appRead(favRepositoryProvider)).favPugv(mid: mid, page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -37,7 +37,7 @@ class FavCheeseController
   }
 
   Future<void> onRemove(int index, int sid) async {
-    final res = await (_ref!.read(favRepositoryProvider)).delFavPugv(sid);
+    final res = await (appRead(favRepositoryProvider)).delFavPugv(sid);
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();

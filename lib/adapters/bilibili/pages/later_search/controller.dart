@@ -7,6 +7,7 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:skf/pages/later/controller.dart' show BaseLaterController;
+import 'package:skf/core/container/app_container.dart';
 
 class LaterSearchController
     extends CommonSearchController<CoreLaterData, CoreLaterItemModel>
@@ -15,10 +16,8 @@ class LaterSearchController
         DeleteItemMixin,
         BaseLaterController {
   dynamic mid;
-
-  ProviderContainer? _ref;
   @override
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   dynamic count;
 
   LaterSearchController() {
@@ -29,7 +28,7 @@ class LaterSearchController
 
   @override
   Future<LoadingState<CoreLaterData>> customGetData() async {
-    final result = await (_ref!.read(userRepositoryProvider)).seeYouLater(
+    final result = await (appRead(userRepositoryProvider)).seeYouLater(
     page: page,
     keyword: editController.value.text,
   );

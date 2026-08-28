@@ -15,11 +15,11 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/url_utils.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class ArticleController extends CommonDynController {
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late String id;
   late String type;
 
@@ -87,7 +87,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<bool> queryOpus(String opusId) async {
-    final res = await (_ref!.read(dynamicsRepositoryProvider)).opusDetail(opusId: opusId);
+    final res = await (appRead(dynamicsRepositoryProvider)).opusDetail(opusId: opusId);
     if (res case Success(:final response)) {
       //fallback
       if (response.fallback?.id != null) {
@@ -126,7 +126,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<bool> queryRead(int cvid) async {
-    final res = await (_ref!.read(dynamicsRepositoryProvider)).articleView(cvId: cvid.toString());
+    final res = await (appRead(dynamicsRepositoryProvider)).articleView(cvId: cvid.toString());
     if (res case Success(:final response)) {
       articleData = response;
       summary
@@ -149,7 +149,7 @@ class ArticleController extends CommonDynController {
 
   // stats
   Future<bool> getArticleInfo([bool isGetCover = false]) async {
-    final res = await (_ref!.read(dynamicsRepositoryProvider)).articleInfo(cvId: commentId.toString());
+    final res = await (appRead(dynamicsRepositoryProvider)).articleInfo(cvId: commentId.toString());
     if (res case Success(:final response)) {
       summary
         ..cover ??= response.originImageUrls?.firstOrNull
@@ -187,7 +187,7 @@ class ArticleController extends CommonDynController {
     if (isLoaded) {
       queryData();
       if (Accounts.heartbeat.isLogin && !Pref.historyPause) {
-        (_ref!.read(videoRepositoryProvider)).historyReport(aid: commentId.toString(), type: 5);
+        (appRead(videoRepositoryProvider)).historyReport(aid: commentId.toString(), type: 5);
       }
     }
   }
@@ -195,7 +195,7 @@ class ArticleController extends CommonDynController {
   Future<void> onFav() async {
     final favorite = stats.value?.favorite;
     bool isFav = favorite?.status == true;
-    final repos = _ref!.read(favRepositoryProvider);
+    final repos = appRead(favRepositoryProvider);
     final res = type == 'read'
         ? isFav
           ? await repos.delFavArticle(id: commentId.toString())
@@ -218,7 +218,7 @@ class ArticleController extends CommonDynController {
   Future<void> onLike() async {
     final like = stats.value?.like;
     bool isLike = like?.status == true;
-    final res = await (_ref!.read(dynamicsRepositoryProvider)).thumbDynamic(
+    final res = await (appRead(dynamicsRepositoryProvider)).thumbDynamic(
       dynamicId: opusData?.idStr ?? articleData?.dynIdStr,
       up: isLike ? 2 : 1,
     );

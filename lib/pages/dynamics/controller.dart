@@ -15,6 +15,7 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DynamicsController
     extends CommonDataControllerRiverpod<CoreFollowUpModel, CoreFollowUpModel>
@@ -31,11 +32,9 @@ class DynamicsController
   late bool showLiveUp = Pref.expandDynLivePanel;
   late final _showAllUp = Pref.dynamicsShowAllFollowedUp;
 
-  Ref? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
 
@@ -137,16 +136,16 @@ class DynamicsController
   Future<LoadingState<CoreFollowUpModel>> customGetData() async {
     LoadingState<CoreFollowUpModel> biliResult;
     if (_offset == null) {
-      biliResult = await (_ref!.read(dynamicsRepositoryProvider)).followUp();
+      biliResult = await (appRead(dynamicsRepositoryProvider)).followUp();
     } else if (_showAllUp) {
-      biliResult = await (_ref!.read(dynamicsRepositoryProvider)).followings(
+      biliResult = await (appRead(dynamicsRepositoryProvider)).followings(
         vmid: DynamicsHost.of().currentUserId,
         pn: _page,
         orderType: 'attention',
         ps: 50,
       );
     } else {
-      biliResult = await (_ref!.read(dynamicsRepositoryProvider)).dynUpList(_offset);
+      biliResult = await (appRead(dynamicsRepositoryProvider)).dynUpList(_offset);
     }
     return switch (biliResult) {
       Loading _ => LoadingState.loading(),

@@ -4,6 +4,7 @@ import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dar
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberVideoWebCtr
     extends
@@ -18,8 +19,7 @@ class MemberVideoWebCtr
   int tid = 0;
   String? specialType;
   List<CoreListTag>? tags;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   @override
   List<CoreVListItemModel>? getDataList(CoreSearchArchiveData response) {
@@ -48,7 +48,7 @@ class MemberVideoWebCtr
 
   @override
   Future<LoadingState<CoreSearchArchiveData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).searchArchive(
+    final result = await (appRead(memberRepositoryProvider)).searchArchive(
       mid: mid,
       ps: ps,
       pn: page,

@@ -3,6 +3,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberComicController
     extends CommonListControllerRiverpod<CoreSpaceArchiveData, CoreSpaceArchiveItem> {
@@ -11,8 +12,7 @@ class MemberComicController
   }
 
   final int mid;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   int? count;
 
@@ -31,7 +31,7 @@ class MemberComicController
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
+    final result = await (appRead(memberRepositoryProvider)).spaceArchive(
       type: CoreContributeType.comic,
       mid: mid,
     );

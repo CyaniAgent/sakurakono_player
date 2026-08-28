@@ -5,11 +5,11 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DynMentionController
     extends CommonListControllerRiverpod<List<CoreMentionGroup>?, CoreMentionGroup> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   final focusNode = FocusNode();
   final controller = TextEditingController();
 
@@ -37,7 +37,7 @@ class DynMentionController
 
   @override
   Future<LoadingState<List<CoreMentionGroup>?>> customGetData() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).dynMention(keyword: controller.text);
+    final result = await (appRead(dynamicsRepositoryProvider)).dynMention(keyword: controller.text);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

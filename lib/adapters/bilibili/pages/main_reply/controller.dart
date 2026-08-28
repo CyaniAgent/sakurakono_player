@@ -6,12 +6,11 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MainReplyController extends ReplyController<CoreMainListReply> {
-
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final int oid;
   late final int replyType;
 
@@ -27,7 +26,7 @@ class MainReplyController extends ReplyController<CoreMainListReply> {
 
   @override
   Future<LoadingState<CoreMainListReply>> customGetData() async {
-    final result = await (_ref!.read(replyRepositoryProvider)).mainList(
+    final result = await (appRead(replyRepositoryProvider)).mainList(
       type: replyType,
       oid: oid,
       mode: mode,

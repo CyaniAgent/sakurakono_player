@@ -5,12 +5,11 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class HorizontalMemberPageController
     extends CommonListControllerRiverpod<CoreSpaceArchiveData, CoreSpaceArchiveItem> {
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   HorizontalMemberPageController({this.mid, required this.currAid}) {
     getUserInfo();
     queryData();
@@ -29,7 +28,7 @@ class HorizontalMemberPageController
 
 
   Future<void> getUserInfo() async {
-    final res = await (_ref!.read(memberRepositoryProvider)).memberInfo(mid: mid);
+    final res = await (appRead(memberRepositoryProvider)).memberInfo(mid: mid);
     userState = switch (res) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -42,7 +41,7 @@ class HorizontalMemberPageController
   }
 
   Future<void> getMemberStat() async {
-    final res = await (_ref!.read(memberRepositoryProvider)).memberStat(mid: mid);
+    final res = await (appRead(memberRepositoryProvider)).memberStat(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
       notifyListeners();
@@ -53,7 +52,7 @@ class HorizontalMemberPageController
     if (!Accounts.main.isLogin) {
       return;
     }
-    final res = await (_ref!.read(memberRepositoryProvider)).memberView(mid: mid);
+    final res = await (appRead(memberRepositoryProvider)).memberView(mid: mid);
     if (res case Success(:final response)) {
       userStat.addAll(response);
       notifyListeners();
@@ -99,7 +98,7 @@ class HorizontalMemberPageController
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-      final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
+      final result = await (appRead(memberRepositoryProvider)).spaceArchive(
         type: .video,
         mid: mid,
         aid: page == 1

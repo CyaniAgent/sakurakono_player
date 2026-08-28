@@ -13,12 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class WhisperController extends CommonWhisperController<SessionMainReply> {
-
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   @override
   CoreImSessionPageType sessionPageType = CoreImSessionPageType.home;
 
@@ -64,7 +63,7 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
   }
 
   Future<void> queryMsgFeedUnread() async {
-    final res = await (_ref!.read(imRepositoryProvider)).getTotalUnread(unreadType: 2);
+    final res = await (appRead(imRepositoryProvider)).getTotalUnread(unreadType: 2);
     if (res case Success(:final response)) {
       final unreadMap = response.msgFeedUnread;
       final data = CoreMsgFeedUnreadData(

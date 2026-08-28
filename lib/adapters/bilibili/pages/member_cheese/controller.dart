@@ -3,6 +3,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberCheeseController
     extends CommonListControllerRiverpod<CoreSpaceCheeseData, CoreSpaceCheeseItem> {
@@ -11,9 +12,7 @@ class MemberCheeseController
   }
 
   final int mid;
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   @override
   List<CoreSpaceCheeseItem>? getDataList(CoreSpaceCheeseData response) {
@@ -23,7 +22,7 @@ class MemberCheeseController
 
   @override
   Future<LoadingState<CoreSpaceCheeseData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).spaceCheese(
+    final result = await (appRead(memberRepositoryProvider)).spaceCheese(
       page: page,
       mid: mid,
     );

@@ -4,12 +4,11 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/auth_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class CoreLoginDevicesController
     extends CommonListControllerRiverpod<CoreLoginDevicesData, CoreLoginDevice> {
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   CoreLoginDevicesController() {
     queryData();
   }
@@ -21,7 +20,7 @@ class CoreLoginDevicesController
 
   @override
   Future<LoadingState<CoreLoginDevicesData>> customGetData() async {
-    final result = await (_ref!.read(authRepositoryProvider)).loginDevices();
+    final result = await (appRead(authRepositoryProvider)).loginDevices();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

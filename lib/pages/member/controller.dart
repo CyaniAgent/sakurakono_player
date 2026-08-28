@@ -15,6 +15,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreSpaceData?>
     implements TickerProvider {
@@ -191,7 +192,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
 
   @override
   Future<LoadingState<CoreSpaceData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).space(
+    final result = await (appRead(memberRepositoryProvider)).space(
       mid: mid,
       fromViewAid: fromViewAid,
     );
@@ -238,7 +239,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
 
   Future<void> _onBlock() async {
     final isBlocked = relation == 128;
-    final res = await (_ref!.read(videoRepositoryProvider)).relationMod(
+    final res = await (appRead(videoRepositoryProvider)).relationMod(
       mid: mid,
       act: isBlocked ? 6 : 5,
       reSrc: 11,
@@ -277,7 +278,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   }
 
   Future<void> onRemoveFan() async {
-    final res = await (_ref!.read(videoRepositoryProvider)).relationMod(mid: mid, act: 7, reSrc: 11);
+    final res = await (appRead(videoRepositoryProvider)).relationMod(mid: mid, act: 7, reSrc: 11);
     if (res.isSuccess) {
       isFollowed = null;
       if (relation == 4) {
@@ -296,7 +297,7 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   }
 
   Future<void> vipExpAdd() async {
-    final res = await (_ref!.read(userRepositoryProvider)).vipExpAdd();
+    final res = await (appRead(userRepositoryProvider)).vipExpAdd();
     if (res.isSuccess) {
       SmartDialog.showToast('领取成功');
     } else {

@@ -8,6 +8,7 @@ import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavSearchController
     extends CommonSearchController<CoreFavDetailData, CoreFavDetailItemModel>
@@ -15,9 +16,8 @@ class FavSearchController
         CommonMultiSelectMixin<CoreFavDetailItemModel>,
         DeleteItemMixin,
         BaseFavController {
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late int type;
   @override
   late int mediaId;
@@ -39,7 +39,7 @@ class FavSearchController
 
   @override
   Future<LoadingState<CoreFavDetailData>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).userFavFolderDetail(
+    final result = await (appRead(favRepositoryProvider)).userFavFolderDetail(
         pn: page,
         ps: 20,
         mediaId: mediaId,

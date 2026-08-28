@@ -59,9 +59,8 @@ class AudioController extends ChangeNotifier
         FavMixin,
         BlockConfigMixin,
         BlockMixin {
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   /// TripleMixin notification callback.
   @override
@@ -425,7 +424,7 @@ class AudioController extends ChangeNotifier
       return;
     }
     final newVal = !hasLike;
-    final res = await (_ref!.read(audioRepositoryProvider)).audioThumbUp(
+    final res = await (appRead(audioRepositoryProvider)).audioThumbUp(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -453,7 +452,7 @@ class AudioController extends ChangeNotifier
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final res = await (_ref!.read(audioRepositoryProvider)).audioTripleLike(
+    final res = await (appRead(audioRepositoryProvider)).audioTripleLike(
       oid: oid,
       subId: subId,
       itemType: itemType,
@@ -486,7 +485,7 @@ class AudioController extends ChangeNotifier
 
   @override
   Future<void> onPayCoin(int coin, bool coinWithLike) async {
-    final res = await (_ref!.read(audioRepositoryProvider)).audioCoinAdd(
+    final res = await (appRead(audioRepositoryProvider)).audioCoinAdd(
       oid: oid,
       subId: subId,
       itemType: itemType,

@@ -7,12 +7,12 @@ import 'package:skf/adapters/bilibili/pages/video_parts/reply/vote/reply_vote_mi
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 abstract class CommonDynController extends ReplyController<CoreMainListReply>
     with ReplyVoteMixin<CoreMainListReply> {
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   int get oid;
   int get replyType;
 
@@ -25,7 +25,7 @@ abstract class CommonDynController extends ReplyController<CoreMainListReply>
 
   @override
   Future<LoadingState<CoreMainListReply>> customGetData() async {
-    final result = await (_ref!.read(replyRepositoryProvider)).mainList(
+    final result = await (appRead(replyRepositoryProvider)).mainList(
       type: replyType,
       oid: oid,
       mode: mode,

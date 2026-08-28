@@ -12,8 +12,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class DynamicsTabController
     extends CommonListControllerRiverpod<CoreDynamicsDataModel, CoreDynamicItemModel> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   DynamicsTabController({required this.dynamicsType}) {
     queryData();
   }
@@ -41,7 +40,7 @@ class DynamicsTabController
 
   @override
   Future<LoadingState<CoreDynamicsDataModel>> customGetData() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).followDynamic(
+    final result = await (appRead(dynamicsRepositoryProvider)).followDynamic(
       offset: offset,
       type: dynamicsType,
       hostMid: dynamicsController.hostMid,
@@ -55,7 +54,7 @@ class DynamicsTabController
   }
 
   Future<void> onRemove(int index, dynamic dynamicId) async {
-    final res = await (_ref!.read(msgRepositoryProvider)).removeDynamic(dynIdStr: dynamicId.toString());
+    final res = await (appRead(msgRepositoryProvider)).removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();

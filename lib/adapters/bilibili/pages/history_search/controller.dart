@@ -10,15 +10,15 @@ import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class HistorySearchController
     extends CommonSearchController<CoreHistoryData, CoreHistoryItemModel>
     with CommonMultiSelectMixin<CoreHistoryItemModel>, DeleteItemMixin {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   @override
   Future<LoadingState<CoreHistoryData>> customGetData() async {
-    final result = await (_ref!.read(userRepositoryProvider)).searchHistory(
+    final result = await (appRead(userRepositoryProvider)).searchHistory(
     pn: page,
     keyword: editController.value.text,
     account: account,
@@ -38,7 +38,7 @@ class HistorySearchController
   final account = Accounts.history;
 
   Future<void> onDelHistory(int index, kid, String business) async {
-    final res = await (_ref!.read(userRepositoryProvider)).delHistory(
+    final res = await (appRead(userRepositoryProvider)).delHistory(
       '${business}_$kid',
       account: account,
     );
@@ -60,7 +60,7 @@ class HistorySearchController
       onConfirm: () async {
         SmartDialog.showLoading(msg: '请求中');
         final removeList = allChecked.toSet();
-        final response = await (_ref!.read(userRepositoryProvider)).delHistory(
+        final response = await (appRead(userRepositoryProvider)).delHistory(
           removeList
               .map((item) => '${item.history.business!}_${item.kid!}')
               .join(','),

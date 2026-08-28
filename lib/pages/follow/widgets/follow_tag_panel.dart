@@ -14,6 +14,7 @@ import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FollowTagPanel extends StatefulWidget {
   final int mid;
@@ -37,8 +38,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
   late final Set<int> tags = widget.tags == null
       ? {}
       : Set<int>.from(widget.tags!);
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   @override
   void initState() {
     super.initState();
@@ -46,7 +46,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
   }
 
   void _queryFollowUpTags() {
-    _ref!.read(memberRepositoryProvider).followUpTags().then((res) {
+    appRead(memberRepositoryProvider).followUpTags().then((res) {
       if (mounted) {
         loadingState = switch (res) {
               Loading() => LoadingState.loading(),
@@ -69,7 +69,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
     }
     feedBack();
     // 保存
-    final res = await _ref!.read(memberRepositoryProvider).addUsers(
+    final res = await appRead(memberRepositoryProvider).addUsers(
       widget.mid.toString(),
       tags.isEmpty ? '0' : tags.join(','),
     );

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberDynamicsController
     extends CommonListControllerRiverpod<CoreDynamicsDataModel, CoreDynamicItemModel> {
@@ -12,8 +13,7 @@ class MemberDynamicsController
     queryData();
   }
   int mid;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   String offset = '';
 
 
@@ -42,7 +42,7 @@ class MemberDynamicsController
 
   @override
   Future<LoadingState<CoreDynamicsDataModel>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).memberDynamic(
+    final result = await (appRead(memberRepositoryProvider)).memberDynamic(
       offset: offset,
       mid: mid,
     );
@@ -54,7 +54,7 @@ class MemberDynamicsController
   }
 
   Future<void> onRemove(dynamic dynamicId) async {
-    final res = await (_ref!.read(msgRepositoryProvider)).removeDynamic(dynIdStr: dynamicId.toString());
+    final res = await (appRead(msgRepositoryProvider)).removeDynamic(dynIdStr: dynamicId.toString());
     if (res.isSuccess) {
       loadingState.data!
           .removeWhere((item) => (item).idStr == dynamicId);
@@ -67,8 +67,8 @@ class MemberDynamicsController
 
   Future<void> onSetTop(bool isTop, String dynamicId) async {
     final res = await (isTop
-        ? (_ref!.read(dynamicsRepositoryProvider)).rmTop(dynamicId: dynamicId)
-        : (_ref!.read(dynamicsRepositoryProvider)).setTop(dynamicId: dynamicId));
+        ? (appRead(dynamicsRepositoryProvider)).rmTop(dynamicId: dynamicId)
+        : (appRead(dynamicsRepositoryProvider)).setTop(dynamicId: dynamicId));
     if (res.isSuccess) {
       final list = loadingState.data!;
       list[0].modules!

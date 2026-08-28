@@ -4,13 +4,12 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SysMsgController
     extends CommonListControllerRiverpod<List<CoreMsgSysItem>?, CoreMsgSysItem> {
   int? cursor;
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   SysMsgController() {
     queryData();
   }
@@ -25,7 +24,7 @@ class SysMsgController
 
   void msgSysUpdateCursor(int? cursor) {
     if (cursor != null) {
-      (_ref!.read(msgRepositoryProvider)).msgSysUpdateCursor(cursor);
+      (appRead(msgRepositoryProvider)).msgSysUpdateCursor(cursor);
     }
   }
 
@@ -37,7 +36,7 @@ class SysMsgController
 
   Future<void> onRemove(dynamic id, int index) async {
     try {
-      final res = await (_ref!.read(msgRepositoryProvider)).delSysMsg(id);
+      final res = await (appRead(msgRepositoryProvider)).delSysMsg(id);
       if (res.isSuccess) {
         loadingState.data!.removeAt(index);
         notifyListeners();
@@ -50,7 +49,7 @@ class SysMsgController
 
   @override
   Future<LoadingState<List<CoreMsgSysItem>?>> customGetData() async {
-    final result = await (_ref!.read(msgRepositoryProvider)).msgFeedNotify(cursor: cursor);
+    final result = await (appRead(msgRepositoryProvider)).msgFeedNotify(cursor: cursor);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),

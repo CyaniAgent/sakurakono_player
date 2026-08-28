@@ -13,8 +13,7 @@ import 'package:flutter/widgets.dart' show ScrollController;
 
 class PgcController
     extends CommonListControllerRiverpod<List<CorePgcIndexItem>?, CorePgcIndexItem> {
-  ProviderContainer? _ref;
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   final HomeTabType tabType;
   final int? indexType;
   late final showPgcTimeline =
@@ -65,8 +64,8 @@ class PgcController
 
   Future<void> queryPgcTimeline() async {
     final res = await Future.wait([
-(_ref!.read(pgcRepositoryProvider)).pgcTimeline(types: 1, before: 6, after: 6),
-  (_ref!.read(pgcRepositoryProvider)).pgcTimeline(types: 4, before: 6, after: 6),
+(appRead(pgcRepositoryProvider)).pgcTimeline(types: 1, before: 6, after: 6),
+  (appRead(pgcRepositoryProvider)).pgcTimeline(types: 4, before: 6, after: 6),
     ]);
     final list1 = res.first.dataOrNull;
     final list2 = res[1].dataOrNull;
@@ -89,7 +88,7 @@ class PgcController
       return;
     }
     followLoading = true;
-    final res = await (_ref!.read(favRepositoryProvider)).favPgc(
+    final res = await (appRead(favRepositoryProvider)).favPgc(
       type: tabType == HomeTabType.bangumi ? 1 : 2,
       pn: followPage,
     );
@@ -132,7 +131,7 @@ class PgcController
 
   @override
   Future<LoadingState<List<CorePgcIndexItem>?>> customGetData() async {
-    final result = await (_ref!.read(pgcRepositoryProvider)).pgcIndex(
+    final result = await (appRead(pgcRepositoryProvider)).pgcIndex(
       page: page,
       indexType: indexType,
     );

@@ -9,12 +9,12 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>?, CoreAreaList>
     implements TickerProvider {
   Ticker? _ticker;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final isLogin = Accounts.main.isLogin;
 
   bool isEditing = false;
@@ -59,7 +59,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
 
   @override
   Future<LoadingState<List<CoreAreaList>?>> customGetData() async {
-    final result = await (_ref!.read(liveRepositoryProvider)).liveAreaList();
+    final result = await (appRead(liveRepositoryProvider)).liveAreaList();
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -68,7 +68,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
   }
 
   Future<void> queryFavTags() async {
-    final biliResult = await (_ref!.read(liveRepositoryProvider)).getLiveFavTag();
+    final biliResult = await (appRead(liveRepositoryProvider)).getLiveFavTag();
     favState = switch (biliResult) {
       Loading _ => LoadingState<List<CoreAreaItem>>.loading(),
       Success(:final response) => Success(response),
@@ -78,7 +78,7 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
 
   Future<void> setFavTag() async {
     if (favState case Success(:final response)) {
-      final biliResult = await (_ref!.read(liveRepositoryProvider)).setLiveFavTag(
+      final biliResult = await (appRead(liveRepositoryProvider)).setLiveFavTag(
         ids: response.map((e) => e.id).join(','),
       );
       final res = switch (biliResult) {

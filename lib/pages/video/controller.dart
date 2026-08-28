@@ -34,6 +34,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:media_kit/media_kit.dart' hide Subtitle;
+import 'package:skf/core/container/app_container.dart';
 
 /// 视频播放详情页控制器（通用层，零适配器依赖）。
 ///
@@ -41,8 +42,6 @@ import 'package:media_kit/media_kit.dart' hide Subtitle;
 /// 数据层使用 core [VideoRepository] 等仓库接口。
 class VideoDetailController extends ChangeNotifier {
   /// 路由传参
-
-  Ref? _ref;
   final TickerProvider? _vsync;
   bool _isDisposed = false;
   bool get isClosed => _isDisposed;
@@ -51,7 +50,7 @@ class VideoDetailController extends ChangeNotifier {
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final Map args;
   late String bvid;
   late int aid;
@@ -379,7 +378,7 @@ class VideoDetailController extends ChangeNotifier {
     if (!isReverse && count != null && mediaList.length >= count) {
       return;
     }
-    final res = await (_ref!.read(userRepositoryProvider)).getMediaList(
+    final res = await (appRead(userRepositoryProvider)).getMediaList(
       type: VideoHost.of().sourceMediaType(args['sourceType']),
       bizId: (args['mediaId'] ?? -1).toString(),
       ps: 20,
@@ -640,7 +639,7 @@ class VideoDetailController extends ChangeNotifier {
             : Pref.defaultAudioQaCellular;
     }
 
-    final result = await (_ref!.read(videoRepositoryProvider)).videoUrl(
+    final result = await (appRead(videoRepositoryProvider)).videoUrl(
       cid: cid.value,
       bvid: bvid,
       epid: epId?.toString(),
@@ -771,7 +770,7 @@ class VideoDetailController extends ChangeNotifier {
     if (subtitle != null) {
       await setSub(subtitle);
     } else {
-      final result = await (_ref!.read(videoRepositoryProvider)).vttSubtitles(
+      final result = await (appRead(videoRepositoryProvider)).vttSubtitles(
         subtitles[index - 1].subtitleUrl!,
       );
       if (!isClosed && result != null) {
@@ -804,7 +803,7 @@ class VideoDetailController extends ChangeNotifier {
     if (plPlayerController.showViewPoints) {
       viewPointList.clear();
     }
-    final res = await (_ref!.read(videoRepositoryProvider)).playInfo(
+    final res = await (appRead(videoRepositoryProvider)).playInfo(
       bvid: bvid,
       cid: cid.value,
       seasonId: seasonId?.toString(),
@@ -889,7 +888,7 @@ class VideoDetailController extends ChangeNotifier {
   void updateMediaListHistory(int aid) {
     if (args['sortField'] != null) {
       final mediaId = args['mediaId'];
-      (_ref!.read(videoRepositoryProvider)).medialistHistory(
+      (appRead(videoRepositoryProvider)).medialistHistory(
         desc: _mediaDesc ? 1 : 0,
         oid: '$aid',
         upperMid: mediaId is int ? mediaId : int.parse('$mediaId'),
@@ -1094,7 +1093,7 @@ class VideoDetailController extends ChangeNotifier {
   @pragma('vm:notify-debugger-on-exception')
   Future<void> onCast() async {
     SmartDialog.showLoading();
-    final res = await (_ref!.read(videoRepositoryProvider)).tvPlayUrl(
+    final res = await (appRead(videoRepositoryProvider)).tvPlayUrl(
       cid: cid.value,
       objectId: epId ?? aid,
       playurlType: epId != null ? 2 : 1,

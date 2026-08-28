@@ -4,15 +4,14 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/multi_select/multi_select_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavNoteController
     extends MultiSelectController<List<CoreFavNoteItemModel>?, CoreFavNoteItemModel> {
 
-  ProviderContainer? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   FavNoteController(this.isPublish) {
     queryData();
   }
@@ -32,8 +31,8 @@ class FavNoteController
   @override
   Future<LoadingState<List<CoreFavNoteItemModel>?>> customGetData() async {
     final result = isPublish
-        ? await (_ref!.read(favRepositoryProvider)).userNoteList(page: page)
-        : await (_ref!.read(favRepositoryProvider)).noteList(page: page);
+        ? await (appRead(favRepositoryProvider)).userNoteList(page: page)
+        : await (appRead(favRepositoryProvider)).noteList(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -44,7 +43,7 @@ class FavNoteController
   @override
   Future<void> onRemove() async {
     final removeList = allChecked.toSet();
-    final res = await (_ref!.read(favRepositoryProvider)).delNote(
+    final res = await (appRead(favRepositoryProvider)).delNote(
       isPublish: isPublish,
       noteIds: removeList
           .map((item) => isPublish ? item.cvid : item.noteId)

@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberGuardController
     extends CommonListControllerRiverpod<CoreMemberGuardData, CoreGuardItem> {
@@ -14,9 +15,7 @@ class MemberGuardController
   final int ruid = Get.arguments['ruid'] as int;
 
   late List<CoreGuardItem> tops;
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   @override
   List<CoreGuardItem>? getDataList(CoreMemberGuardData response) {
@@ -42,7 +41,7 @@ class MemberGuardController
 
   @override
   Future<LoadingState<CoreMemberGuardData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).memberGuard(ruid: ruid, page: page);
+    final result = await (appRead(memberRepositoryProvider)).memberGuard(ruid: ruid, page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

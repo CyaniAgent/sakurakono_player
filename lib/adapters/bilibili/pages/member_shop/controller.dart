@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberShopController
     extends CommonListControllerRiverpod<CoreSpaceShopData, CoreSpaceShopItem> {
@@ -11,8 +12,7 @@ class MemberShopController
   }
 
   final int mid;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
 
   bool? showMoreTab;
@@ -30,7 +30,7 @@ class MemberShopController
 
   @override
   Future<LoadingState<CoreSpaceShopData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).spaceShop(mid: mid);
+    final result = await (appRead(memberRepositoryProvider)).spaceShop(mid: mid);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

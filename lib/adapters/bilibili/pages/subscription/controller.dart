@@ -7,10 +7,10 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubItemModel> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final account = Accounts.main;
 
   SubController() {
@@ -43,7 +43,7 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
           ),
           TextButton(
             onPressed: () async {
-              final res = await (_ref!.read(favRepositoryProvider)).cancelSub(
+              final res = await (appRead(favRepositoryProvider)).cancelSub(
                 id: subFolderItem.id!,
                 type: subFolderItem.type!,
               );
@@ -75,7 +75,7 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
 
   @override
   Future<LoadingState<CoreSubData>> customGetData() async {
-    final result = await (_ref!.read(userRepositoryProvider)).userSubFolder(
+    final result = await (appRead(userRepositoryProvider)).userSubFolder(
       pn: page,
       ps: 20,
       mid: account.mid,

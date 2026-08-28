@@ -4,17 +4,16 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class ReplyMeController
     extends CommonListControllerRiverpod<CoreMsgReplyData, CoreMsgReplyItem> {
   int? cursor;
   int? cursorTime;
 
-  Ref? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   ReplyMeController() {
     queryData();
@@ -39,7 +38,7 @@ class ReplyMeController
 
   @override
   Future<LoadingState<CoreMsgReplyData>> customGetData() async {
-    final result = await (_ref!.read(msgRepositoryProvider)).msgFeedReplyMe(cursor: cursor, cursorTime: cursorTime);
+    final result = await (appRead(msgRepositoryProvider)).msgFeedReplyMe(cursor: cursor, cursorTime: cursorTime);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -49,7 +48,7 @@ class ReplyMeController
 
   Future<void> onRemove(dynamic id, int index) async {
     try {
-      final res = await (_ref!.read(msgRepositoryProvider)).delMsgfeed(1, id);
+      final res = await (appRead(msgRepositoryProvider)).delMsgfeed(1, id);
       if (res.isSuccess) {
         loadingState.data!.removeAt(index);
         notifyListeners();

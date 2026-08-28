@@ -14,9 +14,8 @@ import 'package:skf/core/container/app_container.dart';
 
 class VideoReplyController extends ReplyController<CoreMainListReply>
     with ReplyVoteMixin<CoreMainListReply> {
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   VideoReplyController({
     required this.aid,
     required this.videoType,
@@ -39,7 +38,7 @@ class VideoReplyController extends ReplyController<CoreMainListReply>
 
   @override
   Future<LoadingState<CoreMainListReply>> customGetData() async {
-    final result = await (_ref!.read(replyRepositoryProvider)).mainList(
+    final result = await (appRead(replyRepositoryProvider)).mainList(
       oid: isPugv ? videoCtr.epId! : aid,
       type: videoType.replyType,
       mode: mode,

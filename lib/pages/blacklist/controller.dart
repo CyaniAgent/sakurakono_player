@@ -8,6 +8,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class BlackListController
     extends CommonListControllerRiverpod<CoreBlackListData, CoreBlackListItem> {
@@ -16,11 +17,9 @@ class BlackListController
   }
   int total = -1;
 
-  Ref? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   @override
   List<CoreBlackListItem>? getDataList(CoreBlackListData response) {
@@ -40,7 +39,7 @@ class BlackListController
       context: context,
       title: Text('确定将 $name 移出黑名单？'),
       onConfirm: () async {
-        final result = await (_ref!.read(videoRepositoryProvider)).relationMod(mid: mid, act: 6, reSrc: 11);
+        final result = await (appRead(videoRepositoryProvider)).relationMod(mid: mid, act: 6, reSrc: 11);
         if (result.isSuccess) {
           loadingState.data!.removeAt(index);
           notifyListeners();
@@ -53,7 +52,7 @@ class BlackListController
 
   @override
   Future<LoadingState<CoreBlackListData>> customGetData() async {
-    final result = await (_ref!.read(blackRepositoryProvider)).blackList(pn: page);
+    final result = await (appRead(blackRepositoryProvider)).blackList(pn: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

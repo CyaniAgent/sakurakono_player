@@ -5,11 +5,11 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class ArticleListController
     extends CommonListControllerRiverpod<CoreArticleListData, CoreArticleListItemModel> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   final id = Get.parameters['id']!;
 
   ArticleListController() {
@@ -28,7 +28,7 @@ class ArticleListController
 
   @override
   Future<LoadingState<CoreArticleListData>> customGetData() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).articleList(id: id);
+    final result = await (appRead(dynamicsRepositoryProvider)).articleList(id: id);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

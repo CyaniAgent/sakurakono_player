@@ -4,6 +4,7 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class FavTopicController
     extends CommonListControllerRiverpod<CoreFavTopicData, CoreFavTopicItem> {
@@ -11,11 +12,9 @@ class FavTopicController
     queryData();
   }
 
-  Ref? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   int? total;
 
 
@@ -40,7 +39,7 @@ class FavTopicController
 
   @override
   Future<LoadingState<CoreFavTopicData>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).favTopic(page: page);
+    final result = await (appRead(favRepositoryProvider)).favTopic(page: page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),
@@ -49,7 +48,7 @@ class FavTopicController
   }
 
   Future<void> onDeleteTopic(int index, dynamic id) async {
-    final res = await (_ref!.read(favRepositoryProvider)).delFavTopic(id);
+    final res = await (appRead(favRepositoryProvider)).delFavTopic(id);
     if (res.isSuccess) {
       loadingState.data!.removeAt(index);
       notifyListeners();

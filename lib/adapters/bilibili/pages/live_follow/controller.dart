@@ -5,14 +5,14 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveFollowController
     extends CommonListControllerRiverpod<CoreLiveFollowData, CoreLiveFollowItem> {
   LiveFollowController() {
     queryData();
   }
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   int? count;
 
@@ -32,7 +32,7 @@ class LiveFollowController
 
   @override
   Future<LoadingState<CoreLiveFollowData>> customGetData() async {
-    final result = await (_ref!.read(liveRepositoryProvider)).liveFollow(page);
+    final result = await (appRead(liveRepositoryProvider)).liveFollow(page);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

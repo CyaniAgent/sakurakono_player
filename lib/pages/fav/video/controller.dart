@@ -10,11 +10,10 @@ class FavController
   FavController() {
     queryData();
   }
-  Ref? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   late final bool isLogin = appRead(accountProvider).isLogin;
 
@@ -40,7 +39,7 @@ class FavController
 
   @override
   Future<LoadingState<CoreFavFolderData>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).userfavFolder(
+    final result = await (appRead(favRepositoryProvider)).userfavFolder(
     pn: page,
     ps: 20,
     mid: mid,

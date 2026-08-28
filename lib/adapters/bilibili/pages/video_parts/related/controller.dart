@@ -4,11 +4,11 @@ import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class RelatedController
     extends CommonListControllerRiverpod<List<CoreHotVideoItemModel>?, CoreHotVideoItemModel> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   RelatedController({this.autoQuery = true}) {
     if (autoQuery) {
       queryData();
@@ -22,7 +22,7 @@ class RelatedController
 
   @override
   Future<LoadingState<List<CoreHotVideoItemModel>?>> customGetData() async {
-    final result = await (_ref!.read(videoRepositoryProvider)).relatedVideoList(bvid: bvid);
+    final result = await (appRead(videoRepositoryProvider)).relatedVideoList(bvid: bvid);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

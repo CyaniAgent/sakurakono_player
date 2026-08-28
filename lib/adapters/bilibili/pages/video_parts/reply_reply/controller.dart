@@ -16,6 +16,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class VideoReplyReplyController extends ReplyController {
   VideoReplyReplyController({
@@ -39,10 +40,8 @@ class VideoReplyReplyController extends ReplyController {
 
   bool hasRoot = false;
   final firstFloor = Rxn<ReplyInfo>();
-
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   final index = RxnInt();
 
@@ -128,14 +127,14 @@ class VideoReplyReplyController extends ReplyController {
   @override
   Future<LoadingState> customGetData() async {
     final result = await (dialog != null
-        ? (_ref!.read(replyRepositoryProvider)).dialogList(
+        ? (appRead(replyRepositoryProvider)).dialogList(
             type: replyType,
             oid: oid,
             root: rpid,
             dialog: dialog!,
             offset: paginationReply?.nextOffset,
           )
-        : (_ref!.read(replyRepositoryProvider)).detailList(
+        : (appRead(replyRepositoryProvider)).detailList(
             type: replyType,
             oid: oid,
             root: rpid,

@@ -7,12 +7,12 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, CoreDynList>
     implements TickerProvider {
   Ticker? _ticker;
-  ProviderContainer? _ref;
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   BubbleController(this.categoryId) {
     tribeId = Get.arguments['id'];
     queryData();
@@ -63,7 +63,7 @@ class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, Core
 
   @override
   Future<LoadingState<CoreBubbleData>> customGetData() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).bubble(
+    final result = await (appRead(dynamicsRepositoryProvider)).bubble(
       tribeId: tribeId,
       categoryId: categoryId,
       sortType: sortType,

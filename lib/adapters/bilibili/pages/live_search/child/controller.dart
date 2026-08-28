@@ -6,6 +6,7 @@ import 'package:skf/core/models/live_enums.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/controller.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveSearchChildController
     extends CommonListControllerRiverpod<CoreLiveSearchData, dynamic> {
@@ -14,8 +15,7 @@ class LiveSearchChildController
   final LiveSearchNotifier notifier;
   final CoreLiveSearchType searchType;
 
-  WidgetRef? _ref;
-  void attachRef(WidgetRef ref) { _ref = ref; }
+  void attachRef(WidgetRef ref) {}
 
   @override
   void checkIsEnd(int length) {
@@ -48,7 +48,7 @@ class LiveSearchChildController
 
   @override
   Future<LoadingState<CoreLiveSearchData>> customGetData() async {
-    final result = await (_ref!.read(liveRepositoryProvider)).liveSearch(
+    final result = await (appRead(liveRepositoryProvider)).liveSearch(
       page: page,
       keyword: notifier.editingController.text,
       type: searchType,

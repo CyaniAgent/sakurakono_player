@@ -5,11 +5,11 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DynReactController
     extends CommonListControllerRiverpod<CoreDynReactionData, CoreDynReactionItem> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   DynReactController(this.id, {int count = -1}) : count = RxInt(count);
   final String id;
 
@@ -39,7 +39,7 @@ class DynReactController
 
   @override
   Future<LoadingState<CoreDynReactionData>> customGetData() async {
-    final result = await (_ref!.read(dynamicsRepositoryProvider)).dynReaction(id: id, offset: _offset);
+    final result = await (appRead(dynamicsRepositoryProvider)).dynReaction(id: id, offset: _offset);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

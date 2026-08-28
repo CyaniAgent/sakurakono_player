@@ -3,6 +3,7 @@ import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class UpowerRankController
     extends CommonListControllerRiverpod<CoreUpowerRankData, CoreUpowerRankInfo> {
@@ -15,8 +16,7 @@ class UpowerRankController
 
   final String upMid;
   final int? privilegeType;
-  ProviderContainer? _ref;
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
 
   late final List<CoreLevelInfo>? tabs;
 
@@ -33,7 +33,7 @@ class UpowerRankController
 
   @override
   Future<LoadingState<CoreUpowerRankData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).upowerRank(
+    final result = await (appRead(memberRepositoryProvider)).upowerRank(
       upMid: int.tryParse(upMid) ?? 0,
       page: page,
       privilegeType: privilegeType,

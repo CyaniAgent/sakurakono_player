@@ -36,7 +36,7 @@ mixin BaseLaterController
       onConfirm: () async {
         final removeList = allChecked.toSet();
         SmartDialog.showLoading(msg: '请求中');
-        final res = await (_ref!.read(userRepositoryProvider)).toViewDel(
+        final res = await (appRead(userRepositoryProvider)).toViewDel(
           aids: removeList.map((item) => item.aid).join(','),
         );
         if (res.isSuccess) {
@@ -70,7 +70,7 @@ mixin BaseLaterController
           TextButton(
             onPressed: () async {
               AppNavigator.back();
-              final res = await (_ref!.read(userRepositoryProvider)).toViewDel(aids: aid.toString());
+              final res = await (appRead(userRepositoryProvider)).toViewDel(aids: aid.toString());
               if (res.isSuccess) {
                 dataList!.removeAt(index);
                 notifyStateChanged();
@@ -103,13 +103,13 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
     _asc = value;
     notifyListeners();
   }
-  late final int mid = (_ref!.read(accountProvider).userId) ?? 0;
+  late final int mid = (appRead(accountProvider).userId) ?? 0;
   final LaterActions? actions;
   final LaterViewType laterViewType;
 
   @override
   Future<LoadingState<CoreLaterData>> customGetData() async {
-    final result = await (_ref!.read(userRepositoryProvider)).seeYouLater(
+    final result = await (appRead(userRepositoryProvider)).seeYouLater(
       page: page,
       viewed: laterViewType.type,
       asc: asc,
@@ -145,7 +145,7 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
       title: const Text('确认'),
       content: Text(content),
       onConfirm: () async {
-        final res = await (_ref!.read(userRepositoryProvider)).toViewClear(cleanType);
+        final res = await (appRead(userRepositoryProvider)).toViewClear(cleanType);
         if (res.isSuccess) {
           onReload();
           final restTypes = List<LaterViewType>.from(LaterViewType.values)

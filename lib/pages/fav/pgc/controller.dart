@@ -16,11 +16,9 @@ class FavPgcController
   final int type;
   final int followStatus;
 
-  ProviderContainer? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
 
 
   @override
@@ -39,7 +37,7 @@ class FavPgcController
 
   @override
   Future<LoadingState<CoreFavPgcData>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).favPgc(
+    final result = await (appRead(favRepositoryProvider)).favPgc(
     type: type,
     followStatus: followStatus,
     pn: page,
@@ -60,7 +58,7 @@ class FavPgcController
 
   // 取消追番
   Future<void> pgcDel(int index, seasonId) async {
-    final result = await (_ref!.read(videoRepositoryProvider)).pgcDel(seasonId: seasonId);
+    final result = await (appRead(videoRepositoryProvider)).pgcDel(seasonId: seasonId);
     if (result case Success(:final response)) {
       loadingState.data!.removeAt(index);
       notifyListeners();
@@ -77,7 +75,7 @@ class FavPgcController
 
   Future<void> onUpdateList(int followStatus) async {
     final removeList = allChecked.toSet();
-    final res = await (_ref!.read(videoRepositoryProvider)).pgcUpdate(
+    final res = await (appRead(videoRepositoryProvider)).pgcUpdate(
       seasonId: removeList.map((item) => item.seasonId).join(','),
       status: followStatus,
     );
@@ -104,7 +102,7 @@ class FavPgcController
   }
 
   Future<void> onUpdate(int index, int followStatus, int? seasonId) async {
-    final res = await (_ref!.read(videoRepositoryProvider)).pgcUpdate(
+    final res = await (appRead(videoRepositoryProvider)).pgcUpdate(
       seasonId: seasonId.toString(),
       status: followStatus,
     );

@@ -8,10 +8,10 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/widgets.dart' show ScrollController;
+import 'package:skf/core/container/app_container.dart';
 
 class LiveController extends CommonListControllerRiverpod {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   LiveController() { queryData(); }
 
   int? count;
@@ -73,14 +73,14 @@ class LiveController extends CommonListControllerRiverpod {
   Future<LoadingState> customGetData() async {
     final LoadingState biliResult;
     if (areaIndex != 0) {
-      biliResult = await (_ref!.read(liveRepositoryProvider)).liveSecondList(
+      biliResult = await (appRead(liveRepositoryProvider)).liveSecondList(
         pn: page,
         areaId: areaId,
         parentAreaId: parentAreaId,
         sortType: sortType,
       );
     } else {
-      biliResult = await (_ref!.read(liveRepositoryProvider)).liveFeedIndex(pn: page);
+      biliResult = await (appRead(liveRepositoryProvider)).liveFeedIndex(pn: page);
     }
     return switch (biliResult) {
       Loading _ => LoadingState.loading(),
@@ -102,7 +102,7 @@ class LiveController extends CommonListControllerRiverpod {
   }
 
   Future<void> queryTop() async {
-    final biliResult = await (_ref!.read(liveRepositoryProvider)).liveFeedIndex(pn: page, moduleSelect: true);
+    final biliResult = await (appRead(liveRepositoryProvider)).liveFeedIndex(pn: page, moduleSelect: true);
     final res = switch (biliResult) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

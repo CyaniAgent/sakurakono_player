@@ -17,6 +17,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/container/app_container.dart';
 
 abstract class ReplyController<R>
     extends CommonListControllerRiverpod<R, ReplyInfo> {
@@ -25,8 +26,7 @@ abstract class ReplyController<R>
     sortType = cacheSortType;
     mode = cacheSortType == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
   }
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   int count = -1;
 
   late ReplySortType sortType;
@@ -240,7 +240,7 @@ abstract class ReplyController<R>
     int type,
   ) async {
     bool isUpTop = item.replyControl.isUpTop;
-    final res = await (_ref!.read(replyRepositoryProvider)).replyTop(
+    final res = await (appRead(replyRepositoryProvider)).replyTop(
       oid: oid,
       type: type,
       rpid: item.id.toString(),

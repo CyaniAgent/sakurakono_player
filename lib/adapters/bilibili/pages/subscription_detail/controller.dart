@@ -4,11 +4,11 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SubDetailController
     extends CommonListControllerRiverpod<CoreSubDetailData, CoreSubDetailItemModel> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late int id;
   String? heroTag;
   CoreSubItemModel? subInfo;
@@ -37,7 +37,7 @@ class SubDetailController
 
   @override
   Future<LoadingState<CoreSubDetailData>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).favSeasonList(
+    final result = await (appRead(favRepositoryProvider)).favSeasonList(
       id: id,
       ps: 20,
       pn: page,

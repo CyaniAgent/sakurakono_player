@@ -9,6 +9,7 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberFavoriteCtr
     extends CommonControllerRiverpod<List<CoreSpaceFavData>?, List<CoreSpaceFavData>?> {
@@ -19,9 +20,7 @@ class MemberFavoriteCtr
   }
 
   final int mid;
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   late int favPage = 2;
   bool _favExpand = true;
@@ -182,7 +181,7 @@ class MemberFavoriteCtr
 
   @override
   Future<LoadingState<List<CoreSpaceFavData>?>> customGetData() async {
-    final result = await (_ref!.read(favRepositoryProvider)).spaceFav(mid: mid);
+    final result = await (appRead(favRepositoryProvider)).spaceFav(mid: mid);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

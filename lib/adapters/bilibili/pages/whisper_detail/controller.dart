@@ -17,11 +17,10 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg, Msg> {
-
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final account = Accounts.main;
 
   late final int talkerId;
@@ -66,7 +65,7 @@ class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg
 
   // 消息标记已读
   Future<void> ackSessionMsg(int msgSeqno) async {
-    final res = await (_ref!.read(msgRepositoryProvider)).ackSessionMsg(
+    final res = await (appRead(msgRepositoryProvider)).ackSessionMsg(
       talkerId: talkerId,
       ackSeqno: msgSeqno,
     );
@@ -175,7 +174,7 @@ class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg
   }
 
   Future<LoadingState> onReport(Msg item, int reasonType, String reasonDesc) async {
-    final result = await (_ref!.read(msgRepositoryProvider)).imMsgReport(
+    final result = await (appRead(msgRepositoryProvider)).imMsgReport(
       accusedUid: item.senderUid.toInt(),
       reasonType: reasonType,
       reasonDesc: reasonDesc,

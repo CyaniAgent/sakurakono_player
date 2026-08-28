@@ -48,9 +48,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 class UgcIntroController extends CommonIntroController with ReloadMixin {
-  Ref? _ref;
   @override
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final RxBool expand;
   bool status = true;
 
@@ -90,7 +89,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   @override
   Future<void> queryVideoIntro() async {
     queryVideoTags();
-    final res = await (_ref!.read(videoRepositoryProvider)).videoIntro(bvid: bvid);
+    final res = await (appRead(videoRepositoryProvider)).videoIntro(bvid: bvid);
     if (res case Success(:final response)) {
       if (response.redirectUrl != null &&
           videoDetailCtr.epId == null &&
@@ -178,7 +177,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       if (mid == null) {
         return;
       }
-      final res = await (_ref!.read(memberRepositoryProvider)).memberCardInfo(mid: mid);
+      final res = await (appRead(memberRepositoryProvider)).memberCardInfo(mid: mid);
       if (res case Success(:final response)) {
         userStat = response;
       }
@@ -186,7 +185,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   }
 
   Future<void> queryAllStatus() async {
-    final result = await (_ref!.read(videoRepositoryProvider)).videoRelation(bvid: bvid);
+    final result = await (appRead(videoRepositoryProvider)).videoRelation(bvid: bvid);
     if (result case Success(:final response)) {
       late final stat = videoDetail.stat;
       if (response.like!) {
@@ -215,7 +214,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       SmartDialog.showToast('已三连');
       return;
     }
-    final result = await (_ref!.read(videoRepositoryProvider)).ugcTriple(bvid: bvid);
+    final result = await (appRead(videoRepositoryProvider)).ugcTriple(bvid: bvid);
     if (result case Success(:final response)) {
       late final stat = videoDetail.stat;
       if (response.like == true && !hasLike) {
@@ -253,7 +252,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       return;
     }
     final newVal = !hasLike;
-    final result = await (_ref!.read(videoRepositoryProvider)).likeVideo(bvid: bvid, type: newVal);
+    final result = await (appRead(videoRepositoryProvider)).likeVideo(bvid: bvid, type: newVal);
     if (result case Success(:final response)) {
       SmartDialog.showToast(newVal ? response : '取消赞');
       videoDetail.stat?.like += newVal ? 1 : -1;
@@ -271,7 +270,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final res = await (_ref!.read(videoRepositoryProvider)).dislikeVideo(
+    final res = await (appRead(videoRepositoryProvider)).dislikeVideo(
       bvid: bvid,
       type: !hasDislike,
     );
@@ -422,7 +421,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
     if (videoDetail.owner == null || videoDetail.staff?.isNotEmpty == true) {
       return;
     }
-    final res = await (_ref!.read(userRepositoryProvider)).userRelation(videoDetail.owner!.mid!);
+    final res = await (appRead(userRepositoryProvider)).userRelation(videoDetail.owner!.mid!);
     if (res case Success(:final response)) {
       if (response.special == 1) response.attribute = -10;
       followStatus.value = response;
@@ -445,7 +444,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
     }
     int attr = followStatus.value.attribute ?? 0;
     if (attr == 128) {
-      final res = await (_ref!.read(videoRepositoryProvider)).relationMod(
+      final res = await (appRead(videoRepositoryProvider)).relationMod(
         mid: mid,
         act: 6,
         reSrc: 11,
@@ -488,7 +487,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       int? cid = episode.cid;
       Dimension? dimension;
       if (cid == null) {
-        if (await (_ref!.read(searchRepositoryProvider)).ab2cWithDimension(aid: aid, bvid: bvid)
+        if (await (appRead(searchRepositoryProvider)).ab2cWithDimension(aid: aid, bvid: bvid)
             case final res?) {
           cid = res.cid;
           final coreDim = res.dimension;

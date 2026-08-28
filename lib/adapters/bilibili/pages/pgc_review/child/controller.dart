@@ -5,11 +5,11 @@ import 'package:skf/adapters/bilibili/models/common/pgc_review_type.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PgcReviewController
     extends CommonListControllerRiverpod<CorePgcReviewData, CorePgcReviewItemModel> {
-  ProviderContainer? _ref;
-  void attachRef(ProviderContainer ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) {}
   PgcReviewController({required this.type, required this.mediaId}) {
     queryData();
   }
@@ -50,7 +50,7 @@ class PgcReviewController
 
   @override
   Future<LoadingState<CorePgcReviewData>> customGetData() async {
-    final result = await (_ref!.read(pgcRepositoryProvider)).pgcReview(
+    final result = await (appRead(pgcRepositoryProvider)).pgcReview(
       type: type,
       mediaId: mediaId,
       next: next,
@@ -64,7 +64,7 @@ class PgcReviewController
   }
 
   Future<void> onLike(CorePgcReviewItemModel item, bool isLike, String reviewId) async {
-    final res = await (_ref!.read(pgcRepositoryProvider)).pgcReviewLike(
+    final res = await (appRead(pgcRepositoryProvider)).pgcReviewLike(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -87,7 +87,7 @@ class PgcReviewController
     bool isDislike,
     String reviewId,
   ) async {
-    final res = await (_ref!.read(pgcRepositoryProvider)).pgcReviewDislike(
+    final res = await (appRead(pgcRepositoryProvider)).pgcReviewDislike(
       mediaId: mediaId,
       reviewId: reviewId,
     );
@@ -106,7 +106,7 @@ class PgcReviewController
   }
 
   Future<void> onDel(int index, int reviewId) async {
-    final res = await (_ref!.read(pgcRepositoryProvider)).pgcReviewDel(
+    final res = await (appRead(pgcRepositoryProvider)).pgcReviewDel(
       mediaId: mediaId,
       reviewId: '$reviewId',
     );

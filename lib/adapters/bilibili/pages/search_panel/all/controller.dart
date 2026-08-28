@@ -7,11 +7,11 @@ import 'package:skf/adapters/bilibili/models/search/result.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/controller.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SearchAllController
     extends SearchPanelController<SearchAllData, dynamic> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   SearchAllController({
     required super.keyword,
     required super.searchType,
@@ -44,7 +44,7 @@ class SearchAllController
     // searchAll returns CoreSearchAllData, but the controller still uses
     // the adapter type SearchAllData. Both share the same shape (numResults, list),
     // making the cast safe.
-    final result = await (_ref!.read(searchRepositoryProvider)).searchAll(
+    final result = await (appRead(searchRepositoryProvider)).searchAll(
       keyword: keyword,
       page: page,
       order: order,

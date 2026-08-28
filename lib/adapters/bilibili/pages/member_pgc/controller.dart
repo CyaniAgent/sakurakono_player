@@ -27,8 +27,7 @@ class MemberBangumiCtr
   final int mid;
   final String? heroTag;
   int? count;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
   late final _ctr = appRead(memberControllerProvider(heroTag!));
 
   @override
@@ -45,7 +44,7 @@ class MemberBangumiCtr
 
   @override
   Future<LoadingState<CoreSpaceArchiveData>> customGetData() async {
-    final result = await (_ref!.read(memberRepositoryProvider)).spaceArchive(
+    final result = await (appRead(memberRepositoryProvider)).spaceArchive(
       type: CoreContributeType.bangumi,
       mid: mid,
       pn: page,

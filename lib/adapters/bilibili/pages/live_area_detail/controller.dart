@@ -8,6 +8,7 @@ import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveAreaDetailController
     extends CommonListControllerRiverpod<List<CoreAreaItem>?, CoreAreaItem>
@@ -15,8 +16,7 @@ class LiveAreaDetailController
   Ticker? _ticker;
   final dynamic areaId;
   final dynamic parentAreaId;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   TabController? tabController;
 
@@ -49,7 +49,7 @@ class LiveAreaDetailController
 
   @override
   Future<LoadingState<List<CoreAreaItem>?>> customGetData() async {
-    final result = await (_ref!.read(liveRepositoryProvider)).liveRoomAreaList(parentid: parentAreaId);
+    final result = await (appRead(liveRepositoryProvider)).liveRoomAreaList(parentid: parentAreaId);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

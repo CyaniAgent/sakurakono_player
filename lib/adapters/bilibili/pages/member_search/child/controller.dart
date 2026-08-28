@@ -9,14 +9,14 @@ import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberSearchChildController extends CommonListControllerRiverpod {
   MemberSearchChildController(this.controller, this.searchType);
 
   final MemberSearchController controller;
   final MemberSearchType searchType;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   // archive
   late final _ps = Int64(20);
@@ -62,13 +62,13 @@ class MemberSearchChildController extends CommonListControllerRiverpod {
   @override
   Future<LoadingState> customGetData() {
     return switch (searchType) {
-      MemberSearchType.archive => (_ref!.read(spaceRepositoryProvider)).searchArchive(
+      MemberSearchType.archive => (appRead(spaceRepositoryProvider)).searchArchive(
         mid: _midInt64,
         pn: page,
         ps: _ps,
         keyword: controller.editingController.text,
       ),
-      MemberSearchType.dynamic => (_ref!.read(memberRepositoryProvider)).dynSearch(
+      MemberSearchType.dynamic => (appRead(memberRepositoryProvider)).dynSearch(
         mid: int.parse(controller.mid),
         pn: page,
         offset: offset ?? '',

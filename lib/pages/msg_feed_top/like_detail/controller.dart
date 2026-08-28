@@ -4,6 +4,7 @@ import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LikeDetailController
     extends CommonListControllerRiverpod<CoreMsgLikeDetailData, CoreMsgLikeDetailItem> {
@@ -13,11 +14,9 @@ class LikeDetailController
 
   int lastMid = 0;
 
-  Ref? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(Ref ref) {}
 
   LikeDetailController() {
     final args = AppNavigator.arguments;
@@ -54,7 +53,7 @@ class LikeDetailController
 
   @override
   Future<LoadingState<CoreMsgLikeDetailData>> customGetData() async {
-    final result = await (_ref!.read(msgRepositoryProvider)).msgLikeDetail(cardId: cardId, pn: page, lastMid: lastMid);
+    final result = await (appRead(msgRepositoryProvider)).msgLikeDetail(cardId: cardId, pn: page, lastMid: lastMid);
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),
