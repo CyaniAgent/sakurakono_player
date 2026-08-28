@@ -21,7 +21,7 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberHome extends StatefulWidget {
   const MemberHome({super.key, this.heroTag});
@@ -37,7 +37,7 @@ class _MemberHomeState extends State<MemberHome>
   @override
   bool get wantKeepAlive => true;
 
-  late final _ctr = Get.find<MemberController>(tag: widget.heroTag);
+  late final _ctr = appRead(memberControllerProvider(widget.heroTag!));
 
   @override
   Widget build(BuildContext context) {

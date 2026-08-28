@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberVideo extends StatefulWidget {
   const MemberVideo({
@@ -57,9 +58,7 @@ class _MemberVideoState extends State<MemberVideo>
         .getGeometryForChildIndex(index)
         .scrollOffset;
     try {
-      final state = Get.find<MemberController>(
-        tag: widget.heroTag,
-      ).scrollKey.currentState;
+      final state = appRead(memberControllerProvider(widget.heroTag!)).scrollKey.currentState;
       if (state != null && state.mounted) {
         state.innerNestedPositions.first.localJumpTo(scrollOffset);
       }
@@ -77,7 +76,7 @@ class _MemberVideoState extends State<MemberVideo>
         mid: widget.mid,
         seasonId: widget.seasonId,
         seriesId: widget.seriesId,
-        username: Get.find<MemberController>(tag: widget.heroTag).username,
+        username: appRead(memberControllerProvider(widget.heroTag!)).username,
         title: widget.title,
       ),
       tag:

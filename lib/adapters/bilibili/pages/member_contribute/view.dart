@@ -14,7 +14,7 @@ import 'package:skf/adapters/bilibili/pages/member_video/view.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MemberContribute extends ConsumerStatefulWidget {
   const MemberContribute({
@@ -44,7 +44,7 @@ class _MemberContributeState extends ConsumerState<MemberContribute>
     super.initState();
     // Read MemberController data and feed into the Riverpod notifier.
     try {
-      final memberCtr = Get.find<MemberController>(tag: widget.heroTag);
+      final memberCtr = appRead(memberControllerProvider(widget.heroTag!));
       final contribute = memberCtr.tab2!.firstWhere(
         (item) => item.param == 'contribute',
       );

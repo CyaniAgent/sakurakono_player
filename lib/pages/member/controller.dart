@@ -304,3 +304,14 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
     }
   }
 }
+
+
+/// 每用户页实例注册表 — member 页 view 创建 [MemberController] 后登记，
+/// 子部件按 [heroTag] 经 [memberControllerProvider] 读取（替代 GetX tag 注册）。
+/// [heroTag] 含随机数不可逆，故无法用 family 按 heroTag 构造（需要 mid）。
+final Map<String, MemberController> memberControllerRegistry = {};
+
+final memberControllerProvider = Provider.family<MemberController, String>(
+  (ref, heroTag) => memberControllerRegistry[heroTag] ??
+      (throw StateError('MemberController not registered for heroTag: $heroTag')),
+);

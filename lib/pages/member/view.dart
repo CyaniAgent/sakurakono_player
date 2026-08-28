@@ -24,7 +24,6 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 
 class MemberPage extends StatefulWidget {
   const MemberPage({super.key});
@@ -47,14 +46,13 @@ class _MemberPageState extends State<MemberPage> {
     super.initState();
     _mid = int.tryParse(AppNavigator.parametersOf(context)['mid']!) ?? -1;
     _heroTag = Utils.makeHeroTag(_mid);
-    _userController = Get.put(
-      MemberController(mid: _mid),
-      tag: _heroTag,
-    );
+    _userController = MemberController(mid: _mid);
+    memberControllerRegistry[_heroTag] = _userController;
   }
 
   @override
   void dispose() {
+    memberControllerRegistry.remove(_heroTag);
     _headerController?.dispose();
     _headerController = null;
     super.dispose();
