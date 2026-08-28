@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class CoreMusicDetailController extends CommonDynController {
   @override
@@ -17,9 +18,6 @@ class CoreMusicDetailController extends CommonDynController {
   LoadingState<CoreMusicDetail> infoState = LoadingState<CoreMusicDetail>.loading();
 
   late final String musicId;
-  Ref? _ref;
-  @override
-  void attachRef(Ref ref) { _ref = ref; }
 
   String get shareUrl =>
       'https://music.bilibili.com/h5/music-detail?music_id=$musicId';
@@ -30,7 +28,7 @@ class CoreMusicDetailController extends CommonDynController {
   }
 
   Future<void> getCoreMusicDetail() async {
-    final res = await (_ref!.read(musicRepositoryProvider)).bgmDetail(musicId);
+    final res = await appRead(musicRepositoryProvider).bgmDetail(musicId);
     if (res case Success(:final response)) {
       final comment = response.musicComment!;
       oid = comment.oid!;

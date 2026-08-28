@@ -15,7 +15,7 @@ final mineControllerProvider = Provider<MineController>((ref) {
 });
 
 final rcmdControllerProvider = Provider<RcmdController>((ref) {
-  return RcmdController();
+  return RcmdController()..attachRef(ref);
 });
 
 final downloadServiceProvider = Provider<DownloadService>((ref) {

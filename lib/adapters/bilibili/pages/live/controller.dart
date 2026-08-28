@@ -165,4 +165,4 @@ class LiveController extends CommonListControllerRiverpod {
 }
 
 /// Live page controller (single instance).
-final liveControllerProvider = Provider<LiveController>((ref) => LiveController());
+final liveControllerProvider = Provider<LiveController>((ref) => LiveController()..attachRef(ref));

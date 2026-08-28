@@ -10,6 +10,7 @@ import 'package:skf/adapters/bilibili/pages/live_area_detail/child/controller.da
 import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LiveAreaChildPage extends StatefulWidget {
   const LiveAreaChildPage({
@@ -36,6 +37,7 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
     super.initState();
     _controller = LiveAreaChildController(widget.areaId, widget.parentAreaId);
     liveAreaChildRegistry['${widget.areaId}${widget.parentAreaId}'] = _controller;
+    _controller.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

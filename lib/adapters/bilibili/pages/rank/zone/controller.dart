@@ -4,8 +4,8 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 
 class ZoneController extends CommonListControllerRiverpod<dynamic, dynamic> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   ZoneController({this.rid, this.seasonType}) {
     queryData();
   }

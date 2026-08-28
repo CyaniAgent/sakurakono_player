@@ -11,8 +11,8 @@ import 'package:get/get.dart';
 class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, CoreDynList>
     implements TickerProvider {
   Ticker? _ticker;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   BubbleController(this.categoryId) {
     tribeId = Get.arguments['id'];
     queryData();

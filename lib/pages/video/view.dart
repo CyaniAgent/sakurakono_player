@@ -244,6 +244,12 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
   @override
   void dispose() {
+    // disposeIntro 内部 appRead(videoDetailControllerProvider) ——
+    // 必须在 registry.remove 之前调用，否则 StateError 被 catch 吞掉导致
+    // intro timer 未取消（GetX 时代 find 始终成功）。
+    if (!videoDetailController.isFileSource) {
+      host.disposeIntro(heroTag);
+    }
     videoDetailRegistry.remove(heroTag);
     videoDetailController.dispose();
     plPlayerController
@@ -251,10 +257,6 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       ..removePositionListener(positionListener);
 
     host.disposeMemberPage(heroTag);
-
-    if (!videoDetailController.isFileSource) {
-      host.disposeIntro(heroTag);
-    }
 
     if (!videoDetailController.removeSafeArea) {
       showSystemBar();

@@ -7,6 +7,7 @@ import 'package:skf/adapters/bilibili/pages/rank/zone/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/zone/widget/pgc_rank_item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ZonePage extends StatefulWidget {
   const ZonePage({super.key, this.rid, this.seasonType});
@@ -26,6 +27,7 @@ class _ZonePageState extends State<ZonePage>
   void initState() {
     controller = ZoneController(rid: widget.rid, seasonType: widget.seasonType);
     zoneRegistry['${widget.rid}${widget.seasonType}'] = controller;
+    controller.attachRef(ProviderScope.containerOf(context));
     super.initState();
   }
 

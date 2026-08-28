@@ -34,7 +34,9 @@ class _LaterPageState extends ConsumerState<LaterPage>
   LaterController currCtr([int? index]) {
     final type = LaterViewType.values[index ?? _tabController.index];
     final key = type.type.toString();
-    return laterRegistry[key] ??= LaterController(type, actions: widget.actions);
+    return laterRegistry[key] ??=
+        LaterController(type, actions: widget.actions)
+            ..attachRef(ProviderScope.containerOf(context));
   }
 
   final _sortKey = GlobalKey();

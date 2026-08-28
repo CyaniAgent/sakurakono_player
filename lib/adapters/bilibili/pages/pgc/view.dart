@@ -27,6 +27,7 @@ import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PgcPage extends StatefulWidget {
   const PgcPage({
@@ -47,6 +48,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     controller = PgcController(tabType: widget.tabType);
     pgcControllerRegistry[widget.tabType.name] = controller;
+    controller.attachRef(ProviderScope.containerOf(context));
     super.initState();
   }
 

@@ -16,11 +16,11 @@ class FavPgcController
   final int type;
   final int followStatus;
 
-  Ref? _ref;
+  ProviderContainer? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) { _ref = ref; }
 
 
   @override

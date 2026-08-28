@@ -17,6 +17,9 @@ class RelatedController
   String bvid = Get.arguments['bvid'];
   final bool autoQuery;
 
+  /// 首次查询已触发（playRelated 复刻 GetX isRegistered 语义：查询中不重复触发）。
+  bool autoQueried = false;
+
   @override
   Future<LoadingState<List<CoreHotVideoItemModel>?>> customGetData() async {
     final result = await (_ref!.read(videoRepositoryProvider)).relatedVideoList(bvid: bvid);

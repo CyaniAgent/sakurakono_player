@@ -15,8 +15,8 @@ class UpowerRankController
 
   final String upMid;
   final int? privilegeType;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
 
   late final List<CoreLevelInfo>? tabs;
 

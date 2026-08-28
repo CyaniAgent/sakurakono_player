@@ -13,8 +13,8 @@ class ContributionRankController
           CoreLiveContributionRankData,
           CoreLiveContributionRankItem
         > {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   final int ruid;
   final int roomId;
   final CoreLiveContributionRankType type;

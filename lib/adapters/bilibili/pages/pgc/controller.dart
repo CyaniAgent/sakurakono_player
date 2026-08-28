@@ -13,8 +13,8 @@ import 'package:flutter/widgets.dart' show ScrollController;
 
 class PgcController
     extends CommonListControllerRiverpod<List<CorePgcIndexItem>?, CorePgcIndexItem> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   final HomeTabType tabType;
   final int? indexType;
   late final showPgcTimeline =

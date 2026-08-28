@@ -22,6 +22,7 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PgcReviewChildPage extends StatefulWidget {
   const PgcReviewChildPage({
@@ -51,6 +52,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
     _tag = '${widget.mediaId}${widget.type.name}';
     _controller = PgcReviewController(type: widget.type, mediaId: widget.mediaId);
     pgcReviewRegistry[_tag] = _controller;
+    _controller.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

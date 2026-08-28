@@ -11,8 +11,8 @@ class LiveAreaChildController
     extends CommonListControllerRiverpod<CoreLiveSecondData, CoreCardLiveItem> {
   final dynamic areaId;
   final dynamic parentAreaId;
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
 
   int? count;
 

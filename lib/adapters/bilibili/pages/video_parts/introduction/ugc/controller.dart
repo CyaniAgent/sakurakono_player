@@ -771,7 +771,10 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   bool playRelated() {
     final relatedCtr = appRead(relatedControllerProvider(heroTag));
     if (relatedCtr.loadingState is Loading) {
-      relatedCtr.queryData().whenComplete(playRelated);
+      if (!relatedCtr.autoQueried) {
+        relatedCtr.autoQueried = true;
+        relatedCtr.queryData().whenComplete(playRelated);
+      }
       return false;
     }
 

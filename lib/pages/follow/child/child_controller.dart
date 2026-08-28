@@ -23,11 +23,11 @@ class FollowChildController
   final int mid;
   int? total;
 
-  Ref? _ref;
+  ProviderContainer? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) { _ref = ref; }
 
   late final loadSameFollow = _followState?.isOwner == false;
   LoadingState<List<CoreFollowItemModel>?> sameState =

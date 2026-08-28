@@ -15,6 +15,7 @@ import 'package:skf/pages/follow_type/follow_same/view.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FollowChildPage extends StatefulWidget {
   const FollowChildPage({
@@ -65,6 +66,7 @@ class _FollowChildPageState extends State<FollowChildPage>
       widget.tagid,
     );
     followChildControllerRegistry[_tag] = _followController;
+    _followController.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

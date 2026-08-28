@@ -8,11 +8,11 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 class FavNoteController
     extends MultiSelectController<List<CoreFavNoteItemModel>?, CoreFavNoteItemModel> {
 
-  Ref? _ref;
+  ProviderContainer? _ref;
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   FavNoteController(this.isPublish) {
     queryData();
   }

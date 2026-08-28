@@ -8,8 +8,8 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class PgcReviewController
     extends CommonListControllerRiverpod<CorePgcReviewData, CorePgcReviewItemModel> {
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
+  ProviderContainer? _ref;
+  void attachRef(ProviderContainer ref) { _ref = ref; }
   PgcReviewController({required this.type, required this.mediaId}) {
     queryData();
   }
