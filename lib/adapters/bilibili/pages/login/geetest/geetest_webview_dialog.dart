@@ -11,7 +11,6 @@ import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:get/get.dart';
 
 class GeetestWebviewDialog extends StatefulWidget {
   const GeetestWebviewDialog(this.gt, this.challenge, {super.key});
@@ -193,7 +192,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
         ),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '取消',
               style: TextStyle(color: ColorScheme.of(context).outline),
@@ -279,12 +278,12 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
             }
           },
         ),
-        Positioned(
+        const Positioned(
           left: 8,
           top: 8,
           child: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: Get.back,
+            icon: Icon(Icons.close),
+            onPressed: AppNavigator.back,
             tooltip: '关闭',
           ),
         ),

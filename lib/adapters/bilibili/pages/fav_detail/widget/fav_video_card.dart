@@ -19,7 +19,6 @@ import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 // 收藏视频卡片 - 水平布局
 class FavVideoCardH extends StatelessWidget {
@@ -225,7 +224,7 @@ class FavVideoCardH extends StatelessWidget {
                     content: const Text('要取消收藏吗?'),
                     actions: [
                       TextButton(
-                        onPressed: Get.back,
+                        onPressed: AppNavigator.back,
                         child: Text(
                           '取消',
                           style: TextStyle(color: colorScheme.outline),

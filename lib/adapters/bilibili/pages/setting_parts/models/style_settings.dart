@@ -601,7 +601,7 @@ void _showSpringDialog(BuildContext context, _) {
           child: const Text('重置'),
         ),
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),

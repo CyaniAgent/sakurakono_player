@@ -20,7 +20,6 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -106,7 +105,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: Get.back,
+                  onPressed: AppNavigator.back,
                   child: Text(
                     '取消',
                     style: TextStyle(color: theme.colorScheme.outline),
@@ -197,7 +196,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                     child: const Text('随机'),
                   ),
                   TextButton(
-                    onPressed: Get.back,
+                    onPressed: AppNavigator.back,
                     child: Text(
                       '取消',
                       style: TextStyle(
@@ -350,7 +349,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                   child: const Text('重置'),
                 ),
                 TextButton(
-                  onPressed: Get.back,
+                  onPressed: AppNavigator.back,
                   child: Text(
                     '取消',
                     style: TextStyle(

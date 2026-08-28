@@ -15,7 +15,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 List<SettingsModel> get videoSettings => [
@@ -196,7 +195,7 @@ Future<void> _showLiveCDNDialog(
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -448,7 +447,7 @@ void _showAutoSyncDialog(BuildContext context, VoidCallback setState) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -496,7 +495,7 @@ void _showDecimalDialog(
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),

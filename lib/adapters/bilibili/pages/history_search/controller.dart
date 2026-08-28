@@ -2,7 +2,6 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
@@ -10,6 +9,7 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class HistorySearchController
     extends CommonSearchController<CoreHistoryData, CoreHistoryItemModel>
@@ -52,7 +52,7 @@ class HistorySearchController
   @override
   void onRemove() {
     showConfirmDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       title: const Text('提示'),
       content: const Text('确认删除所选历史记录吗？'),
       onConfirm: () async {

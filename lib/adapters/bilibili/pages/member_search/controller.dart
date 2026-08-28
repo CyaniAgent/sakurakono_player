@@ -4,6 +4,7 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class MemberSearchController extends ChangeNotifier {
   late final FocusNode focusNode;
@@ -41,7 +42,7 @@ class MemberSearchController extends ChangeNotifier {
       notifyListeners();
       focusNode.requestFocus();
     } else {
-      Get.back();
+      AppNavigator.back();
     }
   }
 

@@ -16,7 +16,6 @@ import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class MediaListPanel extends CommonSlidePage {
@@ -101,7 +100,7 @@ class _MediaListPanelState extends State<MediaListPanel>
                 iconSize: 20,
                 tooltip: '关闭',
                 icon: const Icon(Icons.close),
-                onPressed: Get.back,
+                onPressed: AppNavigator.back,
               ),
               const SizedBox(width: 14),
             ],

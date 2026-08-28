@@ -815,7 +815,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
             ),
             actions: [
               TextButton(
-                onPressed: Get.back,
+                onPressed: AppNavigator.back,
                 child: Text(
                   '取消',
                   style: TextStyle(

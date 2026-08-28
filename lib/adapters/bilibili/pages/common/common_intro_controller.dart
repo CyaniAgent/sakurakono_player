@@ -19,9 +19,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 /// Abstract base controller for video intro pages.
 ///
@@ -117,7 +117,7 @@ abstract class CommonIntroController extends ChangeNotifier
   void notifyChange() => notifyListeners();
 
   void onInit() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     heroTag = args['heroTag'];
     bvid = args['bvid'];
     _cid = args['cid'];
@@ -329,7 +329,7 @@ mixin FavMixin on TripleMixin {
     );
     SmartDialog.dismiss();
     if (result.isSuccess) {
-      Get.back();
+      AppNavigator.back();
       final newVal =
           addMediaIdsNew.isNotEmpty || favIds?.length != delMediaIdsNew.length;
       if (hasFav != newVal) {

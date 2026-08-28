@@ -342,7 +342,7 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
                   theme.colorScheme.secondaryContainer,
                 ),
               ),
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               icon: Icon(
                 Icons.arrow_back_outlined,
                 size: 18,

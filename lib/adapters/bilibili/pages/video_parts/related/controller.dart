@@ -3,8 +3,8 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class RelatedController
     extends CommonListControllerRiverpod<List<CoreHotVideoItemModel>?, CoreHotVideoItemModel> {
@@ -13,7 +13,7 @@ class RelatedController
       queryData();
     }
   }
-  String bvid = Get.arguments['bvid'];
+  String bvid = AppNavigator.arguments['bvid'];
   final bool autoQuery;
 
   /// 首次查询已触发（playRelated 复刻 GetX isRegistered 语义：查询中不重复触发）。

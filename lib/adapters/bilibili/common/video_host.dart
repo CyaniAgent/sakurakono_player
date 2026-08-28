@@ -1364,7 +1364,7 @@ class BiliVideoHost implements VideoHost {
       onChangeEpisode: ctr.isUgc
           ? appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode
           : appRead(pgcIntroControllerProvider(heroTag)).onChangeEpisode,
-      onClose: Get.back,
+      onClose: AppNavigator.back,
       onReverse: () {
         AppNavigator.back();
         onReversePlay(heroTag, isSeason: season != null);

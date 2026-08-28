@@ -4,9 +4,9 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class DynamicDetailController extends CommonDynController with ReloadMixin {
   @override
@@ -21,7 +21,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   dynamic get sourceId => replyType == 1 ? IdUtils.av2bv(oid) : oid;
 
   DynamicDetailController() {
-    dynItem = Get.arguments['item'] as CoreDynamicItemModel;
+    dynItem = AppNavigator.arguments['item'] as CoreDynamicItemModel;
     final commentType = dynItem.basic?.commentType;
     final commentIdStr = dynItem.basic?.commentIdStr;
     if (commentType != null &&

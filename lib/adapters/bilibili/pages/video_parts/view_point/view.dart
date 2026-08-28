@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ViewPointsPage extends CommonSlidePage {
   const ViewPointsPage({
@@ -65,7 +64,7 @@ class _ViewPointsPageState extends State<ViewPointsPage>
             size: 30,
             icon: const Icon(Icons.clear),
             tooltip: '关闭',
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
           ),
           const SizedBox(width: 16),
         ],

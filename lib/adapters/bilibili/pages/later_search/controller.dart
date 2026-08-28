@@ -1,12 +1,12 @@
 
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
 import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:skf/pages/later/controller.dart' show BaseLaterController;
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class LaterSearchController
     extends CommonSearchController<CoreLaterData, CoreLaterItemModel>
@@ -18,7 +18,7 @@ class LaterSearchController
   dynamic count;
 
   LaterSearchController() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     mid = args['mid'];
     count = args['count'];
   }

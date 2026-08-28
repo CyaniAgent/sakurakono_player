@@ -2,8 +2,8 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class SubDetailController
     extends CommonListControllerRiverpod<CoreSubDetailData, CoreSubDetailItemModel> {
@@ -12,7 +12,7 @@ class SubDetailController
   CoreSubItemModel? subInfo;
 
   SubDetailController() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     id = args['id'];
     subInfo = args['subInfo'];
     heroTag = args['heroTag'];

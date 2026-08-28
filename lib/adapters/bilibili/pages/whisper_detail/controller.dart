@@ -14,9 +14,9 @@ import 'package:skf/utils/feed_back.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg, Msg> {
   late final account = Accounts.main;
@@ -33,7 +33,7 @@ class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg
   List<EmotionInfo>? eInfos;
 
   WhisperDetailController() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     talkerId = args['talkerId'];
     name = args['name'];
     face = args['face'];

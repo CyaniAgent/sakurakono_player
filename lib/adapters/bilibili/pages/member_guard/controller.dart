@@ -2,8 +2,8 @@ import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class MemberGuardController
     extends CommonListControllerRiverpod<CoreMemberGuardData, CoreGuardItem> {
@@ -11,7 +11,7 @@ class MemberGuardController
     queryData();
   }
 
-  final int ruid = Get.arguments['ruid'] as int;
+  final int ruid = AppNavigator.arguments['ruid'] as int;
 
   late List<CoreGuardItem> tops;
 

@@ -112,7 +112,7 @@ abstract final class AppNavigator {
     );
   }
 
-  /// 弹出当前页（根路由 no-op）。等效 `Get.back`。
+  /// 弹出当前页（根路由 no-op）。等效 `AppNavigator.back`。
   static void back<T>({T? result, bool canPop = true}) {
     navigatorKey.currentState?.maybePop<T>(result);
   }

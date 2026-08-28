@@ -2,12 +2,13 @@ import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:skf/router/app_navigator.dart';
 
 const int ps = 30;
 
 abstract class BaseVideoWebCtr<R, T, V> extends CommonListControllerRiverpod<R, T>
     with ReloadMixin {
-  final int mid = Get.arguments['mid'] as int;
+  final int mid = AppNavigator.arguments['mid'] as int;
 
   int? totalPage;
   int? count;

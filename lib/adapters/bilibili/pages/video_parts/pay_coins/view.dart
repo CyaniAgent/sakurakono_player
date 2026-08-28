@@ -14,7 +14,6 @@ import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 typedef OnPayCoin = Function(int coin, bool coinWithLike);
 
@@ -443,7 +442,7 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                   ),
                   Center(
                     child: GestureDetector(
-                      onTap: Get.back,
+                      onTap: AppNavigator.back,
                       behavior: HitTestBehavior.opaque,
                       child: SizedBox(
                         width: 30,

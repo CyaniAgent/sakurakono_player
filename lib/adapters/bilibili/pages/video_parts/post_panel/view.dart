@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class PostPanel extends CommonSlidePage {
   const PostPanel({
@@ -121,7 +120,7 @@ class PostPanel extends CommonSlidePage {
                     ),
                     actions: [
                       TextButton(
-                        onPressed: Get.back,
+                        onPressed: AppNavigator.back,
                         child: Text(
                           '取消',
                           style: TextStyle(
@@ -227,7 +226,7 @@ class _PostPanelState extends State<PostPanel>
             size: 32,
             context: context,
             tooltip: '关闭',
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             icon: const Icon(Icons.close),
           ),
           const SizedBox(width: 16),
@@ -284,7 +283,7 @@ class _PostPanelState extends State<PostPanel>
                 title: const Text('确定无误再提交'),
                 actions: [
                   TextButton(
-                    onPressed: Get.back,
+                    onPressed: AppNavigator.back,
                     child: Text(
                       '取消',
                       style: TextStyle(color: theme.colorScheme.outline),

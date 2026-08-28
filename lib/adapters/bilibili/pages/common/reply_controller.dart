@@ -17,6 +17,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 abstract class ReplyController<R>
     extends CommonListControllerRiverpod<R, ReplyInfo> {
@@ -176,7 +177,7 @@ abstract class ReplyController<R>
                 },
               );
             },
-            settings: RouteSettings(arguments: Get.arguments),
+            settings: RouteSettings(arguments: AppNavigator.arguments),
           ),
         )
         .then(

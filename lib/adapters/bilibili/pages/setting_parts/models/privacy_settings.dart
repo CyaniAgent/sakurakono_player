@@ -5,7 +5,6 @@ import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/api_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 List<SettingsModel> get privacySettings => [
   NormalModel(
@@ -27,10 +26,10 @@ List<SettingsModel> get privacySettings => [
         builder: (context) => AlertDialog(
           title: const Text('账号模式详情'),
           content: SingleChildScrollView(child: _getAccountDetail(context)),
-          actions: [
+          actions: const [
             TextButton(
-              onPressed: Get.back,
-              child: const Text('确认'),
+              onPressed: AppNavigator.back,
+              child: Text('确认'),
             ),
           ],
         ),

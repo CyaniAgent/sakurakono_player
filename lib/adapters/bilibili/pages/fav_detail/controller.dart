@@ -16,6 +16,7 @@ import 'package:flutter/widgets.dart' show Text, ValueChanged;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 mixin BaseFavController
     on
@@ -45,7 +46,7 @@ mixin BaseFavController
   @override
   void onRemove() {
     showConfirmDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       title: const Text('提示'),
       content: const Text('确认删除所选收藏吗？'),
       onConfirm: () async {

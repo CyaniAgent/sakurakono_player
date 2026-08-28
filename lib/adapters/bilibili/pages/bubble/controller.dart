@@ -8,12 +8,13 @@ import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, CoreDynList>
     implements TickerProvider {
   Ticker? _ticker;
   BubbleController(this.categoryId) {
-    tribeId = Get.arguments['id'];
+    tribeId = AppNavigator.arguments['id'];
     queryData();
   }
   final Object? categoryId;

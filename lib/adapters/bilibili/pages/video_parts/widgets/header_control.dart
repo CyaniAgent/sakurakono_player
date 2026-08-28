@@ -66,7 +66,6 @@ import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart' hide showBottomSheet;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -874,7 +873,7 @@ class HeaderControlState extends State<HeaderControl>
           ),
           actions: [
             TextButton(
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               child: Text(
                 '确定',
                 style: TextStyle(color: colorScheme.outline),

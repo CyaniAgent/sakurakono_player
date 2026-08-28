@@ -302,7 +302,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                         theme.colorScheme.secondaryContainer,
                       ),
                     ),
-                    onPressed: Get.back,
+                    onPressed: AppNavigator.back,
                     icon: Icon(
                       Icons.arrow_back_outlined,
                       size: 18,
@@ -358,7 +358,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     ),
     ListTile(
       dense: true,
-      onTap: Get.back,
+      onTap: AppNavigator.back,
       title: Center(
         child: Text(
           '取消',

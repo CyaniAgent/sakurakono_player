@@ -16,7 +16,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class _VideoCustomAction {
@@ -277,7 +276,7 @@ class VideoPopupMenu extends StatelessWidget {
                           ),
                           actions: [
                             TextButton(
-                              onPressed: Get.back,
+                              onPressed: AppNavigator.back,
                               child: Text(
                                 '点错了',
                                 style: TextStyle(

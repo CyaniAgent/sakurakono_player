@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:skf/adapters/bilibili/http/login.dart';
 import 'package:skf/adapters/bilibili/models/common/setting_type.dart';
@@ -124,7 +123,7 @@ class BiliSettingHost implements SettingHost {
           ),
           actions: [
             TextButton(
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               child: Text(
                 '点错了',
                 style: TextStyle(

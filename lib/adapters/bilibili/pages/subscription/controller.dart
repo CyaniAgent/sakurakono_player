@@ -1,12 +1,12 @@
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubItemModel> {
   late final account = Accounts.main;
@@ -27,13 +27,13 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
   // 取消订阅
   void cancelSub(CoreSubItemModel subFolderItem) {
     showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (context) => AlertDialog(
         title: const Text('提示'),
         content: const Text('确定取消订阅吗？'),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '取消',
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
@@ -54,7 +54,7 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
               } else {
                 SmartDialog.showToast(res.toString());
               }
-              Get.back();
+              AppNavigator.back();
             },
             child: const Text('确定'),
           ),

@@ -13,7 +13,6 @@ import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide TabBarView;
-import 'package:get/get.dart';
 
 class PgcIntroPanel extends CommonSlidePage {
   final PgcInfoModel item;
@@ -77,10 +76,10 @@ class _IntroDetailState extends State<PgcIntroPanel>
                   },
                 ),
               ),
-              IconButton(
+              const IconButton(
                 tooltip: '关闭',
-                icon: const Icon(Icons.close, size: 20),
-                onPressed: Get.back,
+                icon: Icon(Icons.close, size: 20),
+                onPressed: AppNavigator.back,
               ),
               const SizedBox(width: 2),
             ],

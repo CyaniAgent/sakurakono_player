@@ -406,7 +406,7 @@ class _AudioPageState extends State<AudioPage>
             child: Column(
               children: [
                 InkWell(
-                  onTap: Get.back,
+                  onTap: AppNavigator.back,
                   borderRadius: Style.bottomSheetRadius,
                   child: SizedBox(
                     height: 35,
@@ -440,7 +440,7 @@ class _AudioPageState extends State<AudioPage>
                     bottom: MediaQuery.viewPaddingOf(context).bottom,
                   ),
                   child: InkWell(
-                    onTap: Get.back,
+                    onTap: AppNavigator.back,
                     child: SizedBox(
                       height: 45,
                       child: Center(
@@ -475,7 +475,7 @@ class _AudioPageState extends State<AudioPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
-              onTap: Get.back,
+              onTap: AppNavigator.back,
               borderRadius: Style.bottomSheetRadius,
               child: SizedBox(
                 height: 35,
@@ -610,7 +610,7 @@ class _AudioPageState extends State<AudioPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               InkWell(
-                onTap: Get.back,
+                onTap: AppNavigator.back,
                 borderRadius: Style.bottomSheetRadius,
                 child: SizedBox(
                   height: 35,

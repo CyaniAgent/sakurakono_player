@@ -6,7 +6,6 @@ import 'package:skf/pages/video/controller.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class AiConclusionPanel extends CommonSlidePage {
@@ -141,7 +140,7 @@ class _AiDetailState extends State<AiConclusionPanel>
       child: Column(
         children: [
           GestureDetector(
-            onTap: Get.back,
+            onTap: AppNavigator.back,
             child: SizedBox(
               height: 35,
               child: Center(

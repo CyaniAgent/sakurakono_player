@@ -6,7 +6,6 @@ import 'package:skf/utils/extension/string_ext.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 Future<void> autoWrapReportDialog(
   BuildContext context,
@@ -97,7 +96,7 @@ Future<void> autoWrapReportDialog(
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),

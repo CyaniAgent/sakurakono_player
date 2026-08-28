@@ -5,7 +5,6 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class PgcReviewPostPanel extends StatefulWidget {
   const PgcReviewPostPanel({
@@ -70,12 +69,12 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
             titleSpacing: 16,
             toolbarHeight: 45,
             title: Text(widget.name),
-            actions: [
+            actions: const [
               IconButton(
-                icon: const Icon(Icons.clear, size: 20),
-                onPressed: Get.back,
+                icon: Icon(Icons.clear, size: 20),
+                onPressed: AppNavigator.back,
               ),
-              const SizedBox(width: 2),
+              SizedBox(width: 2),
             ],
             shape: Border(
               bottom: BorderSide(

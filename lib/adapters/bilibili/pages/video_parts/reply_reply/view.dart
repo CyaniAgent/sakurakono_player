@@ -161,10 +161,10 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(isDialogue ? '对话列表' : '评论详情'),
-                      IconButton(
+                      const IconButton(
                         tooltip: '关闭',
-                        icon: const Icon(Icons.close, size: 20),
-                        onPressed: Get.back,
+                        icon: Icon(Icons.close, size: 20),
+                        onPressed: AppNavigator.back,
                       ),
                     ],
                   ),

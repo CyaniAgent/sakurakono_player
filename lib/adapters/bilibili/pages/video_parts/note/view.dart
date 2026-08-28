@@ -81,13 +81,13 @@ class _NoteListPageState extends State<NoteListPage>
                   color: theme.colorScheme.outline.withValues(alpha: 0.1),
                 ),
               ),
-              actions: [
+              actions: const [
                 IconButton(
                   tooltip: '关闭',
-                  icon: const Icon(Icons.close, size: 20),
-                  onPressed: Get.back,
+                  icon: Icon(Icons.close, size: 20),
+                  onPressed: AppNavigator.back,
                 ),
-                const SizedBox(width: 2),
+                SizedBox(width: 2),
               ],
             ),
           ),

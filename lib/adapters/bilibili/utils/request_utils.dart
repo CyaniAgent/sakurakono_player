@@ -45,7 +45,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 abstract final class RequestUtils {
   static Future<void> syncHistoryStatus() async {
@@ -352,7 +351,7 @@ abstract final class RequestUtils {
               ),
             if (!isManual)
               TextButton(
-                onPressed: Get.back,
+                onPressed: AppNavigator.back,
                 child: Text(
                   '关闭',
                   style: TextStyle(color: theme.colorScheme.outline),
@@ -448,7 +447,7 @@ abstract final class RequestUtils {
               ),
               actions: [
                 TextButton(
-                  onPressed: Get.back,
+                  onPressed: AppNavigator.back,
                   child: Text(
                     '取消',
                     style: TextStyle(
@@ -584,10 +583,10 @@ abstract final class RequestUtils {
             show ? response.name! : response.rejectPage?.title ?? '',
           ),
           content: show ? null : Text(response.rejectPage?.text ?? ''),
-          actions: [
+          actions: const [
             TextButton(
-              onPressed: Get.back,
-              child: const Text('关闭'),
+              onPressed: AppNavigator.back,
+              child: Text('关闭'),
             ),
           ],
         ),

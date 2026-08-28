@@ -6,7 +6,6 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/result.dart';
@@ -31,6 +30,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/router/app_navigator.dart';
 
 
 class PgcIntroController extends CommonIntroController {
@@ -56,7 +56,7 @@ class PgcIntroController extends CommonIntroController {
 
   @override
   void onInit() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     seasonId = args['seasonId'];
     epId = args['epId'];
     isPgc = args['videoType'] == CoreVideoType.pgc;
@@ -132,14 +132,14 @@ class PgcIntroController extends CommonIntroController {
           DialogOption(
             child: const Text('\u590d\u5236\u94fe\u63a5', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               Utils.copyText(videoUrl);
             },
           ),
           DialogOption(
             child: const Text('\u5176\u5b83app\u6253\u5f00', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               PageUtils.launchURL(videoUrl);
             },
           ),
@@ -150,7 +150,7 @@ class PgcIntroController extends CommonIntroController {
                 final item = pgcItem.episodes?.firstWhereOrNull(
                   (item) => item.epId == epId,
                 );
-                Get.back();
+                AppNavigator.back();
                 ShareUtils.shareText(
                   '${pgcItem.title}${item != null ? ' ${item.showTitle}' : ''}'
                   ' - $videoUrl',
@@ -161,7 +161,7 @@ class PgcIntroController extends CommonIntroController {
             DialogOption(
               child: const Text('\u5206\u4eab\u81f3\u52a8\u6001', style: TextStyle(fontSize: 14)),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 final item = pgcItem.episodes?.firstWhereOrNull(
                   (item) => item.epId == epId,
                 );
@@ -194,7 +194,7 @@ class PgcIntroController extends CommonIntroController {
                 style: TextStyle(fontSize: 14),
               ),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 try {
                   final item = pgcItem.episodes!.firstWhere(
                     (item) => item.epId == epId,

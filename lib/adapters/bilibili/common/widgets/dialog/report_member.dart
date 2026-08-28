@@ -2,7 +2,6 @@ import 'package:skf/adapters/bilibili/http/member.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 const _reason = ['头像违规', '昵称违规', '签名违规'];
 
@@ -140,7 +139,7 @@ Future<void> showMemberReportDialog(
         ),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '取消',
               style: TextStyle(color: theme.colorScheme.outline),

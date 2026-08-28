@@ -5,7 +5,6 @@ import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 
-import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/models/common/search/article_search_type.dart';
 import 'package:skf/adapters/bilibili/models/common/search/user_search_type.dart';
 import 'package:skf/adapters/bilibili/models/common/search/video_search_type.dart';
@@ -15,6 +14,7 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/search_result/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class SearchPanelController<R extends SearchNumData<T>, T>
     extends CommonListControllerRiverpod<R, T> {
@@ -60,7 +60,7 @@ class SearchPanelController<R extends SearchNumData<T>, T>
     bool getBack = true,
     String? label,
   }) {
-    if (getBack) Get.back();
+    if (getBack) AppNavigator.back();
     SmartDialog.dismiss();
     if (label != null) {
       SmartDialog.showToast("「」的筛选结果");

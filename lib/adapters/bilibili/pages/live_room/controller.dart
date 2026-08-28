@@ -39,6 +39,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class LiveRoomController extends ChangeNotifier {
 
@@ -48,7 +49,7 @@ class LiveRoomController extends ChangeNotifier {
 
   final String heroTag;
 
-  int roomId = Get.arguments;
+  int roomId = AppNavigator.arguments;
   int? ruid;
   DanmakuController<DanmakuExtra>? danmakuController;
   final plPlayerController = PlPlayerController.getInstance(
@@ -325,12 +326,12 @@ class LiveRoomController extends ChangeNotifier {
 
   void _showDialog(String title) {
     showDialog(
-      context: Get.context!,
+      context: AppNavigator.context!,
       builder: (_) => AlertDialog(
         title: Text(title),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '关闭',
               style: TextStyle(color: ThemeUtils.theme.colorScheme.outline),
@@ -723,7 +724,7 @@ class LiveRoomController extends ChangeNotifier {
       return;
     }
     autoWrapReportDialog(
-      Get.context!,
+      AppNavigator.context!,
       ban: false,
       ReportOptions.liveDanmakuReport,
       (reasonType, reasonDesc, banUid) {

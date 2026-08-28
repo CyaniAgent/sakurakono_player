@@ -31,7 +31,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 
 /// 视频播放详情页（通用层，零适配器依赖）。
@@ -568,7 +567,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                           size: 15,
                           color: themeData.colorScheme.onSurface,
                         ),
-                        onPressed: Get.back,
+                        onPressed: AppNavigator.back,
                       ),
                     ),
                     SizedBox(
@@ -1007,12 +1006,12 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
               automaticallyImplyLeading: false,
               title: Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 42,
                     height: 34,
                     child: IconButton(
                       tooltip: '返回',
-                      icon: const Icon(
+                      icon: Icon(
                         FontAwesomeIcons.arrowLeft,
                         size: 15,
                         color: Colors.white,
@@ -1023,7 +1022,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                           ),
                         ],
                       ),
-                      onPressed: Get.back,
+                      onPressed: AppNavigator.back,
                     ),
                   ),
                   SizedBox(

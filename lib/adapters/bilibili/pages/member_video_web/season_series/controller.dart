@@ -4,6 +4,7 @@ import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dar
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class MemberSSWebCtr
     extends BaseVideoWebCtr<CoreSeasonWebData, CoreSeasonArchive, CoreArchiveSortTypeApp> {
@@ -13,7 +14,7 @@ class MemberSSWebCtr
   late Object _id;
 
   MemberSSWebCtr() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     _type = args['type'];
     _id = args['id'];
   }

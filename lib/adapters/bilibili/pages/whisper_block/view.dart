@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class WhisperBlockPage extends StatefulWidget {
   const WhisperBlockPage({
@@ -185,7 +186,7 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: Get.back,
+                    onTap: AppNavigator.back,
                     behavior: HitTestBehavior.opaque,
                     child: Icon(
                       Icons.clear,

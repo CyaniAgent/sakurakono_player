@@ -28,7 +28,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
@@ -566,7 +565,7 @@ class _SavePanelState extends State<SavePanel> {
                     size: 42,
                     tooltip: '关闭',
                     icon: const Icon(Icons.clear),
-                    onPressed: Get.back,
+                    onPressed: AppNavigator.back,
                     bgColor: theme.colorScheme.onInverseSurface,
                     iconColor: theme.colorScheme.onSurfaceVariant,
                   ),

@@ -1,5 +1,4 @@
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
@@ -8,6 +7,7 @@ import 'package:skf/pages/common/search/common_search_controller.dart';
 import 'package:skf/adapters/bilibili/pages/fav_detail/controller.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class FavSearchController
     extends CommonSearchController<CoreFavDetailData, CoreFavDetailItemModel>
@@ -24,7 +24,7 @@ class FavSearchController
   late dynamic title;
 
   FavSearchController() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     type = args['type'];
     mediaId = args['mediaId'];
     isOwner = args['isOwner'];

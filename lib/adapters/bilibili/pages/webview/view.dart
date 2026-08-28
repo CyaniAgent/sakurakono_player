@@ -14,7 +14,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class WebviewPage extends StatefulWidget {
   const WebviewPage({
@@ -269,7 +268,7 @@ class _WebviewPageState extends State<WebviewPage> {
                         content: SelectionText(request.url.toString()),
                         actions: [
                           TextButton(
-                            onPressed: Get.back,
+                            onPressed: AppNavigator.back,
                             child: Text(
                               '取消',
                               style: TextStyle(

@@ -96,7 +96,7 @@ class _SharePanelState extends State<SharePanel> {
                 iconSize: 18,
                 tooltip: '关闭',
                 icon: const Icon(Icons.clear),
-                onPressed: Get.back,
+                onPressed: AppNavigator.back,
               ),
             ],
           ),

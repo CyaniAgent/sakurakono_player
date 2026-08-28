@@ -50,7 +50,6 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:protobuf/protobuf.dart';
 
 
@@ -1006,7 +1005,7 @@ class ReplyItemGrpc extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
-            onTap: Get.back,
+            onTap: AppNavigator.back,
             borderRadius: Style.bottomSheetRadius,
             child: SizedBox(
               height: 35,

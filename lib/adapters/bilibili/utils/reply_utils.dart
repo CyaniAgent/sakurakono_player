@@ -18,7 +18,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 abstract final class ReplyUtils {
   static void onCheckReply({
@@ -127,7 +126,7 @@ abstract final class ReplyUtils {
           ),
         if (!isManual)
           TextButton(
-            onPressed: Get.back,
+            onPressed: AppNavigator.back,
             child: Text(
               '关闭',
               style: TextStyle(color: theme.colorScheme.outline),

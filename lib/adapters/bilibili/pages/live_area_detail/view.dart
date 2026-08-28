@@ -211,12 +211,12 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
                   backgroundColor: Colors.transparent,
                   automaticallyImplyLeading: false,
                   title: Text(widget.parentName),
-                  actions: [
+                  actions: const [
                     IconButton(
-                      onPressed: Get.back,
-                      icon: const Icon(Icons.clear),
+                      onPressed: AppNavigator.back,
+                      icon: Icon(Icons.clear),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                   ],
                 ),
                 Expanded(

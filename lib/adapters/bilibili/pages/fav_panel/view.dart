@@ -6,7 +6,6 @@ import 'package:skf/adapters/bilibili/pages/common/common_intro_controller.dart'
 import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FavPanel extends StatefulWidget {
   const FavPanel({
@@ -103,10 +102,10 @@ class _FavPanelState extends State<FavPanel> {
       children: [
         AppBar(
           backgroundColor: Colors.transparent,
-          leading: IconButton(
+          leading: const IconButton(
             tooltip: '关闭',
-            onPressed: Get.back,
-            icon: const Icon(Icons.close_outlined),
+            onPressed: AppNavigator.back,
+            icon: Icon(Icons.close_outlined),
           ),
           title: const Text('添加到收藏夹'),
           actions: [
@@ -151,7 +150,7 @@ class _FavPanelState extends State<FavPanel> {
             mainAxisAlignment: .end,
             children: [
               FilledButton.tonal(
-                onPressed: Get.back,
+                onPressed: AppNavigator.back,
                 style: FilledButton.styleFrom(
                   visualDensity: .compact,
                   foregroundColor: theme.outline,

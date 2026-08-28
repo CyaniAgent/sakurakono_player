@@ -48,7 +48,6 @@ import 'package:flutter/material.dart' hide RefreshIndicator;
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 List<SettingsModel> get extraSettings => [
@@ -678,7 +677,7 @@ Future<void> audioNormalization(
           ),
           actions: [
             TextButton(
-              onPressed: Get.back,
+              onPressed: AppNavigator.back,
               child: Text(
                 '取消',
                 style: TextStyle(color: ColorScheme.of(context).outline),
@@ -768,7 +767,7 @@ void _showDynDialog(BuildContext context) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -808,7 +807,7 @@ void _showReplyLengthDialog(BuildContext context, VoidCallback setState) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -848,7 +847,7 @@ void _showDmHeightDialog(BuildContext context, VoidCallback setState) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -890,7 +889,7 @@ void _showTouchSlopDialog(BuildContext context, VoidCallback setState) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -1179,7 +1178,7 @@ void _showProxyDialog(BuildContext context) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),
@@ -1219,7 +1218,7 @@ void _showCacheDialog(BuildContext context, VoidCallback setState) {
       ),
       actions: [
         TextButton(
-          onPressed: Get.back,
+          onPressed: AppNavigator.back,
           child: Text(
             '取消',
             style: TextStyle(color: ColorScheme.of(context).outline),

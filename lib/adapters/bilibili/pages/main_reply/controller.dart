@@ -2,10 +2,10 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/reply_types.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class MainReplyController extends ReplyController<CoreMainListReply> {
   late final int oid;
@@ -15,7 +15,7 @@ class MainReplyController extends ReplyController<CoreMainListReply> {
   int get sourceId => oid;
 
   MainReplyController() {
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     oid = args['oid'];
     replyType = args['replyType'];
     queryData();

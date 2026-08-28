@@ -11,7 +11,6 @@ import 'package:skf/utils/feed_back.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class GroupPanel extends StatefulWidget {
   final int mid;
@@ -140,10 +139,10 @@ class _GroupPanelState extends State<GroupPanel> {
       children: [
         AppBar(
           backgroundColor: Colors.transparent,
-          leading: IconButton(
+          leading: const IconButton(
             tooltip: '关闭',
-            onPressed: Get.back,
-            icon: const Icon(Icons.close_outlined),
+            onPressed: AppNavigator.back,
+            icon: Icon(Icons.close_outlined),
           ),
           title: const Text('设置关注分组'),
           actions: [

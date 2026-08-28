@@ -47,10 +47,10 @@ import 'package:skf/adapters/bilibili/utils/video_utils.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class AudioController extends ChangeNotifier
     with
@@ -138,7 +138,7 @@ class AudioController extends ChangeNotifier
 
   AudioController(TickerProvider vsync) {
     attachTicker(vsync);
-    final args = Get.arguments;
+    final args = AppNavigator.arguments;
     oid = Int64(args['oid']);
     final id = args['id'];
     this.id = id != null ? Int64(id) : oid;
@@ -550,14 +550,14 @@ class AudioController extends ChangeNotifier
           DialogOption(
             child: const Text('复制链接', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               Utils.copyText(audioUrl);
             },
           ),
           DialogOption(
             child: const Text('其它app打开', style: TextStyle(fontSize: 14)),
             onPressed: () {
-              Get.back();
+              AppNavigator.back();
               PageUtils.launchURL(audioUrl);
             },
           ),
@@ -565,7 +565,7 @@ class AudioController extends ChangeNotifier
             DialogOption(
               child: const Text('分享视频', style: TextStyle(fontSize: 14)),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 if (audioItem case DetailItem(
                   :final arc,
                   :final owner,
@@ -582,7 +582,7 @@ class AudioController extends ChangeNotifier
             DialogOption(
               child: const Text('分享至动态', style: TextStyle(fontSize: 14)),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 if (audioItem case DetailItem(
                   :final arc,
                   :final owner,
@@ -606,7 +606,7 @@ class AudioController extends ChangeNotifier
             DialogOption(
               child: const Text('分享至消息', style: TextStyle(fontSize: 14)),
               onPressed: () {
-                Get.back();
+                AppNavigator.back();
                 if (audioItem case DetailItem(
                   :final arc,
                   :final owner,
