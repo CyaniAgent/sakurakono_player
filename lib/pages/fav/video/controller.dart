@@ -13,7 +13,6 @@ class FavController
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   late final bool isLogin = appRead(accountProvider).isLogin;
 

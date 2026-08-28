@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
@@ -18,8 +17,6 @@ import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class ArticleController extends CommonDynController {
-  @override
-  void attachRef(Ref ref) {}
   late String id;
   late String type;
 

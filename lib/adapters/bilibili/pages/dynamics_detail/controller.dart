@@ -4,14 +4,12 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class DynamicDetailController extends CommonDynController with ReloadMixin {
   @override
-  void attachRef(Ref ref) {}
   @override
   late int oid;
   @override

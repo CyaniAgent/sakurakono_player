@@ -34,14 +34,11 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   String? username;
   String? userAvatar;
 
-  Ref? _ref;
-
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) { _ref = ref; }
   int get currentUserId => MemberHost.of().currentUserId;
 
-  bool get isLogin => (_ref?.read(accountProvider).isLogin == true);
+  bool get isLogin => appRead(accountProvider).isLogin;
 
   CoreLive? live;
   int? silence;

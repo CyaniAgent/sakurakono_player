@@ -3,7 +3,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
     show ReplyInfo, DetailListReply;
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
@@ -40,8 +39,6 @@ class VideoReplyReplyController extends ReplyController {
 
   bool hasRoot = false;
   final firstFloor = Rxn<ReplyInfo>();
-  @override
-  void attachRef(Ref ref) {}
 
   final index = RxnInt();
 

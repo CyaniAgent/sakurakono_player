@@ -40,7 +40,6 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
     super.initState();
     _historyController = HistoryController(widget.type);
     historyControllerRegistry[widget.type ?? 'all'] = _historyController;
-    _historyController.attachRef(ref);
   }
 
   HistoryController currCtr([int? index]) {

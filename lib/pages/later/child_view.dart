@@ -39,7 +39,6 @@ class _LaterViewChildPageState extends ConsumerState<LaterViewChildPage>
       actions: widget.actions,
     );
     laterRegistry[widget.laterViewType.type.toString()] = _laterController;
-    _laterController.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

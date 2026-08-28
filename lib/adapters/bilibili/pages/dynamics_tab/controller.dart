@@ -12,7 +12,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class DynamicsTabController
     extends CommonListControllerRiverpod<CoreDynamicsDataModel, CoreDynamicItemModel> {
-  void attachRef(Ref ref) {}
   DynamicsTabController({required this.dynamicsType}) {
     queryData();
   }

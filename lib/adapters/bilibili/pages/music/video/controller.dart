@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ typedef MusicRecommendArgs = ({String id, CoreMusicDetail item});
 
 class MusicRecommendController
     extends CommonListControllerRiverpod<List<CoreBgmRecommend>?, CoreBgmRecommend> {
-  void attachRef(Ref ref) {}
   late final String musicId;
   late final CoreMusicDetail musicDetail;
 

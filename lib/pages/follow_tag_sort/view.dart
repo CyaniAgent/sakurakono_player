@@ -7,7 +7,6 @@ import 'package:skf/pages/follow/follow_models.dart' show isCustomFollowTag;
 import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FollowTagSortPage extends StatefulWidget {
   const FollowTagSortPage({
@@ -27,8 +26,6 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
     with ReorderMixin {
   final List<CoreMemberTagItemModel> _defTags = <CoreMemberTagItemModel>[];
   final List<CoreMemberTagItemModel> _customTags = <CoreMemberTagItemModel>[];
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
   @override
   void initState() {
     super.initState();
@@ -51,7 +48,7 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
             ? [
                 TextButton(
                   onPressed: () async {
-                    final res = await (_ref?.read(followRepositoryProvider) ?? appRead(followRepositoryProvider)).sortFollowTag(
+                    final res = await appRead(followRepositoryProvider).sortFollowTag(
                       tagids: _customTags.map((e) => e.tagid).join(','),
                     );
                     if (res.isSuccess) {

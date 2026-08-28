@@ -5,7 +5,6 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class ZoneController extends CommonListControllerRiverpod<dynamic, dynamic> {
-  void attachRef(ProviderContainer ref) {}
   ZoneController({this.rid, this.seasonType}) {
     queryData();
   }

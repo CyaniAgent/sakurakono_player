@@ -6,7 +6,6 @@ import 'package:skf/core/models/live_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -16,7 +15,6 @@ class LiveAreaDetailController
   Ticker? _ticker;
   final dynamic areaId;
   final dynamic parentAreaId;
-  void attachRef(Ref ref) {}
 
   TabController? tabController;
 

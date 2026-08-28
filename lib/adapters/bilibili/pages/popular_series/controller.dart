@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/common/widgets/scroll_physics.dart' show ReloadMixin;
 import 'package:skf/core/result/loading_state.dart';
@@ -9,7 +8,6 @@ import 'package:skf/core/container/app_container.dart';
 class PopularSeriesController
     extends CommonListControllerRiverpod<CorePopularSeriesOneData, CoreHotVideoItemModel>
     with ReloadMixin {
-  void attachRef(Ref ref) {}
   late int number;
 
   Map<String, dynamic>? config;

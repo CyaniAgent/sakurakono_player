@@ -1,7 +1,6 @@
 import 'package:skf/adapters/bilibili/http/api.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/core/models/fav_types.dart';
@@ -20,7 +19,6 @@ class MemberFavoriteCtr
   }
 
   final int mid;
-  void attachRef(Ref ref) {}
 
   late int favPage = 2;
   bool _favExpand = true;

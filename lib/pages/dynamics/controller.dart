@@ -34,7 +34,6 @@ class DynamicsController
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
 

@@ -25,7 +25,6 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   // 用户信息 头像、昵称、lv
   CoreUserInfoData _userInfo = CoreUserInfoData();

@@ -11,7 +11,6 @@ import 'package:flutter/widgets.dart' show ScrollController;
 import 'package:skf/core/container/app_container.dart';
 
 class LiveController extends CommonListControllerRiverpod {
-  void attachRef(Ref ref) {}
   LiveController() { queryData(); }
 
   int? count;
@@ -165,4 +164,6 @@ class LiveController extends CommonListControllerRiverpod {
 }
 
 /// Live page controller (single instance).
-final liveControllerProvider = Provider<LiveController>((ref) => LiveController()..attachRef(ref));
+
+/// Live page controller (single instance).
+final liveControllerProvider = Provider<LiveController>((ref) => LiveController());

@@ -9,7 +9,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class PgcReviewController
     extends CommonListControllerRiverpod<CorePgcReviewData, CorePgcReviewItemModel> {
-  void attachRef(ProviderContainer ref) {}
   PgcReviewController({required this.type, required this.mediaId}) {
     queryData();
   }

@@ -13,7 +13,6 @@ import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class FollowTagPanel extends StatefulWidget {
@@ -38,7 +37,6 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
   late final Set<int> tags = widget.tags == null
       ? {}
       : Set<int>.from(widget.tags!);
-  void attachRef(Ref ref) {}
   @override
   void initState() {
     super.initState();

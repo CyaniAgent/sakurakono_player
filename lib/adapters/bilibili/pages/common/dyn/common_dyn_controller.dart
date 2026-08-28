@@ -5,14 +5,11 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.d
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply/vote/reply_vote_mixin.dart';
 import 'package:skf/utils/storage_pref.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
 abstract class CommonDynController extends ReplyController<CoreMainListReply>
     with ReplyVoteMixin<CoreMainListReply> {
-  @override
-  void attachRef(Ref ref) {}
   int get oid;
   int get replyType;
 

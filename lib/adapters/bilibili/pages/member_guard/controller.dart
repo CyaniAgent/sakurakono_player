@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
@@ -15,7 +14,6 @@ class MemberGuardController
   final int ruid = Get.arguments['ruid'] as int;
 
   late List<CoreGuardItem> tops;
-  void attachRef(Ref ref) {}
 
   @override
   List<CoreGuardItem>? getDataList(CoreMemberGuardData response) {

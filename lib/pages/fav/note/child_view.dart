@@ -9,7 +9,6 @@ import 'package:skf/pages/fav/note/controller.dart';
 import 'package:skf/pages/fav/note/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 class FavNoteChildPage extends StatefulWidget {
   const FavNoteChildPage({super.key, required this.isPublish, this.actions});
 
@@ -30,7 +29,6 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
     super.initState();
     _favNoteController = FavNoteController(widget.isPublish);
     favNoteRegistry[widget.isPublish.toString()] = _favNoteController;
-    _favNoteController.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

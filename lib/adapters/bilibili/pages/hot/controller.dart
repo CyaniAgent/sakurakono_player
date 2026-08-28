@@ -8,7 +8,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class HotController
     extends CommonListControllerRiverpod<List<CoreHotVideoItemModel>, CoreHotVideoItemModel> {
-  void attachRef(Ref ref) {}
 
   HotController() {
     queryData();
@@ -29,4 +28,6 @@ class HotController
 }
 
 /// Hot page controller (single instance).
-final hotControllerProvider = Provider<HotController>((ref) => HotController()..attachRef(ref));
+
+/// Hot page controller (single instance).
+final hotControllerProvider = Provider<HotController>((ref) => HotController());

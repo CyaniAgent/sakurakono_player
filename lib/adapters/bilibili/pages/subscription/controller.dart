@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubItemModel> {
-  void attachRef(Ref ref) {}
   late final account = Accounts.main;
 
   SubController() {

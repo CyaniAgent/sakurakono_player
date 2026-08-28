@@ -8,7 +8,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class PgcIndexController
     extends CommonListControllerRiverpod<CorePgcIndexResult, CorePgcIndexItem> {
-  void attachRef(ProviderContainer ref) {}
   final int? indexType;
   PgcIndexController(this.indexType) {
     getPgcIndexCondition();

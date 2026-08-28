@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/search_types.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -7,7 +6,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class SearchTrendingController
     extends CommonListControllerRiverpod<CoreSearchTrendingData, CoreSearchTrendingItemModel> {
-  void attachRef(Ref ref) {}
   int topCount = 0;
 
   SearchTrendingController() {

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
@@ -42,7 +41,6 @@ import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class LiveRoomController extends ChangeNotifier {
-  void attachRef(Ref ref) {}
 
   /// Public notify wrapper — [notifyListeners] is protected in
   /// [ChangeNotifier]; views call this to request a rebuild.

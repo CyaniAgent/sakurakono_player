@@ -19,7 +19,6 @@ class BlackListController
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   @override
   List<CoreBlackListItem>? getDataList(CoreBlackListData response) {

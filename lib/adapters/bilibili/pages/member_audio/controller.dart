@@ -2,7 +2,6 @@ import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pbenum.dart'
     show PlaylistSource;
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/audio/view.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -15,7 +14,6 @@ class MemberAudioController
   }
 
   final int mid;
-  void attachRef(Ref ref) {}
   int? totalSize;
 
 

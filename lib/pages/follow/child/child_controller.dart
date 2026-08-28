@@ -26,7 +26,6 @@ class FollowChildController
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(ProviderContainer ref) {}
 
   late final loadSameFollow = _followState?.isOwner == false;
   LoadingState<List<CoreFollowItemModel>?> sameState =

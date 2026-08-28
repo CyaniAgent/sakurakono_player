@@ -8,7 +8,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class RelatedController
     extends CommonListControllerRiverpod<List<CoreHotVideoItemModel>?, CoreHotVideoItemModel> {
-  void attachRef(Ref ref) {}
   RelatedController({this.autoQuery = true}) {
     if (autoQuery) {
       queryData();

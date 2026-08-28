@@ -4,7 +4,6 @@ import 'package:skf/adapters/bilibili/models_new/space/space/tab2.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/member/controller.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -24,7 +23,6 @@ class MemberOpusController
 
   final String? heroTag;
   final int mid;
-  void attachRef(Ref ref) {}
 
   String offset = '';
   SpaceTabFilter type = const SpaceTabFilter(

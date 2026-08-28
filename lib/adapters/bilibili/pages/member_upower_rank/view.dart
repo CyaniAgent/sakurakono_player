@@ -13,7 +13,6 @@ import 'package:skf/adapters/bilibili/pages/member_upower_rank/controller.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:skf/core/container/app_container.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UpowerRankPage extends StatefulWidget {
   const UpowerRankPage({
@@ -63,7 +62,6 @@ class _UpowerRankPageState extends State<UpowerRankPage>
       upMid: _upMid,
     );
     upowerRankRegistry['$_upMid${widget.privilegeType}'] = _controller;
-    _controller.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

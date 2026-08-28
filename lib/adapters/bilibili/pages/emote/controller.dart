@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models_new/emote/package.dart'; // ignore: adapter import (no core equivalent for Package)
@@ -13,7 +12,6 @@ class EmotePanelController extends CommonListControllerRiverpod<List<Package>?, 
   EmotePanelController() {
     queryData();
   }
-  void attachRef(Ref ref) {}
   TabController? tabController;
 
   @override

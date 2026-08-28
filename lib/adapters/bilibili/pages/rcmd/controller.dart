@@ -1,12 +1,10 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_list_controller.dart';
 import 'package:skf/utils/storage_pref.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class RcmdController extends CommonListController {
-  void attachRef(Ref ref) {}
   late bool enableSaveLastData = Pref.enableSaveLastData;
   final bool appRcmd = Pref.appRcmd;
 

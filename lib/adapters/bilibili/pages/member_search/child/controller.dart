@@ -6,7 +6,6 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/controller.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -16,7 +15,6 @@ class MemberSearchChildController extends CommonListControllerRiverpod {
 
   final MemberSearchController controller;
   final MemberSearchType searchType;
-  void attachRef(Ref ref) {}
 
   // archive
   late final _ps = Int64(20);

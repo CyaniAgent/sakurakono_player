@@ -1,7 +1,6 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
@@ -50,7 +49,6 @@ class MemberVideoCtr
   bool isLocating = false;
   bool isLoadPrevious = false;
   bool? hasPrev;
-  void attachRef(Ref ref) {}
 
   @override
   Future<void> onRefresh() async {

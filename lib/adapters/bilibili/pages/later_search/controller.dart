@@ -1,7 +1,6 @@
 
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
@@ -16,8 +15,6 @@ class LaterSearchController
         DeleteItemMixin,
         BaseLaterController {
   dynamic mid;
-  @override
-  void attachRef(ProviderContainer ref) {}
   dynamic count;
 
   LaterSearchController() {

@@ -2,7 +2,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/pages/member/controller.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -27,7 +26,6 @@ class MemberBangumiCtr
   final int mid;
   final String? heroTag;
   int? count;
-  void attachRef(Ref ref) {}
   late final _ctr = appRead(memberControllerProvider(heroTag!));
 
   @override

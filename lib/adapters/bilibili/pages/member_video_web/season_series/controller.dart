@@ -2,7 +2,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -12,7 +11,6 @@ class MemberSSWebCtr
   final Rx<CoreArchiveSortTypeApp> order = Rx(CoreArchiveSortTypeApp.desc);
   late CoreWebSsType _type;
   late Object _id;
-  void attachRef(Ref ref) {}
 
   MemberSSWebCtr() {
     final args = Get.arguments;

@@ -1,7 +1,6 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -19,7 +18,6 @@ class MemberVideoWebCtr
   int tid = 0;
   String? specialType;
   List<CoreListTag>? tags;
-  void attachRef(Ref ref) {}
 
   @override
   List<CoreVListItemModel>? getDataList(CoreSearchArchiveData response) {

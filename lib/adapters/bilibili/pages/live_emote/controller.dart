@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 import 'package:skf/core/result/loading_state.dart';
@@ -12,7 +11,6 @@ import 'package:skf/core/container/app_container.dart';
 class LiveEmotePanelController
     extends CommonListControllerRiverpod<List<CoreLiveEmoteDatum>?, CoreLiveEmoteDatum>
     implements TickerProvider {
-  void attachRef(Ref ref) {}
   LiveEmotePanelController(this.roomId) {
     queryData();
   }

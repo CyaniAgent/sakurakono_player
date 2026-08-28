@@ -48,7 +48,6 @@ import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -60,7 +59,6 @@ class AudioController extends ChangeNotifier
         BlockConfigMixin,
         BlockMixin {
   @override
-  void attachRef(Ref ref) {}
 
   /// TripleMixin notification callback.
   @override

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_data.dart';
@@ -8,7 +7,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class FollowSearchController
     extends CommonSearchController<CoreFollowData, CoreFollowItemModel> {
-  void attachRef(Ref ref) {}
   FollowSearchController(this.mid);
   final int mid;
 

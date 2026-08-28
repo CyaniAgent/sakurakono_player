@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
@@ -8,7 +7,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class SubDetailController
     extends CommonListControllerRiverpod<CoreSubDetailData, CoreSubDetailItemModel> {
-  void attachRef(Ref ref) {}
   late int id;
   String? heroTag;
   CoreSubItemModel? subInfo;

@@ -14,8 +14,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class VideoReplyController extends ReplyController<CoreMainListReply>
     with ReplyVoteMixin<CoreMainListReply> {
-  @override
-  void attachRef(Ref ref) {}
   VideoReplyController({
     required this.aid,
     required this.videoType,

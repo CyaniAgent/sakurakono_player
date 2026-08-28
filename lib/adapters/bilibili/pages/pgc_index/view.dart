@@ -14,7 +14,6 @@ import 'package:skf/adapters/bilibili/pages/pgc_index/widgets/pgc_card_v_pgc_ind
 import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PgcIndexPage extends StatefulWidget {
   const PgcIndexPage({super.key, this.indexType});
@@ -34,7 +33,6 @@ class _PgcIndexPageState extends State<PgcIndexPage>
     super.initState();
     _ctr = PgcIndexController(widget.indexType);
     pgcIndexRegistry[widget.indexType.toString()] = _ctr;
-    _ctr.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

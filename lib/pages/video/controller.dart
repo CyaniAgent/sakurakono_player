@@ -50,7 +50,6 @@ class VideoDetailController extends ChangeNotifier {
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
   late final Map args;
   late String bvid;
   late int aid;

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
@@ -8,7 +7,6 @@ import 'package:skf/core/container/app_container.dart';
 class MemberLikeArcController
     extends CommonListControllerRiverpod<CoreCoinLikeArcData, CoreCoinLikeArcItem> {
   final dynamic mid;
-  void attachRef(Ref ref) {}
   MemberLikeArcController({this.mid}) {
     queryData();
   }

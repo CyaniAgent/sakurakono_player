@@ -16,7 +16,6 @@ class LikeDetailController
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   LikeDetailController() {
     final args = AppNavigator.arguments;

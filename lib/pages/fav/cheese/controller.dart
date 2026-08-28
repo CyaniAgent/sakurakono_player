@@ -15,7 +15,6 @@ class FavCheeseController
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   late final int mid = (appRead(accountProvider).userId) ?? 0;
 

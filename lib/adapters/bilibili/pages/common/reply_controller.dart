@@ -14,7 +14,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -26,7 +25,6 @@ abstract class ReplyController<R>
     sortType = cacheSortType;
     mode = cacheSortType == ReplySortType.time ? CoreMode.mainListTime : CoreMode.mainListHot;
   }
-  void attachRef(Ref ref) {}
   int count = -1;
 
   late ReplySortType sortType;

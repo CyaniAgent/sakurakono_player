@@ -16,7 +16,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ContributionRankPanel extends StatefulWidget {
   const ContributionRankPanel({
@@ -123,7 +122,6 @@ class _ContributionRankTypeState extends State<_ContributionRankType>
       type: widget.type,
     );
     contributionRankRegistry['${widget.roomId}${widget.type.name}'] = _controller;
-    _controller.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

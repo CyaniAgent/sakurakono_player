@@ -10,7 +10,6 @@ import 'package:skf/pages/fav/pgc/controller.dart';
 import 'package:skf/pages/fav/pgc/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 class FavPgcChildPage extends StatefulWidget {
   const FavPgcChildPage({
     super.key,
@@ -39,7 +38,6 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
     _favPgcController = FavPgcController(widget.type, widget.followStatus);
     favPgcControllerRegistry['${widget.type}${widget.followStatus}'] =
         _favPgcController;
-    _favPgcController.attachRef(ProviderScope.containerOf(context));
   }
 
   @override

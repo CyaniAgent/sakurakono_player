@@ -14,7 +14,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart'
     hide ListTile, SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:skf/core/container/app_container.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BubblePage extends StatefulWidget {
   const BubblePage({super.key, this.categoryId});
@@ -34,7 +33,6 @@ class _BubblePageState extends State<BubblePage>
     super.initState();
     _controller = BubbleController(widget.categoryId);
     bubbleRegistry[widget.categoryId ?? 'all'] = _controller;
-    _controller.attachRef(ProviderScope.containerOf(context));
   }
 
   BubbleController currCtr([int? index]) {

@@ -23,7 +23,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MemberPage extends StatefulWidget {
   const MemberPage({super.key});
@@ -39,8 +38,6 @@ class _MemberPageState extends State<MemberPage> {
   PageController? _headerController;
   PageController getHeaderController() =>
       _headerController ??= PageController();
-  Ref? _ref;
-  void attachRef(Ref ref) { _ref = ref; }
   @override
   void initState() {
     super.initState();
@@ -192,7 +189,7 @@ class _MemberPageState extends State<MemberPage> {
                     Widget trailing = FilledButton.tonal(
                       onPressed: () async {
                         final isFollow = e.isFollow ?? false;
-                        final res = await (_ref?.read(userRepositoryProvider) ?? appRead(userRepositoryProvider)).spaceReserve(
+                        final res = await appRead(userRepositoryProvider).spaceReserve(
                           sid: e.sid!.toString(),
                           isFollow: isFollow,
                         );
@@ -576,7 +573,7 @@ class _MemberPageState extends State<MemberPage> {
       onShow();
       return;
     }
-    final res = await (_ref?.read(userRepositoryProvider) ?? appRead(userRepositoryProvider)).userRelation(_mid);
+    final res = await appRead(userRepositoryProvider).userRelation(_mid);
     if (res case Success(:final response)) {
       if (response.mtime == null) return;
       _cacheFollowTime =

@@ -19,7 +19,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -201,7 +200,6 @@ abstract class CommonIntroController extends ChangeNotifier
 }
 
 mixin FavMixin on TripleMixin {
-  void attachRef(Ref ref) {}
   Set? favIds;
   int? quickFavId;
   late final enableQuickFav = Pref.enableQuickFav;

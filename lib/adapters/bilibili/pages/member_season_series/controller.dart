@@ -1,5 +1,4 @@
 import 'package:skf/core/result/loading_state.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
@@ -12,7 +11,6 @@ class SeasonSeriesController
   }
   final int mid;
   int? count;
-  void attachRef(Ref ref) {}
 
   @override
   List<CoreSpaceSsModel>? getDataList(CoreSpaceSsData response) {

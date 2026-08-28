@@ -48,8 +48,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 class UgcIntroController extends CommonIntroController with ReloadMixin {
-  @override
-  void attachRef(Ref ref) {}
   late final RxBool expand;
   bool status = true;
 

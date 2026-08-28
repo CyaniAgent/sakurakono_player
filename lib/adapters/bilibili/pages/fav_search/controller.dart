@@ -1,6 +1,5 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
@@ -16,8 +15,6 @@ class FavSearchController
         CommonMultiSelectMixin<CoreFavDetailItemModel>,
         DeleteItemMixin,
         BaseFavController {
-  @override
-  void attachRef(Ref ref) {}
   late int type;
   @override
   late int mediaId;

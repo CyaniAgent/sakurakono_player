@@ -12,7 +12,6 @@ class AtMeController extends CommonListControllerRiverpod<CoreMsgAtData, CoreMsg
 
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
-  void attachRef(Ref ref) {}
 
   AtMeController() {
     queryData();

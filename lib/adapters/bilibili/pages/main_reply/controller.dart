@@ -3,14 +3,11 @@ import 'package:skf/core/models/reply_types.dart';
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class MainReplyController extends ReplyController<CoreMainListReply> {
-  @override
-  void attachRef(Ref ref) {}
   late final int oid;
   late final int replyType;
 

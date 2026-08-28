@@ -38,8 +38,6 @@ class _LiveSearchPageState extends ConsumerState<LiveSearchPage>
     final notifier = ref.read(liveSearchProvider(_params).notifier);
     _roomCtr = LiveSearchChildController(notifier, CoreLiveSearchType.room);
     _userCtr = LiveSearchChildController(notifier, CoreLiveSearchType.user);
-    _roomCtr.attachRef(ref);
-    _userCtr.attachRef(ref);
   }
 
   @override

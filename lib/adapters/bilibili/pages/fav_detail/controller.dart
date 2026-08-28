@@ -14,14 +14,12 @@ import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/widgets.dart' show Text, ValueChanged;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
 mixin BaseFavController
     on
         DeleteItemMixin<CoreFavDetailItemModel> {
-  void attachRef(Ref ref) {}
   bool get isOwner;
   int get mediaId;
 

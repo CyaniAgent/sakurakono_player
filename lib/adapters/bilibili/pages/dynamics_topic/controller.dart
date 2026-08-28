@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/core/result/loading_state.dart';
@@ -13,7 +12,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class DynTopicController
     extends CommonListControllerRiverpod<CoreTopicCardList?, CoreTopicCardItem> {
-  void attachRef(Ref ref) {}
   final topicId = Get.parameters['id']!;
   String topicName = Get.parameters['name'] ?? '';
 

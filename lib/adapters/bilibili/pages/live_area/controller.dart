@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 
 import 'package:skf/core/models/live_types.dart';
@@ -14,7 +13,6 @@ import 'package:skf/core/container/app_container.dart';
 class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>?, CoreAreaList>
     implements TickerProvider {
   Ticker? _ticker;
-  void attachRef(Ref ref) {}
   late final isLogin = Accounts.main.isLogin;
 
   bool isEditing = false;

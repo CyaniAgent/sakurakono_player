@@ -2,13 +2,11 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/match_contest.dart';
 import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class MatchInfoController extends CommonDynController {
   @override
-  void attachRef(Ref ref) {}
   @override
   final int oid = int.parse(Get.parameters['cid']!);
   @override

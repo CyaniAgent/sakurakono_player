@@ -15,12 +15,10 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class WhisperDetailController extends CommonListControllerRiverpod<RspSessionMsg, Msg> {
-  void attachRef(Ref ref) {}
   late final account = Accounts.main;
 
   late final int talkerId;

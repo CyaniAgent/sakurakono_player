@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
@@ -14,7 +13,6 @@ class MemberArticleCtr
   }
 
   final int mid;
-  void attachRef(Ref ref) {}
 
   int count = -1;
 
