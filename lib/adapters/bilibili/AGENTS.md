@@ -23,7 +23,7 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 ## bridge.dart (entry point, all static)
 
 - initHive(): registers 7 Hive TypeAdapters (Owner, UserInfoData, LevelInfo, BiliCookieJar, LoginAccount, AccountType, RuleFilter). MUST run before GStorage.init() (root gotcha).
-- register(): idempotent. Get.lazyPut for all 24 Bili*Repository (bound to core interfaces), AccountProvider, AccountService, DownloadService. setupServiceLocator(). _initHttp(). Search special-case: lazyPut<BiliSearchRepository>, then lazyPut<SearchRepository>(() => Get.find<BiliSearchRepository>()).
+- register(): idempotent. buildAdapterOverrides() — 36 Riverpod overrides (26 core repositories + 7 hosts/actions + downloadService + 2 bar-state bridges), NO Get.lazyPut anymore. setupServiceLocator(). _initHttp(). Search special-case: searchRepositoryProvider overridden with BiliSearchRepository directly.
 - registerRoutes(): ~60 GetPage, all registered unconditionally (no feature flags).
 
 ## HTTP stack
@@ -39,7 +39,7 @@ Largest subtree of the repo (~1,099 non-generated Dart files): full B站 client.
 
 - One dir per page → view.dart + controller.dart (+ optional widgets/, models/, child/).
 - Shared infra pages/common/: common_controller.dart (CommonController<R,T> extends ChangeNotifier with ScrollOrRefreshMixin, migrated from GetxController), common_page.dart (CommonPageState), common_intro_controller, common_whisper_controller, reply_controller, home_tab_helper, dyn/.
-- Controllers: `late final Map args;` from GetPage arguments. Get.find<Repo>() (~157 sites across lib/, partially converted to appRead), Obx eliminated (0), .obs eliminated (0). New controllers extend ChangeNotifier.
+- Controllers: `late final Map args;` from GetPage arguments. Get.find eliminated (0 real sites), all lookups via appRead(provider) / family / registry. Obx eliminated (0), .obs eliminated (0). New controllers extend ChangeNotifier.
 - Pagination: onRefresh()→queryData(true), onLoadMore()→queryData(false), hasMore/pageInfo?.hasMore guards, cursor _offset. Custom scroll physics (NO EasyRefresh).
 
 ## model_converters.dart (utils/model_converters.dart, 1446ln)

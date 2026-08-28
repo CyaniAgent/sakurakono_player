@@ -8,7 +8,7 @@ Child of root AGENTS.md. Shared page framework + domain pages consumed by ALL ad
 
 ## Host interface pattern (核心解耦机制)
 
-- 7 abstract interfaces define adapter-dependent behavior; pages resolve them at runtime via `Get.find<T>()` (GetX, partially converted to Riverpod `ref.read`) or Riverpod providers:
+- 7 abstract interfaces define adapter-dependent behavior; pages resolve them via `Host.of()` → `appRead(xHostProvider)` (provider stubs in `lib/pages/providers.dart`, overridden in each adapter's `adapterOverrides`):
 
 | Interface | Interface file | Bili impl (bilibili/common/) | Otto impl (ottohub/services/) |
 |---|---|---|---|
@@ -30,8 +30,8 @@ Child of root AGENTS.md. Shared page framework + domain pages consumed by ALL ad
 ## Patterns
 
 - One dir per page → view.dart + controller.dart (+ optional widgets/, models/) — same shape as bilibili/pages/.
-- Controllers: Obx and .obs eliminated (0 remaining). Get.find partially converted to `ref.read` (~157 remaining across 62 files). New controllers extend ChangeNotifier + notifyListeners.
-- Data access via core repository interfaces (Riverpod providers or Get.find fallback) — never direct HTTP.
+- Controllers: Obx and .obs eliminated (0 remaining). Get.find eliminated (0 real sites in lib/). New controllers extend ChangeNotifier + notifyListeners.
+- Data access via core repository interfaces (Riverpod providers via appRead) — never direct HTTP.
 
 ## Migration status (2026-08)
 

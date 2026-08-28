@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skf/core/models/ui/image_preview_type.dart';
-import 'package:get/get.dart';
 
 /// Type definitions for image action callbacks.
 typedef ImageViewCallback = void Function({
@@ -33,7 +32,7 @@ typedef LaunchURLCallback = Future<void> Function(String url);
 /// When no implementation is registered the default [DefaultImageActionDelegate]
 /// will be a no-op (safe fallback).
 abstract final class ImageActionRegistry {
-  static const _tag = 'image_action_impl';
+  static _Impl? _impl;
 
   /// Register the callbacks that implement image actions.
   static void register({
@@ -42,25 +41,16 @@ abstract final class ImageActionRegistry {
     required DownloadLivePhotoCallback downloadLivePhoto,
     required LaunchURLCallback launchURL,
   }) {
-    Get.put<_Impl>(
-      _Impl(
-        imageView: imageView,
-        onHorizontalPreview: onHorizontalPreview,
-        downloadLivePhoto: downloadLivePhoto,
-        launchURL: launchURL,
-      ),
-      tag: _tag,
+    _impl = _Impl(
+      imageView: imageView,
+      onHorizontalPreview: onHorizontalPreview,
+      downloadLivePhoto: downloadLivePhoto,
+      launchURL: launchURL,
     );
   }
 
   /// Get the registered implementation, or null if none is registered.
-  static _Impl? _get() {
-    try {
-      return Get.find<_Impl>(tag: _tag);
-    } catch (_) {
-      return null;
-    }
-  }
+  static _Impl? _get() => _impl;
 
   /// Delegate to the registered [imageView] callback.
   static void imageView({
