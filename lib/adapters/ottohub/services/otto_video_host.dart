@@ -5,9 +5,7 @@
 // 本桩仅保证页面可打开不崩：播放器返回可构造的 PlayerController 实例（不实际
 // 播放），面板/弹层返回占位或空实现（防御性降级，不抛异常）。
 
-
 import 'package:flutter/material.dart';
-
 
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
@@ -120,7 +118,6 @@ class _OttoPlayerHost implements VideoPlayerHost {
 /// OttoHub 视频页宿主桩。
 class OttoVideoHost extends VideoHost {
   final _playerHost = _OttoPlayerHost();
-
 
   @override
   VideoPlayerHost get playerHost => _playerHost;
