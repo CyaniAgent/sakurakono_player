@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/cover.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/item.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/stat.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/cover.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/item.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/stat.dart';
 import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicsDataModel, CoreDynamicItemModel, CoreBasic, CoreItemModulesModel, CoreModuleAuthorModel, CoreModuleDynamicModel, CoreDynamicDescModel;
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';

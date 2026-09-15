@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
-import 'package:skf/adapters/bilibili/pages/rcmd/view.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
 import 'package:skf/pages/common/common_controller.dart';
@@ -8,6 +6,8 @@ import 'package:skf/pages/common/msg_unread_type.dart';
 import 'package:skf/pages/home/view.dart';
 import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/view.dart';
+import 'package:skf/pages/rcmd/controller.dart';
+import 'package:skf/pages/rcmd/view.dart';
 
 /// OttoHub MainHost：Otto 侧自定 tab 集（首页/我的），首页子 tab 用共享
 /// RcmdController/RcmdPage（走 core VideoRepository——OttoHub 已实现

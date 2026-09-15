@@ -2,7 +2,7 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/stat/stat.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/models/ui/stat_type.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/item.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/item.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 

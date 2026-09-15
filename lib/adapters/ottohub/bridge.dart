@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
-import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 import 'package:skf/adapters/ottohub/repository/otto_app_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_black_repository.dart';
@@ -33,7 +32,6 @@ import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_setting_host.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
@@ -111,7 +109,6 @@ class OttoAdapter implements AppAdapter {
       dynamicsHostProvider.overrideWithValue(OttoDynamicsHost()),
       mineActionsProvider.overrideWithValue(OttoMineActions()),
       downloadActionsProvider.overrideWithValue(OttoDownloadActions()),
-      downloadServiceProvider.overrideWithValue(_StubDownloadService()),
       // Generic page bar-state bridges: interface -> Riverpod notifiers.
       mainBarStateProvider.overrideWith((ref) => appRead(mainControllerProvider)),
       homeBarStateProvider.overrideWith((ref) => appRead(homeControllerProvider)),
@@ -149,27 +146,3 @@ class OttoAdapter implements AppAdapter {
     return PlayInputKind.unknown;
   }
 }
-
-/// Stub [DownloadService] — prevents crashes when Bilibili download pages
-/// call `Get.find<DownloadService>()` but download is not implemented.
-///
-/// Extends [DownloadService] directly so all methods are inherited.
-/// Overrides only the methods that would trigger filesystem I/O
-/// (which is Bilibili-specific and irrelevant to OttoHub).
-class _StubDownloadService extends DownloadService {
-  @override
-  void initDownloadList() {
-    // OttoHub does not support downloads — no-op to prevent crash.
-  }
-
-  @override
-  void onInit() {
-    waitForInitialization = Future.value();
-    // Stub — no initialization needed for OttoHub.
-    super.onInit();
-  }
-}
-// ---------------------------------------------------------------------------
-// Stub classes — prevent crashes when Bilibili UI code references
-// feature-flagged services that OttoHub does not implement.
-// ---------------------------------------------------------------------------

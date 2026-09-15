@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/ottohub/repository/otto_member_repository.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/item.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/item.dart';
 import 'package:skf/core/models/dynamics_types.dart'
     show CoreDynamicsDataModel;
 import 'package:skf/core/models/follow_data.dart';

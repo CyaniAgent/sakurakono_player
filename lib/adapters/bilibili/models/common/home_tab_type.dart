@@ -1,5 +1,5 @@
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
-import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
+import 'package:skf/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/pages/live/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live/view.dart';

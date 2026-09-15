@@ -1,4 +1,4 @@
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/item.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/item.dart';
 
 class SpaceOpusData {
   bool? hasMore;

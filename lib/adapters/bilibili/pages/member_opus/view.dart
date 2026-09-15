@@ -4,7 +4,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/item.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/item.dart';
 import 'package:skf/pages/common/fab_mixin.dart';
 import 'package:skf/adapters/bilibili/pages/member_opus/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_opus/widgets/space_opus_item.dart';

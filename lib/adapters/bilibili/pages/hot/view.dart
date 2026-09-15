@@ -9,7 +9,7 @@ import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/models/common/home_tab_type.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/pages/home/controller.dart';
-import 'package:skf/adapters/bilibili/pages/hot/controller.dart';
+import 'package:skf/pages/hot/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage_pref.dart';

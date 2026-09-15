@@ -1,5 +1,5 @@
 import 'package:riverpod/riverpod.dart';
-import 'package:skf/adapters/bilibili/pages/rcmd/controller.dart';
+import 'package:skf/pages/rcmd/controller.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
 
 /// mainControllerProvider / homeControllerProvider now live in

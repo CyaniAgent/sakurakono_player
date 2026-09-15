@@ -27,7 +27,7 @@ import 'package:skf/adapters/bilibili/models_new/space/space_archive/data.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_article/data.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_audio/data.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_cheese/data.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/data.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/data.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_season_series/item.dart';
 import 'package:skf/adapters/bilibili/models_new/space/space_shop/data.dart';
 import 'package:skf/adapters/bilibili/models_new/upower_rank/data.dart';

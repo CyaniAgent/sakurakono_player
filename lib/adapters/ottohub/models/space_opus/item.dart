@@ -1,5 +1,5 @@
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/cover.dart';
-import 'package:skf/adapters/bilibili/models_new/space/space_opus/stat.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/cover.dart';
+import 'package:skf/adapters/ottohub/models/space_opus/stat.dart';
 
 class SpaceOpusItemModel {
   String? content;
