@@ -40,9 +40,6 @@ abstract final class Pref {
   static set blackMids(Set<int> blackMidsSet) =>
       _localCache.put(LocalCacheKey.blackMids, blackMidsSet);
 
-  static Object? get danmakuFilterRule =>
-      _localCache.get(LocalCacheKey.danmakuFilterRules);
-
   static void setBlackMid(int mid) {
     final mids = Set<int>.from(
       (_localCache.get(LocalCacheKey.blackMids, defaultValue: <int>{}) as Set)
@@ -59,8 +56,8 @@ abstract final class Pref {
     _localCache.put(LocalCacheKey.blackMids, mids);
   }
 
-  static int get memberTab =>
-      _setting.get(SettingBoxKey.memberTab, defaultValue: 0);
+
+
 
   static int get _themeTypeInt =>
       _setting.get(SettingBoxKey.themeMode, defaultValue: 2);
@@ -146,8 +143,8 @@ abstract final class Pref {
   static int get defaultAudioQaCellular =>
       _setting.get(SettingBoxKey.defaultAudioQaCellular, defaultValue: 30216);
 
-  static List<String>? get preferCodecs =>
-      (_setting.get(SettingBoxKey.preferCodecs) as List?)?.fromCast<String>();
+
+
 
   static String get hardwareDecoding =>
       _setting.get(SettingBoxKey.hardwareDecoding) as String? ?? '';
@@ -160,8 +157,6 @@ abstract final class Pref {
     defaultValue: Platform.isAndroid ? '30' : '0',
   );
 
-  static String? get defaultCDNService =>
-      _setting.get(SettingBoxKey.CDNService);
 
   static String get banWordForRecommend =>
       _setting.get(SettingBoxKey.banWordForRecommend, defaultValue: '');
@@ -169,11 +164,11 @@ abstract final class Pref {
   static String get banWordForReply =>
       _setting.get(SettingBoxKey.banWordForReply, defaultValue: '');
 
-  static String get banWordForZone =>
-      _setting.get(SettingBoxKey.banWordForZone, defaultValue: '');
 
-  static bool get appRcmd =>
-      _setting.get(SettingBoxKey.appRcmd, defaultValue: true);
+
+
+
+
 
   static String get systemProxyHost =>
       _setting.get(SettingBoxKey.systemProxyHost, defaultValue: '');
@@ -364,8 +359,8 @@ abstract final class Pref {
   static bool get showDecorate =>
       _setting.get(SettingBoxKey.showDecorate, defaultValue: true);
 
-  static bool get showMedal =>
-      _setting.get(SettingBoxKey.showMedal, defaultValue: true);
+
+
 
   static bool get enableLivePhoto =>
       _setting.get(SettingBoxKey.enableLivePhoto, defaultValue: true);
@@ -376,14 +371,14 @@ abstract final class Pref {
   static bool get showDmChart =>
       _setting.get(SettingBoxKey.showDmChart, defaultValue: false);
 
-  static bool get enableCommAntifraud =>
-      _setting.get(SettingBoxKey.enableCommAntifraud, defaultValue: false);
 
-  static bool get enableCreateDynAntifraud =>
-      _setting.get(SettingBoxKey.enableCreateDynAntifraud, defaultValue: false);
 
-  static bool get coinWithLike =>
-      _setting.get(SettingBoxKey.coinWithLike, defaultValue: false);
+
+
+
+
+
+
 
   static bool get isPureBlackTheme =>
       _setting.get(SettingBoxKey.isPureBlackTheme, defaultValue: false);
@@ -428,11 +423,11 @@ abstract final class Pref {
   static int get retryDelay =>
       _setting.get(SettingBoxKey.retryDelay, defaultValue: 500);
 
-  static int? get liveQuality =>
-      _setting.get(SettingBoxKey.liveQuality);
 
-  static int? get liveQualityCellular =>
-      _setting.get(SettingBoxKey.liveQualityCellular);
+
+
+
+
 
   static int get appFontWeight =>
       _setting.get(SettingBoxKey.appFontWeight, defaultValue: -1);
@@ -458,8 +453,8 @@ abstract final class Pref {
   static String get webdavDirectory =>
       _setting.get(SettingBoxKey.webdavDirectory, defaultValue: '/');
 
-  static bool get showPgcTimeline =>
-      _setting.get(SettingBoxKey.showPgcTimeline, defaultValue: true);
+
+
 
   static num get maxCacheSize =>
       _setting.get(SettingBoxKey.maxCacheSize) ?? 1 << 30;
@@ -480,20 +475,20 @@ abstract final class Pref {
   static bool get enableLog =>
       _setting.get(SettingBoxKey.enableLog, defaultValue: true);
 
-  static bool get disableAudioCDN =>
-      _setting.get(SettingBoxKey.disableAudioCDN, defaultValue: false);
 
-  static int get minDurationForRcmd =>
-      _setting.get(SettingBoxKey.minDurationForRcmd, defaultValue: 0);
 
-  static int get minPlayForRcmd =>
-      _setting.get(SettingBoxKey.minPlayForRcmd, defaultValue: 0);
 
-  static int get minLikeRatioForRecommend =>
-      _setting.get(SettingBoxKey.minLikeRatioForRecommend, defaultValue: 0);
 
-  static bool get exemptFilterForFollowed =>
-      _setting.get(SettingBoxKey.exemptFilterForFollowed, defaultValue: true);
+
+
+
+
+
+
+
+
+
+
 
   static bool get applyFilterToRelatedVideos => _setting.get(
     SettingBoxKey.applyFilterToRelatedVideos,
@@ -559,11 +554,11 @@ abstract final class Pref {
   static bool get enableShowLiveDanmaku =>
       _setting.get(SettingBoxKey.enableShowLiveDanmaku, defaultValue: true);
 
-  static bool get enableQuickFav =>
-      _setting.get(SettingBoxKey.enableQuickFav, defaultValue: false);
 
-  static bool get p1080 =>
-      _setting.get(SettingBoxKey.p1080, defaultValue: true);
+
+
+
+
 
   static int get customColor =>
       _setting.get(SettingBoxKey.customColor, defaultValue: 0);
@@ -677,8 +672,8 @@ abstract final class Pref {
   static bool get enableAi =>
       _setting.get(SettingBoxKey.enableAi, defaultValue: false);
 
-  static bool get enableOnlineTotal =>
-      _setting.get(SettingBoxKey.enableOnlineTotal, defaultValue: false);
+
+
 
   static bool get autoEnterFullScreen =>
       _setting.get(SettingBoxKey.enableAutoEnter, defaultValue: false);
@@ -719,10 +714,11 @@ abstract final class Pref {
   static bool get directExitOnBack =>
       _setting.get(SettingBoxKey.directExitOnBack, defaultValue: false);
 
-  static bool get historyPause =>
-      _localCache.get(LocalCacheKey.historyPause, defaultValue: false);
 
-  static int? get quickFavId => _setting.get(SettingBoxKey.quickFavId);
+
+
+
+
 
   static bool get tempPlayerConf =>
       _setting.get(SettingBoxKey.tempPlayerConf, defaultValue: false);
@@ -744,17 +740,17 @@ abstract final class Pref {
   static bool get silentDownImg =>
       _setting.get(SettingBoxKey.silentDownImg, defaultValue: false);
 
-  static String get buvid =>
-      (_localCache.get('buvid') as String?) ?? '';
 
-  static bool get showMemberShop =>
-      _setting.get(SettingBoxKey.showMemberShop, defaultValue: false);
 
-  static int get superChatType =>
-      _setting.get(SettingBoxKey.superChatType, defaultValue: 0);
 
-  static double get fullScreenSCWidth =>
-      _setting.get(SettingBoxKey.fullScreenSCWidth, defaultValue: 360.0);
+
+
+
+
+
+
+
+
 
   static bool get minimizeOnExit =>
       _setting.get(SettingBoxKey.minimizeOnExit, defaultValue: true);
@@ -786,8 +782,8 @@ abstract final class Pref {
   static int get pgcSkipType =>
       _setting.get(SettingBoxKey.pgcSkipType, defaultValue: 0);
 
-  static int get audioPlayMode =>
-      _setting.get(SettingBoxKey.audioPlayMode, defaultValue: 0);
+
+
 
   static bool get enablePlayAll =>
       _setting.get(SettingBoxKey.enablePlayAll, defaultValue: true);
@@ -803,7 +799,8 @@ abstract final class Pref {
 
   static String? get downloadPath => _setting.get(SettingBoxKey.downloadPath);
 
-  static String? get liveCdnUrl => _setting.get(SettingBoxKey.liveCdnUrl);
+
+
 
   static bool get showBatteryLevel => _setting.get(
     SettingBoxKey.showBatteryLevel,
@@ -842,5 +839,6 @@ abstract final class Pref {
   static double get maxVolume => // desktop
       _setting.get(SettingBoxKey.maxVolume, defaultValue: 2.0);
 
-  static List? get liveStream => _setting.get(SettingBoxKey.liveStream);
+
+
 }
