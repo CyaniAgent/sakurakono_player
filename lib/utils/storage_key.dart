@@ -210,7 +210,8 @@ abstract final class SettingBoxKey {
 }
 
 abstract final class LocalCacheKey {
-  static const String       blackMids = 'blackMids',
+  static const String blackMids = 'blackMids',
+      historyPause = 'historyPause',
             timeStamp = 'timeStamp';
 }
 
