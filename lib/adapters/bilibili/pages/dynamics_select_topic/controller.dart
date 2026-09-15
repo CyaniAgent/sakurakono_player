@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/widgets.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SelectTopicController
     extends CommonListControllerRiverpod<CoreTopicPubSearchData, CoreTopicItem> {
@@ -44,3 +45,6 @@ class SelectTopicController
     super.dispose();
   }
 }
+
+/// SelectTopicController（单实例）。
+final selectTopicControllerProvider = Provider<SelectTopicController>((ref) => SelectTopicController());

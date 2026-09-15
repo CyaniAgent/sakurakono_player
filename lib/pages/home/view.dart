@@ -23,10 +23,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends CommonPageState<HomePage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   final _homeController = appRead(homeControllerProvider);
   final _mainController = appRead(mainControllerProvider);
   late final _host = MainHost.of();
+
+  @override
+  void initState() {
+    super.initState();
+    _homeController.initTabController(this);
+  }
+
+  @override
+  void dispose() {
+    _homeController.disposeTabController();
+    super.dispose();
+  }
 
   @override
   bool get needsCorrection => _homeController.hideTopBar;

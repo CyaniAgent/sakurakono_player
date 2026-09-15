@@ -6,7 +6,6 @@ import 'package:skf/adapters/bilibili/pages/member_comic/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_comic/widgets/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberComic extends StatefulWidget {
   const MemberComic({
@@ -29,10 +28,7 @@ class _MemberComicState extends State<MemberComic>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberComicController(widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = MemberComicController(widget.mid);
   }
 
   @override

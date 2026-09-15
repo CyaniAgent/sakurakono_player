@@ -9,7 +9,6 @@ import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:get/get.dart';
 
 class PgcReviewPage extends StatefulWidget {
   const PgcReviewPage({
@@ -142,15 +141,16 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                   ),
                   DialogOption(
                     child: const Text('写长评', style: TextStyle(fontSize: 14)),
-                    onPressed: () => Get
-                      ..back()
-                      ..toNamed(
+                    onPressed: () {
+                      AppNavigator.back();
+                      AppNavigator.toNamed(
                         '/webview',
                         parameters: {
                           'url':
                               'https://member.bilibili.com/article-text/mobile?theme=${theme.isDark ? 1 : 0}&media_id=${widget.mediaId}',
                         },
-                      ),
+                      );
+                    },
                   ),
                 ],
               ),

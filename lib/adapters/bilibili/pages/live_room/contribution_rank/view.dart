@@ -125,6 +125,13 @@ class _ContributionRankTypeState extends State<_ContributionRankType>
   }
 
   @override
+  void dispose() {
+    contributionRankRegistry.remove('${widget.roomId}${widget.type.name}');
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final showScore = widget.type == .online_rank;

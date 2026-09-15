@@ -7,12 +7,10 @@ import 'package:skf/common/widgets/flutter/text_field/text_field.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
-import 'package:skf/adapters/bilibili/pages/live_emote/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_emote/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:flutter/material.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class LiveSendDmPanel extends CommonRichTextPubPage {
   final bool fromEmote;
@@ -40,14 +38,6 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
     if (widget.fromEmote) {
       updatePanelType(PanelType.emoji);
     }
-  }
-
-  @override
-  void dispose() {
-    Get.delete<LiveEmotePanelController>(
-      tag: liveRoomController.roomId.toString(),
-    );
-    super.dispose();
   }
 
   @override

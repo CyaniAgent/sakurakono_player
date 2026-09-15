@@ -93,11 +93,16 @@ class BiliMemberRepository implements MemberRepository {
 
   // ---- MemberCardInfoData -> CoreMemberCardInfoData ----
 
-  Map<String, dynamic> _memberCardInfoToMap(MemberCardInfoData d) => <String, dynamic>{
-    'CoreCard': d.card == null ? null : _cardToMap(d.card!),
-    'archive_count': d.archiveCount,
-    'follower': d.follower,
-  };
+  Map<String, dynamic> _memberCardInfoToMap(MemberCardInfoData d) {
+    final card = d.card == null ? null : _cardToMap(d.card!);
+    return <String, dynamic>{
+      'CoreCard': card,
+      // CoreMemberCardInfoData.fromJson 从小写 'card' 读取名片，缺失会导致 UP 头像/用户名恒为空
+      'card': card,
+      'archive_count': d.archiveCount,
+      'follower': d.follower,
+    };
+  }
 
   Map<String, dynamic> _cardToMap(dynamic d) => <String, dynamic>{
     'mid': d.mid,

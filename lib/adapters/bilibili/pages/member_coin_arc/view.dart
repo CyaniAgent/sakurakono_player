@@ -8,9 +8,7 @@ import 'package:skf/adapters/bilibili/pages/member_coin_arc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_coin_arc/widgets/item.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/grid.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberCoinArcPage extends StatefulWidget {
   const MemberCoinArcPage({
@@ -33,10 +31,7 @@ class _MemberCoinArcPageState extends State<MemberCoinArcPage> {
   @override
   void initState() {
     super.initState();
-    _ctr = Get.put(
-      MemberCoinArcController(mid: widget.mid),
-      tag: Utils.makeHeroTag(widget.mid),
-    );
+    _ctr = MemberCoinArcController(mid: widget.mid);
   }
 
   @override

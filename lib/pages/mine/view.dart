@@ -12,15 +12,14 @@ import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/mine/widgets/item.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key, this.showBackBtn = false});
@@ -33,7 +32,7 @@ class MinePage extends StatefulWidget {
 
 class _MediaPageState extends CommonPageState<MinePage>
     with AutomaticKeepAliveClientMixin {
-  final MineController controller = Get.putOrFind(MineController.new);
+  final MineController controller = appRead(mineControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

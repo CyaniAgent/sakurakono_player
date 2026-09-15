@@ -6,6 +6,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/router/app_navigator.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WhisperBlockController
     extends
@@ -62,5 +63,5 @@ class WhisperBlockController
   }
 }
 
-
-
+/// WhisperBlockController（单实例）。
+final whisperBlockControllerProvider = Provider<WhisperBlockController>((ref) => WhisperBlockController());

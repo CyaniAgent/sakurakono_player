@@ -5,9 +5,7 @@ import 'package:skf/adapters/bilibili/utils/history_actions.dart';
 import 'package:skf/pages/history/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/controller.dart';
 import 'package:skf/utils/grid.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class HistorySearchPage extends StatefulWidget {
   const HistorySearchPage({super.key});
@@ -21,10 +19,7 @@ class _HistorySearchPageState
         CommonSearchPageState<HistorySearchPage, CoreHistoryData, CoreHistoryItemModel>
     with GridMixin {
   @override
-  final HistorySearchController controller = Get.put(
-    HistorySearchController(),
-    tag: Utils.generateRandomString(8),
-  );
+  final HistorySearchController controller = HistorySearchController();
 
   @override
   Widget buildList(List<CoreHistoryItemModel> list) {

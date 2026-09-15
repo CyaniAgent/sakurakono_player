@@ -8,7 +8,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:get/get.dart';
 
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:skf/core/models/sponsor_block_types.dart';
@@ -157,9 +156,6 @@ class OttoVideoHost implements VideoHost {
 
   @override
   Future<void> onVideoDetailDispose(String heroTag) async {}
-
-  @override
-  void disposeMemberPage(String heroTag) {}
 
   @override
   Widget buildPlayer({
@@ -361,7 +357,7 @@ class OttoVideoHost implements VideoHost {
 /// OttoHub 片段跳过引擎桩：全部 no-op，不抛异常。
 class _OttoVideoBlock implements VideoBlock {
   @override
-  RxList<Segment> get segmentProgressList => RxList<Segment>([]);
+  List<Segment> get segmentProgressList => const <Segment>[];
 
   @override
   GlobalKey<AnimatedListState> get listKey => GlobalKey<AnimatedListState>();

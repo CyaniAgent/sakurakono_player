@@ -59,3 +59,6 @@ class BlackListController
     };
   }
 }
+
+/// BlackListController（单实例）。
+final blackListControllerProvider = Provider<BlackListController>((ref) => BlackListController());

@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/pages/live_follow/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_follow/widgets/live_item_follow.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveFollowPage extends StatefulWidget {
   const LiveFollowPage({super.key});
@@ -18,7 +18,7 @@ class LiveFollowPage extends StatefulWidget {
 }
 
 class _LiveFollowPageState extends State<LiveFollowPage> {
-  final _controller = Get.put(LiveFollowController());
+  final _controller = appRead(liveFollowControllerProvider);
 
   @override
   Widget build(BuildContext context) {

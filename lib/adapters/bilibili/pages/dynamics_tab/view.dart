@@ -7,13 +7,12 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_tab/controller.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
+import 'package:skf/core/container/app_container.dart';
 
 class DynamicsTabPage extends StatefulWidget {
   const DynamicsTabPage({super.key, required this.dynamicsType});
@@ -26,7 +25,7 @@ class DynamicsTabPage extends StatefulWidget {
 
 class _DynamicsTabPageState extends State<DynamicsTabPage>
     with AutomaticKeepAliveClientMixin, DynMixin {
-  final dynamicsController = Get.putOrFind(DynamicsController.new);
+  final dynamicsController = appRead(dynamicsControllerProvider);
   late final DynamicsTabController controller;
 
   @override

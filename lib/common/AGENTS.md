@@ -18,7 +18,7 @@
 
 ## KEY WIDGETS
 
-- LoadingWidget (loading_widget.dart): arc progress + msg, GetX Obx; sibling subdir (m3e_loading_indicator, morphs, http_error).
+- LoadingWidget (loading_widget.dart): arc progress + msg; sibling subdir (m3e_loading_indicator, morphs, http_error).
 - CustomToast / NotifyWarning (custom_toast.dart): SmartDialog-based.
 - PlayerBar (player_bar.dart): custom MultiChildRenderObjectWidget / RenderBottomBar (GPL header).
 - VideoProgressIndicator / AudioVideoProgressBar / SegmentProgressBar (progress_bar/): custom render objects.
@@ -36,7 +36,7 @@
 - `abstract final class` for statics-only (Style, Constants).
 - Custom RenderObject style: pair XWidget with RenderX/_RenderX (PlayerBar, VideoProgressIndicator, CustomTooltip, AnimatedHeight, CustomHeightWidget, ExtraHitTestWidget, DynamicSliverAppBar). Flutter rendering surgery.
 - PascalCase, no prefix (exception: PBadge). Private state _XState. GPLv3 headers on some files.
-- GetX inside shared widgets: Obx, route_aware_mixin, reorder_mixin, SmartDialog.
+- Shared widgets: zero GetX (removed 2026-09-15); route_aware_mixin, reorder_mixin, SmartDialog.
 - Style constants in style.dart (cardSpace 8, safeSpace 12, imgRadius 10, aspectRatio 16/10, topBarHeight 52, bottomSheetRadius 18).
 - **Dot shorthands (Dart ≥3.10) are the norm**: `const .symmetric(...)`, `type: .emote`, `.flexible`, `.expand`, `.tight` — ~78 sites across ~30 files (viewer, badge, expandable, svg/, toast, progress bars). Don't 'expand' them to full names.
 

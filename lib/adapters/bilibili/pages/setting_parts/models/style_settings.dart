@@ -3,7 +3,6 @@ import 'package:skf/router/app_navigator.dart';
 import 'dart:math' as math;
 
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/common/widgets/color_palette.dart';
 import 'package:skf/common/widgets/custom_toast.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
@@ -20,11 +19,12 @@ import 'package:skf/pages/setting/widgets/multi_select_dialog.dart';
 import 'package:skf/pages/setting/widgets/select_dialog.dart';
 import 'package:skf/pages/setting/widgets/slider_dialog.dart';
 import 'package:skf/player/utils/fullscreen.dart';
+import 'package:skf/utils/app_refresh.dart';
 import 'package:skf/utils/extension/file_ext.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/global_data.dart';
+import 'package:skf/utils/page_transition.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
@@ -35,9 +35,9 @@ import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart' hide StatefulBuilder;
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as path;
+import 'package:skf/pages/mine/controller.dart';
 
 List<SettingsModel> get styleSettings => [
   if (PlatformUtils.isDesktop) ...[
@@ -88,7 +88,7 @@ List<SettingsModel> get styleSettings => [
     switchModel: SwitchModel.split(
       defaultVal: false,
       setKey: SettingBoxKey.appFontWeight,
-      onChanged: (_) => Get.updateMyAppTheme(),
+      onChanged: (_) => appRefresh.refresh(),
       onTap: _showFontWeightDialog,
     ),
   ),
@@ -288,7 +288,7 @@ List<SettingsModel> get styleSettings => [
     defaultVal: false,
     onChanged: (value) {
       if (ThemeUtils.isDarkMode || Pref.darkVideoPage) {
-        Get.updateMyAppTheme();
+        appRefresh.refresh();
       }
     },
   ),
@@ -469,7 +469,7 @@ void _showUiScaleDialog(
             Navigator.pop(context);
             GStorage.setting.delete(SettingBoxKey.uiScale).whenComplete(() {
               setState();
-              Get.appUpdate();
+              appRefresh.refresh();
               ScaledWidgetsFlutterBinding.instance.scaleFactor = 1.0;
             });
           },
@@ -488,7 +488,7 @@ void _showUiScaleDialog(
             GStorage.setting.put(SettingBoxKey.uiScale, uiScale).whenComplete(
               () {
                 setState();
-                Get.appUpdate();
+                appRefresh.refresh();
                 ScaledWidgetsFlutterBinding.instance.scaleFactor = uiScale;
               },
             );
@@ -641,7 +641,7 @@ Future<void> _showFontWeightDialog(BuildContext context) async {
   );
   if (res != null) {
     await GStorage.setting.put(SettingBoxKey.appFontWeight, res.toInt() - 1);
-    Get.updateMyAppTheme();
+    appRefresh.refresh();
   }
 }
 
@@ -649,17 +649,17 @@ Future<void> _showTransitionDialog(
   BuildContext context,
   VoidCallback setState,
 ) async {
-  final res = await showDialog<Transition>(
+  final res = await showDialog<AppPageTransition>(
     context: context,
-    builder: (context) => SelectDialog<Transition>(
+    builder: (context) => SelectDialog<AppPageTransition>(
       title: '页面过渡动画',
       value: Pref.pageTransition,
-      values: Transition.values.map((e) => (e, e.name)).toList(),
+      values: AppPageTransition.values.map((e) => (e, e.name)).toList(),
     ),
   );
   if (res != null) {
-    Get.rootController.defaultTransition = res;
-    await GStorage.setting.put(SettingBoxKey.pageTransition, res.index);
+    Pref.pageTransition = res;
+    appRefresh.refresh();
     setState();
   }
 }
@@ -880,7 +880,8 @@ Future<void> _showThemeTypeDialog(
       appRead(mineControllerProvider).themeType = res;
     } catch (_) {}
     GStorage.setting.put(SettingBoxKey.themeMode, res.index);
-    Get.changeThemeMode(ThemeUtils.themeMode = res.toThemeMode);
+    ThemeUtils.themeMode = res.toThemeMode;
+    appRefresh.refresh();
     setState();
   }
 }

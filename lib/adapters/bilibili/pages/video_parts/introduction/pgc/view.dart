@@ -16,12 +16,10 @@ import 'package:skf/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/pgc/widgets/pgc_panel.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/action_item.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class PgcIntroPage extends StatefulWidget {
@@ -53,10 +51,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
   @override
   void initState() {
     super.initState();
-    introController = Get.putOrFind(
-      PgcIntroController.new,
-      tag: widget.heroTag,
-    );
+    introController = appRead(pgcIntroControllerProvider(widget.heroTag));
     videoDetailCtr = appRead(videoDetailControllerProvider(widget.heroTag));
   }
 
@@ -85,7 +80,7 @@ class _PgcIntroPageState extends State<PgcIntroPage> {
             PgcPanel(
               heroTag: widget.heroTag,
               pages: item.episodes!,
-              cid: videoDetailCtr.cid.value,
+              cid: videoDetailCtr.cid,
               onChangeEpisode: introController.onChangeEpisode,
               showEpisodes: widget.showEpisodes,
               newEp: item.newEp,

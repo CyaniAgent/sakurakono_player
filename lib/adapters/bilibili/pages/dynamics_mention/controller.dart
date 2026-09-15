@@ -5,6 +5,7 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DynMentionController
     extends CommonListControllerRiverpod<List<CoreMentionGroup>?, CoreMentionGroup> {
@@ -61,3 +62,6 @@ class DynMentionController
     updateBtn();
   }
 }
+
+/// DynMentionController（单实例）。
+final dynMentionControllerProvider = Provider<DynMentionController>((ref) => DynMentionController());

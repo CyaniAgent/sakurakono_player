@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dar
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/view.dart';
 import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberVideoWeb extends StatefulWidget {
   const MemberVideoWeb({super.key});
@@ -39,7 +38,7 @@ class _MemberVideoWebState
           VListItemModel,
           ArchiveOrderTypeWeb
         > {
-  late final MemberVideoWebCtr _webCtr = Get.put(MemberVideoWebCtr(), tag: name);
+  late final MemberVideoWebCtr _webCtr = MemberVideoWebCtr();
 
   @override
   BaseVideoWebCtr<SearchArchiveData, VListItemModel, ArchiveOrderTypeWeb> get controller =>

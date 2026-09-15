@@ -7,9 +7,7 @@ import 'package:skf/pages/later/widgets/video_card_h_later.dart';
 import 'package:skf/adapters/bilibili/pages/later_search/controller.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LaterSearchPage extends StatefulWidget {
   const LaterSearchPage({super.key});
@@ -22,10 +20,7 @@ class _LaterSearchPageState
     extends CommonSearchPageState<LaterSearchPage, CoreLaterData, CoreLaterItemModel>
     with GridMixin {
   @override
-  final LaterSearchController controller = Get.put(
-    LaterSearchController(),
-    tag: Utils.generateRandomString(8),
-  );
+  final LaterSearchController controller = LaterSearchController();
 
   @override
   List<Widget>? get multiSelectActions {

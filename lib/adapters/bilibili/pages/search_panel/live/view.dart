@@ -6,7 +6,6 @@ import 'package:skf/adapters/bilibili/pages/search_panel/live/widgets/item.dart'
 import 'package:skf/adapters/bilibili/pages/search_panel/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SearchLivePanel extends CommonSearchPanel {
   const SearchLivePanel({
@@ -34,13 +33,10 @@ class _SearchLivePanelState
   @override
   void initState() {
     super.initState();
-    controller = Get.put(
-      SearchPanelController<SearchLiveData, SearchLiveItemModel>(
-        keyword: widget.keyword,
-        searchType: widget.searchType,
-        tag: widget.tag,
-      ),
-      tag: widget.searchType.name + widget.tag,
+    controller = SearchPanelController<SearchLiveData, SearchLiveItemModel>(
+      keyword: widget.keyword,
+      searchType: widget.searchType,
+      tag: widget.tag,
     );
   }
 

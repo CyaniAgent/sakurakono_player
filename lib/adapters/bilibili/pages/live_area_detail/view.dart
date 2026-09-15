@@ -10,7 +10,6 @@ import 'package:skf/adapters/bilibili/pages/live_area_detail/child/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_area_detail/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_search/view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -36,9 +35,7 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      LiveAreaDetailController(widget.areaId?.toString(), widget.parentAreaId),
-    );
+    _controller = LiveAreaDetailController(widget.areaId?.toString(), widget.parentAreaId);
   }
 
   @override

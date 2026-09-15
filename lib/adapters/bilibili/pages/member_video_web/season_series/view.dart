@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/member_video_web/base/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/season_series/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberSSWeb extends StatefulWidget {
   const MemberSSWeb({super.key});
@@ -41,7 +40,7 @@ class _MemberSSWebState
           SeasonArchive,
           ArchiveSortTypeApp
         > {
-  late final MemberSSWebCtr _ssCtr = Get.put(MemberSSWebCtr(), tag: name);
+  late final MemberSSWebCtr _ssCtr = MemberSSWebCtr();
 
   @override
   BaseVideoWebCtr<SeasonWebData, SeasonArchive, ArchiveSortTypeApp> get controller =>

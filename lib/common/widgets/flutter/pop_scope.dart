@@ -22,9 +22,19 @@ abstract class PopScopeState<T extends StatefulWidget> extends State<T>
   void initState() {
     super.initState();
     canPopNotifier = ValueNotifier<bool>(initCanPop);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ModalRoute.of 依赖 inherited widget，必须在 didChangeDependencies 中调用
+    // （initState 期间访问 inherited dependency 会抛断言异常）。
     final route = ModalRoute.of(context);
-    route?.registerPopEntry(this);
-    _route = route;
+    if (_route != route) {
+      _route?.unregisterPopEntry(this);
+      _route = route;
+      route?.registerPopEntry(this);
+    }
   }
 
   @override

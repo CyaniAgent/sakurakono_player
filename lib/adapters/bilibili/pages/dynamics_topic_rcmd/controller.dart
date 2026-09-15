@@ -4,6 +4,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DynTopicRcmdController
     extends CommonListControllerRiverpod<List<CoreTopicItem>?, CoreTopicItem> {
@@ -21,3 +22,6 @@ class DynTopicRcmdController
     };
   }
 }
+
+/// DynTopicRcmdController（单实例）。
+final dynTopicRcmdControllerProvider = Provider<DynTopicRcmdController>((ref) => DynTopicRcmdController());

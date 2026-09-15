@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/member_pgc/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_pgc/widgets/pgc_card_v_member_pgc.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberBangumi extends StatefulWidget {
   const MemberBangumi({
@@ -33,13 +32,7 @@ class _MemberBangumiState extends State<MemberBangumi>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberBangumiCtr(
-        heroTag: widget.heroTag,
-        mid: widget.mid,
-      ),
-      tag: widget.heroTag,
-    );
+    _controller = MemberBangumiCtr( heroTag: widget.heroTag, mid: widget.mid, );
   }
 
   @override

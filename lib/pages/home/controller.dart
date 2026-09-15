@@ -73,7 +73,37 @@ class HomeControllerNotifier extends ChangeNotifier
   }
 
   // -- Tab controller --
+  /// 由页面视图在 initState 注入（vsync 归视图所有，随视图 dispose 释放）。
   late TabController tabController;
+  bool _tabControllerReady = false;
+
+  /// 页面 initState 调用：创建 TabController 并把 index 变更同步进 state
+  /// （animateToTop/onRefresh 依赖 [HomeState.selectedTab]）。
+  void initTabController(TickerProvider vsync) {
+    if (_tabControllerReady) return;
+    tabController = TabController(
+      length: _state.tabs.length,
+      initialIndex: _state.selectedTab.clamp(0, _state.tabs.length - 1),
+      vsync: vsync,
+    );
+    _tabControllerReady = true;
+    tabController.addListener(_onTabIndexChanged);
+  }
+
+  /// 页面 dispose 调用（全局 controller 生命周期长于页面，重进时重建）。
+  void disposeTabController() {
+    if (!_tabControllerReady) return;
+    tabController.removeListener(_onTabIndexChanged);
+    tabController.dispose();
+    _tabControllerReady = false;
+  }
+
+  void _onTabIndexChanged() {
+    if (!tabController.indexIsChanging &&
+        _state.selectedTab != tabController.index) {
+      _state = _state.copyWith(selectedTab: tabController.index);
+    }
+  }
 
   // -- State --
   HomeState _state = const HomeState();
@@ -148,6 +178,9 @@ class HomeControllerNotifier extends ChangeNotifier
   void switchTab(int index) {
     if (index >= 0 && index < _state.tabs.length) {
       _state = _state.copyWith(selectedTab: index);
+      if (_tabControllerReady && tabController.index != index) {
+        tabController.animateTo(index);
+      }
       notifyListeners();
     }
   }

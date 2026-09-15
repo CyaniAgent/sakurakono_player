@@ -12,7 +12,7 @@ import 'package:skf/adapters/bilibili/utils/extension/three_dot_ext.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class WhisperPage extends StatefulWidget {
   const WhisperPage({super.key});
@@ -22,7 +22,7 @@ class WhisperPage extends StatefulWidget {
 }
 
 class _WhisperPageState extends State<WhisperPage> {
-  final _controller = Get.put(WhisperController());
+  final _controller = appRead(whisperControllerProvider);
 
   @override
   Widget build(BuildContext context) {

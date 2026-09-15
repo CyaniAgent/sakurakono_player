@@ -10,7 +10,6 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class FavPage extends StatefulWidget {
   const FavPage({super.key, this.actions});
@@ -23,7 +22,7 @@ class FavPage extends StatefulWidget {
 }
 class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final FavController _favController = Get.put(FavController());
+  final FavController _favController = appRead(favControllerProvider);
   bool _showVideoFavMenu = false;
 
   void listener() {

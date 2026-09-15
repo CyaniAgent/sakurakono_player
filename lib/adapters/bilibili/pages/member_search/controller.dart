@@ -1,9 +1,7 @@
 import 'package:skf/adapters/bilibili/models/common/member/search_type.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/child/controller.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:skf/router/app_navigator.dart';
 
 class MemberSearchController extends ChangeNotifier {
@@ -11,8 +9,8 @@ class MemberSearchController extends ChangeNotifier {
   late final TabController tabController;
   late final TextEditingController editingController;
 
-  final mid = Get.parameters['mid']!;
-  final uname = Get.parameters['uname'];
+  final String mid;
+  final String? uname;
 
   bool hasData = false;
   List<int> counts = [-1, -1];
@@ -20,18 +18,12 @@ class MemberSearchController extends ChangeNotifier {
   late final MemberSearchChildController arcCtr;
   late final MemberSearchChildController dynCtr;
 
-  MemberSearchController(TickerProvider vsync) {
+  MemberSearchController(this.mid, {this.uname, required TickerProvider vsync}) {
     focusNode = FocusNode();
     editingController = TextEditingController();
     tabController = TabController(vsync: vsync, length: 2);
-    arcCtr = Get.put(
-      MemberSearchChildController(this, MemberSearchType.archive),
-      tag: Utils.generateRandomString(8),
-    );
-    dynCtr = Get.put(
-      MemberSearchChildController(this, MemberSearchType.dynamic),
-      tag: Utils.generateRandomString(8),
-    );
+    arcCtr = MemberSearchChildController(this, MemberSearchType.archive);
+    dynCtr = MemberSearchChildController(this, MemberSearchType.dynamic);
   }
 
   void onClear() {

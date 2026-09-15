@@ -14,7 +14,7 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class ReplyMePage extends StatefulWidget {
   const ReplyMePage({super.key});
@@ -24,7 +24,7 @@ class ReplyMePage extends StatefulWidget {
 }
 
 class _ReplyMePageState extends State<ReplyMePage> {
-  final _replyMeController = Get.put(ReplyMeController());
+  final _replyMeController = appRead(replyMeControllerProvider);
 
   @override
   Widget build(BuildContext context) {

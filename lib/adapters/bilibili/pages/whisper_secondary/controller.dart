@@ -6,7 +6,6 @@ import 'package:skf/core/result/loading_state.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/common_whisper_controller.dart';
 import 'package:protobuf/protobuf.dart' show PbMap;
-import 'package:get/get.dart';
 
 CoreImSessionPageType _toCoreSessionPageType(SessionPageType type) {
   return switch (type) {
@@ -51,7 +50,7 @@ class WhisperSecController
   PbMap<int, Offset>? offset;
   @override
   final CoreImSessionPageType sessionPageType;
-  Rx<List<ThreeDotItem>?> threeDotItems = Rx<List<ThreeDotItem>?>(null);
+  List<ThreeDotItem>? threeDotItems;
 
   @override
   Future<void> onRefresh() {
@@ -75,7 +74,8 @@ class WhisperSecController
     Success<SessionSecondaryReply> response,
   ) {
     if (isRefresh) {
-      threeDotItems.value = response.response.threeDotItems;
+      threeDotItems = response.response.threeDotItems;
+      notifyListeners();
     }
     return false;
   }

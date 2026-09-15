@@ -20,7 +20,6 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class VideoReplyReplyPanel extends CommonSlidePage {
@@ -119,22 +118,12 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      VideoReplyReplyController(
-        hasRoot: widget.firstFloor != null,
-        id: widget.id,
-        oid: widget.oid,
-        rpid: widget.rpid,
-        dialog: widget.dialog,
-        replyType: widget.replyType,
-      ),
-      tag: _tag,
-    );
+    _controller = VideoReplyReplyController( hasRoot: widget.firstFloor != null, id: widget.id, oid: widget.oid, rpid: widget.rpid, dialog: widget.dialog, replyType: widget.replyType, );
   }
 
   @override
   void dispose() {
-    Get.delete<VideoReplyReplyController>(tag: _tag);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -177,7 +166,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
   }
 
   ReplyInfo? get firstFloor =>
-      widget.firstFloor ?? _controller.firstFloor.value;
+      widget.firstFloor ?? _controller.firstFloor;
 
   ScrollController get scrollController =>
       _controller.nestedController ?? _controller.scrollController;
@@ -193,14 +182,14 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           if (!isDialogue) ...[
-            if ((widget.firstFloor ?? _controller.firstFloor.value)
+            if ((widget.firstFloor ?? _controller.firstFloor)
                 case final firstFloor?)
               _header(theme, firstFloor)
             else
               ListenableBuilder(
                 listenable: _controller,
                 builder: (context, _) {
-                  final firstFloor = _controller.firstFloor.value;
+                  final firstFloor = _controller.firstFloor;
                   if (firstFloor == null) {
                     return const SliverToBoxAdapter();
                   }
@@ -289,7 +278,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
     ColorScheme colorScheme,
     LoadingState<List<ReplyInfo>?> loadingState,
   ) {
-    final jumpIndex = _controller.index.value;
+    final jumpIndex = _controller.index;
     return switch (loadingState) {
       Loading() => SliverPrototypeExtentList.builder(
         prototypeItem: const VideoReplySkeleton(),

@@ -15,10 +15,8 @@ import 'package:skf/adapters/bilibili/pages/video_parts/reply_reply/view.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/num_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MainReplyPage extends StatefulWidget {
   const MainReplyPage({super.key});
@@ -42,10 +40,7 @@ class MainReplyPage extends StatefulWidget {
 
 class _MainReplyPageState extends State<MainReplyPage>
     with SingleTickerProviderStateMixin, BaseFabMixin, FabMixin {
-  final _controller = Get.put(
-    MainReplyController(),
-    tag: Utils.generateRandomString(8),
-  );
+  final _controller = MainReplyController();
 
   late EdgeInsets padding;
 

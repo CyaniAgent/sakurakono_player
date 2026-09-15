@@ -14,7 +14,6 @@ import 'package:skf/utils/grid.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class MemberVideo extends StatefulWidget {
@@ -26,6 +25,7 @@ class MemberVideo extends StatefulWidget {
     this.seasonId,
     this.seriesId,
     this.title,
+    this.fromViewAid,
     this.isSingle = false,
   });
 
@@ -35,6 +35,7 @@ class MemberVideo extends StatefulWidget {
   final int? seasonId;
   final String? seriesId;
   final String? title;
+  final String? fromViewAid;
   final bool isSingle;
 
   @override
@@ -70,17 +71,14 @@ class _MemberVideoState extends State<MemberVideo>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberVideoCtr(
-        type: widget.type,
-        mid: widget.mid,
-        seasonId: widget.seasonId,
-        seriesId: widget.seriesId,
-        username: appRead(memberControllerProvider(widget.heroTag!)).username,
-        title: widget.title,
-      ),
-      tag:
-          '${widget.heroTag}${widget.type.name}${widget.seasonId}${widget.seriesId}',
+    _controller = MemberVideoCtr(
+      type: widget.type,
+      mid: widget.mid,
+      seasonId: widget.seasonId,
+      seriesId: widget.seriesId,
+      username: appRead(memberControllerProvider(widget.heroTag!)).username,
+      title: widget.title,
+      fromViewAid: widget.fromViewAid,
     );
   }
 

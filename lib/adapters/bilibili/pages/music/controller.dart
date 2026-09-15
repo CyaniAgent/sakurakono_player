@@ -1,5 +1,4 @@
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/models/music_types.dart';
@@ -17,15 +16,14 @@ class CoreMusicDetailController extends CommonDynController {
 
   LoadingState<CoreMusicDetail> infoState = LoadingState<CoreMusicDetail>.loading();
 
-  late final String musicId;
+  CoreMusicDetailController({required this.musicId}) {
+    getCoreMusicDetail();
+  }
+
+  final String musicId;
 
   String get shareUrl =>
       'https://music.bilibili.com/h5/music-detail?music_id=$musicId';
-
-  CoreMusicDetailController() {
-    musicId = Get.parameters['musicId']!;
-    getCoreMusicDetail();
-  }
 
   Future<void> getCoreMusicDetail() async {
     final res = await appRead(musicRepositoryProvider).bgmDetail(musicId);

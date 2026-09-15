@@ -29,7 +29,6 @@ import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class HorizontalMemberPage extends StatefulWidget {
   const HorizontalMemberPage({
@@ -55,13 +54,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      HorizontalMemberPageController(
-        mid: widget.mid,
-        currAid: widget.videoDetailController.aid.toString(),
-      ),
-      tag: widget.videoDetailController.heroTag,
-    );
+    _controller = HorizontalMemberPageController( mid: widget.mid, currAid: widget.videoDetailController.aid.toString(), );
     _bvid = widget.videoDetailController.bvid;
     if (_controller.loadingState
         case Success<List<CoreSpaceArchiveItem>?> res) {
@@ -72,6 +65,12 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

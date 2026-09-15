@@ -6,7 +6,6 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/router/app_navigator.dart';
 
@@ -22,10 +21,10 @@ class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, Core
   late final String tribeId;
   int? sortType;
 
-  final Rxn<CoreSortInfo> sortInfo = Rxn<CoreSortInfo>();
+  CoreSortInfo? sortInfo;
   TabController? tabController;
-  final RxnString tribeName = RxnString();
-  final Rxn<List<CoreCategoryList>> tabs = Rxn<List<CoreCategoryList>>();
+  String? tribeName;
+  List<CoreCategoryList>? tabs;
 
   @override
   Ticker createTicker(TickerCallback onTick) {
@@ -43,9 +42,9 @@ class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, Core
   bool customHandleResponse(bool isRefresh, Success<CoreBubbleData> response) {
     if (isRefresh) {
       final data = response.response;
-      sortInfo.value = data.sortInfo;
+      sortInfo = data.sortInfo;
       if (categoryId == null) {
-        tribeName.value = data.baseInfo?.tribeInfo?.title;
+        tribeName = data.baseInfo?.tribeInfo?.title;
         if (tabController == null) {
           if (data.category?.categoryList case final categories?
               when categories.isNotEmpty) {
@@ -53,7 +52,7 @@ class BubbleController extends CommonListControllerRiverpod<CoreBubbleData, Core
               length: categories.length,
               vsync: this,
             );
-            tabs.value = categories;
+            tabs = categories;
           }
         }
       }

@@ -10,7 +10,6 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:skf/adapters/bilibili/grpc/bilibili/app/listener/v1.pbenum.dart'
@@ -56,7 +55,6 @@ import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/view.da
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/page.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/season.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/medialist/view.dart';
-import 'package:skf/adapters/bilibili/pages/video_parts/member/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/member/view.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/note/view.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/post_panel/view.dart';
@@ -550,11 +548,6 @@ class BiliVideoHost implements VideoHost {
     videoPlayerServiceHandler?.onVideoDetailDispose(heroTag);
   }
 
-  @override
-  void disposeMemberPage(String heroTag) {
-    Get.delete<HorizontalMemberPageController>(tag: heroTag);
-  }
-
   // ---------- 简介控制器管理 ----------
 
   void _ensureIntroController(String heroTag) {
@@ -611,9 +604,9 @@ class BiliVideoHost implements VideoHost {
           : ListenableBuilder(
               listenable: player,
               builder: (_, _) => PlDanmaku(
-                key: ValueKey(ctr.cid.value),
+                key: ValueKey(ctr.cid),
                 isPipMode: isPipMode,
-                cid: ctr.cid.value,
+                cid: ctr.cid,
                 playerController: player,
                 isFullScreen: player.isFullScreen,
                 isFileSource: ctr.isFileSource,
@@ -832,10 +825,10 @@ class BiliVideoHost implements VideoHost {
                     ugcIntroController: ctr.isUgc ? ugcIntroCtr : null,
                     type: EpisodeType.part,
                     list: [videoDetail.pages!],
-                    cover: ctr.cover.value,
+                    cover: ctr.cover,
                     bvid: ctr.bvid,
                     aid: ctr.aid,
-                    cid: ctr.cid.value,
+                    cid: ctr.cid,
                     isReversed: videoDetail.isPageReversed,
                     onChangeEpisode: ctr.isUgc
                         ? ugcIntroCtr.onChangeEpisode
@@ -878,7 +871,7 @@ class BiliVideoHost implements VideoHost {
                   ugcIntroController: ctr.isUgc ? ugcIntroCtr : null,
                   type: EpisodeType.season,
                   initialTabIndex: ctr.seasonIndex,
-                  cover: ctr.cover.value,
+                  cover: ctr.cover,
                   seasonId: videoDetail.ugcSeason!.id,
                   list: videoDetail.ugcSeason!.sections!,
                   bvid: ctr.bvid,
@@ -927,7 +920,8 @@ class BiliVideoHost implements VideoHost {
 
   @override
   void animateReplyToTop(String heroTag) {
-    if (Get.isRegistered<VideoReplyController>(tag: heroTag)) {
+    // exists = 已初始化才通知，避免读 provider 时惰性创建控制器。
+    if (appContainer.exists(videoReplyControllerProvider(heroTag))) {
       appRead(videoReplyControllerProvider(heroTag)).animateToTop();
     }
   }
@@ -1196,7 +1190,7 @@ class BiliVideoHost implements VideoHost {
         .map((e) => e.cid)
         .toSet();
     final index = episodes.indexWhere(
-      (e) => e.cid == (ctr.seasonCid ?? ctr.cid.value),
+      (e) => e.cid == (ctr.seasonCid ?? ctr.cid),
     );
 
     showModalBottomSheet(
@@ -1262,7 +1256,7 @@ class BiliVideoHost implements VideoHost {
       itemType: 1,
       id: id,
       oid: ctr.aid,
-      subId: [ctr.cid.value],
+      subId: [ctr.cid],
       from: from.value,
       heroTag: ctr.autoPlay ? heroTag : null,
       start: ctr.playedTime,
@@ -1343,7 +1337,7 @@ class BiliVideoHost implements VideoHost {
           : episodes is List<Part>
           ? EpisodeType.part
           : EpisodeType.pgc,
-      cover: ctr.cover.value,
+      cover: ctr.cover,
       enableSlide: enableSlide,
       initialTabIndex: index ?? 0,
       bvid: bvid!,
@@ -1475,9 +1469,7 @@ class BiliVideoHost implements VideoHost {
         ..episodes = item.episodes!.reversed.toList();
 
       if (!ctr.plPlayerController.reverseFromFirst) {
-        ctr
-          ..notifyChange()
-          ..cid.refresh();
+        ctr.notifyChange();
       } else {
         final episode = appRead(ugcIntroControllerProvider(heroTag))
             .videoDetail
@@ -1485,13 +1477,11 @@ class BiliVideoHost implements VideoHost {
             .sections![ctr.seasonIndex]
             .episodes!
             .first;
-        if (episode.cid != ctr.cid.value) {
+        if (episode.cid != ctr.cid) {
           appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(episode);
           ctr.seasonCid = episode.cid;
         } else {
-          ctr
-            ..notifyChange()
-            ..cid.refresh();
+          ctr.notifyChange();
         }
       }
     } else {
@@ -1499,13 +1489,13 @@ class BiliVideoHost implements VideoHost {
         ..isPageReversed = !videoDetail.isPageReversed
         ..pages = videoDetail.pages!.reversed.toList();
       if (!ctr.plPlayerController.reverseFromFirst) {
-        ctr.cid.refresh();
+        ctr.notifyChange();
       } else {
         final episode = videoDetail.pages!.first;
-        if (episode.cid != ctr.cid.value) {
+        if (episode.cid != ctr.cid) {
           appRead(ugcIntroControllerProvider(heroTag)).onChangeEpisode(episode);
         } else {
-          ctr.cid.refresh();
+          ctr.notifyChange();
         }
       }
     }

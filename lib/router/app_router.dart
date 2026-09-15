@@ -20,13 +20,25 @@ class AppRouter {
     return _instance!;
   }
 
-  /// 构造并缓存 GoRouter 实例。必须在 runApp 之前调用。
+  /// 构造并缓存 GoRouter 实例（幂等：重复调用返回同一实例）。
   static GoRouter create({List<NavigatorObserver>? observers}) {
+    final existing = _instance;
+    if (existing != null) {
+      return existing;
+    }
     _instance = GoRouter(
       initialLocation: '/',
       routes: AppRoutes.routes,
       navigatorKey: navigatorKey,
       observers: observers ?? const [],
+      // 适配器路由表不含根路径；入口统一重定向到主页壳（内部按
+      // defaultHomeTabId 选初始 tab）。
+      redirect: (context, state) {
+        if (state.matchedLocation == '/') {
+          return '/home';
+        }
+        return null;
+      },
       errorPageBuilder: (context, state) {
         return MaterialPage(
           child: Scaffold(

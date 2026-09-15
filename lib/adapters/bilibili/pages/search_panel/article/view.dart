@@ -5,7 +5,6 @@ import 'package:skf/adapters/bilibili/pages/search_panel/article/widgets/item.da
 import 'package:skf/adapters/bilibili/pages/search_panel/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SearchArticlePanel extends CommonSearchPanel {
   const SearchArticlePanel({
@@ -33,13 +32,10 @@ class _SearchArticlePanelState
   @override
   void initState() {
     super.initState();
-    controller = Get.put(
-      SearchArticleController(
-        keyword: widget.keyword,
-        searchType: widget.searchType,
-        tag: widget.tag,
-      ),
-      tag: widget.searchType.name + widget.tag,
+    controller = SearchArticleController(
+      keyword: widget.keyword,
+      searchType: widget.searchType,
+      tag: widget.tag,
     );
   }
 

@@ -18,13 +18,14 @@ import 'package:skf/adapters/bilibili/utils/bili_utils.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/share_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class FavDetailPage extends StatefulWidget {
-  const FavDetailPage({super.key});
+  const FavDetailPage({super.key, required this.mediaId, required this.heroTag});
+
+  final String mediaId;
+  final String heroTag;
 
   @override
   State<FavDetailPage> createState() => _FavDetailPageState();
@@ -32,15 +33,13 @@ class FavDetailPage extends StatefulWidget {
 
 class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
   late final FavDetailController _favDetailController;
-  late String mediaId;
 
   @override
   void initState() {
     super.initState();
-    mediaId = AppNavigator.parameters['mediaId']!;
-    _favDetailController = Get.put(
-      FavDetailController(),
-      tag: Utils.makeHeroTag(mediaId),
+    _favDetailController = FavDetailController(
+      mediaId: int.parse(widget.mediaId),
+      heroTag: widget.heroTag,
     );
   }
 
@@ -186,7 +185,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
             '/favSearch',
             arguments: {
               'type': 0,
-              'mediaId': int.parse(mediaId),
+              'mediaId': int.parse(widget.mediaId),
               'title': folderInfo.title,
               'count': folderInfo.mediaCount,
               'isOwner': _favDetailController.isOwner,
@@ -247,7 +246,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                   onTap: () =>
                       AppNavigator.toNamed(
                         '/createFav',
-                        parameters: {'mediaId': mediaId},
+                        parameters: {'mediaId': widget.mediaId},
                       )?.then((res) {
                         if (res is CoreFavFolderInfo) {
                           _favDetailController.folderInfo = res;
@@ -289,7 +288,7 @@ class _FavDetailPageState extends State<FavDetailPage> with GridMixin {
                       context: context,
                       title: const Text('确定删除该收藏夹?'),
                       onConfirm: () =>
-                          appRead(favRepositoryProvider).deleteFolder(mediaIds: mediaId).then((res) {
+                          appRead(favRepositoryProvider).deleteFolder(mediaIds: widget.mediaId).then((res) {
                             if (res.isSuccess) {
                               SmartDialog.showToast('删除成功');
                               AppNavigator.back(result: true);

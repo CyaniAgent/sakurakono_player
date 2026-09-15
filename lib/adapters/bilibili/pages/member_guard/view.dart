@@ -11,7 +11,6 @@ import 'package:skf/adapters/bilibili/pages/member_guard/controller.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
 
 class MemberGuard extends StatefulWidget {
   const MemberGuard({super.key});
@@ -46,10 +45,7 @@ class _MemberGuardState extends State<MemberGuard> {
     final args = AppNavigator.arguments;
     _userName = args['name'];
     _count = args['count'];
-    _controller = Get.put(
-      MemberGuardController(),
-      tag: args['ruid'].toString(),
-    );
+    _controller = MemberGuardController();
   }
 
   @override

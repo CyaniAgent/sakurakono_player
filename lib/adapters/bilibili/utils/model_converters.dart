@@ -84,6 +84,7 @@ import 'package:skf/core/models/member_types.dart' as member
         CoreModuleBlocked,
         CoreOwner;
 import 'package:skf/core/models/user_types.dart' as user;
+import 'package:skf/adapters/bilibili/models/user/info.dart';
 import 'package:skf/core/models/live_types.dart' as live_types;
 import 'package:skf/core/models/music_types.dart';
 import 'package:skf/core/models/search_types.dart';
@@ -98,6 +99,7 @@ import 'package:skf/adapters/bilibili/models/dynamics/vote_model.dart';
 import 'package:skf/adapters/bilibili/models/model_avatar.dart';
 import 'package:skf/adapters/bilibili/models/model_owner.dart';
 import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
+import 'package:skf/adapters/bilibili/models_new/pgc/pgc_rank/pgc_rank_item_model.dart';
 import 'package:skf/adapters/bilibili/models/model_rec_video_item.dart';
 import 'package:skf/adapters/bilibili/models/home/rcmd/result.dart' as rcmd;
 import 'package:skf/adapters/bilibili/models_new/article/article_view/ops.dart';
@@ -158,6 +160,22 @@ abstract final class ModelConverters {
         'redirect_url': core.redirectUrl,
         'progress': core.progress,
         'pgc_label': core.badge,
+      });
+
+  // ---------------------------------------------------------------------------
+  // PgcRankItemModel conversion
+  // ---------------------------------------------------------------------------
+
+  /// [CorePgcRankItemModel] → [PgcRankItemModel].
+  ///
+  /// Used by: rank/zone pages.
+  static PgcRankItemModel pgcRankItem(CorePgcRankItemModel core) =>
+      PgcRankItemModel.fromJson(<String, dynamic>{
+        'cover': core.cover,
+        'new_ep': core.newEp,
+        'stat': core.stat,
+        'title': core.title,
+        'url': core.url,
       });
 
   // ---------------------------------------------------------------------------
@@ -809,6 +827,32 @@ abstract final class ModelConverters {
     minutesSaved: core.minutesSaved,
     segmentCount: core.segmentCount,
   );
+
+  /// [UserInfoData] → [user.CoreUserInfoData].
+  ///
+  /// Used by: login flow / profile updates writing the shared 'userInfoCache'
+  /// Hive key — 该键的读取方（Pref/BiliPref）必须统一拿到 Core 类型。
+  static user.CoreUserInfoData userInfoDataToCore(UserInfoData data) =>
+      user.CoreUserInfoData(
+        isLogin: data.isLogin,
+        face: data.face,
+        levelInfo: data.levelInfo != null
+            ? user.CoreLevelInfo(
+                currentLevel: data.levelInfo!.currentLevel,
+                currentMin: data.levelInfo!.currentMin,
+                currentExp: data.levelInfo!.currentExp,
+                nextExp: data.levelInfo!.nextExp,
+              )
+            : null,
+        mid: data.mid,
+        money: data.money,
+        scores: data.scores,
+        uname: data.uname,
+        vipDueDate: data.vipDueDate,
+        vipStatus: data.vipStatus,
+        vipType: data.vipType,
+        isSeniorMember: data.isSeniorMember,
+      );
 
   // ---------------------------------------------------------------------------
   // Member tag conversions

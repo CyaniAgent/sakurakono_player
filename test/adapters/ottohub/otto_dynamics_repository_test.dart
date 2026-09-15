@@ -2,7 +2,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/ottohub/repository/otto_dynamics_repository.dart';
 import 'package:skf/core/account/account_provider.dart';
@@ -19,31 +18,6 @@ class _FakeAccountNotifier extends AccountNotifier {
 
   /// Simulate login/logout state transitions in tests.
   void setUid(int? uid) => state = AccountState(userId: uid);
-}
-
-/// AccountProvider double exposing a fixed [userId] without touching Hive.
-class _FakeAccountProvider extends AccountProvider {
-  _FakeAccountProvider(this._uid);
-
-  final int? _uid;
-
-  @override
-  String get rxFace => '';
-  @override
-  bool get rxIsLogin => false;
-  @override
-  String? get face => null;
-  @override
-  bool get isLogin => false;
-  @override
-  int? get userId => _uid;
-  @override
-  String? get displayName => null;
-  @override
-  Future<void> restoreFromCache() async {}
-  Map<String, String> get authHeaders => const {};
-  @override
-  void onAuthStateChanged(Map<String, String> headers) {}
 }
 
 void main() {
@@ -73,11 +47,8 @@ void main() {
   });
 
   setUp(() {
-    Get.put<AccountProvider>(_FakeAccountProvider(10086));
     (appContainer.read(accountProvider.notifier) as _FakeAccountNotifier).setUid(10086);
   });
-
-  tearDown(Get.reset);
 
   group('OttoDynamicsRepository (implementation-level)', () {
     test('happy: followDynamic converts the timeline into core dynamics',
@@ -147,7 +118,7 @@ void main() {
 
     test('edge: followUp rejects when no account provider is registered',
         () async {
-      Get.reset(); // simulate not being logged in.
+      // simulate not being logged in.
       (appContainer.read(accountProvider.notifier) as _FakeAccountNotifier).setUid(null);
       makeRepo(<String, String>{});
 

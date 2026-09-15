@@ -1,9 +1,10 @@
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/utils/app_refresh.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FontSizeSelectPage extends StatefulWidget {
   const FontSizeSelectPage({super.key});
@@ -20,9 +21,8 @@ class _FontSizeSelectPageState extends State<FontSizeSelectPage> {
 
   void setFontSize() {
     GStorage.setting.put(SettingBoxKey.defaultTextScale, currentSize);
-    Get
-      ..back(result: currentSize)
-      ..appUpdate();
+    appRefresh.refresh();
+    AppNavigator.back<double>(result: currentSize);
   }
 
   @override

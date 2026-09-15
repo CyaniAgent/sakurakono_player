@@ -2,7 +2,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class MemberVideoWebCtr
@@ -13,7 +12,7 @@ class MemberVideoWebCtr
           CoreArchiveOrderTypeWeb
         > {
   @override
-  final Rx<CoreArchiveOrderTypeWeb> order = Rx(CoreArchiveOrderTypeWeb.pubdate);
+  CoreArchiveOrderTypeWeb order = CoreArchiveOrderTypeWeb.pubdate;
 
   int tid = 0;
   String? specialType;
@@ -50,7 +49,7 @@ class MemberVideoWebCtr
       mid: mid,
       ps: ps,
       pn: page,
-      order: order.value,
+      order: order,
       tid: tid,
       specialType: specialType,
     );

@@ -9,7 +9,6 @@ import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/adapters/bilibili/pages/live_emote/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LiveEmotePanel extends StatefulWidget {
   final int roomId;
@@ -33,10 +32,13 @@ class _LiveEmotePanelState extends State<LiveEmotePanel>
   @override
   void initState() {
     super.initState();
-    _emotePanelController = Get.put(
-      LiveEmotePanelController(widget.roomId),
-      tag: widget.roomId.toString(),
-    );
+    _emotePanelController = LiveEmotePanelController(widget.roomId);
+  }
+
+  @override
+  void dispose() {
+    _emotePanelController.dispose();
+    super.dispose();
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'dart:io' show Platform;
 
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/common/widgets/animated_height.dart';
 import 'package:skf/common/widgets/color_palette.dart';
 import 'package:skf/main.dart' show MyApp;
@@ -11,8 +10,8 @@ import 'package:skf/pages/mine/theme_type.dart';
 import 'package:skf/pages/home/view.dart';
 import 'package:skf/pages/setting/widgets/popup_item.dart';
 import 'package:skf/pages/setting/widgets/select_dialog.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
+import 'package:skf/utils/app_refresh.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -22,7 +21,7 @@ import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/pages/mine/controller.dart';
 
 // ---------------------------------------------------------------------------
 // State
@@ -126,7 +125,7 @@ class ColorSelectPage extends ConsumerWidget {
       }
       notifier.setDynamicColor(val);
       await GStorage.setting.put(SettingBoxKey.dynamicColor, val);
-      Get.updateMyAppTheme();
+      appRefresh.refresh();
     }
 
     return Scaffold(
@@ -150,7 +149,8 @@ class ColorSelectPage extends ConsumerWidget {
                 } catch (_) {}
                 notifier.setThemeType(result);
                 GStorage.setting.put(SettingBoxKey.themeMode, result.index);
-                Get.changeThemeMode(ThemeUtils.themeMode = result.toThemeMode);
+                ThemeUtils.themeMode = result.toThemeMode;
+                appRefresh.refresh();
               }
             },
             leading: const Icon(Icons.flashlight_on_outlined),
@@ -175,7 +175,7 @@ class ColorSelectPage extends ConsumerWidget {
               notifier.setSchemeVariant(value);
               GStorage.setting
                   .put(SettingBoxKey.schemeVariant, value.index)
-                  .whenComplete(Get.updateMyAppTheme);
+                  .whenComplete(appRefresh.refresh);
             },
           ),
           if (!Platform.isIOS)
@@ -208,7 +208,7 @@ class ColorSelectPage extends ConsumerWidget {
                         notifier.setCurrentColor(i);
                         GStorage.setting
                             .put(SettingBoxKey.customColor, i)
-                            .whenComplete(Get.updateMyAppTheme);
+                            .whenComplete(appRefresh.refresh);
                       },
                       child: Column(
                         spacing: 3,

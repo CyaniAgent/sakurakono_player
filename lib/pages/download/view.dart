@@ -25,7 +25,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DownloadPage extends StatefulWidget {
   const DownloadPage({super.key});
@@ -36,7 +36,7 @@ class DownloadPage extends StatefulWidget {
 
 class _DownloadPageState extends State<DownloadPage> with GridMixin {
   final _downloadActions = DownloadActions.of();
-  final _controller = Get.put(DownloadPageController());
+  final _controller = appRead(downloadPageControllerProvider);
   final _progress = ChangeNotifier();
 
   @override

@@ -11,7 +11,7 @@ import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class PopularPreciousPage extends StatefulWidget {
   const PopularPreciousPage({super.key});
@@ -22,7 +22,7 @@ class PopularPreciousPage extends StatefulWidget {
 
 class _PopularPreciousPageState extends State<PopularPreciousPage>
     with GridMixin {
-  final _controller = Get.put(PopularPreciousController());
+  final _controller = appRead(popularPreciousControllerProvider);
 
   @override
   Widget build(BuildContext context) {

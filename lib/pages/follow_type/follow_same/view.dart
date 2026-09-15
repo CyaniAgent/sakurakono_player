@@ -1,11 +1,8 @@
 import 'package:skf/pages/follow_type/follow_same/controller.dart';
 import 'package:skf/pages/follow_type/view.dart';
 import 'package:skf/router/app_navigator.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/parse_int.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FollowSamePage extends StatefulWidget {
   const FollowSamePage({super.key});
@@ -27,10 +24,7 @@ class FollowSamePage extends StatefulWidget {
 
 class _FollowSamePageState extends FollowTypePageState<FollowSamePage> {
   @override
-  final controller = Get.putOrFind(
-    FollowSameController.new,
-    tag: AppNavigator.arguments?['mid']?.toString() ?? Utils.generateRandomString(8),
-  );
+  final controller = FollowSameController();
 
   @override
   PreferredSizeWidget get appBar => AppBar(

@@ -13,8 +13,8 @@ import 'package:skf/pages/search/widgets/search_text.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/sortable_wrap.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LiveAreaPage extends StatefulWidget {
   const LiveAreaPage({super.key});
@@ -24,7 +24,7 @@ class LiveAreaPage extends StatefulWidget {
 }
 
 class _LiveAreaPageState extends State<LiveAreaPage> {
-  final _controller = Get.put(LiveAreaController());
+  final _controller = appRead(liveAreaControllerProvider);
 
   @override
   Widget build(BuildContext context) {

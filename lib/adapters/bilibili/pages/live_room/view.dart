@@ -17,10 +17,8 @@ import 'package:skf/common/widgets/keep_alive_wrapper.dart';
 import 'package:skf/common/widgets/route_aware_mixin.dart';
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/models/ui/image_type.dart';
-import 'package:skf/adapters/bilibili/models/common/live/live_contribution_rank_type.dart';
 import 'package:skf/core/models/live_types.dart';
 import 'package:skf/adapters/bilibili/pages/danmaku/danmaku_model.dart';
-import 'package:skf/adapters/bilibili/pages/live_room/contribution_rank/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/contribution_rank/view.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/controller.dart';
 import 'package:skf/adapters/bilibili/pages/live_room/superchat/superchat_card.dart';
@@ -55,7 +53,6 @@ import 'package:canvas_danmaku/danmaku_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' hide PageView;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 
 const baseWhite = Color(0xFFEEEEEE);
@@ -84,10 +81,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
   void initState() {
     super.initState();
     addObserverMobile(this);
-    _liveRoomController = Get.put(
-      LiveRoomController(heroTag),
-      tag: heroTag,
-    );
+    _liveRoomController = LiveRoomController(heroTag);
     plPlayerController = _liveRoomController.plPlayerController
       ..addStatusLister(playerListener);
     PlPlayerController.setPlayCallBack(plPlayerController.play);
@@ -182,11 +176,6 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     plPlayerController
       ..removeStatusLister(playerListener)
       ..dispose();
-    for (final e in LiveContributionRankType.values) {
-      Get.delete<ContributionRankController>(
-        tag: '${_liveRoomController.roomId}${e.name}',
-      );
-    }
     super.dispose();
   }
 

@@ -20,7 +20,6 @@ import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/date_utils.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/image_utils.dart';
@@ -32,11 +31,13 @@ import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart' hide PageView;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:html/parser.dart' as parser;
 
 class ArticlePage extends StatefulWidget {
-  const ArticlePage({super.key});
+  const ArticlePage({super.key, required this.id, required this.type});
+
+  final String id;
+  final String type;
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();
@@ -44,9 +45,10 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends CommonDynPageState<ArticlePage> {
   @override
-  final ArticleController controller = Get.putOrFind(
-    ArticleController.new,
-    tag: AppNavigator.parameters['type']! + AppNavigator.parameters['id']!,
+  @override
+  late final ArticleController controller = ArticleController(
+    id: widget.id,
+    type: widget.type,
   );
 
   @override
@@ -301,7 +303,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             ),
           ),
           if (controller.commentType == 12 &&
-              controller.stats.value != null &&
+              controller.stats != null &&
               controller.opusData?.modules?.moduleBlocked == null)
             PopupMenuItem(
               onTap: () async {
@@ -387,7 +389,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
       child: ListenableBuilder(
         listenable: controller,
         builder: (context, _) {
-          final stats = controller.stats.value;
+          final stats = controller.stats;
 
         Widget btn = Padding(
           padding: .only(

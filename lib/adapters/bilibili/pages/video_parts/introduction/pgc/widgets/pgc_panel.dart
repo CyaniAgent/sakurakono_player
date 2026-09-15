@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:skf/common/assets.dart';
 import 'package:skf/adapters/bilibili/models_new/pgc/pgc_info_model/episode.dart';
@@ -45,7 +44,6 @@ class _PgcPanelState extends State<PgcPanel> {
   late final bool vipStatus;
   late int cid;
   late final VideoDetailController videoDetailCtr;
-  late final StreamSubscription<int> _listener;
 
   @override
   void initState() {
@@ -60,18 +58,22 @@ class _PgcPanelState extends State<PgcPanel> {
 
     videoDetailCtr = appRead(videoDetailControllerProvider(widget.heroTag));
 
-    _listener = videoDetailCtr.cid.listen((int p0) {
-      cid = p0;
-      currentIndex = widget.pages.indexWhere((EpisodeItem e) => e.cid == cid);
-      if (!mounted) return;
-      setState(() {});
-      scrollToIndex();
-    });
+    videoDetailCtr.addListener(_onCidChanged);
+  }
+
+  void _onCidChanged() {
+    final p0 = videoDetailCtr.cid;
+    if (p0 == cid) return;
+    cid = p0;
+    currentIndex = widget.pages.indexWhere((EpisodeItem e) => e.cid == cid);
+    if (!mounted) return;
+    setState(() {});
+    scrollToIndex();
   }
 
   @override
   void dispose() {
-    _listener.cancel();
+    videoDetailCtr.removeListener(_onCidChanged);
     listViewScrollCtr.dispose();
     super.dispose();
   }

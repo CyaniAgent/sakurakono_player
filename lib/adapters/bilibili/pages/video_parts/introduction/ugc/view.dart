@@ -34,7 +34,6 @@ import 'package:skf/adapters/bilibili/utils/bili_colors.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
@@ -48,7 +47,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -82,10 +80,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
   @override
   void initState() {
     super.initState();
-    introController = Get.putOrFind(
-      UgcIntroController.new,
-      tag: widget.heroTag,
-    );
+    introController = appRead(ugcIntroControllerProvider(widget.heroTag));
   }
 
   @override
@@ -113,7 +108,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               onTap: () {
                 if (isLoading) return;
                 feedBack();
-                introController.expand.toggle();
+                introController.toggleExpand();
               },
               child: TranslucentColumn(
                 crossAxisAlignment: .start,
@@ -146,7 +141,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                     ..._infos(videoDetail)
                   else
                       AnimatedHeight(
-                        expand: introController.expand.value,
+                        expand: introController.expand,
                         duration: const Duration(milliseconds: 300),
                         child: TranslucentColumn(
                           mainAxisSize: .min,
@@ -253,7 +248,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
       listenable: introController, builder: (context, _) => ExpandablePanel(
         collapsed: _gestureVideoTitle(videoDetail),
         expanded: _gestureVideoTitle(videoDetail, isExpand: true),
-        expand: introController.expand.value,
+        expand: introController.expand,
       ),
     );
   }
@@ -428,7 +423,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
   Widget followButton(BuildContext context) {
     return ListenableBuilder(
       listenable: introController, builder: (context, _) {
-        int attr = introController.followStatus.value.attribute ?? 0;
+        int attr = introController.followStatus.attribute ?? 0;
         return TextButton(
           onPressed: () => introController.actionRelationMod(context),
           style: TextButton.styleFrom(
@@ -585,7 +580,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                                 ?.group(1);
                             if (ytbId != null) {
                               final bvid = videoDetailCtr.bvid;
-                              final cid = videoDetailCtr.cid.value;
+                              final cid = videoDetailCtr.cid;
 
                               SmartDialog.showLoading();
                               final hasPortVideo =

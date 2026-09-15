@@ -256,10 +256,10 @@ class PgcIntroController extends CommonIntroController {
         ..epId = epId
         ..bvid = bvid
         ..aid = aid
-        ..cid.value = cid
+        ..cid = cid
         ..queryVideoUrl();
       if (cover != null && cover.isNotEmpty) {
-        videoDetailCtr.cover.value = cover;
+        videoDetailCtr.cover = cover;
       }
 
       if (videoDetailCtr.showReply) {
@@ -327,7 +327,7 @@ class PgcIntroController extends CommonIntroController {
   bool prevPlay() {
     final episodes = pgcItem.episodes!;
     int currentIndex = episodes.indexWhere(
-      (e) => e.cid == videoDetailCtr.cid.value,
+      (e) => e.cid == videoDetailCtr.cid,
     );
     int prevIndex = currentIndex - 1;
     PlayRepeat playRepeat = VideoHost.of().playerHost.playerPlayRepeat;
@@ -350,7 +350,7 @@ class PgcIntroController extends CommonIntroController {
       PlayRepeat playRepeat = VideoHost.of().playerHost.playerPlayRepeat;
 
       int currentIndex = episodes.indexWhere(
-        (e) => e.cid == videoDetailCtr.cid.value,
+        (e) => e.cid == videoDetailCtr.cid,
       );
       int nextIndex = currentIndex + 1;
       if (nextIndex >= episodes.length) {

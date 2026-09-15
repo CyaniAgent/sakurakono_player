@@ -1,5 +1,6 @@
 import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 
 import 'package:skf/adapters/bilibili/models/user/info.dart'
     show UserInfoData;
@@ -316,28 +317,8 @@ LoadingState<T> _toCore<T, A>(LoadingState<A> state, T Function(A) convert) {
 
 // ── Model conversion helpers ──────────────────────────────────────
 
-CoreUserInfoData _convertUserInfoData(UserInfoData data) {
-  return CoreUserInfoData(
-    isLogin: data.isLogin,
-    face: data.face,
-    levelInfo: data.levelInfo != null
-        ? CoreLevelInfo(
-            currentLevel: data.levelInfo!.currentLevel,
-            currentMin: data.levelInfo!.currentMin,
-            currentExp: data.levelInfo!.currentExp,
-            nextExp: data.levelInfo!.nextExp,
-          )
-        : null,
-    mid: data.mid,
-    money: data.money,
-    scores: data.scores,
-    uname: data.uname,
-    vipDueDate: data.vipDueDate,
-    vipStatus: data.vipStatus,
-    vipType: data.vipType,
-    isSeniorMember: data.isSeniorMember,
-  );
-}
+CoreUserInfoData _convertUserInfoData(UserInfoData data) =>
+    ModelConverters.userInfoDataToCore(data);
 
 CoreUserStat _convertUserStat(UserStat stat) {
   return CoreUserStat(

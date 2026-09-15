@@ -3,12 +3,13 @@ import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/adapters/bilibili/models/common/member/search_type.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/child/view.dart';
 import 'package:skf/adapters/bilibili/pages/member_search/controller.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberSearchPage extends StatefulWidget {
-  const MemberSearchPage({super.key});
+  const MemberSearchPage({super.key, required this.mid, this.uname});
+
+  final String mid;
+  final String? uname;
 
   @override
   State<MemberSearchPage> createState() => _MemberSearchPageState();
@@ -16,10 +17,7 @@ class MemberSearchPage extends StatefulWidget {
 
 class _MemberSearchPageState extends State<MemberSearchPage>
     with SingleTickerProviderStateMixin {
-  late final _controller = Get.put(
-    MemberSearchController(this),
-    tag: Utils.generateRandomString(8),
-  );
+  late final _controller = MemberSearchController(widget.mid, uname: widget.uname, vsync: this);
 
   @override
   Widget build(BuildContext context) {

@@ -40,7 +40,6 @@ import 'package:skf/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' hide DraggableScrollableSheet;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AudioPage extends StatefulWidget {
@@ -81,10 +80,7 @@ extension _ListOrderExt on ListOrder {
 
 class _AudioPageState extends State<AudioPage>
     with SingleTickerProviderStateMixin {
-  late final _controller = Get.put(
-    AudioController(this),
-    tag: Utils.generateRandomString(8),
-  );
+  late final _controller = AudioController(this);
 
   @override
   void didChangeDependencies() {

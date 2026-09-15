@@ -58,3 +58,6 @@ class AtMeController extends CommonListControllerRiverpod<CoreMsgAtData, CoreMsg
     } catch (_) {}
   }
 }
+
+/// AtMeController（单实例）。
+final atMeControllerProvider = Provider<AtMeController>((ref) => AtMeController());

@@ -8,14 +8,11 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_mention/controller.dart';
-import 'package:skf/adapters/bilibili/pages/emote/controller.dart';
 import 'package:skf/adapters/bilibili/pages/emote/view.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:flutter/material.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class RepostPanel extends CommonRichTextPubPage {
   const RepostPanel({
@@ -80,13 +77,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     _uname = widget.uname ?? modules?.moduleAuthor?.name;
   }
 
-  @override
-  void dispose() {
-    Get
-      ..delete<EmotePanelController>()
-      ..delete<DynMentionController>();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

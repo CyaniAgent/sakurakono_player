@@ -12,7 +12,7 @@ import 'package:skf/pages/search/controller.dart' show DebounceStreamState;
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SelectTopicPanel extends StatefulWidget {
   const SelectTopicPanel({
@@ -58,7 +58,7 @@ class SelectTopicPanel extends StatefulWidget {
 
 class _SelectTopicPanelState
     extends DebounceStreamState<SelectTopicPanel, String> {
-  final _controller = Get.put(SelectTopicController());
+  final _controller = appRead(selectTopicControllerProvider);
   @override
   Duration get duration => const Duration(milliseconds: 300);
 

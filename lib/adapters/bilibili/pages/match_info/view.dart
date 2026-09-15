@@ -13,16 +13,16 @@ import 'package:skf/pages/common/fab_mixin.dart'
 import 'package:skf/adapters/bilibili/pages/match_info/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_reply/view.dart';
 import 'package:skf/utils/date_utils.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class MatchInfoPage extends StatefulWidget {
-  const MatchInfoPage({super.key});
+  const MatchInfoPage({super.key, required this.cid});
+
+  final int cid;
 
   @override
   State<MatchInfoPage> createState() => _MatchInfoPageState();
@@ -30,10 +30,8 @@ class MatchInfoPage extends StatefulWidget {
 
 class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
   @override
-  final MatchInfoController controller = Get.putOrFind(
-    MatchInfoController.new,
-    tag: AppNavigator.parameters['cid']!,
-  );
+  @override
+  late final MatchInfoController controller = MatchInfoController(oid: widget.cid);
 
   @override
   dynamic get arguments => null;

@@ -17,8 +17,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/models/common/publish_panel_type.dart';
 import 'package:skf/adapters/bilibili/models/dynamics/result.dart' show FilePicModel;
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_mention/controller.dart';
-import 'package:skf/adapters/bilibili/pages/emote/controller.dart';
 import 'package:skf/adapters/bilibili/pages/emote/view.dart';
 import 'package:skf/pages/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_search_item/view.dart';
@@ -31,7 +29,6 @@ import 'package:skf/utils/theme_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class ReplyPage extends CommonRichTextPubPage {
   final int oid;
@@ -63,14 +60,6 @@ class ReplyPage extends CommonRichTextPubPage {
 class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
   bool _syncToDynamic = false;
   final heroTag = AppNavigator.arguments?['heroTag'];
-
-  @override
-  void dispose() {
-    Get
-      ..delete<EmotePanelController>()
-      ..delete<DynMentionController>();
-    super.dispose();
-  }
 
   @override
   void didChangeDependencies() {
@@ -351,7 +340,9 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                         final path =
                             '$tmpDirPath/${Utils.generateRandomString(8)}.png';
                         await File(path).writeAsBytes(png.buffer.asUint8List());
-                        imageList.add(FilePicModel(path: path));
+                        setState(() {
+                          imageList.add(FilePicModel(path: path));
+                        });
                       }
                       res.dispose();
                     } else {

@@ -8,7 +8,6 @@ import 'package:skf/adapters/bilibili/pages/whisper/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_secondary/controller.dart';
 import 'package:skf/adapters/bilibili/utils/extension/three_dot_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class WhisperSecPage extends StatefulWidget {
   const WhisperSecPage({
@@ -30,10 +29,7 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      WhisperSecController(sessionPageType: widget.sessionPageType),
-      tag: widget.sessionPageType.name,
-    );
+    _controller = WhisperSecController(sessionPageType: widget.sessionPageType);
   }
 
   @override
@@ -46,7 +42,7 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
           ListenableBuilder(
             listenable: _controller,
             builder: (_, _) {
-              final threeDotItems = _controller.threeDotItems.value;
+              final threeDotItems = _controller.threeDotItems;
               if (threeDotItems != null && threeDotItems.isNotEmpty) {
                 return PopupMenuButton(
                   itemBuilder: (context) {

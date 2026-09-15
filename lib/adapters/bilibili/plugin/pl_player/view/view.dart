@@ -54,7 +54,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 part 'widgets.dart';
@@ -259,7 +258,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       BottomControlType.dmChart => ListenableBuilder(
         listenable: videoDetailController,
         builder: (context, _) {
-          final list = videoDetailController.dmTrend.value?.dataOrNull;
+          final list = videoDetailController.dmTrend?.dataOrNull;
           if (list != null && list.isNotEmpty) {
             final show = videoDetailController.showDmTrendChart;
             return ComBtn(
@@ -454,12 +453,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       BottomControlType.aiTranslate => ListenableBuilder(
         listenable: videoDetailController,
         builder: (context, _) {
-          final list = videoDetailController.languages.value;
+          final list = videoDetailController.languages;
           if (list != null && list.isNotEmpty) {
             return PopupMenuButton<String>(
               tooltip: '翻译',
               requestFocus: false,
-              initialValue: videoDetailController.currLang.value,
+              initialValue: videoDetailController.currLang,
               color: Colors.black.withValues(alpha: 0.8),
               itemBuilder: (context) {
                 return [
@@ -607,7 +606,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
         listenable: videoDetailController,
         builder: (context, _) {
           final VideoQuality? currentVideoQa =
-              videoDetailController.currentVideoQa.value;
+              videoDetailController.currentVideoQa;
           if (currentVideoQa == null) {
             return const SizedBox.shrink();
           }
@@ -645,7 +644,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
                       final newQa = VideoQuality.fromCode(quality);
                       videoDetailController
                         ..plPlayerController.cacheVideoQa = newQa.code
-                        ..currentVideoQa.value = newQa
+                        ..currentVideoQa = newQa
                         ..updatePlayer();
 
                       SmartDialog.showToast("画质已变为：${newQa.desc}");
@@ -847,7 +846,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer> {
       file,
       model.segment.first,
       model.segment.second,
-      progress: RxDouble(progress),
+      progress: ValueNotifier<double>(progress),
       preset: preset,
     );
     final future = mpv.convert().whenComplete(
@@ -892,7 +891,7 @@ class _BiliDmTapInteraction implements PlayerDmTapInteraction {
 
   DanmakuItem<DanmakuExtra>? _suspendedDm;
   late double _dy = 0;
-  late final Rxn<Offset> _dmOffset = Rxn<Offset>();
+  final ValueNotifier<Offset?> _dmOffset = ValueNotifier<Offset?>(null);
 
   @override
   bool get enabled => true;
@@ -949,7 +948,9 @@ class _BiliDmTapInteraction implements PlayerDmTapInteraction {
 
   @override
   Widget buildOverlay(BuildContext context) {
-    return ListenableBuilder(listenable: _plPlayerController, builder: (context, _) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([_plPlayerController, _dmOffset]),
+      builder: (context, _) {
       if (!_plPlayerController.enableShowDanmaku) {
         return const SizedBox.shrink();
       }
@@ -1221,7 +1222,7 @@ class _VideoOverlaySource implements PlayerOverlaySource {
   bool get showDmTrendChart => _controller.showDmTrendChart;
 
   @override
-  List<double>? get dmTrend => _controller.dmTrend.value?.dataOrNull;
+  List<double>? get dmTrend => _controller.dmTrend?.dataOrNull;
 }
 
 /// 按画质码选择视频流（优先预设解码格式；原 VideoDetailController.findVideoByQa）。

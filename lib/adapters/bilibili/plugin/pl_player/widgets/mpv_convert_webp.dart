@@ -6,9 +6,8 @@ import 'dart:ffi';
 import 'package:skf/adapters/bilibili/http/browser_ua.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/utils/storage_pref.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, ValueNotifier;
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:media_kit/ffi/src/allocation.dart';
 import 'package:media_kit/ffi/src/utf8.dart';
 import 'package:media_kit/generated/libmpv/bindings.dart' as generated;
@@ -26,7 +25,7 @@ class MpvConvertWebp {
   final String outFile;
   final double start;
   final double duration;
-  final RxDouble? progress;
+  final ValueNotifier<double>? progress;
   final WebpPreset preset;
 
   MpvConvertWebp(

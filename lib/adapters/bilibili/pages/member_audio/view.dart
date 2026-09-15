@@ -9,7 +9,6 @@ import 'package:skf/adapters/bilibili/pages/member_audio/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_audio/widgets/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberAudio extends StatefulWidget {
   const MemberAudio({
@@ -32,10 +31,7 @@ class _MemberAudioState extends State<MemberAudio>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberAudioController(widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = MemberAudioController(widget.mid);
   }
 
   @override

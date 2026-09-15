@@ -23,30 +23,35 @@ import 'package:skf/adapters/bilibili/utils/id_utils.dart';
 import 'package:skf/utils/path_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 import 'package:synchronized/synchronized.dart';
 
 // ref https://github.com/10miaomiao/bilimiao2/blob/master/bilimiao-download/src/main/java/cn/a10miaomiao/bilimiao/download/DownloadService.kt
 
-class DownloadService extends GetxService {
+class DownloadService extends ChangeNotifier {
   static const _entryFile = 'entry.json';
   static const _indexFile = 'index.json';
 
   final _lock = Lock();
 
   final flagNotifier = SetNotifier();
-  final waitDownloadQueue = RxList<BiliDownloadEntryInfo>();
+  final waitDownloadQueue = <BiliDownloadEntryInfo>[];
   final downloadList = <BiliDownloadEntryInfo>[];
 
   int? _curCid;
   int? get curCid => _curCid;
-  final curDownload = Rxn<BiliDownloadEntryInfo>();
+  BiliDownloadEntryInfo? _curDownload;
+  BiliDownloadEntryInfo? get curDownload => _curDownload;
+  set curDownload(BiliDownloadEntryInfo? value) {
+    _curDownload = value;
+    notifyListeners();
+  }
+
   void _updateCurStatus(DownloadStatus status) {
-    if (curDownload.value != null) {
-      curDownload
-        ..value!.status = status
-        ..refresh();
+    final cur = _curDownload;
+    if (cur != null) {
+      cur.status = status;
+      notifyListeners();
     }
   }
 
@@ -55,9 +60,7 @@ class DownloadService extends GetxService {
 
   late Future<void> waitForInitialization;
 
-  @override
   void onInit() {
-    super.onInit();
     initDownloadList();
   }
 
@@ -246,7 +249,8 @@ class DownloadService extends GetxService {
       ..entryDirPath = entryDir.path
       ..status = DownloadStatus.wait;
     waitDownloadQueue.add(entry);
-    if (curDownload.value?.status.isDownloading != true) {
+    notifyListeners();
+    if (curDownload?.status.isDownloading != true) {
       startDownload(entry);
     }
   }
@@ -284,15 +288,14 @@ class DownloadService extends GetxService {
       await _audioDownloadManager?.cancel(isDelete: false);
       _downloadManager = null;
       _audioDownloadManager = null;
-      if (curDownload.value case final curEntry?) {
+      if (curDownload case final curEntry?) {
         if (curEntry.status.isDownloading) {
           curEntry.status = DownloadStatus.pause;
         }
       }
 
       _curCid = entry.cid;
-      curDownload.value = entry;
-      waitDownloadQueue.refresh();
+      curDownload = entry;
       await _startDownload(entry);
     });
   }
@@ -390,7 +393,7 @@ class DownloadService extends GetxService {
         _downloadCover(entry: entry),
       ]);
 
-      if (curDownload.value?.cid != entry.cid) {
+      if (curDownload?.cid != entry.cid) {
         return;
       }
 
@@ -446,14 +449,14 @@ class DownloadService extends GetxService {
   }
 
   void _onReceive(int progress, int total) {
-    if (curDownload.value case final entry?) {
+    if (curDownload case final entry?) {
       if (progress == 0 && total != 0) {
         _updateBiliDownloadEntryJson(entry..totalBytes = total);
       }
       entry
         ..downloadedBytes = progress
         ..status = DownloadStatus.downloading;
-      curDownload.refresh();
+      notifyListeners();
     }
   }
 
@@ -470,7 +473,7 @@ class DownloadService extends GetxService {
     };
     _updateCurStatus(status);
 
-    if (curDownload.value case final curEntryInfo?) {
+    if (curDownload case final curEntryInfo?) {
       curEntryInfo.downloadedBytes = curEntryInfo.totalBytes;
       if (status == DownloadStatus.completed) {
         _completeDownload();
@@ -496,7 +499,7 @@ class DownloadService extends GetxService {
   }
 
   Future<void> _completeDownload() async {
-    final entry = curDownload.value;
+    final entry = curDownload;
     if (entry == null) {
       return;
     }
@@ -507,8 +510,9 @@ class DownloadService extends GetxService {
     waitDownloadQueue.remove(entry);
     downloadList.insert(0, entry);
     flagNotifier.refresh();
+    notifyListeners();
     _curCid = null;
-    curDownload.value = null;
+    curDownload = null;
     _downloadManager = null;
     _audioDownloadManager = null;
     nextDownload();
@@ -518,6 +522,12 @@ class DownloadService extends GetxService {
     if (waitDownloadQueue.isNotEmpty) {
       startDownload(waitDownloadQueue.first);
     }
+  }
+
+  /// 按 cid 批量移出等待队列（多选删除时调用）。
+  void removeQueueEntries(Iterable<int> cids) {
+    waitDownloadQueue.removeWhere((e) => cids.contains(e.cid));
+    notifyListeners();
   }
 
   Future<void> deleteDownload({
@@ -533,7 +543,8 @@ class DownloadService extends GetxService {
     if (removeQueue) {
       waitDownloadQueue.remove(entry);
     }
-    if (curDownload.value?.cid == entry.cid) {
+    notifyListeners();
+    if (curDownload?.cid == entry.cid) {
       await cancelDownload(
         isDelete: true,
         downloadNext: downloadNext,
@@ -561,6 +572,7 @@ class DownloadService extends GetxService {
   }) async {
     await Directory(pageDirPath).tryDel(recursive: true);
     downloadList.removeWhere((e) => e.pageDirPath == pageDirPath);
+    notifyListeners();
     if (refresh) {
       flagNotifier.refresh();
     }
@@ -575,14 +587,14 @@ class DownloadService extends GetxService {
     _downloadManager = null;
     _audioDownloadManager = null;
     if (!isDelete) {
-      final entry = curDownload.value;
+      final entry = curDownload;
       if (entry != null) {
         await _updateBiliDownloadEntryJson(entry);
       }
     }
     if (isDelete) {
       _curCid = null;
-      curDownload.value = null;
+      curDownload = null;
     } else {
       _updateCurStatus(DownloadStatus.pause);
     }

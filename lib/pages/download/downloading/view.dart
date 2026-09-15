@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:skf/common/widgets/appbar/appbar.dart';
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/pop_scope.dart';
@@ -14,23 +12,6 @@ import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
-
-/// Bridges a GetX [RxList] to Flutter [Listenable] so [ListenableBuilder]
-/// can react to list changes (RxList is not a [Listenable] in this fork).
-class _RxListListenable<T> extends ChangeNotifier {
-  _RxListListenable(RxList<T> list) {
-    _sub = list.stream.listen((_) => notifyListeners());
-  }
-
-  late final StreamSubscription _sub;
-
-  @override
-  void dispose() {
-    _sub.cancel();
-    super.dispose();
-  }
-}
 
 class DownloadingPage extends StatefulWidget {
   const DownloadingPage({super.key});
@@ -42,20 +23,10 @@ class DownloadingPage extends StatefulWidget {
 class _DownloadingPageState extends State<DownloadingPage>
     with BaseMultiSelectMixin<CoreDownloadEntryInfo>, GridMixin {
   final _downloadActions = DownloadActions.of();
-  late final _waitDownloadQueue = _downloadActions.waitDownloadQueue;
-  final _queueListenable = _RxListListenable<CoreDownloadEntryInfo>(
-    DownloadActions.of().waitDownloadQueue,
-  );
   @override
-  List<CoreDownloadEntryInfo> get list => _waitDownloadQueue;
+  List<CoreDownloadEntryInfo> get list => _downloadActions.waitDownloadQueue;
   @override
   void notifyStateChanged() => setState(() {});
-
-  @override
-  void dispose() {
-    _queueListenable.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,14 +64,15 @@ class _DownloadingPageState extends State<DownloadingPage>
             slivers: [
               ViewSliverSafeArea(
                 sliver: ListenableBuilder(
-                  listenable: _queueListenable,
+                  listenable: _downloadActions,
                   builder: (_, _) {
-                    if (_waitDownloadQueue.isNotEmpty) {
+                    final queue = _downloadActions.waitDownloadQueue;
+                    if (queue.isNotEmpty) {
                       return SliverGrid.builder(
                         gridDelegate: gridDelegate,
-                        itemCount: _waitDownloadQueue.length,
+                        itemCount: queue.length,
                         itemBuilder: (context, index) {
-                          final entry = _waitDownloadQueue[index];
+                          final entry = queue[index];
                           final isCurr = entry.cid == _downloadActions.curCid;
                           return DetailItem(
                             entry: entry,
@@ -139,7 +111,7 @@ class _DownloadingPageState extends State<DownloadingPage>
         SmartDialog.showLoading();
         final allChecked = this.allChecked.toSet();
         final isDownloading =
-            _downloadActions.curDownload.value?.status ==
+            _downloadActions.curDownload?.status ==
             CoreDownloadStatus.downloading;
         for (final entry in allChecked) {
           await _downloadActions.deleteDownload(
@@ -149,7 +121,7 @@ class _DownloadingPageState extends State<DownloadingPage>
           );
         }
         _downloadActions.removeFromQueue(allChecked);
-        if (isDownloading && _downloadActions.curDownload.value == null) {
+        if (isDownloading && _downloadActions.curDownload == null) {
           _downloadActions.nextDownload();
         }
         if (enableMultiSelect) {

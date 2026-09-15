@@ -8,7 +8,6 @@ import 'package:skf/adapters/bilibili/pages/member_favorite/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_favorite/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberFavorite extends StatefulWidget {
   const MemberFavorite({
@@ -34,10 +33,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberFavoriteCtr(mid: widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = MemberFavoriteCtr(mid: widget.mid);
   }
 
   @override
@@ -119,7 +115,6 @@ class _MemberFavoriteState extends State<MemberFavorite>
                   onTap: () {
                     _controller.setExpand(isFav);
                     (context as Element).markNeedsBuild();
-                    data.refresh();
                   },
                   child: Padding(
                     padding: const .symmetric(horizontal: 12, vertical: 10),
@@ -136,11 +131,11 @@ class _MemberFavoriteState extends State<MemberFavorite>
                             ),
                           ),
                           TextSpan(
-                            text: ' ${data.value.name}',
+                            text: ' ${data.name}',
                             style: const TextStyle(fontSize: 14),
                           ),
                           TextSpan(
-                            text: ' ${data.value.mediaListResponse?.count}',
+                            text: ' ${data.mediaListResponse?.count}',
                             style: TextStyle(
                               fontSize: 13,
                               color: theme.colorScheme.outline,
@@ -158,7 +153,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
         ListenableBuilder(
           listenable: _controller,
           builder: (context, _) {
-          final list = data.value.mediaListResponse?.list;
+          final list = data.mediaListResponse?.list;
           if (!_controller.isExpand(isFav)) {
             return const SliverToBoxAdapter();
           }

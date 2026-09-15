@@ -13,9 +13,9 @@ abstract final class AppNavigator {
 
   /// 当前路由路径（如 '/videoV'）。等效 `AppNavigator.currentRoute`。
   static String get currentRoute {
-    final ctx = navigatorKey.currentContext;
-    if (ctx == null) return '/';
-    return GoRouterState.of(ctx).uri.path;
+    // go_router 17 起 GoRouterState 只在路由子树内可用（navigator 上下文取不到），
+    // 这里直接读 router 自身的当前 match 状态。
+    return AppRouter.instance.state.matchedLocation;
   }
 
   /// 上一路由名（go_router 无直接 API，由 [_PreviousRouteObserver] 记录）。
@@ -31,15 +31,16 @@ abstract final class AppNavigator {
       AppRouter.instance.state.uri.queryParameters;
 
   /// 读取当前路由参数（extra），controller 层用（无 context）。
+  ///
+  /// go_router 17 中 [ModalRoute.of] 在 navigator 上下文取不到（返回 null），
+  /// 且页面 settings.arguments 只含 path/query 参数表——富参数须读 state.extra。
   static dynamic get arguments {
-    final ctx = navigatorKey.currentContext;
-    if (ctx == null) return null;
-    return ModalRoute.of(ctx)?.settings.arguments;
+    return AppRouter.instance.state.extra;
   }
 
   /// 读取路由参数（go_router 的 extra）。
   static dynamic argsOf(BuildContext context) {
-    return ModalRoute.of(context)?.settings.arguments;
+    return GoRouterState.of(context).extra;
   }
 
   /// 读取当前路由 query 参数（如 '/member?mid=123' 的 mid）。
@@ -61,7 +62,7 @@ abstract final class AppNavigator {
       final current = router.state.matchedLocation;
       if (isDuplicate(uri, current)) return null;
     }
-    return router.pushNamed<T>(uri.toString(), extra: arguments);
+    return router.push<T>(uri.toString(), extra: arguments);
   }
 
   /// 推入命名路由并替换当前页。等效 `Get.offNamed`。
@@ -77,7 +78,7 @@ abstract final class AppNavigator {
       final current = router.state.matchedLocation;
       if (isDuplicate(uri, current)) return null;
     }
-    return router.pushReplacementNamed<T>(uri.toString(), extra: arguments);
+    return router.pushReplacement<T>(uri.toString(), extra: arguments);
   }
 
   /// 推入命名路由并清空栈。等效 `Get.offAllNamed`。

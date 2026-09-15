@@ -1,6 +1,5 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/pages/common/multi_select/base.dart';
@@ -73,8 +72,8 @@ class FavDetailController
     extends MultiSelectController<CoreFavDetailData, CoreFavDetailItemModel>
     with BaseFavController {
   @override
-  late int mediaId;
-  late String heroTag;
+  final int mediaId;
+  final String heroTag;
   CoreFavFolderInfo folderInfo = CoreFavFolderInfo();
   bool _isOwner = false;
   CoreFavOrderType order = CoreFavOrderType.mtime;
@@ -93,9 +92,7 @@ class FavDetailController
     GStorage.setting.put(SettingBoxKey.enablePlayAll, isPlayAll);
   }
 
-  FavDetailController() {
-    mediaId = int.parse(Get.parameters['mediaId']!);
-    heroTag = Get.parameters['heroTag']!;
+  FavDetailController({required this.mediaId, required this.heroTag}) {
     queryData();
   }
 
@@ -204,7 +201,7 @@ class FavDetailController
           SmartDialog.showToast('内容太多啦！超过1000不支持排序');
           return;
         }
-        Get.to(FavSortPage(favDetailController: this));
+        AppNavigator.to(FavSortPage(favDetailController: this));
       }
     }
   }

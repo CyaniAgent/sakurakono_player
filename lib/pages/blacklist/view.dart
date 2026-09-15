@@ -11,7 +11,7 @@ import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class BlackListPage extends StatefulWidget {
   const BlackListPage({super.key});
@@ -21,7 +21,7 @@ class BlackListPage extends StatefulWidget {
 }
 
 class _BlackListPageState extends State<BlackListPage> {
-  final _blackListController = Get.put(BlackListController());
+  final _blackListController = appRead(blackListControllerProvider);
 
   @override
   void dispose() {

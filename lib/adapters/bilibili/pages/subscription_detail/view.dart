@@ -10,9 +10,7 @@ import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/subscription_detail/widget/sub_video_card.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SubDetailPage extends StatefulWidget {
   const SubDetailPage({super.key});
@@ -42,10 +40,7 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
   @override
   void initState() {
     super.initState();
-    _subDetailController = Get.put(
-      SubDetailController(),
-      tag: Utils.makeHeroTag(AppNavigator.parameters['id']),
-    );
+    _subDetailController = SubDetailController();
   }
 
   @override

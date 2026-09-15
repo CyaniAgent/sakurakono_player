@@ -9,6 +9,7 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DownloadSearchController
     extends
@@ -76,3 +77,6 @@ class DownloadSearchController
     );
   }
 }
+
+/// DownloadSearchController（单实例）。
+final downloadSearchControllerProvider = Provider<DownloadSearchController>((ref) => DownloadSearchController());

@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/bilibili/services/download/download_service.dart';
@@ -38,7 +37,6 @@ import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
-import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
@@ -76,9 +74,6 @@ class OttoAdapter implements AppAdapter {
     final client = OttohubClient();
 
     // Register repositories using the modern (non-Old) OttoHub API modules.
-    Get
-      ..lazyPut<DownloadService>(_StubDownloadService.new)
-      ..lazyPut<AccountProvider>(() => OttoAccountProvider(client));
     // Riverpod ProviderScope overrides — direct instantiation, no Get.find dependency
     adapterOverrides = <Override>[
       videoRepositoryProvider.overrideWithValue(OttoVideoRepository(client)),

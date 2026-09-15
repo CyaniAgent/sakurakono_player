@@ -124,3 +124,6 @@ class LikeMeController
     }
   }
 }
+
+/// LikeMeController（单实例）。
+final likeMeControllerProvider = Provider<LikeMeController>((ref) => LikeMeController());

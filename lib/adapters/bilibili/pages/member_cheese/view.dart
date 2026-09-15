@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/member_cheese/widgets/item.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberCheese extends StatefulWidget {
   const MemberCheese({
@@ -30,10 +29,7 @@ class _MemberCheeseState extends State<MemberCheese>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberCheeseController(widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = MemberCheeseController(widget.mid);
   }
 
   @override

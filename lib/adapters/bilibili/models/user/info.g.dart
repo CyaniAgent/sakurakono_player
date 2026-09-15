@@ -8,7 +8,7 @@ part of 'info.dart';
 
 class UserInfoDataAdapter extends TypeAdapter<UserInfoData> {
   @override
-  final int typeId = 4;
+  final typeId = 4;
 
   @override
   UserInfoData read(BinaryReader reader) {
@@ -18,30 +18,30 @@ class UserInfoDataAdapter extends TypeAdapter<UserInfoData> {
     };
     return UserInfoData(
       isLogin: fields[0] as bool?,
-      emailVerified: fields[1] as int?,
+      emailVerified: (fields[1] as num?)?.toInt(),
       face: fields[2] as String?,
       levelInfo: fields[3] as LevelInfo?,
-      mid: fields[4] as int?,
-      mobileVerified: fields[5] as int?,
-      money: fields[6] as double?,
-      moral: fields[7] as int?,
-      official: (fields[8] as Map?)?.fromCast<dynamic, dynamic>(),
-      officialVerify: (fields[9] as Map?)?.fromCast<dynamic, dynamic>(),
-      pendant: (fields[10] as Map?)?.fromCast<dynamic, dynamic>(),
-      scores: fields[11] as int?,
+      mid: (fields[4] as num?)?.toInt(),
+      mobileVerified: (fields[5] as num?)?.toInt(),
+      money: (fields[6] as num?)?.toDouble(),
+      moral: (fields[7] as num?)?.toInt(),
+      official: (fields[8] as Map?)?.cast<dynamic, dynamic>(),
+      officialVerify: (fields[9] as Map?)?.cast<dynamic, dynamic>(),
+      pendant: (fields[10] as Map?)?.cast<dynamic, dynamic>(),
+      scores: (fields[11] as num?)?.toInt(),
       uname: fields[12] as String?,
-      vipDueDate: fields[13] as int?,
-      vipStatus: fields[14] as int?,
-      vipType: fields[15] as int?,
-      vipPayType: fields[16] as int?,
-      vipThemeType: fields[17] as int?,
-      vipLabel: (fields[18] as Map?)?.fromCast<dynamic, dynamic>(),
-      vipAvatarSub: fields[19] as int?,
+      vipDueDate: (fields[13] as num?)?.toInt(),
+      vipStatus: (fields[14] as num?)?.toInt(),
+      vipType: (fields[15] as num?)?.toInt(),
+      vipPayType: (fields[16] as num?)?.toInt(),
+      vipThemeType: (fields[17] as num?)?.toInt(),
+      vipLabel: (fields[18] as Map?)?.cast<dynamic, dynamic>(),
+      vipAvatarSub: (fields[19] as num?)?.toInt(),
       vipNicknameColor: fields[20] as String?,
-      wallet: (fields[21] as Map?)?.fromCast<dynamic, dynamic>(),
+      wallet: (fields[21] as Map?)?.cast<dynamic, dynamic>(),
       hasShop: fields[22] as bool?,
       shopUrl: fields[23] as String?,
-      isSeniorMember: fields[24] as int?,
+      isSeniorMember: (fields[24] as num?)?.toInt(),
     );
   }
 
@@ -114,7 +114,7 @@ class UserInfoDataAdapter extends TypeAdapter<UserInfoData> {
 
 class LevelInfoAdapter extends TypeAdapter<LevelInfo> {
   @override
-  final int typeId = 5;
+  final typeId = 5;
 
   @override
   LevelInfo read(BinaryReader reader) {
@@ -123,10 +123,10 @@ class LevelInfoAdapter extends TypeAdapter<LevelInfo> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return LevelInfo(
-      currentLevel: fields[0] as int?,
-      currentMin: fields[1] as int?,
-      currentExp: fields[2] as int?,
-      nextExp: fields[3] as int?,
+      currentLevel: (fields[0] as num?)?.toInt(),
+      currentMin: (fields[1] as num?)?.toInt(),
+      currentExp: (fields[2] as num?)?.toInt(),
+      nextExp: (fields[3] as num?)?.toInt(),
     );
   }
 

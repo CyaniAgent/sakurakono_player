@@ -16,7 +16,7 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class LikeMePage extends StatefulWidget {
   const LikeMePage({super.key});
@@ -26,7 +26,7 @@ class LikeMePage extends StatefulWidget {
 }
 
 class _LikeMePageState extends State<LikeMePage> {
-  final LikeMeController _likeMeController = Get.put(LikeMeController());
+  final LikeMeController _likeMeController = appRead(likeMeControllerProvider);
 
   @override
   Widget build(BuildContext context) {

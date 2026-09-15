@@ -12,7 +12,8 @@ import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/pages/providers.dart';
 
 class FavTopicPage extends StatefulWidget {
   const FavTopicPage({super.key});
@@ -23,7 +24,7 @@ class FavTopicPage extends StatefulWidget {
 
 class _FavTopicPageState extends State<FavTopicPage>
     with AutomaticKeepAliveClientMixin {
-  final FavTopicController _controller = Get.put(FavTopicController());
+  final FavTopicController _controller = appRead(favTopicControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

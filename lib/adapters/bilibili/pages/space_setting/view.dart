@@ -6,7 +6,7 @@ import 'package:skf/core/models/user_types.dart';
 
 import 'package:skf/adapters/bilibili/pages/space_setting/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SpaceSettingPage extends StatefulWidget {
   const SpaceSettingPage({super.key});
@@ -16,7 +16,7 @@ class SpaceSettingPage extends StatefulWidget {
 }
 
 class _SpaceSettingPageState extends State<SpaceSettingPage> {
-  final _controller = Get.put(SpaceSettingController());
+  final _controller = appRead(spaceSettingControllerProvider);
 
   @override
   Widget build(BuildContext context) {

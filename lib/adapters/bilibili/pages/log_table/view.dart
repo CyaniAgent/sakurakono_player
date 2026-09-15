@@ -5,7 +5,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/adapters/bilibili/pages/log_table/controller.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LogPage<T> extends StatefulWidget {
   const LogPage({super.key});
@@ -15,7 +14,7 @@ class LogPage<T> extends StatefulWidget {
 }
 
 class _LogPageState<T> extends State<LogPage<T>> {
-  final _controller = Get.put<LogController<dynamic, T>>(AppNavigator.arguments);
+  final _controller = AppNavigator.arguments as LogController<dynamic, T>;
 
   @override
   Widget build(BuildContext context) {

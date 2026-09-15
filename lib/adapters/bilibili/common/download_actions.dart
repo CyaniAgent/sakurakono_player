@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
 import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
 import 'package:skf/pages/video/video_models.dart';
@@ -17,20 +16,26 @@ import 'package:flutter/foundation.dart' show VoidCallback;
 ///
 /// 委托 [DownloadService]（留在 adapter，管理 B站 下载队列/文件），在
 /// core 模型与 adapter DTO 之间做 JSON round-trip 转换（字段 1:1）。
-class BiliDownloadActions implements DownloadActions {
+class BiliDownloadActions extends DownloadActions {
   BiliDownloadActions() {
     _service = appRead(downloadServiceProvider);
     _syncQueue();
-    _service.waitDownloadQueue.listen((_) => _syncQueue());
-    _service.curDownload.listen((_) => _syncCur());
+    _syncCur();
+    _service.addListener(_syncAll);
+  }
+
+  void _syncAll() {
+    _syncQueue();
+    _syncCur();
+    notifyListeners();
   }
 
   late final DownloadService _service;
 
   /// core 镜像队列（与 service.waitDownloadQueue 同步，按 cid 复用实例，
   /// 保留多选 checked 状态与页面持有的 entry 引用）。
-  final _coreQueue = RxList<CoreDownloadEntryInfo>();
-  final _coreCur = Rxn<CoreDownloadEntryInfo>();
+  List<CoreDownloadEntryInfo> _coreQueue = const [];
+  CoreDownloadEntryInfo? _coreCur;
   final _coreByCid = <int, CoreDownloadEntryInfo>{};
 
   @override
@@ -42,13 +47,13 @@ class BiliDownloadActions implements DownloadActions {
   ];
 
   @override
-  RxList<CoreDownloadEntryInfo> get waitDownloadQueue => _coreQueue;
+  List<CoreDownloadEntryInfo> get waitDownloadQueue => _coreQueue;
 
   @override
   int? get curCid => _service.curCid;
 
   @override
-  Rxn<CoreDownloadEntryInfo> get curDownload => _coreCur;
+  CoreDownloadEntryInfo? get curDownload => _coreCur;
 
   @override
   void addFlagListener(VoidCallback listener) {
@@ -113,9 +118,8 @@ class BiliDownloadActions implements DownloadActions {
 
   @override
   void removeFromQueue(Iterable<CoreDownloadEntryInfo> entries) {
-    final cids = entries.map((e) => e.cid).toSet();
-    _service.waitDownloadQueue.removeWhere((e) => cids.contains(e.cid));
-    _syncQueue();
+    _service.removeQueueEntries(entries.map((e) => e.cid).toSet());
+    _syncAll();
   }
 
   @override
@@ -174,17 +178,14 @@ class BiliDownloadActions implements DownloadActions {
   // -------------------------------------------------------------------------
 
   void _syncQueue() {
-    final wanted = <CoreDownloadEntryInfo>[
+    _coreQueue = <CoreDownloadEntryInfo>[
       for (final e in _service.waitDownloadQueue) _toCore(e),
     ];
-    _coreQueue.value = wanted;
-    _coreQueue.refresh();
   }
 
   void _syncCur() {
-    final cur = _service.curDownload.value;
-    _coreCur.value = cur == null ? null : _toCore(cur);
-    _coreCur.refresh();
+    final cur = _service.curDownload;
+    _coreCur = cur == null ? null : _toCore(cur);
   }
 
   CoreDownloadEntryInfo _toCore(BiliDownloadEntryInfo e) {

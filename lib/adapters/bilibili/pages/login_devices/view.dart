@@ -7,7 +7,7 @@ import 'package:skf/core/models/auth_types.dart';
 import 'package:skf/adapters/bilibili/pages/login_devices/controller.dart';
 import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class CoreLoginDevicesPage extends StatefulWidget {
   const CoreLoginDevicesPage({super.key});
@@ -17,7 +17,7 @@ class CoreLoginDevicesPage extends StatefulWidget {
 }
 
 class CoreLoginDevicesPageState extends State<CoreLoginDevicesPage> {
-  final _controller = Get.put(CoreLoginDevicesController());
+  final _controller = appRead(coreLoginDevicesControllerProvider);
 
   @override
   Widget build(BuildContext context) {

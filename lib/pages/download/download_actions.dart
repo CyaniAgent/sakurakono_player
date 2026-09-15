@@ -1,5 +1,4 @@
-import 'package:flutter/foundation.dart' show VoidCallback;
-import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/download_types.dart';
 import 'package:skf/pages/providers.dart';
@@ -11,7 +10,7 @@ import 'package:skf/pages/providers.dart';
 /// [DownloadActions.of()] 的实现：
 /// - Bilibili: `BiliDownloadActions`（bridge `register()` 注入，委托 DownloadService）
 /// - OttoHub: `OttoDownloadActions`（stub，空状态防崩溃）
-abstract class DownloadActions {
+abstract class DownloadActions extends ChangeNotifier {
   static DownloadActions of() => appRead(downloadActionsProvider);
 
   /// 初始化完成信号（Bilibili: `DownloadService.waitForInitialization`）。
@@ -20,14 +19,15 @@ abstract class DownloadActions {
   /// 已下载条目列表。
   List<CoreDownloadEntryInfo> get downloadList;
 
-  /// 正在下载队列（响应式，页面 Obx 订阅）。
-  RxList<CoreDownloadEntryInfo> get waitDownloadQueue;
+  /// 正在下载队列（[DownloadActions] 为 [Listenable]，页面用
+  /// ListenableBuilder 订阅重建）。
+  List<CoreDownloadEntryInfo> get waitDownloadQueue;
 
   /// 当前下载 cid。
   int? get curCid;
 
-  /// 当前下载条目（响应式，页面 Obx 订阅）。
-  Rxn<CoreDownloadEntryInfo> get curDownload;
+  /// 当前下载条目。
+  CoreDownloadEntryInfo? get curDownload;
 
   /// 列表刷新通知（Bilibili: `DownloadService.flagNotifier`）。
   void addFlagListener(VoidCallback listener);

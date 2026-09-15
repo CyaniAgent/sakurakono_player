@@ -418,13 +418,13 @@ class HeaderControlState extends State<HeaderControl>
                     ),
                     title: const Text('离线缓存', style: titleStyle),
                   ),
-                if (widget.videoDetailCtr.cover.value.isNotEmpty)
+                if (widget.videoDetailCtr.cover.isNotEmpty)
                   ListTile(
                     dense: true,
                     onTap: () {
                       AppNavigator.back();
                       ImageUtils.downloadImg([
-                        widget.videoDetailCtr.cover.value,
+                        widget.videoDetailCtr.cover,
                       ]);
                     },
                     leading: const Icon(Icons.image_outlined, size: 20),
@@ -615,7 +615,7 @@ class HeaderControlState extends State<HeaderControl>
                     leading: const Icon(Icons.play_circle_outline, size: 20),
                     title: const Text('选择画质', style: titleStyle),
                     subtitle: Text(
-                      '当前画质 ${videoDetailCtr.currentVideoQa.value?.desc}',
+                      '当前画质 ${videoDetailCtr.currentVideoQa?.desc}',
                       style: subTitleStyle,
                     ),
                   ),
@@ -731,7 +731,7 @@ class HeaderControlState extends State<HeaderControl>
                             id: path,
                           );
                         }
-                        videoDetailCtr.subtitles.add(
+                        videoDetailCtr.addSubtitle(
                           VideoSubtitleItem(
                             lan: '',
                             lanDoc: name.split('.').firstOrNull ?? name,
@@ -891,7 +891,7 @@ class HeaderControlState extends State<HeaderControl>
       SmartDialog.showToast('当前视频不支持选择画质');
       return;
     }
-    final VideoQuality? currentVideoQa = videoDetailCtr.currentVideoQa.value;
+    final VideoQuality? currentVideoQa = videoDetailCtr.currentVideoQa;
     if (currentVideoQa == null) return;
 
     final List<FormatItem> videoFormat = videoInfo.supportFormats!;
@@ -960,7 +960,7 @@ class HeaderControlState extends State<HeaderControl>
                         final newQa = VideoQuality.fromCode(quality);
                         videoDetailCtr
                           ..plPlayerController.cacheVideoQa = newQa.code
-                          ..currentVideoQa.value = newQa
+                          ..currentVideoQa = newQa
                           ..updatePlayer();
 
                         SmartDialog.showToast("画质已变为：${newQa.desc}");

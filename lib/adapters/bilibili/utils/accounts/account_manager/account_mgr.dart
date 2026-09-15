@@ -14,7 +14,7 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -44,6 +44,10 @@ class AccountManager extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final path = options.path;
+
+    // 登录握手接口（扫码轮询/密码/短信等）按调用方构建的原样发出：
+    // 注入 cookie 或覆盖 headers 会污染 app 签名与设备指纹，导致「签名错误」。
+    if (ApiType.loginApi.contains(path)) return handler.next(options);
 
     late final Account account = options.extra['account'] ?? _findAccount(path);
 
@@ -85,6 +89,11 @@ class AccountManager extends Interceptor {
       account.cookieJar
           .loadForRequest(options.uri)
           .then((cookies) {
+            if (kDebugMode && path == '/x/web-interface/nav') {
+              // TODO(mcp-debug): 临时调试日志，定位登录回滚后移除
+              // ignore: lines_longer_than_80_chars
+              debugPrint('MCP-DEBUG nav attach: account=${account.runtimeType} cookies=${cookies.map((c) => '${c.name}(len=${(c.value as String).length})').join(',')}');
+            }
             final previousCookies =
                 options.headers[HttpHeaders.cookieHeader] as String?;
             final newCookies = getCookies([
@@ -222,7 +231,9 @@ class AccountManager extends Interceptor {
   }
 
   bool _skipCookie(String path) {
-    return path.startsWith(blockServer) ||
+    // blockServer 未配置时为空串，startsWith('') 恒为 true 会把全部请求
+    // 误判为屏蔽，cookie（登录态）从此无法随请求发送。
+    return (blockServer.isNotEmpty && path.startsWith(blockServer)) ||
         path.contains('hdslb.com') ||
         path.contains('biliimg.com');
   }

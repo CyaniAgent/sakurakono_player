@@ -37,7 +37,9 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MusicDetailPage extends StatefulWidget {
-  const MusicDetailPage({super.key});
+  const MusicDetailPage({super.key, required this.musicId});
+
+  final String musicId;
 
   @override
   State<MusicDetailPage> createState() => _MusicDetailPageState();
@@ -48,8 +50,8 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
   late final CoreMusicDetailController controller = _initController();
 
   CoreMusicDetailController _initController() {
-    final key = AppNavigator.parameters['musicId']!;
-    return coreMusicDetailRegistry[key] ??= CoreMusicDetailController();
+    final musicId = widget.musicId;
+    return coreMusicDetailRegistry[musicId] ??= CoreMusicDetailController(musicId: musicId);
   }
 
   @override

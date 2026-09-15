@@ -9,7 +9,7 @@ import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DownloadSearchPage extends StatefulWidget {
   const DownloadSearchPage({
@@ -32,7 +32,7 @@ class _DownloadSearchPageState
         >
     with GridMixin {
   @override
-  DownloadSearchController controller = Get.put(DownloadSearchController());
+  DownloadSearchController controller = appRead(downloadSearchControllerProvider);
   final _downloadActions = DownloadActions.of();
 
   @override

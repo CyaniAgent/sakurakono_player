@@ -87,7 +87,7 @@ Widget buildSeekPreviewWidget(
           child: ListenableBuilder(
             listenable: plPlayerController,
             builder: (context, _) {
-              final index = plPlayerController.previewIndex.value!;
+              final index = plPlayerController.previewIndex!;
               int pageIndex = (index ~/ totalPerImage).clamp(
                 0,
                 data.image.length - 1,

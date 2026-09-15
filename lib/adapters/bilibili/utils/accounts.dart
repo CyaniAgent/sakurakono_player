@@ -3,6 +3,7 @@ import 'package:skf/adapters/bilibili/models/common/account_type.dart';
 import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
 import 'package:skf/adapters/bilibili/utils/login_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
 abstract final class Accounts {
@@ -51,6 +52,10 @@ abstract final class Accounts {
   }
 
   static Future<void> clear() async {
+    if (kDebugMode) {
+      // TODO(mcp-debug): 临时调试日志，定位账号丢失后移除
+      debugPrint('MCP-DEBUG Accounts.clear ${StackTrace.current}');
+    }
     await account.clear();
     for (int i = 0; i < AccountType.values.length; i++) {
       accountMode[i] = AnonymousAccount();
@@ -60,6 +65,13 @@ abstract final class Accounts {
   }
 
   static Future<void> deleteAll(Set<Account> accounts) async {
+    if (kDebugMode) {
+      // TODO(mcp-debug): 临时调试日志，定位账号丢失后移除
+      debugPrint(
+        // ignore: lines_longer_than_80_chars
+        'MCP-DEBUG Accounts.deleteAll mids=${accounts.map((a) => a is LoginAccount ? a.mid : -1).toList()} ${StackTrace.current}',
+      );
+    }
     final isLoginMain = Accounts.main.isLogin;
     for (int i = 0; i < AccountType.values.length; i++) {
       if (accounts.contains(accountMode[i])) {

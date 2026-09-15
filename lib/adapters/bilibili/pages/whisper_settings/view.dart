@@ -10,7 +10,6 @@ import 'package:skf/adapters/bilibili/pages/whisper_settings/controller.dart';
 import 'package:skf/adapters/bilibili/pages/whisper_settings/widgets/item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:protobuf/protobuf.dart' show PbMap;
 
 class WhisperSettingsPage extends StatefulWidget {
@@ -36,10 +35,7 @@ class _WhisperSettingsPageState extends State<WhisperSettingsPage> {
     super.initState();
     final type =
         widget.imSettingType ?? _feedSettingTypeFromArgs(AppNavigator.arguments);
-    _controller = Get.put(
-      WhisperSettingsController(imSettingType: type),
-      tag: type.name,
-    );
+    _controller = WhisperSettingsController(imSettingType: type);
   }
 
   @override

@@ -307,7 +307,7 @@ class _PostPanelState extends State<PostPanel>
     AppNavigator.back();
     final res = await appRead(sponsorBlockRepositoryProvider).postSkipSegments(
       bvid: videoDetailController.bvid,
-      cid: videoDetailController.cid.value,
+      cid: videoDetailController.cid,
       videoDuration: videoDuration,
       segments: list,
     );

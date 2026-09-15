@@ -14,7 +14,6 @@ import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/view.dart';
 import 'package:skf/router/app_navigator.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/storage.dart';
@@ -24,7 +23,6 @@ import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 
 
 /// Riverpod ChangeNotifier managing the main shell tab navigation state.
@@ -130,8 +128,8 @@ class MainControllerNotifier extends ChangeNotifier
   AccountState get accountService => appRead(accountProvider);
 
   // -- Child controllers --
-  late final homeController = Get.putOrFind(HomeControllerNotifier.new);
-  late final dynamicController = Get.putOrFind(DynamicsController.new);
+  late final homeController = appRead(homeControllerProvider);
+  late final dynamicController = appRead(dynamicsControllerProvider);
 
   void _init() {
     if (Pref.autoUpdate) {

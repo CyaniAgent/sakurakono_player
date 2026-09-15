@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/router/app_navigator.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubItemModel> {
   late final account = Accounts.main;
@@ -85,3 +86,6 @@ class SubController extends CommonListControllerRiverpod<CoreSubData, CoreSubIte
     };
   }
 }
+
+/// SubController（单实例）。
+final subControllerProvider = Provider<SubController>((ref) => SubController());

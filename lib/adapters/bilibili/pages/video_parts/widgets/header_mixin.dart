@@ -2,11 +2,11 @@ import 'package:skf/common/widgets/button/icon_button.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/introduction/ugc/widgets/menu_row.dart';
 import 'package:skf/adapters/bilibili/plugin/pl_player/controller.dart';
 import 'package:skf/player/utils/danmaku_options.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 mixin HeaderMixin<T extends StatefulWidget> on State<T> {
   PlPlayerController get plPlayerController;
@@ -191,12 +191,13 @@ mixin HeaderMixin<T extends StatefulWidget> on State<T> {
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          onPressed: () => Get
-                            ..back()
-                            ..toNamed(
+                          onPressed: () {
+                            AppNavigator.back();
+                            AppNavigator.toNamed(
                               '/danmakuBlock',
                               arguments: plPlayerController,
-                            ),
+                            );
+                          },
                           child: Text(
                             "屏蔽管理(${plPlayerController.filters.count})",
                           ),

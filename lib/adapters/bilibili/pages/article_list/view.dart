@@ -13,20 +13,18 @@ import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ArticleListPage extends StatefulWidget {
-  const ArticleListPage({super.key});
+  const ArticleListPage({super.key, required this.id});
+
+  final String id;
 
   @override
   State<ArticleListPage> createState() => _ArticleListPageState();
 }
 
 class _ArticleListPageState extends State<ArticleListPage> with GridMixin {
-  final _controller = Get.put(
-    ArticleListController(),
-    tag: AppNavigator.parameters['id']!,
-  );
+  late final _controller = ArticleListController(id: widget.id);
 
   late EdgeInsets padding;
 

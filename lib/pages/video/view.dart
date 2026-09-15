@@ -255,8 +255,6 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       ..removeStatusLister(playerListener)
       ..removePositionListener(positionListener);
 
-    host.disposeMemberPage(heroTag);
-
     if (!videoDetailController.removeSafeArea) {
       showSystemBar();
     }
@@ -377,7 +375,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       ..isPortrait = isPortrait = maxHeight >= maxWidth
       ..minVideoHeight = minVideoHeight
       ..maxVideoHeight = maxVideoHeight
-      ..videoHeight = videoDetailController.isVertical.value
+      ..videoHeight = videoDetailController.isVertical
           ? maxVideoHeight
           : minVideoHeight;
 
@@ -731,7 +729,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   Widget childWhenDisabledLandscapeInner(bool isFullScreen) {
     if (enableVerticalExpand) {
       return ListenableBuilder(listenable: videoDetailController, builder: (context, _) {
-        if (videoDetailController.isVertical.value && !isPortrait) {
+        if (videoDetailController.isVertical && !isPortrait) {
           final double videoHeight = maxHeight - padding.vertical;
           final double width = videoHeight / Style.aspectRatio16x9;
           final videoWidth = isFullScreen ? maxWidth : width;
@@ -915,7 +913,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     if (enableVerticalExpand) {
       return ListenableBuilder(
         listenable: videoDetailController, builder: (context, _) {
-          if (videoDetailController.isVertical.value && !isPortrait) {
+          if (videoDetailController.isVertical && !isPortrait) {
             return childSplit(9 / 16);
           }
 
@@ -1097,10 +1095,10 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
           onTap: () => videoDetailController.onDownload(this.context),
           child: const Text('缓存视频'),
         ),
-      if (videoDetailController.cover.value.isNotEmpty)
+      if (videoDetailController.cover.isNotEmpty)
         PopupMenuItem(
           onTap: () =>
-              ImageUtils.downloadImg([videoDetailController.cover.value]),
+              ImageUtils.downloadImg([videoDetailController.cover]),
           child: const Text('保存封面'),
         ),
       if (!videoDetailController.isFileSource && videoDetailController.isUgc)
@@ -1353,7 +1351,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
                   NetworkImgLayer(
                     type: .emote,
                     quality: 60,
-                    src: videoDetailController.cover.value,
+                    src: videoDetailController.cover,
                     width: width,
                     height: height,
                     cacheWidth: true,
@@ -1452,7 +1450,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
             host.buildPgcIntroPage(
               key: videoIntroKey,
               heroTag: heroTag,
-              cid: videoDetailController.cid.value,
+              cid: videoDetailController.cid,
               maxWidth: width ?? maxWidth,
               isLandscape: !isPortrait,
             ),

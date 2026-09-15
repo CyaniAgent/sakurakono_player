@@ -1,0 +1,7 @@
+lib\adapters\bilibili\pages\member_profile\view.dart
+lib\adapters\bilibili\pages\setting_parts\models\style_settings.dart
+lib\adapters\bilibili\pages\setting_parts\pages\color_select.dart
+lib\adapters\bilibili\pages\video_parts\introduction\local\controller.dart
+lib\pages\download\detail\view.dart
+lib\pages\fav\cheese\view.dart
+lib\pages\fav\topic\view.dart

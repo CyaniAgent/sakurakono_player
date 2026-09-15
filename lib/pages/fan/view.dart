@@ -7,9 +7,7 @@ import 'package:skf/pages/follow_type/widgets/item.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/parse_int.dart';
 import 'package:skf/utils/platform_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FansPage extends StatefulWidget {
   const FansPage({
@@ -46,10 +44,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
   @override
   void initState() {
     super.initState();
-    controller = Get.put(
-      FansController(widget.showName),
-      tag: AppNavigator.argsOf(context)?['mid']?.toString() ?? Utils.generateRandomString(8),
-    );
+    controller = FansController(widget.showName);
   }
 
   @override

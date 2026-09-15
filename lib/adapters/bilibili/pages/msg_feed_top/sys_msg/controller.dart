@@ -4,6 +4,7 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SysMsgController
     extends CommonListControllerRiverpod<List<CoreMsgSysItem>?, CoreMsgSysItem> {
@@ -55,3 +56,6 @@ class SysMsgController
     };
   }
 }
+
+/// SysMsgController（单实例）。
+final sysMsgControllerProvider = Provider<SysMsgController>((ref) => SysMsgController());

@@ -50,3 +50,6 @@ class FavController
     };
   }
 }
+
+/// 收藏页控制器（单实例）。
+final favControllerProvider = Provider<FavController>((ref) => FavController());

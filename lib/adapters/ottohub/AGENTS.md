@@ -14,16 +14,16 @@ Thin DI overlay adapter (26 files): swaps in OttoHub repositories/account under 
 | repository/ | 24 | otto_*_repository.dart, one per core interface |
 | services/ | 1 | otto_account_provider.dart |
 
-- NO `utils/` dir exists here — do not add one; `Get.find` services live in services/.
+- NO `utils/` dir exists here — do not add one; host/service implementations live in services/.
 
 ## DI pattern (bridge.dart)
 
-- `registerDependencies()`: creates ONE `OttohubClient()` (vendored SDK), then chains `Get.lazyPut<CoreRepo>(() => OttoXxxRepository(client))`; stubs use `OttoXxxRepository.new`. Registers AccountProvider→OttoAccountProvider, plus private `_StubDownloadService` (extends bilibili DownloadService to prevent `Get.find<DownloadService>()` crashes).
+- `registerDependencies()`: creates ONE `OttohubClient()` (vendored SDK), then assigns `adapterOverrides` (Riverpod overrides, direct instantiation: `OttoXxxRepository(client)`). Registers ottoAccountProvider→OttoAccountProvider, plus private `_StubDownloadService` exposed via downloadServiceProvider.
 - Repository coverage:
   - 14 REAL (client-backed): Video, Auth, Danmaku, Follow, Black, User, Member, Dynamics, Reply, Fav, Msg, Im, Fan, Download (DownloadRepository.getVideoUrl implemented 2026-08).
   - 2 PARTIAL (client-backed, partially implemented): Search (searchAll/ab2c real, 5 methods stub), Space (searchArchive real, opusSpaceFlow stub).
   - 8 STUBS (every method returns `Error('not_implemented')`): Audio, DanmakuFilter, Live, Match, Music, Pgc, SponsorBlock, Validate.
-  - All 24 registered so `Get.find<>()` never crashes.
+  - All 24 registered so shared pages never read an unimplemented provider.
 - Routes reuse: `routes => BiliBridge.registerRoutes()` — the ENTIRE bilibili page table; `/` route hardcodes `MainApp` (bilibili `pages/main/view.dart`) in `lib/router/app_pages.dart`.
 
 ## Playback
@@ -42,7 +42,7 @@ Thin DI overlay adapter (26 files): swaps in OttoHub repositories/account under 
 ## Anti-patterns / caution
 
 - Coupling to bilibili internals: otto_member_repository.dart imports `lib/adapters/bilibili/models_new/space/space_opus/*`; router/app_pages.dart hardcodes bilibili MainApp. Accepted for now (UI reuse) — keep NEW coupling minimal.
-- Stubs look implemented to `Get.find<>()` — a stub returning `Error('not_implemented')` is NOT a bug; it's the crash-prevention contract.
+- Stubs satisfy every provider lookup — a stub returning `Error('not_implemented')` is NOT a bug; it's the crash-prevention contract.
 
 ## Where to look
 

@@ -12,7 +12,6 @@ import 'package:skf/adapters/bilibili/pages/emote/controller.dart';
 import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class EmotePanel extends StatefulWidget {
   final Function(Emote emote, double? width, double? height) onChoose;
@@ -25,9 +24,13 @@ class EmotePanel extends StatefulWidget {
 
 class _EmotePanelState extends State<EmotePanel>
     with AutomaticKeepAliveClientMixin {
-  final EmotePanelController _emotePanelController = Get.put(
-    EmotePanelController(),
-  );
+  final EmotePanelController _emotePanelController = EmotePanelController();
+
+  @override
+  void dispose() {
+    _emotePanelController.dispose();
+    super.dispose();
+  }
 
   @override
   bool get wantKeepAlive => true;

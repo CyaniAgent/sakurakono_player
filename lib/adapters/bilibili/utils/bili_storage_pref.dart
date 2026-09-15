@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
+import 'package:skf/core/models/user_types.dart';
 import 'package:skf/utils/device_utils.dart';
 import 'package:skf/utils/global_data.dart';
 import 'package:skf/adapters/bilibili/utils/login_utils.dart';
@@ -68,8 +69,12 @@ abstract final class BiliPref {
   static final Box _video = GStorage.video;
   static final Box _localCache = GStorage.localCache;
 
-  static UserInfoData? get userInfoCache =>
-      GStorage.userInfo.get('userInfoCache');
+  /// 共享缓存键 'userInfoCache' 统一存 [CoreUserInfoData]；is 检查可自愈
+  /// 旧版本误存的适配器类型对象（避免重启时隐式下转型崩溃）。
+  static CoreUserInfoData? get userInfoCache {
+    final value = GStorage.userInfo.get('userInfoCache');
+    return value is CoreUserInfoData ? value : null;
+  }
 
   static RuleFilter get danmakuFilterRule => _localCache.get(
     LocalCacheKey.danmakuFilterRules,

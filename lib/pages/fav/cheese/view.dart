@@ -8,7 +8,8 @@ import 'package:skf/pages/fav/cheese/widgets/item.dart';
 import 'package:skf/pages/fav/fav_actions.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
+import 'package:skf/pages/providers.dart';
 class FavCheesePage extends StatefulWidget {
   const FavCheesePage({super.key, this.actions});
 
@@ -20,7 +21,7 @@ class FavCheesePage extends StatefulWidget {
 }
 class _FavCheesePageState extends State<FavCheesePage>
     with AutomaticKeepAliveClientMixin, GridMixin {
-  final FavCheeseController _controller = Get.put(FavCheeseController());
+  final FavCheeseController _controller = appRead(favCheeseControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

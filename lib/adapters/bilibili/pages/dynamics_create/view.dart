@@ -22,10 +22,7 @@ import 'package:skf/adapters/bilibili/models_new/dynamic/dyn_reserve_info/data.d
 import 'package:skf/adapters/bilibili/pages/common/publish/common_rich_text_pub_page.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_reserve/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create_vote/view.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_mention/controller.dart';
-import 'package:skf/adapters/bilibili/pages/dynamics_select_topic/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_select_topic/view.dart';
-import 'package:skf/adapters/bilibili/pages/emote/controller.dart';
 import 'package:skf/adapters/bilibili/pages/emote/view.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -36,7 +33,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide showTimePicker;
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class CreateDynPanel extends CommonRichTextPubPage {
   const CreateDynPanel({
@@ -122,10 +118,6 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
   @override
   void dispose() {
     _titleEditCtr.dispose();
-    Get
-      ..delete<EmotePanelController>()
-      ..delete<SelectTopicController>()
-      ..delete<DynMentionController>();
     super.dispose();
   }
 
@@ -281,45 +273,44 @@ class _CreateDynPanelState extends CommonRichTextPubPageState<CreateDynPanel> {
 
   Widget _buildImageList(ThemeData theme) => SizedBox(
     height: 100,
-    child: Obx(() => CustomScrollView(
-        scrollDirection: Axis.horizontal,
-        slivers: [
-          const SliverToBoxAdapter(child: SizedBox(width: 16)),
-          if (imageList.isNotEmpty)
-            SliverPadding(
-              padding: const .only(right: 10),
-              sliver: SliverList.separated(
-                itemCount: imageList.length,
-                itemBuilder: (context, index) => buildImage(index, 100),
-                separatorBuilder: (_, _) => const SizedBox(width: 10),
-              ),
+    child: CustomScrollView(
+      scrollDirection: Axis.horizontal,
+      slivers: [
+        const SliverToBoxAdapter(child: SizedBox(width: 16)),
+        if (imageList.isNotEmpty)
+          SliverPadding(
+            padding: const .only(right: 10),
+            sliver: SliverList.separated(
+              itemCount: imageList.length,
+              itemBuilder: (context, index) => buildImage(index, 100),
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
             ),
-          if (imageList.length != limit)
-            SliverToBoxAdapter(
-              child: Material(
+          ),
+        if (imageList.length != limit)
+          SliverToBoxAdapter(
+            child: Material(
+              borderRadius: Style.mdRadius,
+              child: InkWell(
                 borderRadius: Style.mdRadius,
-                child: InkWell(
-                  borderRadius: Style.mdRadius,
-                  onTap: () => onPickImage(() {
-                    if (imageList.isNotEmpty && !enablePublish) {
-                      setState(() { enablePublish = true; });
-                    }
-                  }),
-                  child: Ink(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: Style.mdRadius,
-                      color: theme.colorScheme.secondaryContainer,
-                    ),
-                    child: const Center(child: Icon(Icons.add, size: 35)),
+                onTap: () => onPickImage(() {
+                  if (imageList.isNotEmpty && !enablePublish) {
+                    setState(() { enablePublish = true; });
+                  }
+                }),
+                child: Ink(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: Style.mdRadius,
+                    color: theme.colorScheme.secondaryContainer,
                   ),
+                  child: const Center(child: Icon(Icons.add, size: 35)),
                 ),
               ),
             ),
-          const SliverToBoxAdapter(child: SizedBox(width: 16)),
-        ],
-      ),
+          ),
+        const SliverToBoxAdapter(child: SizedBox(width: 16)),
+      ],
     ),
   );
 

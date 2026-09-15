@@ -8,7 +8,7 @@ import 'package:skf/adapters/bilibili/pages/subscription/widgets/item.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SubPage extends StatefulWidget {
   const SubPage({super.key});
@@ -18,7 +18,7 @@ class SubPage extends StatefulWidget {
 }
 
 class _SubPageState extends State<SubPage> with GridMixin {
-  final SubController _subController = Get.put(SubController());
+  final SubController _subController = appRead(subControllerProvider);
 
   @override
   Widget build(BuildContext context) {

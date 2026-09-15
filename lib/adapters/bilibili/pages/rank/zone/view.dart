@@ -2,7 +2,8 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/adapters/bilibili/models/model_hot_video_item.dart';
+import 'package:skf/core/models/video_types.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/rank/zone/controller.dart';
 import 'package:skf/adapters/bilibili/pages/rank/zone/widget/pgc_rank_item.dart';
 import 'package:skf/utils/grid.dart';
@@ -62,9 +63,9 @@ class _ZonePageState extends State<ZonePage>
                 gridDelegate: gridDelegate,
                 itemBuilder: (context, index) {
                   final item = response[index];
-                  if (item is HotVideoItemModel) {
+                  if (item is CoreHotVideoItemModel) {
                     return VideoCardH(
-                      videoItem: item,
+                      videoItem: ModelConverters.hotVideoItem(item),
                       onRemove: () {
                         final current = controller.loadingState;
                         if (current case Success(:final response)) {
@@ -74,7 +75,11 @@ class _ZonePageState extends State<ZonePage>
                       },
                     );
                   }
-                  return PgcRankItem(item: item);
+                  return PgcRankItem(
+                    item: ModelConverters.pgcRankItem(
+                      item as CorePgcRankItemModel,
+                    ),
+                  );
                 },
                 itemCount: response.length,
               )

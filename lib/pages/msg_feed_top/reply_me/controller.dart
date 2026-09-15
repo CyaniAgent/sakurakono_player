@@ -58,3 +58,6 @@ class ReplyMeController
     } catch (_) {}
   }
 }
+
+/// ReplyMeController（单实例）。
+final replyMeControllerProvider = Provider<ReplyMeController>((ref) => ReplyMeController());

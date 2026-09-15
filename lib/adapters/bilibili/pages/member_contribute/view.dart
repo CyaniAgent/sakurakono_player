@@ -49,12 +49,15 @@ class _MemberContributeState extends ConsumerState<MemberContribute>
         (item) => item.param == 'contribute',
       );
       if (contribute.items?.isNullOrEmpty == false) {
-        ref
-            .read(memberContributeProvider(widget.heroTag).notifier)
-            .initData(
-              contributeItems: contribute.items,
-              hasSeasonOrSeries: memberCtr.hasSeasonOrSeries == true,
-            );
+        // Riverpod 禁止在 widget 构建期间改 provider 状态，推迟到构建阶段外
+        Future.microtask(() {
+          ref
+              .read(memberContributeProvider(widget.heroTag).notifier)
+              .initData(
+                contributeItems: contribute.items,
+                hasSeasonOrSeries: memberCtr.hasSeasonOrSeries == true,
+              );
+        });
       }
     } catch (_) {
       // MemberController not ready yet; state stays default.

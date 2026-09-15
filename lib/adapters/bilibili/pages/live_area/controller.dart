@@ -9,6 +9,7 @@ import 'package:flutter/material.dart' show TabController;
 import 'package:flutter/scheduler.dart' show Ticker, TickerCallback, TickerProvider;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>?, CoreAreaList>
     implements TickerProvider {
@@ -111,3 +112,6 @@ class LiveAreaController extends CommonListControllerRiverpod<List<CoreAreaList>
     super.dispose();
   }
 }
+
+/// LiveAreaController（单实例）。
+final liveAreaControllerProvider = Provider<LiveAreaController>((ref) => LiveAreaController());

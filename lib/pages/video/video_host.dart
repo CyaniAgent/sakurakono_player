@@ -170,9 +170,6 @@ abstract class VideoHost {
   /// 播放器页面销毁回调（B站: `videoPlayerServiceHandler.onVideoDetailDispose`）。
   Future<void> onVideoDetailDispose(String heroTag);
 
-  /// 清理横向 UP 主页控制器（B站: `Get.delete<HorizontalMemberPageController>`）。
-  void disposeMemberPage(String heroTag);
-
   // ---------- 播放器 / 覆盖层构建 ----------
 
   /// 构建播放器整机（B站: PLVideoPlayer + HeaderControl + PlDanmaku 装配，

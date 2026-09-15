@@ -23,18 +23,19 @@ import 'package:skf/utils/num_utils.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/share_utils.dart';
 import 'package:skf/utils/theme_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
 
 class DynTopicPage extends StatefulWidget {
-  const DynTopicPage({super.key});
+  const DynTopicPage({super.key, required this.topicId, this.topicName = ''});
+
+  final String topicId;
+  final String topicName;
 
   @override
   State<DynTopicPage> createState() => _DynTopicPageState();
@@ -44,9 +45,9 @@ class _DynTopicPageState extends State<DynTopicPage>
     with DynMixin, SingleTickerProviderStateMixin, BaseFabMixin, FabMixin {
   late EdgeInsets padding;
   late ColorScheme colorScheme;
-  final DynTopicController _controller = Get.put(
-    DynTopicController(),
-    tag: Utils.generateRandomString(8),
+  late final _controller = DynTopicController(
+    topicId: widget.topicId,
+    topicName: widget.topicName,
   );
 
   @override

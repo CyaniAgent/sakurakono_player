@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/search_panel/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
-import 'package:get/get.dart';
 
 class SearchUserPanel extends CommonSearchPanel {
   const SearchUserPanel({
@@ -34,13 +33,10 @@ class _SearchUserPanelState
   @override
   void initState() {
     super.initState();
-    controller = Get.put(
-      SearchUserController(
-        keyword: widget.keyword,
-        searchType: widget.searchType,
-        tag: widget.tag,
-      ),
-      tag: widget.searchType.name + widget.tag,
+    controller = SearchUserController(
+      keyword: widget.keyword,
+      searchType: widget.searchType,
+      tag: widget.tag,
     );
   }
 

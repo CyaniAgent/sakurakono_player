@@ -9,9 +9,7 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/msg_feed_top/like_detail/controller.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class LikeDetailPage extends StatefulWidget {
   const LikeDetailPage({super.key});
@@ -21,10 +19,7 @@ class LikeDetailPage extends StatefulWidget {
 }
 
 class _LikeDetailPageState extends State<LikeDetailPage> {
-  final LikeDetailController _controller = Get.put(
-    LikeDetailController(),
-    tag: Utils.generateRandomString(8),
-  );
+  final LikeDetailController _controller = LikeDetailController();
 
   @override
   Widget build(BuildContext context) {

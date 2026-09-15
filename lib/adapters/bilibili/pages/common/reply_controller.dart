@@ -14,7 +14,6 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/router/app_navigator.dart';
@@ -153,8 +152,7 @@ abstract class ReplyController<R>
     }
 
     final key = oid ?? replyItem!.oid + replyItem.id;
-    Get.key.currentState!
-        .push(
+    AppNavigator.push(
           PublishRoute(
             pageBuilder: (buildContext, animation, secondaryAnimation) {
               return ReplyPage(
@@ -180,7 +178,7 @@ abstract class ReplyController<R>
             settings: RouteSettings(arguments: AppNavigator.arguments),
           ),
         )
-        .then(
+        ?.then(
           (replyInfo) {
             if (replyInfo is ReplyInfo) {
               savedReplies.remove(key);

@@ -7,7 +7,6 @@ import 'package:skf/pages/fav/article/controller.dart';
 import 'package:skf/pages/fav/article/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FavArticlePage extends StatefulWidget {
   const FavArticlePage({super.key});
@@ -18,9 +17,7 @@ class FavArticlePage extends StatefulWidget {
 
 class _FavArticlePageState extends State<FavArticlePage>
     with AutomaticKeepAliveClientMixin, GridMixin {
-  final FavArticleController _favArticleController = Get.put(
-    FavArticleController(),
-  );
+  final FavArticleController _favArticleController = FavArticleController();
 
   @override
   bool get wantKeepAlive => true;

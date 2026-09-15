@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -21,6 +19,8 @@ import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:collection/collection.dart';
+import 'dart:async' show FutureOr;
+
 import 'package:flutter/material.dart';
 
 class VotePanel extends StatefulWidget {
@@ -37,23 +37,6 @@ class VotePanel extends StatefulWidget {
   State<VotePanel> createState() => _VotePanelState();
 }
 
-/// Bridges a GetX [RxInterface] stream to Flutter [Listenable] so
-/// [ListenableBuilder] can react to rx changes (Rx is not a [Listenable]
-/// in this fork).
-class _RxListenable<T> extends ChangeNotifier {
-  _RxListenable(Stream<T> stream) {
-    _sub = stream.listen((_) => notifyListeners());
-  }
-
-  late final StreamSubscription _sub;
-
-  @override
-  void dispose() {
-    _sub.cancel();
-    super.dispose();
-  }
-}
-
 class _VotePanelState extends State<VotePanel> {
   late bool anonymous = false;
 
@@ -67,15 +50,7 @@ class _VotePanelState extends State<VotePanel> {
   late bool _showPercentage = !_enabled;
   late final _maxCnt = _voteInfo.choiceCnt ?? _voteInfo.options.length;
   late final isLogin = appRead(accountProvider).isLogin;
-  late final followeeVote = Rxn<List<CoreFolloweeVote>>();
-  late final _followeeVoteListenable = _RxListenable(followeeVote.stream);
-
-  @override
-  @override
-  void dispose() {
-    _followeeVoteListenable.dispose();
-    super.dispose();
-  }
+  final followeeVote = ValueNotifier<List<CoreFolloweeVote>?>(null);
 
   @override
   void initState() {
@@ -178,7 +153,7 @@ class _VotePanelState extends State<VotePanel> {
         children: [
           Expanded(child: title),
           ListenableBuilder(
-            listenable: _followeeVoteListenable,
+            listenable: followeeVote,
             builder: (_, _) {
               final list = followeeVote.value;
             if (list != null && list.isNotEmpty) {

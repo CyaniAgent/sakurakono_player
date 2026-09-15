@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DownloadPageController extends ChangeNotifier
     with BaseMultiSelectMixin<DownloadPageInfo> {
@@ -110,3 +111,6 @@ class DownloadPageController extends ChangeNotifier
     );
   }
 }
+
+/// 下载页控制器（单实例）。
+final downloadPageControllerProvider = Provider<DownloadPageController>((ref) => DownloadPageController());

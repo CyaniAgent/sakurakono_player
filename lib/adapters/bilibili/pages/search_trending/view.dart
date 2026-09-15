@@ -12,14 +12,13 @@ import 'package:skf/core/models/search_types.dart';
 import 'package:skf/adapters/bilibili/pages/search_trending/controller.dart';
 import 'package:skf/utils/color_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/utils/image_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SearchTrendingPage extends StatefulWidget {
   const SearchTrendingPage({super.key});
@@ -29,7 +28,7 @@ class SearchTrendingPage extends StatefulWidget {
 }
 
 class _SearchTrendingPageState extends State<SearchTrendingPage> {
-  final _controller = Get.putOrFind(SearchTrendingController.new);
+  final _controller = appRead(searchTrendingControllerProvider);
 
   late double _offset;
   double _scrollRatio = 0.0;

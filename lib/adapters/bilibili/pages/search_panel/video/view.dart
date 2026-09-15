@@ -7,7 +7,6 @@ import 'package:skf/adapters/bilibili/pages/search_panel/video/controller.dart';
 import 'package:skf/adapters/bilibili/pages/search_panel/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SearchVideoPanel extends CommonSearchPanel {
   const SearchVideoPanel({
@@ -35,13 +34,10 @@ class _SearchVideoPanelState
   @override
   void initState() {
     super.initState();
-    controller = Get.put(
-      SearchVideoController(
-        keyword: widget.keyword,
-        searchType: widget.searchType,
-        tag: widget.tag,
-      ),
-      tag: widget.searchType.name + widget.tag,
+    controller = SearchVideoController(
+      keyword: widget.keyword,
+      searchType: widget.searchType,
+      tag: widget.tag,
     );
   }
 

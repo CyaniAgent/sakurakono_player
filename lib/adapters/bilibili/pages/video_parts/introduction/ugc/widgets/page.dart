@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:skf/router/app_navigator.dart';
 import 'dart:math';
 
@@ -45,7 +44,6 @@ class _PagesPanelState extends State<PagesPanel> {
   int pageIndex = -1;
   late final VideoDetailController _videoDetailController;
   late final ScrollController _scrollController;
-  StreamSubscription? _listener;
 
   List<Part> get pages =>
       widget.list ?? widget.ugcIntroController.videoDetail.pages!;
@@ -59,13 +57,7 @@ class _PagesPanelState extends State<PagesPanel> {
       cid = widget.ugcIntroController.cid;
       pageIndex = pages.indexWhere((Part e) => e.cid == cid);
       offset = targetOffset;
-      _listener = _videoDetailController.cid.listen((cid) {
-        this.cid = cid;
-        pageIndex = max(0, pages.indexWhere((e) => e.cid == cid));
-        if (!mounted) return;
-        setState(() {});
-        jumpToCurr();
-      });
+      _videoDetailController.addListener(_onCidChanged);
     }
     _scrollController = ScrollController(initialScrollOffset: offset);
   }
@@ -90,9 +82,19 @@ class _PagesPanelState extends State<PagesPanel> {
     );
   }
 
+  void _onCidChanged() {
+    final cid = _videoDetailController.cid;
+    if (cid == this.cid) return;
+    this.cid = cid;
+    pageIndex = max(0, pages.indexWhere((e) => e.cid == cid));
+    if (!mounted) return;
+    setState(() {});
+    jumpToCurr();
+  }
+
   @override
   void dispose() {
-    _listener?.cancel();
+    _videoDetailController.removeListener(_onCidChanged);
     _scrollController.dispose();
     super.dispose();
   }

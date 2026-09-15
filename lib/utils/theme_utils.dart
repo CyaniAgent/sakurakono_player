@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart' show CupertinoThemeData;
 import 'package:flutter/foundation.dart' show PlatformDispatcher;
 import 'package:flutter/material.dart';
 import 'package:skf/common/style.dart';
+import 'package:skf/utils/page_transition.dart';
 import 'package:skf/utils/storage_pref.dart';
 
 extension on Color {
@@ -148,10 +149,13 @@ abstract final class ThemeUtils {
           },
         ),
       ),
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {
-          TargetPlatform.android: ZoomPageTransitionsBuilder(),
-        },
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: Pref.pageTransition == AppPageTransition.native
+            ? const {TargetPlatform.android: ZoomPageTransitionsBuilder()}
+            : {
+                for (final platform in TargetPlatform.values)
+                  platform: Pref.pageTransition.builder,
+              },
       ),
     );
     if (isDark) {

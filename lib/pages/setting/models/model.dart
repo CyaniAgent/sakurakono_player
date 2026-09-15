@@ -9,7 +9,6 @@ import 'package:skf/utils/storage.dart';
 import 'package:flutter/material.dart' hide PopupMenuItemSelected;
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 @immutable
 sealed class SettingsModel {
@@ -287,18 +286,19 @@ SettingsModel getVideoFilterSelectModel({
               : '当前$title:「$value${suffix ?? ""}」'
         : null,
     onTap: (context, setState) async {
+      if (!values.contains(value)) {
+        values.add(value);
+      }
+      values.sort();
       var result = await showDialog<int>(
         context: context,
         builder: (context) => SelectDialog<int>(
           title: '选择$title${isFilter ? '（0即不过滤）' : ''}',
           value: value,
-          values:
-              (values
-                    ..addIf(!values.contains(value), value)
-                    ..sort())
-                  .map((e) => (e, suffix == null ? e.toString() : '$e $suffix'))
-                  .toList()
-                ..add((-1, '自定义')),
+          values: values
+              .map((e) => (e, suffix == null ? e.toString() : '$e $suffix'))
+              .toList()
+            ..add((-1, '自定义')),
         ),
       );
       if (result != null) {

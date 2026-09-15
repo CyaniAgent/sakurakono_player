@@ -7,11 +7,11 @@ import 'package:skf/common/widgets/loading_widget/loading_widget.dart';
 import 'package:skf/adapters/bilibili/http/constants.dart';
 import 'package:skf/adapters/bilibili/http/init.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/core/models/user_types.dart';
 import 'package:skf/adapters/bilibili/models/common/member/profile_type.dart';
 import 'package:skf/adapters/bilibili/models_new/account_myinfo/data.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_sign.dart';
 import 'package:skf/utils/date_utils.dart';
@@ -30,6 +30,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
+import 'package:skf/pages/mine/controller.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -93,7 +94,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 _loadingState = Success(data);
                 accountService.updateFace(data.face!);
                 try {
-                  UserInfoData userInfo = BiliPref.userInfoCache!
+                  CoreUserInfoData userInfo = BiliPref.userInfoCache!
                     ..uname = data.name
                     ..face = data.face;
                   GStorage.userInfo.put('userInfoCache', userInfo);
@@ -384,7 +385,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ..name = _textController.text
                 ..coins = data.coins! - 6;
               try {
-                UserInfoData userInfo = BiliPref.userInfoCache!
+                CoreUserInfoData userInfo = BiliPref.userInfoCache!
                   ..uname = _textController.text;
                 GStorage.userInfo.put('userInfoCache', userInfo);
               } catch (_) {}

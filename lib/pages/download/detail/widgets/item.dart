@@ -22,32 +22,7 @@ import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
-
-/// Bridges a GetX [RxInterface] stream to Flutter [Listenable] so
-/// [ListenableBuilder] can react to rx changes (Rx is not a [Listenable]
-/// in this fork).
-class _RxListenable<T> extends ChangeNotifier {
-  _RxListenable(Stream<T> stream) {
-    _sub = stream.listen((_) => notifyListeners());
-  }
-
-  late final StreamSubscription _sub;
-
-  @override
-  void dispose() {
-    _sub.cancel();
-    super.dispose();
-  }
-}
-
-/// Memoizes one bridge per rx instance (rx instances are long-lived on the
-/// actions singleton; the bridge lives as long as the rx it wraps).
-final _progressBridges = <Object, _RxListenable>{};
-
-_RxListenable _progressBridge(Rxn<CoreDownloadEntryInfo> rx) =>
-    _progressBridges.putIfAbsent(rx, () => _RxListenable(rx.stream));
 
 /// 条目右上角更多按钮（详情页/详情列表通用；导航动作由 [actions] 注入）。
 Widget entryMoreBtn({
@@ -200,7 +175,7 @@ class DetailItem extends StatelessWidget {
               });
             }
           } else {
-            final curDownload = actions.curDownload.value;
+            final curDownload = actions.curDownload;
             if (curDownload != null &&
                 curDownload.cid == cid &&
                 curDownload.status.isDownloading) {
@@ -419,12 +394,9 @@ class DetailItem extends StatelessWidget {
                         child: isCurr
                             ? RepaintBoundary(
                                 child: ListenableBuilder(
-                                  listenable: _progressBridge(
-                                    actions.curDownload,
-                                  ),
+                                  listenable: actions,
                                   builder: (_, _) {
-                                    final curDownload =
-                                        actions.curDownload.value;
+                                    final curDownload = actions.curDownload;
                                     if (curDownload != null) {
                                       final status = curDownload.status;
                                       final color =

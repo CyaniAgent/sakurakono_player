@@ -10,7 +10,6 @@ import 'package:skf/adapters/bilibili/pages/member_shop/widgets/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
 
@@ -35,10 +34,7 @@ class _MemberShopState extends State<MemberShop>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberShopController(widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = MemberShopController(widget.mid);
   }
 
   @override

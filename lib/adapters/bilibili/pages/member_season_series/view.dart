@@ -8,7 +8,6 @@ import 'package:skf/adapters/bilibili/pages/member_season_series/widget/season_s
 import 'package:skf/adapters/bilibili/pages/member_video/view.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SeasonSeriesPage extends StatefulWidget {
   const SeasonSeriesPage({
@@ -31,10 +30,7 @@ class _SeasonSeriesPageState extends State<SeasonSeriesPage>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      SeasonSeriesController(widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = SeasonSeriesController(widget.mid);
   }
 
   @override

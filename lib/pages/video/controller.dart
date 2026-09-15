@@ -29,7 +29,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:hive_ce/hive.dart';
@@ -43,6 +42,10 @@ import 'package:skf/core/container/app_container.dart';
 class VideoDetailController extends ChangeNotifier {
   /// 路由传参
   final TickerProvider? _vsync;
+
+  /// 页面 State 提供的 vsync（供简介控制器等子组件的动画使用）。
+  TickerProvider? get tickerProvider => _vsync;
+
   bool _isDisposed = false;
   bool get isClosed => _isDisposed;
 
@@ -53,12 +56,19 @@ class VideoDetailController extends ChangeNotifier {
   late final Map args;
   late String bvid;
   late int aid;
-  late final RxInt cid;
+  late int cid;
   int? epId;
   int? seasonId;
   int? pgcType;
   late final String heroTag;
-  late final RxString cover;
+  String _cover = '';
+  String get cover => _cover;
+  set cover(String value) {
+    if (_cover != value) {
+      _cover = value;
+      notifyListeners();
+    }
+  }
 
   // 视频类型 默认投稿视频
   late final CoreVideoType videoType;
@@ -80,7 +90,12 @@ class VideoDetailController extends ChangeNotifier {
   bool videoState = false;
 
   /// 播放器配置 画质 音质 解码格式
-  final Rxn<VideoQuality> currentVideoQa = Rxn<VideoQuality>();
+  VideoQuality? _currentVideoQa;
+  VideoQuality? get currentVideoQa => _currentVideoQa;
+  set currentVideoQa(VideoQuality? value) {
+    _currentVideoQa = value;
+    notifyListeners();
+  }
   AudioQuality? currentAudioQa;
   late VideoDecodeFormatType currentDecodeFormats;
 
@@ -142,7 +157,14 @@ class VideoDetailController extends ChangeNotifier {
   PlayerStatus? playerStatus;
 
   late final scrollKey = GlobalKey<ExtendedNestedScrollViewState>();
-  late final RxBool isVertical;
+  bool _isVertical = false;
+  bool get isVertical => _isVertical;
+  set isVertical(bool value) {
+    if (_isVertical != value) {
+      _isVertical = value;
+      notifyListeners();
+    }
+  }
   late double scrollRatio = 0.0;
 
   ScrollController? _scrollCtr;
@@ -212,7 +234,7 @@ class VideoDetailController extends ChangeNotifier {
       var height = firstVideoHeight;
       if (width == null || height == null) {
         if (isUgc && !isFileSource) {
-          final dimension = VideoHost.of().partDimension(heroTag, cid.value);
+          final dimension = VideoHost.of().partDimension(heroTag, cid);
           if (dimension != null) {
             width = dimension.width;
             height = dimension.height;
@@ -226,14 +248,14 @@ class VideoDetailController extends ChangeNotifier {
       final isVertical = height > width;
       if (_scrollCtr?.hasClients != true) {
         videoHeight = isVertical ? maxVideoHeight : minVideoHeight;
-        if (this.isVertical.value != isVertical) {
-          this.isVertical.value = isVertical;
+        if (this.isVertical != isVertical) {
+          this.isVertical = isVertical;
           _needAnimOnDimensionChanged(isVertical);
         }
         return;
       }
-      if (this.isVertical.value != isVertical) {
-        this.isVertical.value = isVertical;
+      if (this.isVertical != isVertical) {
+        this.isVertical = isVertical;
         double videoHeight = isVertical ? maxVideoHeight : minVideoHeight;
         if (this.videoHeight != videoHeight) {
           if (videoHeight > this.videoHeight) {
@@ -337,13 +359,13 @@ class VideoDetailController extends ChangeNotifier {
 
     bvid = args['bvid'];
     aid = args['aid'];
-    cid = RxInt(args['cid']);
+    cid = args['cid'];
     epId = args['epId'];
     seasonId = args['seasonId'];
     pgcType = args['pgcType'];
     heroTag = args['heroTag'];
-    cover = RxString(args['cover'] ?? '');
-    isVertical = RxBool(args['isVertical'] ?? false);
+    cover = args['cover'] ?? '';
+    _isVertical = args['isVertical'] ?? false;
 
     final sourceType = args['sourceType'];
     isFileSource = VideoHost.of().isFileSourceSource(sourceType);
@@ -469,7 +491,7 @@ class VideoDetailController extends ChangeNotifier {
 
   /// 发送弹幕
   Future<void> showShootDanmakuSheet() async {
-    if (VideoHost.of().playerHost.dmStateContains(cid.value)) {
+    if (VideoHost.of().playerHost.dmStateContains(cid)) {
       SmartDialog.showToast('UP主已关闭弹幕');
       return;
     }
@@ -481,7 +503,7 @@ class VideoDetailController extends ChangeNotifier {
     await VideoHost.of().showShootDanmakuSheet(
       heroTag: heroTag,
       bvid: bvid,
-      cid: cid.value,
+      cid: cid,
       progress: plPlayerController.positionInMilliseconds,
       initialValue: savedDanmaku,
       onSave: (danmaku) => savedDanmaku = danmaku,
@@ -495,7 +517,7 @@ class VideoDetailController extends ChangeNotifier {
 
   /// 更新画质、音质
   void updatePlayer() {
-    final currentVideoQa = this.currentVideoQa.value;
+    final currentVideoQa = this.currentVideoQa;
     if (currentVideoQa == null) return;
     _autoPlay = true;
     playedTime = plPlayerController.videoPlayerController?.state.position;
@@ -512,7 +534,7 @@ class VideoDetailController extends ChangeNotifier {
     audioUrl = config.audioUrl;
     firstVideoWidth = config.width;
     firstVideoHeight = config.height;
-    this.currentVideoQa.value = VideoQuality.fromCode(config.videoQaCode);
+    this.currentVideoQa = VideoQuality.fromCode(config.videoQaCode);
     currentAudioQa = config.audioQaCode == null
         ? null
         : AudioQuality.fromCode(config.audioQaCode!);
@@ -558,10 +580,10 @@ class VideoDetailController extends ChangeNotifier {
       duration: data.timeLength == null
           ? null
           : Duration(milliseconds: data.timeLength!),
-      isVertical: isVertical.value,
+      isVertical: isVertical,
       aid: aid,
       bvid: bvid,
-      cid: cid.value,
+      cid: cid,
       autoplay: autoplay ?? _autoPlay,
       epid: isUgc ? null : epId,
       seasonId: isUgc ? null : seasonId,
@@ -588,7 +610,7 @@ class VideoDetailController extends ChangeNotifier {
         _queryPlayInfo();
       }
 
-      if (VideoHost.of().playerHost.showDmChart && dmTrend.value == null) {
+      if (VideoHost.of().playerHost.showDmChart && dmTrend == null) {
         _getDmTrend();
       }
     }
@@ -598,15 +620,15 @@ class VideoDetailController extends ChangeNotifier {
 
   bool isQuerying = false;
 
-  final languages = Rxn<List<VideoLanguageItem>>();
-  final currLang = Rxn<String>();
+  List<VideoLanguageItem>? languages;
+  String? currLang;
   void setLanguage(String language) {
-    if (currLang.value == language) return;
+    if (currLang == language) return;
     if (!isLoginVideo) {
       SmartDialog.showToast('账号未登录');
       return;
     }
-    currLang.value = language;
+    currLang = language;
     queryVideoUrl(fromReset: true);
   }
 
@@ -625,7 +647,7 @@ class VideoDetailController extends ChangeNotifier {
     }
     isQuerying = true;
     if (VideoHost.of().playerHost.enableSponsorBlock && isBlock && !fromReset) {
-      querySponsorBlock(bvid: bvid, cid: cid.value);
+      querySponsorBlock(bvid: bvid, cid: cid);
     }
     if (plPlayerController.cacheVideoQa == null) {
       final isWiFi = await ConnectivityUtils.isWiFi;
@@ -639,23 +661,23 @@ class VideoDetailController extends ChangeNotifier {
     }
 
     final result = await (appRead(videoRepositoryProvider)).videoUrl(
-      cid: cid.value,
+      cid: cid,
       bvid: bvid,
       epid: epId?.toString(),
       seasonId: seasonId?.toString(),
       tryLook: VideoHost.of().playerHost.tryLook,
       videoType: _actualVideoType ?? videoType,
-      language: currLang.value,
+      language: currLang,
       voiceBalance: VideoHost.of().playerHost.enableAudioNormalization,
     );
 
     if (result case Success(:final response)) {
       data = response;
 
-      languages.value = (data.language?['items'] as List?)
+      languages = (data.language?['items'] as List?)
           ?.map((e) => VideoLanguageItem.fromMap(e as Map<String, dynamic>))
           .toList();
-      currLang.value = data.curLanguage;
+      currLang = data.curLanguage;
 
       volume = data.volume == null ? null : VideoVolume.fromMap(data.volume!);
 
@@ -691,7 +713,7 @@ class VideoDetailController extends ChangeNotifier {
         firstVideoQaCode = data.quality;
         _setVideoHeight();
         currentDecodeFormats = VideoDecodeFormatType.AVC;
-      currentVideoQa.value = videoQuality;
+      currentVideoQa = videoQuality;
         await _initPlayerIfNeeded(autoFullScreenFlag);
         isQuerying = false;
         return;
@@ -715,7 +737,7 @@ class VideoDetailController extends ChangeNotifier {
       audioUrl = config.audioUrl;
       firstVideoWidth = config.width;
       firstVideoHeight = config.height;
-      currentVideoQa.value = VideoQuality.fromCode(config.videoQaCode);
+      currentVideoQa = VideoQuality.fromCode(config.videoQaCode);
       currentAudioQa = config.audioQaCode == null
           ? null
           : AudioQuality.fromCode(config.audioQaCode!);
@@ -738,7 +760,12 @@ class VideoDetailController extends ChangeNotifier {
     VideoHost.of().onBlock(context, heroTag);
   }
 
-  RxList<VideoSubtitleItem> subtitles = RxList<VideoSubtitleItem>();
+  final List<VideoSubtitleItem> subtitles = <VideoSubtitleItem>[];
+
+  void addSubtitle(VideoSubtitleItem item) {
+    subtitles.add(item);
+    notifyListeners();
+  }
   final Map<int, ({bool isData, String id})> vttSubtitles = {};
   late int vttSubtitlesIndex = -1;
   late bool showVP = true;
@@ -804,7 +831,7 @@ class VideoDetailController extends ChangeNotifier {
     }
     final res = await (appRead(videoRepositoryProvider)).playInfo(
       bvid: bvid,
-      cid: cid.value,
+      cid: cid,
       seasonId: seasonId?.toString(),
       epId: epId?.toString(),
     );
@@ -826,7 +853,7 @@ class VideoDetailController extends ChangeNotifier {
         VideoHost.of().applyContinuePlayingPart(
           heroTag,
           lastPlayCid: response.lastPlayCid,
-          currentCid: cid.value,
+          currentCid: cid,
         );
       }
 
@@ -859,7 +886,7 @@ class VideoDetailController extends ChangeNotifier {
       } else if (!isLoginVideo) {
         final subs = await VideoHost.of().fetchDmSubtitles(
           aid: aid,
-          cid: cid.value,
+          cid: cid,
         );
         if (subs != null && subs.isNotEmpty) {
           _setSubtitle(subs);
@@ -869,7 +896,10 @@ class VideoDetailController extends ChangeNotifier {
   }
 
   Future<void> _setSubtitle(List<VideoSubtitleItem> sub) async {
-    subtitles.value = sub;
+    subtitles
+      ..clear()
+      ..addAll(sub);
+    notifyListeners();
     final idx = switch (SubtitlePrefType.values[Pref.subtitlePreferenceV2]) {
       SubtitlePrefType.off => 0,
       SubtitlePrefType.on => 1,
@@ -910,7 +940,7 @@ class VideoDetailController extends ChangeNotifier {
           isManual: true,
           aid: aid,
           bvid: bvid,
-          cid: cid.value,
+          cid: cid,
           epid: isUgc ? null : epId,
           seasonId: isUgc ? null : seasonId,
           pgcType: isUgc ? null : pgcType,
@@ -928,7 +958,6 @@ class VideoDetailController extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     block.dispose();
-    cid.close();
     if (isFileSource) {
       cacheLocalProgress();
     }
@@ -939,7 +968,10 @@ class VideoDetailController extends ChangeNotifier {
     animController
       ?..removeListener(_animListener)
       ..dispose();
-    subtitles.clear();
+    if (subtitles.isNotEmpty) {
+      subtitles.clear();
+      notifyListeners();
+    }
     vttSubtitles.clear();
     super.dispose();
   }
@@ -958,18 +990,21 @@ class VideoDetailController extends ChangeNotifier {
     savedDanmaku = null;
 
     // subtitle
-    subtitles.clear();
+    if (subtitles.isNotEmpty) {
+      subtitles.clear();
+      notifyListeners();
+    }
     vttSubtitlesIndex = -1;
     vttSubtitles.clear();
 
     if (!isFileSource) {
       // language
-      languages.value = null;
-      currLang.value = null;
+      languages = null;
+      currLang = null;
 
       // dm trend
       if (plPlayerController.showDmChart) {
-        dmTrend.value = null;
+        dmTrend = null;
       }
 
       // view point
@@ -991,15 +1026,20 @@ class VideoDetailController extends ChangeNotifier {
     }
   }
 
-  late final Rx<LoadingState<List<double>>?> dmTrend =
-      Rx<LoadingState<List<double>>?>(null);
+  LoadingState<List<double>>? _dmTrend;
+  LoadingState<List<double>>? get dmTrend => _dmTrend;
+  set dmTrend(LoadingState<List<double>>? value) {
+    _dmTrend = value;
+    notifyListeners();
+  }
+
   late bool showDmTrendChart = true;
 
   Future<void> _getDmTrend() async {
-    dmTrend.value = LoadingState<List<double>>.loading();
-    dmTrend.value = await VideoHost.of().fetchDmTrend(
+    dmTrend = LoadingState<List<double>>.loading();
+    dmTrend = await VideoHost.of().fetchDmTrend(
       bvid: bvid,
-      cid: cid.value,
+      cid: cid,
     );
   }
 
@@ -1093,10 +1133,10 @@ class VideoDetailController extends ChangeNotifier {
   Future<void> onCast() async {
     SmartDialog.showLoading();
     final res = await (appRead(videoRepositoryProvider)).tvPlayUrl(
-      cid: cid.value,
+      cid: cid,
       objectId: epId ?? aid,
       playurlType: epId != null ? 2 : 1,
-      qn: currentVideoQa.value?.code,
+      qn: currentVideoQa?.code,
     );
     SmartDialog.dismiss();
     if (res case Success(:final response)) {

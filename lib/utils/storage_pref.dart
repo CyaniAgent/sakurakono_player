@@ -6,6 +6,7 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/utils/device_utils.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
+import 'package:skf/utils/page_transition.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/utils.dart';
@@ -13,7 +14,6 @@ import 'package:crypto/crypto.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart' show FlexSchemeVariant;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 
 abstract final class Pref {
@@ -21,7 +21,11 @@ abstract final class Pref {
   static final Box _video = GStorage.video;
   static final Box _localCache = GStorage.localCache;
 
-  static CoreUserInfoData? get userInfoCache => GStorage.userInfo.get('userInfoCache');
+  /// is 检查可自愈旧版本误存的适配器类型对象（隐式下转型会在启动时崩溃）。
+  static CoreUserInfoData? get userInfoCache {
+    final value = GStorage.userInfo.get('userInfoCache');
+    return value is CoreUserInfoData ? value : null;
+  }
 
   static List<double> get dynamicDetailRatio => List<double>.from(
     _setting.get(
@@ -134,11 +138,13 @@ abstract final class Pref {
   static int? get defaultVideoQaCellular =>
       _setting.get(SettingBoxKey.defaultVideoQaCellular);
 
+  /// 键不存在时 Hive 返回 null，此处必须给默认值（30216 = 64K），否则
+  /// 非空 int 隐式转型会崩（音视频设置页/播放器初始化）。
   static int get defaultAudioQa =>
-      _setting.get(SettingBoxKey.defaultAudioQa);
+      _setting.get(SettingBoxKey.defaultAudioQa, defaultValue: 30216);
 
   static int get defaultAudioQaCellular =>
-      _setting.get(SettingBoxKey.defaultAudioQaCellular);
+      _setting.get(SettingBoxKey.defaultAudioQaCellular, defaultValue: 30216);
 
   static List<String>? get preferCodecs =>
       (_setting.get(SettingBoxKey.preferCodecs) as List?)?.fromCast<String>();
@@ -578,11 +584,14 @@ abstract final class Pref {
   static bool get enableMYBar =>
       _setting.get(SettingBoxKey.enableMYBar, defaultValue: true);
 
-  static Transition get pageTransition =>
-      Transition.values[_setting.get(
-        SettingBoxKey.pageTransition,
-        defaultValue: Transition.native.index,
-      )];
+  static AppPageTransition get pageTransition => AppPageTransition.fromIndex(
+    _setting.get(SettingBoxKey.pageTransition),
+  );
+
+  static set pageTransition(AppPageTransition value) => _setting.put(
+    SettingBoxKey.pageTransition,
+    value.index,
+  );
 
   static bool get enableQuickDouble =>
       _setting.get(SettingBoxKey.enableQuickDouble, defaultValue: true);

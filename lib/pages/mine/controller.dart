@@ -1,7 +1,6 @@
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/core/account/account_mixin.dart';
 import 'package:skf/core/account/account_provider.dart';
@@ -11,6 +10,7 @@ import 'package:skf/pages/mine/theme_type.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_key.dart';
+import 'package:skf/utils/app_refresh.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
@@ -254,7 +254,8 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
     final newVal = nextThemeType;
     themeType = newVal;
     GStorage.setting.put(SettingBoxKey.themeMode, newVal.index);
-    Get.changeThemeMode(ThemeUtils.themeMode = newVal.toThemeMode);
+    ThemeUtils.themeMode = newVal.toThemeMode;
+    appRefresh.refresh();
   }
 
   void push(String name) {
@@ -302,3 +303,6 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
     super.dispose();
   }
 }
+
+/// 我的页控制器（单实例）。
+final mineControllerProvider = Provider<MineController>((ref) => MineController());

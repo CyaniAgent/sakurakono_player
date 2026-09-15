@@ -122,6 +122,8 @@ abstract class CommonIntroController extends ChangeNotifier
     bvid = args['bvid'];
     _cid = args['cid'];
     _hasLater = args['sourceType'] == SourceType.watchLater;
+    // 三连动画需要 vsync——复用视频页 State 的 ticker（迁移前由 GetX 提供）。
+    attachTicker(appRead(videoDetailControllerProvider(heroTag)).tickerProvider!);
 
     queryVideoIntro();
     startTimer();

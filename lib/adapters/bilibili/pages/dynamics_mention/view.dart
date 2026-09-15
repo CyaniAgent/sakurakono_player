@@ -15,7 +15,7 @@ import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DynMentionPanel extends StatefulWidget {
   const DynMentionPanel({
@@ -61,7 +61,7 @@ class DynMentionPanel extends StatefulWidget {
 
 class _DynMentionPanelState
     extends DebounceStreamState<DynMentionPanel, String> {
-  final _controller = Get.put(DynMentionController());
+  final _controller = appRead(dynMentionControllerProvider);
   @override
   Duration get duration => const Duration(milliseconds: 300);
 

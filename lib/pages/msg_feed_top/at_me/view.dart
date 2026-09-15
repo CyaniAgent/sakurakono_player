@@ -14,7 +14,7 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class AtMePage extends StatefulWidget {
   const AtMePage({super.key});
@@ -24,7 +24,7 @@ class AtMePage extends StatefulWidget {
 }
 
 class _AtMePageState extends State<AtMePage> {
-  final AtMeController _atMeController = Get.put(AtMeController());
+  final AtMeController _atMeController = appRead(atMeControllerProvider);
 
   @override
   Widget build(BuildContext context) {

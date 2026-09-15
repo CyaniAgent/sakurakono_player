@@ -11,7 +11,6 @@ import 'package:skf/adapters/bilibili/pages/member_opus/widgets/space_opus_item.
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
 
@@ -42,13 +41,7 @@ class _MemberOpusState extends State<MemberOpus>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberOpusController(
-        mid: widget.mid,
-        heroTag: widget.heroTag,
-      ),
-      tag: widget.heroTag,
-    );
+    _controller = MemberOpusController( mid: widget.mid, heroTag: widget.heroTag, );
   }
 
   @override

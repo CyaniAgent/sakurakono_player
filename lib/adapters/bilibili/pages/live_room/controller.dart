@@ -37,7 +37,6 @@ import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/router/app_navigator.dart';
 
@@ -342,9 +341,8 @@ class LiveRoomController extends ChangeNotifier {
               if (plPlayerController.isDesktopPip) {
                 plPlayerController.exitDesktopPip();
               }
-              Get
-                ..back()
-                ..back();
+              AppNavigator.back();
+              AppNavigator.back();
             },
             child: const Text('退出'),
           ),
@@ -689,7 +687,7 @@ class LiveRoomController extends ChangeNotifier {
       SmartDialog.showToast('账号未登录');
       return;
     }
-    Get.key.currentState!.push(
+    AppNavigator.push(
       PublishRoute(
         barrierColor: Colors.transparent,
         pageBuilder: (context, animation, secondaryAnimation) {

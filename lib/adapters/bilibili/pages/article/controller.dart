@@ -8,17 +8,33 @@ import 'package:skf/adapters/bilibili/pages/common/dyn/common_dyn_controller.dar
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/app_scheme.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/adapters/bilibili/utils/url_utils.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class ArticleController extends CommonDynController {
-  late String id;
-  late String type;
+  ArticleController({required this.id, required this.type}) {
+    // to opus
+    if (type == 'read') {
+      UrlUtils.parseRedirectUrl('https://www.bilibili.com/read/cv/').then((url) {
+        if (url != null) {
+          final opusId = PiliScheme.uriDigitRegExp.firstMatch(url)?.group(1);
+          if (opusId != null) {
+            id = opusId;
+            type = 'opus';
+          }
+        }
+        init();
+      });
+    } else {
+      init();
+    }
+  }
+
+  String id;
+  String type;
 
   late String url;
   late int commentId;
@@ -37,7 +53,12 @@ class ArticleController extends CommonDynController {
   bool isLoaded = false;
   CoreDynamicItemModel? opusData; // 标题信息从summary获取, 动态没有favorite
   CoreArticleViewData? articleData;
-  final stats = Rxn<CoreModuleStatModel>();
+  CoreModuleStatModel? _stats;
+  CoreModuleStatModel? get stats => _stats;
+  set stats(CoreModuleStatModel? value) {
+    _stats = value;
+    notifyListeners();
+  }
 
   List<ArticleContentModel>? get opus {
     final coreContent =
@@ -50,29 +71,6 @@ class ArticleController extends CommonDynController {
       .where((e) => e.paraType == 2 && e.pic != null)
       .map((e) => CoreSourceModel(url: e.pic!.pics!.first.url!))
       .toList();
-
-  ArticleController() {
-    final params = Get.parameters;
-    id = params['id']!;
-    type = params['type']!;
-
-    // to opus
-    if (type == 'read') {
-      UrlUtils.parseRedirectUrl('https://www.bilibili.com/read/cv/').then((url) {
-        if (url != null) {
-          final opusId = PiliScheme.uriDigitRegExp.firstMatch(url)?.group(1);
-          if (opusId != null) {
-            id = opusId;
-            type = 'opus';
-          }
-          Get.putOrFind(() => this, tag: type + id);
-        }
-        init();
-      });
-    } else {
-      init();
-    }
-  }
 
   void init() {
     url = type == 'read'
@@ -98,7 +96,7 @@ class ArticleController extends CommonDynController {
       commentId = int.parse(response.basic!.commentIdStr!);
       if (showDynActionBar) {
         if (response.modules?.moduleStat != null) {
-          stats.value = response.modules!.moduleStat;
+          stats = response.modules!.moduleStat;
         } else {
           getArticleInfo();
         }
@@ -152,7 +150,7 @@ class ArticleController extends CommonDynController {
         ..cover ??= response.originImageUrls?.firstOrNull
         ..title ??= response.title;
 
-      stats.value ??= CoreModuleStatModel(
+      _stats ??= CoreModuleStatModel(
         comment: CoreDynamicStat(count: response.stats?.reply),
         forward: CoreDynamicStat(count: response.stats?.share),
         like: CoreDynamicStat(
@@ -164,6 +162,7 @@ class ArticleController extends CommonDynController {
           status: response.favorite,
         ),
       );
+      notifyListeners();
       return true;
     }
     if (isGetCover) {
@@ -190,7 +189,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<void> onFav() async {
-    final favorite = stats.value?.favorite;
+    final favorite = stats?.favorite;
     bool isFav = favorite?.status == true;
     final repos = appRead(favRepositoryProvider);
     final res = type == 'read'
@@ -205,7 +204,7 @@ class ArticleController extends CommonDynController {
       } else {
         favorite?.count++;
       }
-      stats.refresh();
+      notifyListeners();
       SmartDialog.showToast('收藏成功');
     } else {
       res.toast();
@@ -213,7 +212,7 @@ class ArticleController extends CommonDynController {
   }
 
   Future<void> onLike() async {
-    final like = stats.value?.like;
+    final like = stats?.like;
     bool isLike = like?.status == true;
     final res = await (appRead(dynamicsRepositoryProvider)).thumbDynamic(
       dynamicId: opusData?.idStr ?? articleData?.dynIdStr,
@@ -226,7 +225,7 @@ class ArticleController extends CommonDynController {
       } else {
         like?.count++;
       }
-      stats.refresh();
+      notifyListeners();
       SmartDialog.showToast(!isLike ? '点赞成功' : '取消赞');
     } else {
       res.toast();

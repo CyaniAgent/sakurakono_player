@@ -6,10 +6,8 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/member_dynamics/controller.dart';
 import 'package:skf/utils/global_data.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
 
@@ -34,11 +32,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
   void initState() {
     super.initState();
     mid = widget.mid ?? int.parse(AppNavigator.parameters['mid']!);
-    final String heroTag = Utils.makeHeroTag(mid);
-    _memberDynamicController = Get.put(
-      MemberDynamicsController(mid),
-      tag: heroTag,
-    );
+    _memberDynamicController = MemberDynamicsController(mid);
   }
 
   @override

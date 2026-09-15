@@ -7,13 +7,17 @@ import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class DynTopicController
     extends CommonListControllerRiverpod<CoreTopicCardList?, CoreTopicCardItem> {
-  final topicId = Get.parameters['id']!;
-  String topicName = Get.parameters['name'] ?? '';
+  DynTopicController({required this.topicId, this.topicName = ''}) {
+    queryTop();
+    queryData();
+  }
+
+  final String topicId;
+  String topicName = '';
 
   int sortBy = 0;
   String? offset;
@@ -28,11 +32,6 @@ class DynTopicController
       LoadingState<CoreTopDetails?>.loading();
 
   late final isLogin = Accounts.main.isLogin;
-
-  DynTopicController() {
-    queryTop();
-    queryData();
-  }
 
   Future<void> queryTop() async {
     final result = await (appRead(dynamicsRepositoryProvider)).topicTop(topicId: topicId);

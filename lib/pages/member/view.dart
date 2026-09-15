@@ -25,7 +25,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MemberPage extends StatefulWidget {
-  const MemberPage({super.key});
+  const MemberPage({super.key, this.mid, this.fromViewAid});
+
+  /// query 参数由 GoRoute builder 传入。initState 里禁止经 context 读
+  /// GoRouterState——dependOnInheritedWidgetOfExactType 在 initState
+  /// 完成前调用会抛异常导致整页白屏。
+  final String? mid;
+  final String? fromViewAid;
 
   @override
   State<MemberPage> createState() => _MemberPageState();
@@ -41,9 +47,12 @@ class _MemberPageState extends State<MemberPage> {
   @override
   void initState() {
     super.initState();
-    _mid = int.tryParse(AppNavigator.parametersOf(context)['mid']!) ?? -1;
+    _mid = int.tryParse(widget.mid ?? '') ?? -1;
     _heroTag = Utils.makeHeroTag(_mid);
-    _userController = MemberController(mid: _mid);
+    _userController = MemberController(
+      mid: _mid,
+      fromViewAid: int.tryParse(widget.fromViewAid ?? ''),
+    );
     memberControllerRegistry[_heroTag] = _userController;
   }
 
@@ -71,7 +80,9 @@ class _MemberPageState extends State<MemberPage> {
             pinnedHeaderSliverHeightBuilder: () =>
                 kToolbarHeight + MediaQuery.viewPaddingOf(context).top,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
-              if (response != null) {
+              final card = response?.coreCard;
+              final images = response?.images;
+              if (card != null && images != null) {
                 return [
                   DynamicSliverAppBar.medium(
                     actions: _actions(theme),
@@ -80,8 +91,8 @@ class _MemberPageState extends State<MemberPage> {
                       isOwner:
                           _userController.mid == _userController.currentUserId,
                       relation: _userController.relation,
-                      card: response.coreCard!,
-                      images: response.images!,
+                      card: card,
+                      images: images,
                       onFollow: () => _userController.onFollow(context),
                       live: _userController.live,
                       silence: _userController.silence,

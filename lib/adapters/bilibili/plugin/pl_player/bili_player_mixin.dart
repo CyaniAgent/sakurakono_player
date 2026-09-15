@@ -39,7 +39,6 @@ import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as path;
 
@@ -162,7 +161,12 @@ mixin BiliPlayerMixin on PlayerController {
   LoadingState<VideoShotData>? videoShot;
   late bool showPreview = false;
   late final showSeekPreview = Pref.showSeekPreview;
-  late final previewIndex = RxnInt();
+  int? _previewIndex;
+  int? get previewIndex => _previewIndex;
+  set previewIndex(int? value) {
+    _previewIndex = value;
+    notifyListeners();
+  }
 
   // ---------------------------------------------------------------------------
   // 核心钩子实现
@@ -465,7 +469,7 @@ mixin BiliPlayerMixin on PlayerController {
     }
     if (videoShot case Success(:final response)) {
       showPreview = true;
-      previewIndex.value = max(
+      previewIndex = max(
         0,
         (response.index.where((item) => item <= seconds).length - 2),
       );
@@ -474,7 +478,7 @@ mixin BiliPlayerMixin on PlayerController {
 
   void _clearPreview() {
     showPreview = false;
-    previewIndex.value = null;
+    previewIndex = null;
     videoShot = null;
     for (final i in previewCache.values) {
       i?.dispose();

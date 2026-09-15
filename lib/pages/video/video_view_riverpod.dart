@@ -84,12 +84,6 @@ class _VideoDetailPageRiverpodState
     }
   }
 
-  @override
-  void dispose() {
-    host.disposeMemberPage(heroTag);
-    super.dispose();
-  }
-
   // -- Convenience accessors from Riverpod state --
 
   double _computeVideoHeight(VideoDetailState vs) {

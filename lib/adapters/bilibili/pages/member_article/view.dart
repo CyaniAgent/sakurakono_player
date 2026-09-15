@@ -6,7 +6,6 @@ import 'package:skf/adapters/bilibili/pages/member_article/controller.dart';
 import 'package:skf/adapters/bilibili/pages/member_article/widget/item.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MemberArticle extends StatefulWidget {
   const MemberArticle({
@@ -32,10 +31,7 @@ class _MemberArticleState extends State<MemberArticle>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      MemberArticleCtr(mid: widget.mid),
-      tag: widget.heroTag,
-    );
+    _controller = MemberArticleCtr(mid: widget.mid);
   }
 
   @override

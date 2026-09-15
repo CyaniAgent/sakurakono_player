@@ -14,6 +14,7 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/player/utils/fullscreen.dart';
 import 'package:skf/utils/cache_manager.dart';
+import 'package:skf/utils/app_refresh.dart';
 import 'package:skf/utils/calc_window_position.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/json_file_handler.dart';
@@ -266,36 +267,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (light, dark) = getAllTheme();
-    return MaterialApp.router(
-      title: Constants.appName,
-      theme: light,
-      darkTheme: dark,
-      themeMode: ThemeUtils.themeMode = Pref.themeMode,
-      localizationsDelegates: const [
-        GlobalCupertinoLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      locale: const Locale("zh", "CN"),
-      supportedLocales: const [Locale("zh", "CN"), Locale("en", "US")],
-      routerConfig: AppRouter.create(
-        observers: [
-          FlutterSmartDialog.observer,
-          AppNavigator.observer,
-        ],
-      ),
-      builder: FlutterSmartDialog.init(
-        toastBuilder: CustomToast.new,
-        loadingBuilder: LoadingWidget.new,
-        notifyStyle: const FlutterSmartNotifyStyle(
-          warningBuilder: NotifyWarning.new,
-        ),
-        builder: _builder,
-      ),
-      scrollBehavior: PlatformUtils.isDesktop
-          ? const CustomScrollBehavior(desktopDragDevices)
-          : null,
+    return ListenableBuilder(
+      listenable: appRefresh,
+      builder: (context, _) {
+        final (light, dark) = getAllTheme();
+        return MaterialApp.router(
+          title: Constants.appName,
+          theme: light,
+          darkTheme: dark,
+          themeMode: ThemeUtils.themeMode = Pref.themeMode,
+          localizationsDelegates: const [
+            GlobalCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          locale: const Locale("zh", "CN"),
+          supportedLocales: const [Locale("zh", "CN"), Locale("en", "US")],
+          routerConfig: AppRouter.create(
+            observers: [
+              FlutterSmartDialog.observer,
+              AppNavigator.observer,
+            ],
+          ),
+          builder: FlutterSmartDialog.init(
+            toastBuilder: CustomToast.new,
+            loadingBuilder: LoadingWidget.new,
+            notifyStyle: const FlutterSmartNotifyStyle(
+              warningBuilder: NotifyWarning.new,
+            ),
+            builder: _builder,
+          ),
+          scrollBehavior: PlatformUtils.isDesktop
+              ? const CustomScrollBehavior(desktopDragDevices)
+              : null,
+        );
+      },
     );
   }
 

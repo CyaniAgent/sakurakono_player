@@ -8,8 +8,8 @@ import 'package:skf/adapters/bilibili/pages/whisper_block/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:skf/router/app_navigator.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class WhisperBlockPage extends StatefulWidget {
   const WhisperBlockPage({
@@ -21,7 +21,7 @@ class WhisperBlockPage extends StatefulWidget {
 }
 
 class _WhisperBlockPageState extends State<WhisperBlockPage> {
-  final _controller = Get.put(WhisperBlockController());
+  final _controller = appRead(whisperBlockControllerProvider);
 
   @override
   Widget build(BuildContext context) {

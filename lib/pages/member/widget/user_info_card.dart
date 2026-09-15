@@ -192,9 +192,9 @@ class UserInfoCard extends StatelessWidget {
         crossAxisAlignment: .center,
         children: [
           GestureDetector(
-            onTap: () => Utils.copyText(card.name!),
+            onTap: card.name == null ? null : () => Utils.copyText(card.name!),
             child: Text(
-              card.name!,
+              card.name ?? '',
               strutStyle: const StrutStyle(
                 height: 1,
                 leading: 0,
@@ -211,11 +211,12 @@ class UserInfoCard extends StatelessWidget {
               ),
             ),
           ),
-          UserLevel(
-            card.levelInfo!.currentLevel!,
-            flash: card.levelInfo?.identity == 2,
-            height: 11,
-          ),
+          if (card.levelInfo?.currentLevel != null)
+            UserLevel(
+              card.levelInfo!.currentLevel!,
+              flash: card.levelInfo?.identity == 2,
+              height: 11,
+            ),
           if (card.vip?.status == 1)
             Container(
               padding: const .symmetric(horizontal: 8, vertical: 3),
@@ -286,15 +287,15 @@ class UserInfoCard extends StatelessWidget {
                 ),
               ),
               const TextSpan(text: ' '),
-            ],
-            TextSpan(
-              text: card.officialVerify!.spliceTitle!,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: .bold,
-                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              TextSpan(
+                text: card.officialVerify!.spliceTitle!,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: .bold,
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

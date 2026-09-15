@@ -9,7 +9,16 @@
 
 ## Current Phase
 
-Structural work complete: Bilibili adapter fully separated (24/24 repositories), OttoHub adapter functional (14 real repos of 24 registered — the rest are crash-prevention stubs), Repository pattern across all core interfaces. **Riverpod migration in progress** — all `extends GetxController` eliminated from lib/; `CommonController` and `CommonDataController` now extend `ChangeNotifier`; all 79 `CommonListController` subclasses moved to `CommonListControllerRiverpod` (ChangeNotifier-based). Base classes live in `lib/pages/common/common_controller_riverpod.dart` (`CommonControllerRiverpod`, `CommonListControllerRiverpod`), with `ScrollOrRefreshMixin` re-exported from original `common_controller.dart`. **Obx and .obs fully eliminated** (0 remaining in lib/). Controllers extend ChangeNotifier (not GetxController). **Get.find eliminated** (0 real call sites in lib/ — was ~437; all converted to `appRead(provider)` via provider stubs + adapter overrides, `Provider.family` keyed by heroTag/tag, or the registry pattern). Remaining GetX: `GetMaterialApp`/`GetPage` routing and `Get.put`/`Get.putOrFind` creation registration — `package:get` imports in ~183 files. Tag-family controller patterns (2026-08-28): (1) **registry** — `Map<String, T> xxxRegistry` + `Provider.family<T, String>` lookup throwing `StateError` (view registers in initState / removes in dispose) for constructors whose params can't be reconstructed from the tag (VideoDetailController w/ vsync, MemberController w/ mid, Fav/History/etc.); (2) **family** — `ChangeNotifierProvider.family<T, String>` directly constructing no-arg controllers keyed by heroTag (Ugc/Pgc/LocalIntro/VideoReply/Related). Host interfaces via `pages/providers.dart` stubs overridden in both adapters' `adapterOverrides` (videoHost/settingHost/memberHost/mainHost/dynamicsHost/mineActions/downloadActions). Recent providers: `accountServiceProvider` (`lib/adapters/bilibili/services/account_service.dart`), `pages/providers.dart` (downloadPageControllerProvider, favControllerProvider), `setting_providers.dart`, `pgcRepositoryProvider`. Historical: SPES-014 fixed 11 runtime type-mismatch crash sites; Repository params fully typed (91 Object→String/int); 6 B站-specific media ID types moved out of core; dead-surface cleanup (2026-08) deleted `core/player/`, `core/plugin/`, adapter player factories/reporters, `bilibili/account/` + `bilibili/router/`, `player/media_ids.dart`, and 5 dead AppAdapter members; unified playback entry added (设置页「播放链接」).
+**GetX fully removed (2026-09-15)** — zero `package:get` imports in lib/ and test/; the `get` git dependency is gone from pubspec.yaml. Current state:
+
+- **Routing**: pure go_router (`MaterialApp.router`, `AppRouter.create` in `lib/router/app_router.dart`; `AppNavigator` facade in `lib/router/app_navigator.dart` with `to/toNamed/back/push/parametersOf`).
+- **DI/state**: Riverpod via global `appContainer` (`lib/core/container/app_container.dart`, `appRead(provider)` in non-widget code) + `ProviderContainer(overrides: adapterOverrides)` built in main.dart. Zero `Get.find`/`Get.put`/`Obx`/`.obs`/`GetxController`.
+- **Global refresh**: settings that must apply instantly (theme / pure-black / fontWeight / uiScale / page transition) call `appRefresh.refresh()` (`lib/utils/app_refresh.dart`); main.dart wraps MaterialApp in a ListenableBuilder. Page transition is a local `AppPageTransition` enum (`lib/utils/page_transition.dart`, stored indices compatible with the old GetX `Transition`), applied via `pageTransitionsTheme` in `theme_utils.dart`.
+- **Controller acquisition patterns**: (1) registry — `Map<String, T> xxxRegistry` + `Provider.family<T, String>` lookup throwing `StateError` (view registers in initState / removes in dispose); (2) family — `ChangeNotifierProvider.family<T, String>` constructing controllers keyed by heroTag. Route params are passed as constructor args from GoRoute builders (`state.uri.queryParameters`) — `Get.parameters` is gone.
+- **Download chain**: `DownloadService extends ChangeNotifier` (plain lists + notifyListeners); `DownloadActions` interface extends ChangeNotifier; pages use `ListenableBuilder(actions)` directly (the old Rx stream bridges were deleted).
+- **Hive codegen**: `hive_ce_generator` 1.11.1 (dev dep, pinned by analyzer ^10) generates the model `.g.dart` adapters; `hive_registrar_generator` is disabled in `build.yaml` — adapters register manually in `BiliBridge.initHive()`.
+
+Host interfaces via `pages/providers.dart` stubs overridden in both adapters' `adapterOverrides` (videoHost/settingHost/memberHost/mainHost/dynamicsHost/mineActions/downloadActions). Historical: SPES-014 fixed 11 runtime type-mismatch crash sites; Repository params fully typed (91 Object→String/int); dead-surface cleanup (2026-08); unified playback entry (设置页「播放链接」); the GetX removal also fixed real bugs it had been masking — `Get.parameters` always-empty (routes now pass query params explicitly), `Get.key.push` null-crash, dead `Get.appUpdate`/theme no-ops, and `Get.isRegistered` never true.
 
 ## SDK & env
 
@@ -57,7 +66,7 @@ lib/
 ├── ottohub_sdk_fix/           # Vendored ottohub_sdk_dart (pubspec path override)
 ├── common/                    # Shared widgets — 0 adapter imports (common⇄utils coupled)
 ├── utils/                     # Storage (hive_ce), path, platform, theme
-├── router/app_pages.dart      # Routes: uses AdapterRegistry.active.routes (GetX GetPage retained during migration)
+├── router/                    # go_router: app_router.dart (AppRouter.create), app_navigator.dart facade, app_pages.dart (routes from AdapterRegistry.active)
 ├── scripts/                   # patch.ps1, build.ps1, 18 .patch files for Flutter SDK
 ├── grpc/bilibili/             # Standalone gRPC generated protobuf code (excluded from analysis)
 ├── build_config.dart         # version injection reader (skf.* via fromEnvironment)
@@ -67,15 +76,15 @@ lib/
 ### Key patterns
 
 - **Adapter selection at compile time**: `flutter run --dart-define=ADAPTER=bilibili` (default) or `ADAPTER=ottohub`. Each adapter implements `AppAdapter` and registers its own DI bindings via `AdapterRegistry.activate()`.
-- **Structural feature removal**: routes register unconditionally; removing a feature = delete the GetPage line + the pages/<feature>/ directory + any feature-only repository registration. No compile-time flags.
+- **Structural feature removal**: routes register unconditionally; removing a feature = delete the GoRoute line in `bridge.dart` `buildRoutes()` + the pages/<feature>/ directory + any feature-only repository registration. No compile-time flags.
   移除功能的标准路径（无编译开关）：
-  1. 删除 `lib/adapters/bilibili/bridge.dart` `registerRoutes()` 中对应 GetPage 行；
+  1. 删除 `lib/adapters/bilibili/bridge.dart` `buildRoutes()` 中对应 GoRoute 行；
   2. 删除对应 `pages/<feature>/` 目录；
   3. 删除仅该功能使用的 repository 注册/依赖。
-- **Pages → Repository**: Bilibili pages use `ref.read<Repository>()` (via Riverpod) or legacy `Get.find<Repository>()` (migration in progress). OttoHub pages share the same UI but use Otto*Repository implementations.
+- **Pages → Repository**: all pages use `appRead(repositoryProvider)` (Riverpod). OttoHub pages share the same UI but use Otto*Repository implementations.
 - **Core→adapter bridge**: Core and adapter types share fields but are distinct classes. For known conversion sites use `lib/adapters/bilibili/utils/model_converters.dart`; repository params are typed String/int (no `as dynamic` — SPES-014).
 - **Unified playback entry (统一播放入口)**: 设置页「播放链接」(`lib/adapters/bilibili/pages/setting/play_input_dialog.dart`) → `classifyPlayInput` (`lib/adapters/bilibili/utils/play_input.dart`, pure function) → B站 URL/BV/av → `PiliScheme.routePushFromUrl`; OttoHub pure-numeric ID → `PageUtils.toVideoPage`. **Dynamic plugin loading is NOT feasible under Flutter AOT** (`Isolate.spawnUri` unsupported, `dart:mirrors` disabled, dart_eval runtime cost high — AppFlowy 2023 case); long-term vision = JS/LUA script engine (quickjs-class), NOT done this round.
-- **GetX (legacy, being removed)**: `GetMaterialApp`/`GetPage` routing + `Get.put`/`Get.putOrFind` creation registration remain. **Get.find eliminated** (0 real call sites in lib/ as of 2026-08-28). Migration to Riverpod `ref.watch`/`ref.read` + `ListenableBuilder`/`appRead` is ongoing. Obx eliminated (0), `.obs` eliminated (0), `package:get` imports in ~183 files (down from ~245). New controllers use `ChangeNotifier` + `notifyListeners` (public wrapper `notifyChange()` on `CommonControllerRiverpod`/`VideoDetailController`/`LiveRoomController` for external rebuild requests).
+- **Controllers**: ChangeNotifier-based (`CommonControllerRiverpod`/`CommonListControllerRiverpod` in `lib/pages/common/common_controller_riverpod.dart`); widgets rebuild via `ListenableBuilder`. Public wrapper `notifyChange()` exists on `CommonControllerRiverpod`/`VideoDetailController`/`LiveRoomController` for external rebuild requests. `GetX fully removed 2026-09-15` — see Current Phase.
 - **Riverpod**: Base controller classes `CommonControllerRiverpod`, `CommonListControllerRiverpod` in `lib/pages/common/common_controller_riverpod.dart`. Controllers extend `ChangeNotifier`; widgets use `ListenableBuilder` or `Consumer`.
 - **LoadingState<T>** everywhere: sealed class with `Success`, `Error`, `Loading` variants.
 
@@ -93,8 +102,13 @@ lib/
 ```dart
 class NewAdapter implements AppAdapter {
   String get name => 'newadapter';
-  Future<void> registerDependencies() { /* Get.lazyPut<Repo>(Impl.new) → pending ref migration */ }
-  List<GetPage> get routes => BiliBridge.registerRoutes(); // reuse pages
+  @override
+  Future<void> registerDependencies() async {
+    // Riverpod overrides only — no GetX.
+    adapterOverrides = <Override>[ videoRepositoryProvider.overrideWith(Impl.new), /* ... */ ];
+  }
+  @override
+  List<GoRoute> get routes => /* adapter GoRoutes */;
 }
 ```
 
@@ -121,8 +135,7 @@ class NewAdapter implements AppAdapter {
 
 | Action | Command |
 |--------|---------|
-| Analyze (Bilibili) | `flutter analyze --dart-define=ADAPTER=bilibili` — must stay **0 errors, 0 warnings** |
-| Analyze (OttoHub) | `flutter analyze --dart-define=ADAPTER=ottohub` |
+| Analyze | `flutter analyze` — must stay **0 errors, 0 warnings** (plain flag; both adapters compile unconditionally) |
 | Test | `flutter test` — **270 tests** (24 repo envelope 72 + num_utils 7 + bilibili adapter 28 + ottohub adapter 121 + router/helpers ~42) |
 | Codegen | `dart run build_runner build --delete-conflicting-outputs` |
 | Mock codegen | Same command — generates `*.mocks.dart` in `test/repository/` |
@@ -130,7 +143,7 @@ class NewAdapter implements AppAdapter {
 | JNI bindings | `dart run tool/jnigen.dart` → `lib/utils/android/bindings.g.dart` (jnigen pinned to `dart-lang/native` commit `5552083`) |
 | Icons | `dart run flutter_launcher_icons` |
 | Splash | `dart run flutter_native_splash:create` |
-| Pub get | `flutter pub get` (not `dart pub get`) |
+| Pub get | `flutter pub get` (not `dart pub get`). On this machine set `PUB_CACHE=D:\FlutterCache` — the default `%LOCALAPPDATA%\Pub\Cache` is empty and git-hosted forks re-fetch from GitHub (flaky network) |
 
 ## Build & release
 
@@ -154,7 +167,7 @@ class NewAdapter implements AppAdapter {
 ## Dependencies
 
 Many packages are git-forked under `bggRGjQaUbCoE` or `My-Responsitories`:
-- `get` (GetX fork `version_4.7.2`), `media_kit` & sub-libs (`version_1.2.5`), `cached_network_image_ce`, `catcher_2`, `window_manager`, `file_picker`, `flutter_smart_dialog`, `flutter_sortable_wrap`, `canvas_danmaku`, `font_awesome_flutter`, `super_sliver_list`, `extended_nested_scroll_view`, `desktop_webview_window`, `audio_service`, `chat_bottom_container`, `material_design_icons_flutter`, `native_device_orientation`
+- Forked git deps: `media_kit` & sub-libs (`version_1.2.5`), `cached_network_image_ce`, `catcher_2`, `window_manager`, `file_picker`, `flutter_smart_dialog`, `flutter_sortable_wrap`, `canvas_danmaku`, `font_awesome_flutter`, `super_sliver_list`, `extended_nested_scroll_view`, `desktop_webview_window`, `audio_service`, `chat_bottom_container`, `material_design_icons_flutter`, `native_device_orientation`. (`get` fork removed 2026-09-15 with the GetX cleanup.)
 - Fork-org exceptions: `desktop_webview_window` is from `Predidit/linux_webview_window`; `webdav_client` is from `wgh136/webdav_client` (not the two orgs above).
 - `ottohub_sdk_dart` is **overridden to a local path**: `dependency_overrides: ottohub_sdk_dart: path: lib/ottohub_sdk_fix` — a vendored copy of the SDK (excluded from analysis). SDK fixes go there, not pub.dev.
 
@@ -163,14 +176,14 @@ See `dependency_overrides` in `pubspec.yaml` — media_kit, flutter_inappwebview
 ## Testing
 
 - **270 tests total**: `test/repository/` 24 envelope tests (72) + `test/num_utils_test.dart` (7) + `test/adapters/bilibili/` (28 + bridge_overrides) + `test/adapters/ottohub/` (121+ across 14+ Otto*Repository test files + bridge_container) + `test/router/` (app_navigator) + `test/helpers/` (4). All 24 core repositories covered 1:1 — no gaps. ⚠️ `bridge_overrides_test` asserts the exact override count (34+2 bar-state = 36 entries in `buildAdapterOverrides`) — update it when adding overrides. `appContainer` is a global `late final` — tests that trigger `appRead` must assign it in `setUpAll` (Provider caches values; per-test reassignment is impossible).
-- Uses `mockito: ^5.7.0` + `build_runner` (resolved: mockito 5.7.0 / build_runner 2.15.1). **No `build.yaml` exists** — mockito's builder config ships in-package, `@GenerateMocks` annotation is sufficient.
-- `*.mocks.dart` files are **gitignored** — regenerate with `dart run build_runner build`. ⚠️ Local mocks currently claim generation by mockito **5.4.6** (stale vs resolved 5.7.0) — regenerate before `flutter test`.
+- Uses `mockito` + `build_runner` (mockito's builder config ships in-package, `@GenerateMocks` is sufficient). `build.yaml` exists: freezed unions=sealed + json_serializable explicit_to_json + `hive_registrar_generator` disabled (Hive adapters register manually in `BiliBridge.initHive()`).
+- `*.mocks.dart` files are gitignored — regenerate with `dart run build_runner build` before `flutter test` (regenerated 2026-09-15).
 - Pattern: `test/repository/<name>_test.dart` using `@GenerateMocks([<Core>Repository])` — mocks target the **core** repository interfaces (e.g. `AuthRepository`), not Bili-prefixed types. Every generic `LoadingState<T>` return needs `provideDummy<LoadingState<...>>(...)` or build_runner fails. The 24 repo tests are envelope/shape tests of the LoadingState contract — they do NOT exercise Bili*/Otto* implementations. Adapter-scoped tests (`test/adapters/<adapter>/`) DO exercise real adapter code (fixtures + FakeHttpAdapter in `test/helpers/`).
 - **No widget or integration tests exist.**
 
 ## Gotchas
 
-- **Storage init order**: `GStorage.init()` after `BiliBridge.initHive()`. Exits on failure. The Hive adapter registration must happen before any adapter activation. Hive boxes may already be open (`Accounts.init()` must handle that).
+- **Storage init order**: `GStorage.init()` after `BiliBridge.initHive()`. Exits on failure. `flutter_html` 3.0.0 is broken with `html >=0.15.6` (internal `matches()` removed) — pinned via `dependency_overrides: html: 0.15.5+1`; do not remove the pin. The Hive adapter registration must happen before any adapter activation. Hive boxes may already be open (`Accounts.init()` must handle that).
 - **`.gitignore`**: Uses `test_results/` (not `test*`) to avoid ignoring `test/` dir. `*.mocks.dart`, `pili_release.json`, and `skf_release.json` are ALL gitignored (a local build creates the latter; it stays untracked).
 - **`distribute_options.yaml`**: Output `dist/` for fastforge.
 - **`.omo/`**: Boulder state, work plans, session continuations. Not for code.

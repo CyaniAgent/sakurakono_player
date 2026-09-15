@@ -4,6 +4,7 @@ import 'package:skf/core/models/user_types.dart';
 import 'package:skf/pages/common/common_controller_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SpaceSettingController
     extends CommonDataControllerRiverpod<CoreSpaceSettingData, CorePrivacy?> {
@@ -50,3 +51,6 @@ class SpaceSettingController
     }
   }
 }
+
+/// SpaceSettingController（单实例）。
+final spaceSettingControllerProvider = Provider<SpaceSettingController>((ref) => SpaceSettingController());

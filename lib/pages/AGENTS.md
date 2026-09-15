@@ -30,7 +30,7 @@ Child of root AGENTS.md. Shared page framework + domain pages consumed by ALL ad
 ## Patterns
 
 - One dir per page → view.dart + controller.dart (+ optional widgets/, models/) — same shape as bilibili/pages/.
-- Controllers: Obx and .obs eliminated (0 remaining). Get.find eliminated (0 real sites in lib/). New controllers extend ChangeNotifier + notifyListeners.
+- Controllers: all ChangeNotifier + notifyListeners. GetX fully removed (2026-09-15): 0 Obx/.obs/Get.find/package:get in lib/.
 - Data access via core repository interfaces (Riverpod providers via appRead) — never direct HTTP.
 
 ## Migration status (2026-08)

@@ -31,7 +31,6 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,7 +54,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     extends CommonPublishPageState<T> {
   final key = GlobalKey<RichTextFieldState>();
   late final imagePicker = ImagePicker();
-  late final RxList<PicModel> imageList;
+  late final List<PicModel> imageList;
   int get limit => widget.imageLengthLimit ?? 9;
 
   @override
@@ -70,7 +69,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     if (editController.rawText.trim().isNotEmpty) {
       enablePublish = true;
     }
-    imageList = RxList<PicModel>(widget.pics ?? <PicModel>[]);
+    imageList = List<PicModel>.of(widget.pics ?? const <PicModel>[]);
   }
 
   @override
@@ -97,12 +96,14 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     ).colorScheme.secondaryContainer.withValues(alpha: 0.5);
 
     void onClear() {
-      final image = imageList.removeAt(index);
-      if (PlatformUtils.isMobile) {
-        if (image is FilePicModel) {
-          File(image.path).tryDel();
+      setState(() {
+        final image = imageList.removeAt(index);
+        if (PlatformUtils.isMobile) {
+          if (image is FilePicModel) {
+            File(image.path).tryDel();
+          }
         }
-      }
+      });
       if (imageList.isEmpty && editController.rawText.trim().isEmpty) {
         enablePublish = false;
       }
@@ -213,10 +214,13 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
       ],
     );
     if (croppedFile != null) {
-      if (image is FilePicModel) {
-        File(image.path).tryDel();
-      }
-      imageList[index] = FilePicModel(path: croppedFile.path);
+      if (!mounted) return;
+      setState(() {
+        if (image is FilePicModel) {
+          File(image.path).tryDel();
+        }
+        imageList[index] = FilePicModel(path: croppedFile.path);
+      });
     }
   }
 
@@ -232,14 +236,17 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
             requestFullMetadata: false,
           );
           if (pickedFiles.isNotEmpty) {
-            for (int i = 0; i < pickedFiles.length; i++) {
-              if (imageList.length == limit) {
-                SmartDialog.showToast('最多选择$limit张图片');
-                break;
-              } else {
-                imageList.add(FilePicModel(path: pickedFiles[i].path));
+            if (!mounted) return;
+            setState(() {
+              for (int i = 0; i < pickedFiles.length; i++) {
+                if (imageList.length == limit) {
+                  SmartDialog.showToast('最多选择$limit张图片');
+                  break;
+                } else {
+                  imageList.add(FilePicModel(path: pickedFiles[i].path));
+                }
               }
-            }
+            });
             callback?.call();
           }
         } catch (e) {

@@ -1,5 +1,4 @@
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
-import 'package:skf/router/app_navigator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -8,10 +7,8 @@ import 'package:skf/core/models/music_types.dart';
 import 'package:skf/adapters/bilibili/pages/music/video/controller.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/pages/music/widget/music_video_card_h.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MusicRecommendPage extends StatefulWidget {
   const MusicRecommendPage({super.key});
@@ -22,10 +19,7 @@ class MusicRecommendPage extends StatefulWidget {
 
 class _MusicRecommendPageState extends State<MusicRecommendPage>
     with GridMixin {
-  final MusicRecommendController _controller = Get.putOrFind(
-    MusicRecommendController.new,
-    tag: (AppNavigator.arguments as MusicRecommendArgs).id,
-  );
+  final MusicRecommendController _controller = MusicRecommendController();
 
   @override
   Widget build(BuildContext context) {

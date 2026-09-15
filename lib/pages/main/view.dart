@@ -40,13 +40,16 @@ class _MainAppState extends PopScopeState<MainApp>
         RouteAwareMixin,
         WidgetsBindingObserver,
         WindowListener,
-        TrayListener {
+        TrayListener,
+        TickerProviderStateMixin {
   final _mainController = appRead(mainControllerProvider);
   late final _host = MainHost.of();
   late final _setting = GStorage.setting;
   late EdgeInsets _padding;
   late ThemeData theme;
   Brightness? _brightness;
+  TabController? _tabController;
+  PageController? _pageController;
 
   @override
   bool get initCanPop => false;
@@ -55,6 +58,20 @@ class _MainAppState extends PopScopeState<MainApp>
   void initState() {
     super.initState();
     addObserverMobile(this);
+    // 主壳翻页控制器由 view 创建并注入 notifier（setIndex 依赖它驱动跳页）。
+    if (_mainController.mainTabBarView) {
+      _tabController = TabController(
+        length: _mainController.navigationBars.length,
+        initialIndex: _mainController.selectedIndex,
+        vsync: this,
+      );
+      _mainController.controller = _tabController;
+    } else {
+      _pageController = PageController(
+        initialPage: _mainController.selectedIndex,
+      );
+      _mainController.controller = _pageController;
+    }
     if (PlatformUtils.isDesktop) {
       windowManager
         ..addListener(this)
@@ -116,6 +133,8 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   void dispose() {
+    _tabController?.dispose();
+    _pageController?.dispose();
     if (PlatformUtils.isDesktop) {
       trayManager.removeListener(this);
       windowManager.removeListener(this);

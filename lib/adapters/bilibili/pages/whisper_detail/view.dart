@@ -26,10 +26,8 @@ import 'package:skf/utils/extension/widget_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
@@ -45,10 +43,7 @@ class WhisperDetailPage extends CommonRichTextPubPage {
 
 class _WhisperDetailPageState
     extends CommonRichTextPubPageState<WhisperDetailPage> {
-  final _whisperDetailController = Get.put(
-    WhisperDetailController(),
-    tag: Utils.makeHeroTag(AppNavigator.parameters['talkerId']),
-  );
+  final _whisperDetailController = WhisperDetailController();
 
   @override
   Widget build(BuildContext context) {

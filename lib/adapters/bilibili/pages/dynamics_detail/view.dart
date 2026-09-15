@@ -23,7 +23,6 @@ import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_create/view.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_detail/controller.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_repost/view.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
@@ -33,7 +32,6 @@ import 'package:skf/utils/share_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 const Set<TargetPlatform> _kDesktopPlatforms = <TargetPlatform>{
   TargetPlatform.macOS,
@@ -94,16 +92,10 @@ class _DynamicDetailPageState
     if (args['viewComment'] ?? false) {
       WidgetsBinding.instance.addPostFrameCallback(_jumpToComment);
     }
-    controller = Get.putOrFind(DynamicDetailController.new, tag: id);
+    controller = DynamicDetailController();
     final stat = item.modules?.moduleStat;
     controller.count = stat?.comment?.count ?? -1;
-    _reactController = Get.put(
-      DynReactController(
-        id,
-        count: (stat?.like?.count ?? -1) + (stat?.forward?.count ?? -1),
-      ),
-      tag: id,
-    );
+    _reactController = DynReactController( id, count: (stat?.like?.count ?? -1) + (stat?.forward?.count ?? -1), );
   }
 
   @override

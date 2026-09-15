@@ -10,8 +10,8 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/pages/download/controller.dart';
 
 class LocalIntroController extends CommonIntroController {
   @override
@@ -67,7 +67,7 @@ class LocalIntroController extends CommonIntroController {
       }
     }
     this.list = list;
-    final currCid = videoDetailCtr.cid.value;
+    final currCid = videoDetailCtr.cid;
     final index = list.indexWhere((e) => e.cid == currCid);
     this.index = index;
     if (PlatformUtils.isMobile) {
@@ -135,10 +135,10 @@ class LocalIntroController extends CommonIntroController {
     entry ??= list[index];
     videoDetailCtr
       ..onReset()
-      ..cover.value = entry.cover
+      ..cover = entry.cover
       ..aid = entry.avid
       ..bvid = entry.bvid
-      ..cid.value = entry.cid
+      ..cid = entry.cid
       ..args['dirPath'] = entry.entryDirPath
       ..initFileSource(entry, isInit: false)
       ..playerInit();

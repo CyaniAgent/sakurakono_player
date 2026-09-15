@@ -15,7 +15,6 @@ import 'package:skf/adapters/bilibili/utils/extension/theme_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 
 class NoteListPage extends CommonSlidePage {
   const NoteListPage({
@@ -43,15 +42,12 @@ class _NoteListPageState extends State<NoteListPage>
   @override
   void initState() {
     super.initState();
-    _controller = Get.put(
-      NoteListPageCtr(oid: widget.oid),
-      tag: widget.heroTag,
-    );
+    _controller = NoteListPageCtr(oid: widget.oid);
   }
 
   @override
   void dispose() {
-    Get.delete<NoteListPageCtr>(tag: widget.heroTag);
+    _controller.dispose();
     super.dispose();
   }
 

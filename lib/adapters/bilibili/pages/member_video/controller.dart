@@ -1,6 +1,5 @@
 import 'package:skf/common/widgets/scroll_physics.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/models/common/video/source_type.dart';
@@ -22,10 +21,8 @@ class MemberVideoCtr
     required this.seriesId,
     this.username,
     this.title,
+    this.fromViewAid,
   }) : isVideo = type == CoreContributeType.video {
-    if (isVideo) {
-      fromViewAid = Get.parameters['from_view_aid'];
-    }
     page = 0;
     queryData();
   }

@@ -1,7 +1,6 @@
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/member_types.dart';
 import 'package:skf/adapters/bilibili/pages/member_video_web/base/controller.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/router/app_navigator.dart';
@@ -9,7 +8,7 @@ import 'package:skf/router/app_navigator.dart';
 class MemberSSWebCtr
     extends BaseVideoWebCtr<CoreSeasonWebData, CoreSeasonArchive, CoreArchiveSortTypeApp> {
   @override
-  final Rx<CoreArchiveSortTypeApp> order = Rx(CoreArchiveSortTypeApp.desc);
+  CoreArchiveSortTypeApp order = CoreArchiveSortTypeApp.desc;
   late CoreWebSsType _type;
   late Object _id;
 
@@ -47,7 +46,7 @@ class MemberSSWebCtr
       id: _id.toString(),
       ps: ps,
       pn: page,
-      sort: order.value,
+      sort: order,
     );
     return switch (result) {
       Loading _ => LoadingState.loading(),

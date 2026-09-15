@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:skf/common/assets.dart';
 import 'package:skf/adapters/bilibili/models_new/video/video_detail/data.dart';
@@ -30,7 +29,6 @@ class SeasonPanel extends StatefulWidget {
 class _SeasonPanelState extends State<SeasonPanel> {
   int currentIndex = 0;
   late VideoDetailController _videoDetailController;
-  StreamSubscription? _listener;
   List<EpisodeItem> episodes = <EpisodeItem>[];
 
   UgcIntroController get ugcIntroController => widget.ugcIntroController;
@@ -63,24 +61,31 @@ class _SeasonPanelState extends State<SeasonPanel> {
     currentIndex = episodes.indexWhere(
       (EpisodeItem e) => e.cid == _videoDetailController.seasonCid,
     );
-    _listener = _videoDetailController.cid.listen((int cid) {
-      if (_videoDetailController.seasonCid != cid) {
-        bool isPart =
-            videoDetail.pages?.indexWhere((item) => item.cid == cid) != -1;
-        if (!isPart) {
-          _videoDetailController.seasonCid = cid;
-        }
+    _videoDetailController.addListener(_onCidChanged);
+  }
+
+  int? _lastCid;
+
+  void _onCidChanged() {
+    final cid = _videoDetailController.cid;
+    if (cid == _lastCid) return;
+    _lastCid = cid;
+    if (_videoDetailController.seasonCid != cid) {
+      bool isPart =
+          videoDetail.pages?.indexWhere((item) => item.cid == cid) != -1;
+      if (!isPart) {
+        _videoDetailController.seasonCid = cid;
       }
-      _findEpisode();
-      currentIndex = episodes.indexWhere(
-        (EpisodeItem e) => e.cid == _videoDetailController.seasonCid,
-      );
-    });
+    }
+    _findEpisode();
+    currentIndex = episodes.indexWhere(
+      (EpisodeItem e) => e.cid == _videoDetailController.seasonCid,
+    );
   }
 
   @override
   void dispose() {
-    _listener?.cancel();
+    _videoDetailController.removeListener(_onCidChanged);
     super.dispose();
   }
 

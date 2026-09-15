@@ -21,7 +21,6 @@ import 'package:skf/utils/num_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 class PgcReviewChildPage extends StatefulWidget {
   const PgcReviewChildPage({
@@ -160,15 +159,16 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
           ],
           DialogOption(
             child: const Text('举报', style: TextStyle(fontSize: 14)),
-            onPressed: () => Get
-              ..back()
-              ..toNamed(
+            onPressed: () {
+              AppNavigator.back();
+              AppNavigator.toNamed(
                 '/webview',
                 parameters: {
                   'url':
                       'https://www.bilibili.com/appeal/?reviewId=${item.reviewId}&type=shortComment&mediaId=${widget.mediaId}',
                 },
-              ),
+              );
+            },
           ),
         ],
       ),

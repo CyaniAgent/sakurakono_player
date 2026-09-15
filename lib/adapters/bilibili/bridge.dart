@@ -46,7 +46,7 @@ import 'package:skf/pages/follow_type/follow_same/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/pages/history/view.dart';
 import 'package:skf/adapters/bilibili/pages/history_search/view.dart';
-import 'package:skf/pages/home/view.dart';
+import 'package:skf/pages/main/view.dart';
 import 'package:skf/adapters/bilibili/pages/hot/view.dart';
 import 'package:skf/adapters/bilibili/utils/fav_actions.dart';
 import 'package:skf/adapters/bilibili/utils/history_actions.dart';
@@ -214,8 +214,8 @@ class BiliBridge {
   /// Convert GetX GetPage routes to GoRouter GoRoute routes.
   static List<GoRoute> buildRoutes() {
     return [
-      // 首页(推荐)
-      GoRoute(path: '/home', builder: (_, _) => const HomePage()),
+      // 首页(推荐)——主页壳（侧边栏/底部导航 + 主 tab 页）
+      GoRoute(path: '/home', builder: (_, _) => const MainApp()),
       // 热门
       GoRoute(path: '/hot', builder: (_, _) => const HotPage()),
       // 视频详情
@@ -227,7 +227,13 @@ class BiliBridge {
       //
       GoRoute(path: '/fav', builder: (_, _) => FavPage(actions: biliFavActions)),
       //
-      GoRoute(path: '/favDetail', builder: (_, _) => const FavDetailPage()),
+      GoRoute(
+        path: '/favDetail',
+        builder: (_, state) => FavDetailPage(
+          mediaId: state.uri.queryParameters['mediaId']!,
+          heroTag: state.uri.queryParameters['heroTag']!,
+        ),
+      ),
       GoRoute(
         path: '/later',
         builder: (_, _) => LaterPage(actions: biliLaterActions),
@@ -251,8 +257,20 @@ class BiliBridge {
       // 直播详情
       GoRoute(path: '/liveRoom', builder: (_, _) => const LiveRoomPage()),
       // 用户中心
-      GoRoute(path: '/member', builder: (_, _) => const MemberPage()),
-      GoRoute(path: '/memberSearch', builder: (_, _) => const MemberSearchPage()),
+      GoRoute(
+        path: '/member',
+        builder: (_, state) => MemberPage(
+          mid: state.uri.queryParameters['mid'],
+          fromViewAid: state.uri.queryParameters['from_view_aid'],
+        ),
+      ),
+      GoRoute(
+        path: '/memberSearch',
+        builder: (_, state) => MemberSearchPage(
+          mid: state.uri.queryParameters['mid']!,
+          uname: state.uri.queryParameters['uname'],
+        ),
+      ),
       //
       GoRoute(path: '/blackListPage', builder: (_, _) => const BlackListPage()),
       GoRoute(path: '/colorSetting', builder: (_, _) => const ColorSelectPage()),
@@ -260,7 +278,13 @@ class BiliBridge {
       // 屏幕帧率
       GoRoute(path: '/displayModeSetting', builder: (_, _) => const SetDisplayMode()),
       //
-      GoRoute(path: '/articlePage', builder: (_, _) => const ArticlePage()),
+      GoRoute(
+        path: '/articlePage',
+        builder: (_, state) => ArticlePage(
+          id: state.uri.queryParameters['id']!,
+          type: state.uri.queryParameters['type']!,
+        ),
+      ),
 
       // 历史记录搜索
       GoRoute(path: '/playSpeedSet', builder: (_, _) => const PlaySpeedPage()),
@@ -300,20 +324,37 @@ class BiliBridge {
       GoRoute(path: '/editProfile', builder: (_, _) => const EditProfilePage()),
       GoRoute(path: '/settingsSearch', builder: (_, _) => const SettingsSearchPage()),
       GoRoute(path: '/searchTrending', builder: (_, _) => const SearchTrendingPage()),
-      GoRoute(path: '/dynTopic', builder: (_, _) => const DynTopicPage()),
-      GoRoute(path: '/articleList', builder: (_, _) => const ArticleListPage()),
+      GoRoute(
+        path: '/dynTopic',
+        builder: (_, state) => DynTopicPage(
+          topicId: state.uri.queryParameters['id']!,
+          topicName: state.uri.queryParameters['name'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/articleList',
+        builder: (_, state) => ArticleListPage(id: state.uri.queryParameters['id']!),
+      ),
       GoRoute(path: '/barSetting', builder: (_, _) => const BarSetPage()),
       GoRoute(path: '/upowerRank', builder: (_, _) => const UpowerRankPage()),
       GoRoute(path: '/spaceSetting', builder: (_, _) => const SpaceSettingPage()),
       GoRoute(path: '/dynTopicRcmd', builder: (_, _) => const DynTopicRcmdPage()),
-      GoRoute(path: '/matchInfo', builder: (_, _) => const MatchInfoPage()),
+      GoRoute(
+        path: '/matchInfo',
+        builder: (_, state) =>
+            MatchInfoPage(cid: int.parse(state.uri.queryParameters['cid']!)),
+      ),
       GoRoute(path: '/msgLikeDetail', builder: (_, _) => const LikeDetailPage()),
       GoRoute(
         path: '/liveDmBlockPage',
         builder: (_, state) => LiveDmBlockPage(roomId: state.uri.queryParameters['roomId']!),
       ),
       GoRoute(path: '/createVote', builder: (_, _) => const CreateVotePage()),
-      GoRoute(path: '/musicDetail', builder: (_, _) => const MusicDetailPage()),
+      GoRoute(
+        path: '/musicDetail',
+        builder: (_, state) =>
+            MusicDetailPage(musicId: state.uri.queryParameters['musicId']!),
+      ),
       GoRoute(path: '/popularSeries', builder: (_, _) => const PopularSeriesPage()),
       GoRoute(path: '/popularPrecious', builder: (_, _) => const PopularPreciousPage()),
       GoRoute(path: '/audio', builder: (_, _) => const AudioPage()),

@@ -10,7 +10,6 @@ import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
 class FavVideoPage extends StatefulWidget {
   const FavVideoPage({super.key, this.actions});
 

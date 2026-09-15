@@ -1,15 +1,12 @@
 import 'package:flutter/foundation.dart' show VoidCallback;
-import 'package:get/get.dart';
 import 'package:skf/core/models/download_types.dart';
 import 'package:skf/pages/download/download_actions.dart';
 
 /// OttoHub stub for [DownloadActions].
 ///
 /// OttoHub 不支持下载（测试用适配器）：队列/列表恒为空、动作 no-op，
-/// 防止共享 Bilibili 下载页打开时 `Get.find<DownloadActions>()` 崩溃。
-class OttoDownloadActions implements DownloadActions {
-  final _queue = RxList<CoreDownloadEntryInfo>();
-  final _cur = Rxn<CoreDownloadEntryInfo>();
+/// 防止共享 Bilibili 下载页打开时读取未注入的动作实现崩溃。
+class OttoDownloadActions extends DownloadActions {
 
   @override
   Future<void> get waitForInitialization => Future.value();
@@ -18,13 +15,13 @@ class OttoDownloadActions implements DownloadActions {
   List<CoreDownloadEntryInfo> get downloadList => const [];
 
   @override
-  RxList<CoreDownloadEntryInfo> get waitDownloadQueue => _queue;
+  List<CoreDownloadEntryInfo> get waitDownloadQueue => const [];
 
   @override
   int? get curCid => null;
 
   @override
-  Rxn<CoreDownloadEntryInfo> get curDownload => _cur;
+  CoreDownloadEntryInfo? get curDownload => null;
 
   @override
   void addFlagListener(VoidCallback listener) {}

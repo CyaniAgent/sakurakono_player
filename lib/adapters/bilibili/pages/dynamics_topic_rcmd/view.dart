@@ -8,7 +8,7 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_select_topic/widgets/item.dart';
 import 'package:skf/adapters/bilibili/pages/dynamics_topic_rcmd/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class DynTopicRcmdPage extends StatefulWidget {
   const DynTopicRcmdPage({super.key});
@@ -18,7 +18,7 @@ class DynTopicRcmdPage extends StatefulWidget {
 }
 
 class _DynTopicRcmdPageState extends State<DynTopicRcmdPage> {
-  final DynTopicRcmdController _controller = Get.put(DynTopicRcmdController());
+  final DynTopicRcmdController _controller = appRead(dynTopicRcmdControllerProvider);
 
   @override
   Widget build(BuildContext context) {

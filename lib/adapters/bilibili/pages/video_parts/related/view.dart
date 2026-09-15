@@ -3,11 +3,10 @@ import 'package:skf/adapters/bilibili/common/widgets/video_card/video_card_h.dar
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/related/controller.dart';
-import 'package:skf/utils/extension/get_ext.dart';
 import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class RelatedVideoPanel extends StatefulWidget {
   const RelatedVideoPanel({super.key, required this.heroTag});
@@ -22,10 +21,7 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel> with GridMixin {
   @override
   void initState() {
     super.initState();
-    _relatedController = Get.putOrFind(
-      RelatedController.new,
-      tag: widget.heroTag,
-    );
+    _relatedController = appRead(relatedControllerProvider(widget.heroTag));
   }
 
   @override

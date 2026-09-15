@@ -4,9 +4,7 @@ import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
 import 'package:skf/pages/common/search/common_search_page.dart';
 import 'package:skf/pages/follow/widgets/follow_item.dart';
 import 'package:skf/adapters/bilibili/pages/follow_search/controller.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FollowSearchPage extends StatefulWidget {
   const FollowSearchPage({
@@ -31,10 +29,7 @@ class _FollowSearchPageState
   @override
   void initState() {
     super.initState();
-    controller = Get.put(
-      FollowSearchController(widget.mid ?? AppNavigator.arguments['mid']),
-      tag: Utils.generateRandomString(8),
-    );
+    controller = FollowSearchController(widget.mid ?? AppNavigator.arguments['mid']);
   }
 
   @override

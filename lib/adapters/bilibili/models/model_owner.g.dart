@@ -8,7 +8,7 @@ part of 'model_owner.dart';
 
 class OwnerAdapter extends TypeAdapter<Owner> {
   @override
-  final int typeId = 3;
+  final typeId = 3;
 
   @override
   Owner read(BinaryReader reader) {
@@ -17,7 +17,7 @@ class OwnerAdapter extends TypeAdapter<Owner> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Owner(
-      mid: fields[0] as int?,
+      mid: (fields[0] as num?)?.toInt(),
       name: fields[1] as String?,
       face: fields[2] as String?,
     );

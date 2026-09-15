@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WhisperController extends CommonWhisperController<SessionMainReply> {
   @override
@@ -112,5 +113,5 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
   }
 }
 
-
-
+/// WhisperController（单实例）。
+final whisperControllerProvider = Provider<WhisperController>((ref) => WhisperController());

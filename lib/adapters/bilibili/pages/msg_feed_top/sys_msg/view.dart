@@ -13,7 +13,7 @@ import 'package:skf/adapters/bilibili/utils/page_utils.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
+import 'package:skf/core/container/app_container.dart';
 
 class SysMsgPage extends StatefulWidget {
   const SysMsgPage({super.key});
@@ -23,7 +23,7 @@ class SysMsgPage extends StatefulWidget {
 }
 
 class _SysMsgPageState extends State<SysMsgPage> {
-  final _sysMsgController = Get.put(SysMsgController());
+  final _sysMsgController = appRead(sysMsgControllerProvider);
 
   static final RegExp _urlRegExp = RegExp(
     r'#\{([^}]*)\}\{([^}]*)\}|https?:\/\/[^\s/\$.?#].[^\s]*|www\.[^\s/\$.?#].[^\s]*|【(.*?)】|（(\d+)）',

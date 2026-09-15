@@ -47,7 +47,7 @@ abstract class BaseVideoWebState<
           ListenableBuilder(
             listenable: controller,
             builder: (context, _) {
-              final order = controller.order.value;
+              final order = controller.order;
               return PopupMenuButton<V>(
                 tooltip: '排序',
                 icon: const Icon(Icons.sort),

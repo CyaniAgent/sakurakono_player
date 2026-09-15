@@ -5,9 +5,7 @@ import 'package:skf/adapters/bilibili/pages/fav_search/controller.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class FavSearchPage extends StatefulWidget {
   const FavSearchPage({super.key});
@@ -21,10 +19,7 @@ class _FavSearchPageState
         CommonSearchPageState<FavSearchPage, CoreFavDetailData, CoreFavDetailItemModel>
     with GridMixin {
   @override
-  final FavSearchController controller = Get.put(
-    FavSearchController(),
-    tag: Utils.generateRandomString(8),
-  );
+  final FavSearchController controller = FavSearchController();
 
   @override
   List<Widget>? get multiSelectActions {

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skf/adapters/bilibili/models_new/space/space/tab2.dart';
 
 // ---------------------------------------------------------------------------
 // Immutable state
@@ -67,14 +68,21 @@ class MemberContributeNotifier extends StateNotifier<MemberContributeState> {
   }) {
     if (contributeItems == null || contributeItems.isEmpty) return;
 
-    final items = List<dynamic>.from(contributeItems);
+    // CoreSpaceTab2.items 是原始 Map，统一归一成 SpaceTab2Item（build 侧强转依赖此类型）
+    final items = contributeItems
+        .map(
+          (e) => e is SpaceTab2Item
+              ? e
+              : SpaceTab2Item.fromJson((e as Map).cast<String, dynamic>()),
+        )
+        .toList();
     List<Tab>? tabs;
 
     if (items.length > 1) {
       if (hasSeasonOrSeries) {
-        items.add({'param': 'ugcSeason', 'title': '全部合集/列表'});
+        items.add(const SpaceTab2Item(title: '全部合集/列表', param: 'ugcSeason'));
       }
-      tabs = items.map((item) => Tab(text: item.title as String?)).toList();
+      tabs = items.map((item) => Tab(text: item.title)).toList();
     }
 
     state = MemberContributeState(

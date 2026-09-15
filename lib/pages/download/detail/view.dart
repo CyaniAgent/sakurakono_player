@@ -15,9 +15,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/pages/download/controller.dart';
 
 class DownloadDetailPage extends StatefulWidget {
   const DownloadDetailPage({
@@ -37,7 +36,7 @@ class DownloadDetailPage extends StatefulWidget {
 
 class _DownloadDetailPageState extends State<DownloadDetailPage>
     with BaseMultiSelectMixin<CoreDownloadEntryInfo>, GridMixin {
-  final _downloadItems = RxList<CoreDownloadEntryInfo>();
+  List<CoreDownloadEntryInfo> _downloadItems = const [];
   final _controller = appRead(downloadPageControllerProvider);
   final _downloadActions = DownloadActions.of();
   @override
@@ -68,11 +67,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
             .firstWhereOrNull((e) => e.pageId == widget.pageId)
             ?.entries
           ?..sort((a, b) => a.sortKey.compareTo(b.sortKey));
-    if (list != null) {
-      _downloadItems.value = list;
-    } else {
-      _downloadItems.clear();
-    }
+    _downloadItems = list ?? const [];
   }
 
   @override

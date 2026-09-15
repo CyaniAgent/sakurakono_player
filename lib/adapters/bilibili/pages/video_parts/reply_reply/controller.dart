@@ -2,13 +2,13 @@ import 'package:skf/core/models/reply_types.dart' show CoreMode;
 import 'package:skf/adapters/bilibili/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo, DetailListReply;
 import 'package:skf/core/result/loading_state.dart';
-import 'package:get/get.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 import 'package:skf/adapters/bilibili/pages/common/publish/publish_route.dart';
 import 'package:skf/adapters/bilibili/pages/common/reply_controller.dart';
 import 'package:skf/adapters/bilibili/pages/video_parts/reply_new/view.dart';
 import 'package:skf/adapters/bilibili/utils/id_utils.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart';
@@ -38,9 +38,9 @@ class VideoReplyReplyController extends ReplyController {
   int replyType;
 
   bool hasRoot = false;
-  final firstFloor = Rxn<ReplyInfo>();
+  ReplyInfo? firstFloor;
 
-  final index = RxnInt();
+  int? index;
 
   final listController = ListController();
 
@@ -78,7 +78,7 @@ class VideoReplyReplyController extends ReplyController {
     if (data is DetailListReply) {
       count = data.root.count.toInt();
       if (isRefresh && !hasRoot) {
-        firstFloor.value ??= data.root;
+        firstFloor ??= data.root;
       }
       if (id != null) {
         setIndexById(Int64(id!), data.root.replies);
@@ -94,7 +94,7 @@ class VideoReplyReplyController extends ReplyController {
       (item) => item.id == id64,
     );
     if (index != -1) {
-      this.index.value = index;
+      this.index = index;
       jumpToItem(index);
       return true;
     }
@@ -149,7 +149,7 @@ class VideoReplyReplyController extends ReplyController {
   @override
   Future<void> onReload() {
     if (loadingState.isSuccess) {
-      index.value = null;
+      index = null;
     }
     return super.onReload();
   }
@@ -172,8 +172,7 @@ class VideoReplyReplyController extends ReplyController {
     final root = replyItem.id.toInt();
     final key = oid + root;
 
-    Get.key.currentState!
-        .push(
+    AppNavigator.push(
           PublishRoute(
             pageBuilder: (buildContext, animation, secondaryAnimation) {
               return ReplyPage(
@@ -195,7 +194,7 @@ class VideoReplyReplyController extends ReplyController {
             },
           ),
         )
-        .then((replyInfo) {
+        ?.then((replyInfo) {
           if (replyInfo is ReplyInfo) {
             savedReplies.remove(key);
 

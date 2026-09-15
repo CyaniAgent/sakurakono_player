@@ -40,7 +40,7 @@ class _BubblePageState extends State<BubblePage>
       index ??= _controller.tabController!.index;
       if (index != 0) {
         return appRead(
-          bubbleProvider(_controller.tabs.value![index].id.toString()),
+          bubbleProvider(_controller.tabs![index].id.toString()),
         );
       }
     } catch (_) {}
@@ -80,7 +80,7 @@ class _BubblePageState extends State<BubblePage>
             child: ListenableBuilder(
               listenable: _controller,
               builder: (_, _) {
-                final sortInfo = _controller.sortInfo.value;
+                final sortInfo = _controller.sortInfo;
                 if (sortInfo == null || sortInfo.showSort != true) {
                   return const SizedBox.shrink();
                 }
@@ -134,7 +134,7 @@ class _BubblePageState extends State<BubblePage>
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: ListenableBuilder(listenable: _controller, builder: (_, _) {
-          final tribeName = _controller.tribeName.value;
+          final tribeName = _controller.tribeName;
           if (tribeName == null) {
             return const SizedBox.shrink();
           }
@@ -144,7 +144,7 @@ class _BubblePageState extends State<BubblePage>
       body: Padding(
         padding: EdgeInsets.only(left: padding.left, right: padding.right),
         child: ListenableBuilder(listenable: _controller, builder: (_, _) {
-          final tabs = _controller.tabs.value;
+          final tabs = _controller.tabs;
           if (tabs == null || tabs.isEmpty) {
             return child;
           }

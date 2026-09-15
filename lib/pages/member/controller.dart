@@ -12,14 +12,13 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreSpaceData?>
     implements TickerProvider {
-  MemberController({required this.mid}) {
+  MemberController({required this.mid, this.fromViewAid}) {
     queryData();
   }
 
@@ -31,6 +30,9 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
     return ticker;
   }
   int mid;
+
+  /// 路由 query 参数（/member?from_view_aid=...），用于投稿列表定位原视频。
+  final int? fromViewAid;
   String? username;
   String? userAvatar;
 
@@ -77,8 +79,6 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
   bool get hasGuard => guards?.isNotEmpty ?? false;
 
   List<CoreReservationCardItem>? reserves;
-
-  final fromViewAid = int.tryParse(Get.parameters['from_view_aid'] ?? '');
 
   final scrollKey = GlobalKey<ExtendedNestedScrollViewState>();
 

@@ -30,7 +30,9 @@ class RelatedController
   }
 }
 /// 相关推荐控制器（每视频页一实例，按 heroTag 键控）。
+/// autoQuery 必须为 true：RelatedVideoPanel.initState 只读 provider，
+/// 首次进入详情页的相关视频查询全靠构造函数触发。
 final relatedControllerProvider = ChangeNotifierProvider
     .family<RelatedController, String>(
-  (ref, heroTag) => RelatedController(autoQuery: false),
+  (ref, heroTag) => RelatedController(autoQuery: true),
 );

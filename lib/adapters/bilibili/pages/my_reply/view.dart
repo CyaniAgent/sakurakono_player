@@ -17,7 +17,6 @@ import 'package:skf/adapters/bilibili/utils/waterfall.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
-import 'package:get/get.dart';
 
 class MyReply extends StatefulWidget {
   const MyReply({super.key});
@@ -37,7 +36,8 @@ class _MyReplyState extends State<MyReply> with DynMixin {
 
   void _initReply() {
     _replies
-      ..assignAll(GStorage.reply!.values.map(ReplyInfo.fromBuffer))
+      ..clear()
+      ..addAll(GStorage.reply!.values.map(ReplyInfo.fromBuffer))
       ..sort((a, b) => b.ctime.compareTo(a.ctime)); // rpid not aligned;
   }
 

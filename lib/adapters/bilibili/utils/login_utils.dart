@@ -2,11 +2,13 @@ import 'dart:async' show FutureOr;
 import 'dart:io' show Platform;
 
 import 'package:skf/core/result/loading_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:skf/adapters/bilibili/http/user.dart';
 import 'package:skf/main.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/adapters/bilibili/utils/accounts.dart';
 import 'package:skf/adapters/bilibili/utils/accounts/account.dart';
+import 'package:skf/adapters/bilibili/utils/model_converters.dart';
 import 'package:skf/adapters/bilibili/utils/request_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/storage_pref.dart';
@@ -60,13 +62,19 @@ abstract final class LoginUtils {
 
         SmartDialog.showToast('main登录成功');
         final Object? cached = Pref.userInfoCache;
-        if (response != cached) {
-          await GStorage.userInfo.put('userInfoCache', response);
+        final core = ModelConverters.userInfoDataToCore(response);
+        if (core != cached) {
+          // 共享缓存键统一存 Core 类型，避免重启时读取方类型不匹配崩溃
+          await GStorage.userInfo.put('userInfoCache', core);
         }
       }
     } else {
       // 获取用户信息失败
       final errMsg = res.toString();
+      if (kDebugMode) {
+        // TODO(mcp-debug): 临时调试日志，定位登录回滚后移除
+        debugPrint('MCP-DEBUG onLoginMain fail: $errMsg');
+      }
       if (errMsg == '账号未登录') {
         await Accounts.deleteAll({account});
         SmartDialog.showNotify(
