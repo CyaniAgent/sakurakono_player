@@ -117,7 +117,7 @@ jobs:
           Requires:       desktop-file-utils, hicolor-icon-theme
 
           %description
-          使用 Flutter 开发的 BiliBili 第三方客户端
+          SKF 通用视频播放器
 
           %prep
           %setup -q -n sakurakono-${{ env.version }}

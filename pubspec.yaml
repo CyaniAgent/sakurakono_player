@@ -44,7 +44,6 @@ dependencies:
       ref: main
   audio_session: ^0.2.2
   battery_plus: ^7.0.0
-  brotli: ^0.6.0
   cached_network_image_ce:
     git:
       url: https://github.com/My-Responsitories/flutter_cached_network_image_ce.git
@@ -59,11 +58,6 @@ dependencies:
       url: https://github.com/My-Responsitories/catcher_2.git
       ref: dev
   characters: ^1.4.1
-  chat_bottom_container:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/flutter_chat_packages.git
-      path: packages/chat_bottom_container
-      ref: dev
   collection: ^1.19.1
   connectivity_plus: ^7.1.1
   cookie_jar: ^4.0.8
@@ -74,8 +68,6 @@ dependencies:
       ref: main
   device_info_plus: ^13.1.0
   dio: ^5.9.1
-  dio_http2_adapter: ^2.7.1
-  dlna_dart: ^0.1.0
   dynamic_color: ^1.8.1
   easy_debounce: ^2.0.3
   encrypt: ^5.0.3
@@ -97,10 +89,6 @@ dependencies:
     git:
       url: https://github.com/bggRGjQaUbCoE/flutter_smart_dialog.git
       ref: main
-  flutter_sortable_wrap:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/flutter_sortable_wrap.git
-      ref: master
   flutter_svg: ^2.0.14
   flutter_volume_controller: ^2.0.0
   font_awesome_flutter:
@@ -112,13 +100,11 @@ dependencies:
   freezed_annotation: ^3.1.0
   hive_ce: ^2.19.3
   html: ^0.15.4
-  http2: ^2.3.1
   image_cropper: ^12.0.0
   image_picker: ^1.1.2
   intl: ^0.20.2
   jni: ^1.0.0
   json_annotation: ^4.12.0
-  live_photo_maker: ^0.0.6
   logger: ^2.5.0
   material_color_utilities: ^0.13.0
   material_design_icons_flutter:
@@ -141,7 +127,6 @@ dependencies:
   permission_handler_apple: ^9.4.7
   permission_handler_platform_interface: ^4.3.0
   pretty_qr_code: ^3.3.0
-  protobuf: ^6.0.0
   re_highlight: ^0.0.3
   riverpod: ^2.6.1
   saver_gallery: ^5.0.2
@@ -149,18 +134,12 @@ dependencies:
   screen_retriever: ^0.2.0
   share_plus: ^13.1.0
   stream_transform: ^2.1.1
-  super_sliver_list:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/super_sliver_list.git
-      ref: mod
   synchronized: ^3.3.0
   tray_manager: ^0.5.1
   url_launcher: ^6.3.1
   uuid: ^4.5.1
   vector_math: ^2.2.0
   wakelock_plus: ^1.2.8
-  waterfall_flow: ^3.1.0
-  web_socket_channel: ^3.0.3
   webdav_client:
     git:
       url: https://github.com/wgh136/webdav_client.git
@@ -281,8 +260,6 @@ flutter:
       platforms: [windows]
     - path: assets/images/logo/desktop/
       platforms: [linux, macos]
-    - path: assets/images/live/
-    - path: assets/images/paycoins/
     - path: assets/shaders/
 
   fonts:

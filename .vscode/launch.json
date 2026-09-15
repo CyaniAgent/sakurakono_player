@@ -2,12 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "SKF (Bilibili)",
-      "request": "launch",
-      "type": "dart",
-      "args": ["--dart-define=ADAPTER=bilibili"]
-    },
-    {
       "name": "SKF (OttoHub)",
       "request": "launch",
       "type": "dart",

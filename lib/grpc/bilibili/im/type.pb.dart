@@ -1,1 +1,0 @@
-export 'package:skf/adapters/bilibili/grpc/bilibili/im/type.pb.dart';

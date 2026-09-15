@@ -2,8 +2,7 @@
 ///
 /// These are pure data classes (no UI, no adapter dependencies) with
 /// JSON serialization. They mirror the adapter-level models in
-/// `lib/adapters/bilibili/models/common/sponsor_block/` and
-/// `lib/adapters/bilibili/models_new/sponsor_block/` but are free of
+/// 各适配器的 sponsor block 模型 but are free of
 /// Bilibili-specific UI and platform code.
 library;
 

@@ -96,7 +96,7 @@ void main() async {
   registerAllAdapters();
 
   const adapterName =
-      String.fromEnvironment('ADAPTER', defaultValue: 'bilibili');
+      String.fromEnvironment('ADAPTER', defaultValue: 'ottohub');
   final adapter = AdapterRegistry.lookup(adapterName);
 
   // Adapter-specific pre-storage startup (Hive TypeAdapter registration).

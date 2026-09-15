@@ -6,7 +6,7 @@ import 'dart:io';
 /// `[name]` encodes the adapter directory, so the same loader serves every
 /// adapter: `fixture('ottohub/video_detail')` reads
 /// `test/adapters/ottohub/fixtures/video_detail.json`, and
-/// `fixture('bilibili/view')` reads `test/adapters/bilibili/fixtures/view.json`.
+/// 适配器 fixtures 存放于各适配器 test 目录
 ///
 /// `flutter test` runs with the package root as the working directory, so
 /// relative paths resolve from there.

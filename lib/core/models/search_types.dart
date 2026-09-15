@@ -16,7 +16,6 @@ enum CoreSearchType {
   media_bangumi('番剧'),
   media_ft('影视'),
   live_room('直播间'),
-  bili_user('用户'),
   article('专栏'),
   ;
 
@@ -671,8 +670,6 @@ CoreSearchResultKind _searchKindOf(Object? type) {
       case 'media_bangumi':
       case 'bangumi':
         return CoreSearchResultKind.bangumi;
-      case 'bili_user':
-        return CoreSearchResultKind.user;
       case 'live_room':
       case 'live':
         return CoreSearchResultKind.live;

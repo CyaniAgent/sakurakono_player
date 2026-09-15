@@ -1,4 +1,3 @@
-import 'package:skf/adapters/bilibili/bili_adapter.dart';
 import 'package:skf/adapters/ottohub/bridge.dart';
 import 'package:skf/core/adapter/adapter_registry.dart';
 
@@ -8,6 +7,5 @@ import 'package:skf/core/adapter/adapter_registry.dart';
 /// (`flutter run --dart-define=ADAPTER=bilibili|ottohub`); see
 /// [AdapterRegistry.activate].
 void registerAllAdapters() {
-  AdapterRegistry.register(BiliAdapter());
   AdapterRegistry.register(OttoAdapter());
 }
