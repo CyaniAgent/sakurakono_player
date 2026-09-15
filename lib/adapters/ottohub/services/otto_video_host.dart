@@ -118,7 +118,7 @@ class _OttoPlayerHost implements VideoPlayerHost {
 }
 
 /// OttoHub 视频页宿主桩。
-class OttoVideoHost implements VideoHost {
+class OttoVideoHost extends VideoHost {
   final _playerHost = _OttoPlayerHost();
 
 

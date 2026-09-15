@@ -414,7 +414,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
       );
     }
 
-    if (VideoHost.of().playerHost.enableSponsorBlock) {
+    if (VideoHost.of().segmentSkip.enableSponsorBlock) {
       return ListenableBuilder(listenable: videoDetailCtr, builder: (context, _) => child());
     }
     return child();

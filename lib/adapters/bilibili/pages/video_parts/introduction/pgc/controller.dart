@@ -276,7 +276,7 @@ class PgcIntroController extends CommonIntroController {
         queryPgcLikeCoinFav();
       }
 
-      hasLater = VideoHost.of().isWatchLaterSource(videoDetailCtr.args['sourceType']);
+      hasLater = VideoHost.of().playlist.isWatchLaterSource(videoDetailCtr.args['sourceType']);
       this.cid = cid;
       queryOnlineTotal();
       queryVideoIntro(episode as EpisodeItem);

@@ -570,7 +570,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
           } catch (_) {}
         }
 
-        hasLater = VideoHost.of().isWatchLaterSource(videoDetailCtr.args['sourceType']);
+        hasLater = VideoHost.of().playlist.isWatchLaterSource(videoDetailCtr.args['sourceType']);
         this.bvid = bvid;
         queryVideoIntro();
       } else {

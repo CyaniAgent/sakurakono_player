@@ -24,7 +24,7 @@ class BiliAccountProvider extends AccountProvider {
 
   @override
   Future<void> restoreFromCache() async {
-    UserInfoData? userInfo = BiliPref.userInfoCache;
+    final userInfo = BiliPref.userInfoCache;
     if (userInfo != null) {
       rxFace = userInfo.face ?? '';
       rxIsLogin = true;

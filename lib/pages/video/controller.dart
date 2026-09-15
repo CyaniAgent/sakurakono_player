@@ -117,7 +117,7 @@ class VideoDetailController extends ChangeNotifier {
   double get uiScale => plPlayerController.uiScale;
 
   /// 片段跳过引擎（B站 BlockMixin 页面级包装）。
-  late final VideoBlock block = VideoHost.of().createBlock(this);
+  late final VideoBlock block = VideoHost.of().segmentSkip.createEngine(this);
 
   int? firstVideoWidth;
   int? firstVideoHeight;
@@ -368,8 +368,8 @@ class VideoDetailController extends ChangeNotifier {
     _isVertical = args['isVertical'] ?? false;
 
     final sourceType = args['sourceType'];
-    isFileSource = VideoHost.of().isFileSourceSource(sourceType);
-    isPlayAll = VideoHost.of().isPlayAllSource(sourceType);
+    isFileSource = VideoHost.of().playlist.isFileSourceSource(sourceType);
+    isPlayAll = VideoHost.of().playlist.isPlayAllSource(sourceType);
     if (isFileSource) {
       initFileSource(args['entry']);
     } else if (isPlayAll) {
@@ -400,7 +400,7 @@ class VideoDetailController extends ChangeNotifier {
       return;
     }
     final res = await (appRead(userRepositoryProvider)).getMediaList(
-      type: VideoHost.of().sourceMediaType(args['sourceType']),
+      type: VideoHost.of().playlist.sourceMediaType(args['sourceType']),
       bizId: (args['mediaId'] ?? -1).toString(),
       ps: 20,
       direction: isLoadPrevious ? true : false,
@@ -434,7 +434,7 @@ class VideoDetailController extends ChangeNotifier {
           for (final item in mediaList) {
             if (item.aid != null) {
               try {
-                VideoHost.of().onChangeEpisodeFromMedia(heroTag, item);
+                VideoHost.of().playlist.onChangeEpisodeFromMedia(heroTag, item);
               } catch (_) {}
               break;
             }
@@ -525,7 +525,7 @@ class VideoDetailController extends ChangeNotifier {
       ..isBuffering = false
       ..buffered = 0;
 
-    final config = VideoHost.of().selectPlayback(
+    final config = VideoHost.of().playbackSource.selectPlayback(
       data: data,
       cacheVideoQa: currentVideoQa.code,
       cacheAudioQa: currentAudioQa?.code ?? AudioQuality.k192.code,
@@ -602,7 +602,7 @@ class VideoDetailController extends ChangeNotifier {
     if (isClosed) return;
 
     if (!isFileSource) {
-      if (VideoHost.of().playerHost.enableBlock) {
+      if (VideoHost.of().segmentSkip.enableBlock) {
         initSkip();
       }
 
@@ -646,7 +646,7 @@ class VideoDetailController extends ChangeNotifier {
       return;
     }
     isQuerying = true;
-    if (VideoHost.of().playerHost.enableSponsorBlock && isBlock && !fromReset) {
+    if (VideoHost.of().segmentSkip.enableSponsorBlock && isBlock && !fromReset) {
       querySponsorBlock(bvid: bvid, cid: cid);
     }
     if (plPlayerController.cacheVideoQa == null) {
@@ -665,7 +665,7 @@ class VideoDetailController extends ChangeNotifier {
       bvid: bvid,
       epid: epId?.toString(),
       seasonId: seasonId?.toString(),
-      tryLook: VideoHost.of().playerHost.tryLook,
+      tryLook: false,
       videoType: _actualVideoType ?? videoType,
       language: currLang,
       voiceBalance: VideoHost.of().playerHost.enableAudioNormalization,
@@ -690,8 +690,8 @@ class VideoDetailController extends ChangeNotifier {
         }
       }
 
-      if (!isUgc && !fromReset && VideoHost.of().playerHost.enablePgcSkip) {
-        VideoHost.of().applyPgcClipInfo(heroTag, data.clipInfoList);
+      if (!isUgc && !fromReset && VideoHost.of().series.enablePgcSkip) {
+        VideoHost.of().series.applyClipInfo(heroTag, data.clipInfoList);
       }
 
       if (data.acceptDesc?.contains('试看') == true) {
@@ -702,10 +702,10 @@ class VideoDetailController extends ChangeNotifier {
       }
       if (data.dashData == null && data.durlList != null) {
         final first = data.durlList!.first;
-        videoUrl = VideoHost.of().playerHost.getCdnUrl([
+        videoUrl = [
           if (first.url != null) first.url!,
           ...?first.backupUrl,
-        ]);
+        ].first;
         audioUrl = '';
 
         // 实际为FLV/MP4格式，但已被淘汰，这里仅做兜底处理
@@ -728,7 +728,7 @@ class VideoDetailController extends ChangeNotifier {
         isQuerying = false;
         return;
       }
-      final config = VideoHost.of().selectPlayback(
+      final config = VideoHost.of().playbackSource.selectPlayback(
         data: data,
         cacheVideoQa: plPlayerController.cacheVideoQa,
         cacheAudioQa: plPlayerController.cacheAudioQa,
@@ -757,7 +757,7 @@ class VideoDetailController extends ChangeNotifier {
 
   late final List<CorePostSegmentModel> postList = <CorePostSegmentModel>[];
   void onBlock(BuildContext context) {
-    VideoHost.of().onBlock(context, heroTag);
+    VideoHost.of().segmentSkip.onBlock(context, heroTag);
   }
 
   final List<VideoSubtitleItem> subtitles = <VideoSubtitleItem>[];
@@ -813,7 +813,7 @@ class VideoDetailController extends ChangeNotifier {
   late bool hasSteinChoices = false;
 
   Future<void> getSteinEdgeInfo([int? edgeId]) async {
-    hasSteinChoices = await VideoHost.of().getSteinEdgeInfo(
+    hasSteinChoices = await VideoHost.of().interactive.getSteinEdgeInfo(
       heroTag: heroTag,
       bvid: bvid,
       graphVersion: graphVersion,
@@ -839,7 +839,7 @@ class VideoDetailController extends ChangeNotifier {
       // interactive video
       if (isUgc && graphVersion == null) {
         try {
-          if (VideoHost.of().isSteinGate(heroTag)) {
+          if (VideoHost.of().interactive.isSteinGate(heroTag)) {
             graphVersion = response.interaction?['graphVersion'];
             getSteinEdgeInfo();
           }
@@ -850,7 +850,7 @@ class VideoDetailController extends ChangeNotifier {
 
       if (isUgc && continuePlayingPart) {
         continuePlayingPart = false;
-        VideoHost.of().applyContinuePlayingPart(
+        VideoHost.of().playlist.applyContinuePlayingPart(
           heroTag,
           lastPlayCid: response.lastPlayCid,
           currentCid: cid,
@@ -884,7 +884,7 @@ class VideoDetailController extends ChangeNotifier {
               .toList(),
         );
       } else if (!isLoginVideo) {
-        final subs = await VideoHost.of().fetchDmSubtitles(
+        final subs = await VideoHost.of().subtitle.fetchSubtitles(
           aid: aid,
           cid: cid,
         );
@@ -951,7 +951,7 @@ class VideoDetailController extends ChangeNotifier {
   }
 
   void showSBDetail() {
-    VideoHost.of().showSBDetail(heroTag);
+    VideoHost.of().segmentSkip.showSBDetail(heroTag);
   }
 
   @override
@@ -1013,7 +1013,7 @@ class VideoDetailController extends ChangeNotifier {
       }
 
       // sponsor block
-      if (VideoHost.of().playerHost.enableBlock) {
+      if (VideoHost.of().segmentSkip.enableBlock) {
         resetBlock();
       }
 
@@ -1037,24 +1037,24 @@ class VideoDetailController extends ChangeNotifier {
 
   Future<void> _getDmTrend() async {
     dmTrend = LoadingState<List<double>>.loading();
-    dmTrend = await VideoHost.of().fetchDmTrend(
+    dmTrend = await VideoHost.of().danmakuTrend.fetchTrend(
       bvid: bvid,
       cid: cid,
     );
   }
 
   void showNoteList(BuildContext context) {
-    VideoHost.of().showNoteList(context, heroTag);
+    VideoHost.of().notes.showNoteList(context, heroTag);
   }
 
   void showMediaListPanel(BuildContext context) {
-    VideoHost.of().showMediaListPanel(context, heroTag);
+    VideoHost.of().playlist.showMediaListPanel(context, heroTag);
   }
 
   @pragma('vm:notify-debugger-on-exception')
   bool onSkipSegment() {
     try {
-      if (VideoHost.of().playerHost.enableBlock) {
+      if (VideoHost.of().segmentSkip.enableBlock) {
         if (block.listData.lastOrNull case final Object item) {
           block.onSkip(item, isSeek: false);
           block.onRemoveItem(block.listData.indexOf(item), item);
@@ -1068,11 +1068,11 @@ class VideoDetailController extends ChangeNotifier {
   }
 
   void toAudioPage() {
-    VideoHost.of().openAudioPage(heroTag);
+    VideoHost.of().audioMode.openAudioPage(heroTag);
   }
 
   Future<void> onDownload(BuildContext context) {
-    return VideoHost.of().showDownloadPanel(context, heroTag);
+    return VideoHost.of().downloadPanel.showDownloadPanel(context, heroTag);
   }
 
   void editPlayUrl() {
@@ -1150,7 +1150,7 @@ class VideoDetailController extends ChangeNotifier {
         if (first['backup_url'] is List)
           ...(first['backup_url'] as List).cast<String>(),
       ];
-      final url = VideoHost.of().playerHost.getCdnUrl(playUrls);
+      final url = playUrls.first;
 
       final title = VideoHost.of().videoTitle(heroTag);
       if (kDebugMode) {

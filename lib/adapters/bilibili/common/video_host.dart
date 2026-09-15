@@ -5,7 +5,18 @@
 // 通过 [VideoHost] 注入。OttoHub 侧见 ottohub/services/otto_video_host.dart。
 
 import 'dart:math' show max, min;
-import 'package:skf/adapters/bilibili/common/setting_providers.dart';import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/adapters/bilibili/common/setting_providers.dart';
+import 'package:skf/core/contract/player/audio_mode_capability.dart';
+import 'package:skf/core/contract/player/capabilities.dart';
+import 'package:skf/core/contract/player/danmaku_trend_capability.dart';
+import 'package:skf/core/contract/player/download_capability.dart';
+import 'package:skf/core/contract/player/interactive_capability.dart';
+import 'package:skf/core/contract/player/notes_capability.dart';
+import 'package:skf/core/contract/player/playback_source_capability.dart';
+import 'package:skf/core/contract/player/playlist_capability.dart';
+import 'package:skf/core/contract/player/segment_skip_capability.dart';
+import 'package:skf/core/contract/player/series_capability.dart';
+import 'package:skf/core/contract/player/subtitle_capability.dart';import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -310,7 +321,7 @@ class BiliVideoBlockState {
 /// B站 片段跳过引擎（StateNotifier + BlockMixin 的页面级包装）。
 class BiliVideoBlockNotifier extends StateNotifier<BiliVideoBlockState>
     with BlockConfigMixin, BlockMixin
-    implements VideoBlock {
+    implements SegmentSkipEngine {
   BiliVideoBlockNotifier(this._ctr) : super(const BiliVideoBlockState());
 
   final VideoDetailController _ctr;
@@ -445,11 +456,109 @@ final biliVideoBlockProvider =
 );
 
 /// B站 视频页宿主实现。
-class BiliVideoHost implements VideoHost {
+class BiliVideoHost
+    extends VideoHost
+    implements
+        SegmentSkipCapability,
+        SeriesCapability,
+        PlaylistCapability,
+        NotesCapability,
+        AudioModeCapability,
+        InteractiveCapability,
+        SubtitleCapability,
+        DanmakuTrendCapability,
+        DownloadPanelCapability,
+        PlaybackSourceCapability {
   BiliVideoHost() : playerHost = BiliVideoPlayerHost();
 
   @override
-  final VideoPlayerHost playerHost;
+  final BiliVideoPlayerHost playerHost;
+
+  // ---------- 能力声明(B站全量支持) ----------
+
+  @override
+  SegmentSkipCapability get segmentSkip => this;
+
+  @override
+  SeriesCapability get series => this;
+
+  @override
+  PlaylistCapability get playlist => this;
+
+  @override
+  NotesCapability get notes => this;
+
+  @override
+  AudioModeCapability get audioMode => this;
+
+  @override
+  InteractiveCapability get interactive => this;
+
+  @override
+  SubtitleCapability get subtitle => this;
+
+  @override
+  DanmakuTrendCapability get danmakuTrend => this;
+
+  @override
+  DownloadPanelCapability get downloadPanel => this;
+
+  @override
+  PlaybackSourceCapability get playbackSource => this;
+
+  // ---------- SegmentSkipCapability ----------
+
+  @override
+  bool get supported => true;
+
+  @override
+  bool get enableBlock => playerHost.enableBlock;
+
+  @override
+  bool get enableSponsorBlock => playerHost.enableSponsorBlock;
+
+  @override
+  SegmentSkipEngine createEngine(dynamic videoDetailController) =>
+      createBlock(videoDetailController as VideoDetailController);
+
+  // ---------- SeriesCapability ----------
+
+  @override
+  bool get enablePgcSkip => playerHost.enablePgcSkip;
+
+  @override
+  Widget buildSeriesIntroPage({
+    required Key key,
+    required String heroTag,
+    required int cid,
+    required double maxWidth,
+    required bool isLandscape,
+  }) =>
+      buildPgcIntroPage(
+        key: key,
+        heroTag: heroTag,
+        cid: cid,
+        maxWidth: maxWidth,
+        isLandscape: isLandscape,
+      );
+
+  // ---------- SubtitleCapability ----------
+
+  @override
+  Future<List<VideoSubtitleItem>?> fetchSubtitles({
+    required int aid,
+    required int cid,
+  }) =>
+      fetchDmSubtitles(aid: aid, cid: cid);
+
+  // ---------- DanmakuTrendCapability ----------
+
+  @override
+  Future<LoadingState<List<double>>> fetchTrend({
+    required String bvid,
+    required int cid,
+  }) =>
+      fetchDmTrend(bvid: bvid, cid: cid);
 
   @override
   bool get isLogin => Accounts.main.isLogin;
@@ -1622,7 +1731,7 @@ class BiliVideoHost implements VideoHost {
   }
 
   @override
-  void applyPgcClipInfo(String heroTag, List<Map<String, dynamic>>? clipInfoList) {
+  void applyClipInfo(String heroTag, List<Map<String, dynamic>>? clipInfoList) {
     if (clipInfoList == null || clipInfoList.isEmpty) {
       return;
     }

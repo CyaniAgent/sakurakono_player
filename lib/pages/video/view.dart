@@ -71,7 +71,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       videoDetailController.plPlayerController.isFullScreen;
 
   bool get _shouldShowSeasonPanel =>
-      host.shouldShowSeasonPanel(heroTag, isPortrait: isPortrait);
+      host.series.shouldShowSeasonPanel(heroTag, isPortrait: isPortrait);
 
   final videoReplyPanelKey = GlobalKey();
   final videoRelatedKey = GlobalKey();
@@ -1106,16 +1106,6 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
           onTap: videoDetailController.toAudioPage,
           child: const Text('听音频'),
         ),
-      PopupMenuItem(
-        onTap: () {
-          if (!host.isLogin) {
-            SmartDialog.showToast('账号未登录');
-          } else {
-            host.reportVideo(videoDetailController.aid);
-          }
-        },
-        child: const Text('举报'),
-      ),
     ],
   );
 
@@ -1447,7 +1437,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
               host.buildRelatedPanel(key: videoRelatedKey, heroTag: heroTag),
             ],
           ] else
-            host.buildPgcIntroPage(
+            host.series.buildSeriesIntroPage(
               key: videoIntroKey,
               heroTag: heroTag,
               cid: videoDetailController.cid,
@@ -1524,7 +1514,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   }
 
   Widget get seasonPanel =>
-      host.buildSeasonPanel(heroTag: heroTag);
+      host.series.buildSeasonPanel(heroTag: heroTag);
 
   Widget videoReplyPanel({bool isNested = false}) => host.buildReplyPanel(
     key: videoReplyPanelKey,
