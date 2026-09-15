@@ -12,14 +12,14 @@ CHILD of root AGENTS.md. Global rules, CI, and dependency forks live there — n
 |---|---|---|
 | root | 34 | storage.dart, storage_pref.dart, storage_key.dart, storage_utils.dart, path_utils.dart, platform_utils.dart, theme_utils.dart, theme_ext.dart, device_utils.dart, cache_manager.dart, danmaku_utils.dart, num/date/duration/color_utils, image_utils, share_utils, permission_handler, feed_back, mobile_observer, max_screen_size, json_file_handler, grid, em, filtering_text, parse_string/int/bool, set_int_adapter, calc_window_position, connectivity_utils, utils.dart, asset_utils, image_action_delegate_impl.dart |
 | android/ | 2 | android_helper.dart + bindings.g.dart (jnigen-generated, analysis-excluded) |
-| extension/ | 14 | widget_ext, string_ext, num_ext, context_ext, get_ext, box_ext, size_ext, file_ext, map_ext, iterable_ext, scroll_controller_ext, nested_scroll_ext, dimension_ext, selectable_region_ext |
+| extension/ | 14 | widget_ext, string_ext, num_ext, context_ext, get_ext, box_ext, size_ext, file_ext, map_ext, iterable_ext, scroll_controller_ext, nested_scroll_ext, selectable_region_ext |
 
 ## STORAGE LAYER (critical)
 
 - **GStorage** (storage.dart), `abstract final class`. `init()`: `Hive.init(appSupportDirPath/hive)` → `regAdapter()` (SetIntAdapter) → `Future.wait` opens **7 boxes in PARALLEL**: userInfo, localCache, setting, historyWord, video, account (private), watchProgress (`Box<int>` with custom desc-key comparator); conditionally opens reply (`Box<Uint8List>`) if `setting['saveReply']==true`. Also `exportAllSettings`/`importAllJsonSettings`, `compact()`, `close()`, `clear()`.
-- **Init order** (main.dart): `_initAppPath()` → `BiliBridge.initHive()` (TypeAdapters MUST precede box opens) → `GStorage.init()` → `Accounts.init()` (account box may already be open — must handle) → `_initDownPath`/`_initTmpPath`/`CacheManager.ensureInitialized()` in parallel → `AdapterRegistry.register+activate`.
-- **Pref** (storage_pref.dart, ~860ln): typed getters/setters over GStorage boxes — THE way to read/write settings (Pref.themeMode, Pref.uiScale, Pref.downloadPath, Pref.danmakuFilterRule…). Never touch raw boxes from feature code.
-- **Keys** (storage_key.dart): SettingBoxKey ~200 const keys, LocalCacheKey 4, VideoBoxKey 5.
+- **Init order** (main.dart): `_initAppPath()` → `adapter.onAppStartPreStorage()` (TypeAdapters MUST precede box opens; OttoHub: none) → `GStorage.init()` → `adapter.onAppStart()` → `_initDownPath`/`_initTmpPath`/`CacheManager.ensureInitialized()` in parallel → `AdapterRegistry.register+activate`.
+- **Pref** (storage_pref.dart, ~860ln): typed getters/setters over GStorage boxes — THE way to read/write settings (Pref.themeMode, Pref.uiScale, Pref.downloadPath, Pref.themeMode…). Never touch raw boxes from feature code.
+- **Keys** (storage_key.dart): SettingBoxKey const keys(已去 B 站专属键), LocalCacheKey 4, VideoBoxKey 5.
 
 ## PATH / PLATFORM / THEME / VERSION
 

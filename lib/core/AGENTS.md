@@ -3,12 +3,20 @@
 ## OVERVIEW
 Adapter-free abstract interfaces for the SKF player framework. Zero imports from lib/adapters/ (verified by grep).
 
+## CONTRACT LAYER (2026-09-16)
+
+- contract/player/: 标准播放器契约 — VideoPlayerHost + 10 能力接口(segment_skip/series/
+  playlist/notes/audio_mode/interactive/subtitle/danmaku_trend/download/playback_source)
+  + PlayerCapabilities + DefaultPlayerCapabilities(no-op 默认)。
+  页面按能力降级;适配器覆写 getter 返回自身即接入。playback_models.dart:
+  CorePlaybackConfig/CoreFileEntryInfo。
+
 ## STRUCTURE
 
 - adapter/ 2: AppAdapter + AdapterRegistry
 - account/ 2: AccountProvider + AccountMixin
-- models/ 40 (33 root + 7 ui/): Core* types (member_types, live_types, dynamics_types, video_types, user_types, media_id, download_types...)
-- repository/ 24: one interface per domain
+- models/ Core* 类型(member_types/live_types 等仍带 B 站形状 — 深度净化为路线图;space_types 保留供 member spaceOpus)
+- repository/ 18: 通用域接口(live/match/music/audio/danmaku_filter/validate/space/pgc 已删除)
 - result/ 1: loading_state.dart
 - utils/ 3: image_action_registry, subtitle_utils, pair
 - root: app_meta.dart
