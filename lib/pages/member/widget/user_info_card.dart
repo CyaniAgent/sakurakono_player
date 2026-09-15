@@ -17,7 +17,7 @@ import 'package:skf/pages/follow/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/member/widget/header_layout_widget.dart';
-import 'package:skf/pages/member/widget/medal_widget.dart';
+
 import 'package:skf/pages/member/widget/user_info_type.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/color_utils.dart';
@@ -46,11 +46,6 @@ class UserInfoCard extends StatelessWidget {
     this.live,
     this.silence,
     required this.headerControllerBuilder,
-    required this.showLiveMedalWall,
-    required this.charges,
-    required this.chargeCount,
-    required this.guards,
-    required this.guardCount,
   });
 
   final bool isOwner;
@@ -61,11 +56,6 @@ class UserInfoCard extends StatelessWidget {
   final CoreLive? live;
   final int? silence;
   final ValueGetter<PageController> headerControllerBuilder;
-  final VoidCallback showLiveMedalWall;
-  final List<dynamic>? charges;
-  final Object? chargeCount;
-  final List<CoreSpaceGuardItem>? guards;
-  final Object? guardCount;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +137,6 @@ class UserInfoCard extends StatelessWidget {
       if (card.officialVerify?.coreDesc?.isNotEmpty ?? false)
         _buildVerify(colorScheme),
       if (card.sign?.isNotEmpty ?? false) _buildSign(),
-      ?_buildChargeAndGuard(colorScheme, isPortrait),
       if (card.followingsFollowedUpper?.items?.isNotEmpty ?? false)
         _buildFollowedUp(colorScheme, card.followingsFollowedUpper!),
       _buildExtraInfo(colorScheme),
@@ -156,34 +145,6 @@ class UserInfoCard extends StatelessWidget {
   }
 
   Widget _buildName(BuildContext context, ColorScheme colorScheme) {
-    Widget? liveMedal;
-    if (card.liveFansWearing?.detailV2 case final detailV2?) {
-      Color? nameColor;
-      Color? backgroundColor;
-      try {
-        nameColor = ColourUtils.parseColor(detailV2.medalColorName!);
-        backgroundColor = ColourUtils.parseColor(detailV2.medalColor!);
-      } catch (e, s) {
-        if (kDebugMode) {
-          Utils.reportError(e, s);
-        }
-      }
-      try {
-        liveMedal = GestureDetector(
-          onTap: showLiveMedalWall,
-          child: MedalWidget(
-            medalName: detailV2.medalName!,
-            level: detailV2.level!,
-            backgroundColor: backgroundColor ?? colorScheme.secondaryContainer,
-            nameColor: nameColor ?? colorScheme.onSecondaryContainer,
-          ),
-        );
-      } catch (e, s) {
-        if (kDebugMode) {
-          Utils.reportError(e, s);
-        }
-      }
-    }
     return Padding(
       padding: const .only(left: 20, right: 20),
       child: Wrap(
@@ -248,7 +209,6 @@ class UserInfoCard extends StatelessWidget {
           //       return const SizedBox.shrink();
           //     },
           //   ),
-          ?liveMedal,
         ],
       ),
     );
@@ -862,50 +822,6 @@ class UserInfoCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget? _buildChargeAndGuard(ColorScheme colorScheme, bool isPortrait) {
-    final children = [
-      if (charges?.isNotEmpty ?? false)
-        _buildChargeItem(
-          colorScheme,
-          charges,
-          chargeCount,
-          '人为TA充电',
-          () => MemberHost.of().openUpowerRank(
-            mid: card.mid!,
-            name: card.name!,
-            count: chargeCount,
-          ),
-        ),
-      if (guards?.isNotEmpty ?? false)
-        _buildChargeItem(
-          colorScheme,
-          guards,
-          guardCount,
-          '人加入大航海',
-          () => MemberHost.of().openMemberGuard(
-            mid: card.mid!,
-            name: card.name!,
-            count: guardCount,
-          ),
-        ),
-    ];
-    if (children.isNotEmpty) {
-      Widget child;
-      if (children.length == 1) {
-        child = children.first;
-      } else {
-        child = isPortrait
-            ? Row(mainAxisAlignment: .spaceBetween, children: children)
-            : Wrap(spacing: 10, runSpacing: 6, children: children);
-      }
-      return Padding(
-        padding: const .only(left: 20, right: 20, top: 6),
-        child: child,
-      );
-    }
-    return null;
   }
 
   Widget _buildFollowedUp(

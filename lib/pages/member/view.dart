@@ -97,11 +97,6 @@ class _MemberPageState extends State<MemberPage> {
                       live: _userController.live,
                       silence: _userController.silence,
                       headerControllerBuilder: getHeaderController,
-                      showLiveMedalWall: _showLiveMedalWall,
-                      charges: _userController.charges,
-                      chargeCount: _userController.chargeCount,
-                      guards: _userController.guards,
-                      guardCount: _userController.guardCount,
                     ),
                   ),
                 ];
@@ -367,22 +362,6 @@ class _MemberPageState extends State<MemberPage> {
             ],
           ),
         ),
-        if (PlatformUtils.isMobile)
-          PopupMenuItem(
-            onTap: () => MemberHost.of().createShortcut(
-              mid: _mid,
-              name: _userController.username ?? '',
-              avatar: _userController.userAvatar ?? '',
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add_box_outlined, size: 19),
-                SizedBox(width: 10),
-                Text('添加至桌面'),
-              ],
-            ),
-          ),
         // if (_userController.hasCharge)
         //   PopupMenuItem(
         //     onTap: () => UpowerRankPage.toUpowerRank(
@@ -433,76 +412,6 @@ class _MemberPageState extends State<MemberPage> {
           ),
         if (_userController.isLogin)
           if (_userController.mid == _userController.currentUserId) ...[
-            if ((_userController.loadingState.dataOrNull?.coreCard?.vip
-                    ?.status ??
-                0) >
-                0)
-              PopupMenuItem(
-                onTap: _userController.vipExpAdd,
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.upcoming_outlined, size: 19),
-                    SizedBox(width: 10),
-                    Text('大会员经验'),
-                  ],
-                ),
-              ),
-            PopupMenuItem(
-              onTap: () => MemberHost.of().openLoginDevices(),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.devices, size: 18),
-                  SizedBox(width: 10),
-                  Text('登录设备'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              onTap: () => MemberHost.of().openLoginLog(),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.login, size: 18),
-                  SizedBox(width: 10),
-                  Text('登录记录'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              onTap: () => MemberHost.of().openCoinLog(),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(FontAwesomeIcons.b, size: 16),
-                  SizedBox(width: 10),
-                  Text('硬币记录'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              onTap: () => MemberHost.of().openExpLog(),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.linear_scale, size: 18),
-                  SizedBox(width: 10),
-                  Text('经验记录'),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              onTap: () => AppNavigator.toNamed('/spaceSetting'),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.settings_outlined, size: 19),
-                  SizedBox(width: 10),
-                  Text('空间设置'),
-                ],
-              ),
-            ),
           ] else ...[
             if (_userController.isFollow)
               PopupMenuItem(
@@ -516,29 +425,6 @@ class _MemberPageState extends State<MemberPage> {
                   ],
                 ),
               ),
-            const PopupMenuDivider(),
-            PopupMenuItem(
-              onTap: () => MemberHost.of().showReportDialog(
-                context,
-                name: _userController.username,
-                mid: _mid,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 19,
-                    color: theme.error,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    '举报',
-                    style: TextStyle(color: theme.error),
-                  ),
-                ],
-              ),
-            ),
           ],
       ],
     ),
@@ -597,8 +483,6 @@ class _MemberPageState extends State<MemberPage> {
     }
   }
 
-  Future<void> _showLiveMedalWall() =>
-      MemberHost.of().showLiveMedalWall(_mid);
 
 
 

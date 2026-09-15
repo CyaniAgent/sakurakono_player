@@ -67,36 +67,6 @@ abstract class MemberHost {
   void shareUser(int mid);
   // ---- actions (menu) ----
 
-  /// Push the login devices page (Bilibili: `CoreLoginDevicesPage`).
-  void openLoginDevices();
-
-  /// Push the login log page (Bilibili: `LogPage` + `LoginLogController`).
-  void openLoginLog();
-
-  /// Push the coin log page (Bilibili: `LogPage` + `CoinLogController`).
-  void openCoinLog();
-
-  /// Push the exp log page (Bilibili: `LogPage` + `ExpLogController`).
-  void openExpLog();
-
-  /// Show the report dialog (Bilibili: `showMemberReportDialog`).
-  void showReportDialog(
-    BuildContext context, {
-    required String? name,
-    required int mid,
-  });
-
-  /// Show the live medal wall dialog (Bilibili: [MedalWall] + live medal API).
-  Future<void> showLiveMedalWall(int mid);
-
-  /// Create a home-screen shortcut (Bilibili: `PiliAndroidHelper.createShortcut`
-  /// + `bilibili://space/` scheme).
-  void createShortcut({
-    required int mid,
-    required String name,
-    required String avatar,
-  });
-
   // ---- deep navigation ----
 
   /// Push a dynamic detail page by id (Bilibili: `PageUtils.pushDynFromId`).
@@ -108,17 +78,4 @@ abstract class MemberHost {
   /// Route a deep link URI (Bilibili: `PiliScheme.routePushFromUrl`).
   void pushFromUri(String uri);
 
-  /// Push the member guard page (Bilibili: `MemberGuard.toMemberGuard`).
-  void openMemberGuard({
-    required int mid,
-    required String name,
-    required Object? count,
-  });
-
-  /// Push the upower rank page (Bilibili: `UpowerRankPage.toUpowerRank`).
-  void openUpowerRank({
-    required int mid,
-    required String name,
-    required Object? count,
-  });
 }

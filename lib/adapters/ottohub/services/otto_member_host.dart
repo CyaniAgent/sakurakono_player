@@ -52,37 +52,6 @@ class OttoMemberHost implements MemberHost {
   void shareUser(int mid) {}
 
   @override
-  void openLoginDevices() {}
-
-  @override
-  void openLoginLog() {}
-
-  @override
-  void openCoinLog() {}
-
-  @override
-  void openExpLog() {}
-
-  @override
-  void showReportDialog(
-    BuildContext context, {
-    required String? name,
-    required int mid,
-  }) {
-  }
-
-  @override
-  Future<void> showLiveMedalWall(int mid) async {}
-
-  @override
-  void createShortcut({
-    required int mid,
-    required String name,
-    required String avatar,
-  }) {
-  }
-
-  @override
   void pushDynFromId(String? id) {}
 
   @override
@@ -91,19 +60,4 @@ class OttoMemberHost implements MemberHost {
   @override
   void pushFromUri(String uri) {}
 
-  @override
-  void openMemberGuard({
-    required int mid,
-    required String name,
-    required Object? count,
-  }) {
-  }
-
-  @override
-  void openUpowerRank({
-    required int mid,
-    required String name,
-    required Object? count,
-  }) {
-  }
 }
