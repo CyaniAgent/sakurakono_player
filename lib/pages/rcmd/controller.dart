@@ -7,7 +7,6 @@ import 'package:skf/core/container/app_container.dart';
 
 class RcmdController extends CommonListController {
   late bool enableSaveLastData = Pref.enableSaveLastData;
-  final bool appRcmd = Pref.appRcmd;
 
   int? lastRefreshAt;
   late bool savedRcmdTip = Pref.savedRcmdTip;
@@ -22,9 +21,9 @@ class RcmdController extends CommonListController {
 
   @override
   Future<LoadingState> customGetData() async {
-    final result = await (appRcmd
-        ? (appRead(videoRepositoryProvider)).rcmdVideoListApp(freshIdx: page)
-        : (appRead(videoRepositoryProvider)).rcmdVideoList(freshIdx: page, ps: 20));
+    // 框架层只走中立契约(rcmdVideoList);B 站 app 推荐源开关是适配器概念。
+    final result = await (appRead(videoRepositoryProvider))
+        .rcmdVideoList(freshIdx: page, ps: 20);
     return switch (result) {
       Loading _ => LoadingState.loading(),
       Success(:final response) => Success(response),

@@ -65,7 +65,7 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
 
   Widget _buildBody(LoadingState<List<CoreHotVideoItemModel>?> loadingState) {
     return switch (loadingState) {
-      Loading() => const VideoCardVSkeleton(),
+      Loading() => const SliverToBoxAdapter(child: VideoCardVSkeleton()),
       Error(:final errMsg) =>
         HttpError(errMsg: errMsg, onReload: controller.onReload),
       Success(:final response) when response != null && response.isNotEmpty =>
@@ -79,7 +79,7 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
             return _HotCard(item: response[index]);
           },
         ),
-      Success() => const VideoCardVSkeleton(),
+      Success() => const SliverToBoxAdapter(child: VideoCardVSkeleton()),
     };
   }
 }

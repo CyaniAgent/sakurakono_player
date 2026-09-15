@@ -2,16 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/pages/about/view.dart';
 import 'package:skf/pages/setting/setting_host.dart';
+import 'package:skf/pages/setting/pages/display_mode.dart';
+import 'package:skf/pages/setting/pages/font_size_select.dart';
+import 'package:skf/pages/setting/pages/play_speed_set.dart';
+import 'package:skf/pages/setting/pages/bar_set.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/utils.dart';
 
 /// OttoHub 的设置域宿主实现。
 ///
-/// 设置页框架渲染通用行(播放链接/关于);账号类操作(切换账号/退出)
-/// 无 SDK API,降级为 toast 提示(防御性降级,不抛异常)。
+/// 注入框架级设置子页(播放速度/显示模式/字号/栏位);账号类操作
+/// (切换账号/退出)无 SDK API,降级为 toast 提示(防御性降级,不抛异常)。
 class OttoSettingHost implements SettingHost {
   @override
-  List<SettingMenuItem> get menuItems => const <SettingMenuItem>[];
+  List<SettingMenuItem> get menuItems => [
+        SettingMenuItem(
+          icon: const Icon(Icons.speed),
+          title: '播放速度',
+          contentBuilder: (_) => const PlaySpeedPage(),
+        ),
+        SettingMenuItem(
+          icon: const Icon(Icons.monitor),
+          title: '屏幕帧率',
+          contentBuilder: (_) => const SetDisplayMode(),
+        ),
+        SettingMenuItem(
+          icon: const Icon(Icons.format_size),
+          title: '字体大小',
+          contentBuilder: (_) => const FontSizeSelectPage(),
+        ),
+        SettingMenuItem(
+          icon: const Icon(Icons.view_week),
+          title: '栏位设置',
+          contentBuilder: (_) => const BarSetPage(),
+        ),
+      ];
 
   @override
   List<SettingMenuItem> get footerItems => [
