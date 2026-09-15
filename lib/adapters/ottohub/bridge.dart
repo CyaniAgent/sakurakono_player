@@ -14,18 +14,10 @@ import 'package:skf/adapters/ottohub/repository/otto_msg_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_reply_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_user_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_video_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_audio_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_danmaku_filter_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_download_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_live_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_match_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_music_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_pgc_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_progress_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_sponsor_block_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_validate_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_space_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
@@ -38,8 +30,7 @@ import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
 import 'package:skf/core/models/media_id.dart';
-import 'package:skf/core/repository/repository_providers.dart'
-    hide pgcRepositoryProvider;
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/pages/home/controller.dart';
@@ -101,7 +92,6 @@ class OttoAdapter implements AppAdapter {
     // Riverpod ProviderScope overrides — direct instantiation, no Get.find dependency
     adapterOverrides = <Override>[
       videoRepositoryProvider.overrideWithValue(OttoVideoRepository(client)),
-      audioRepositoryProvider.overrideWithValue(OttoAudioRepository()),
       authRepositoryProvider.overrideWithValue(OttoAuthRepository(client)),
       userRepositoryProvider.overrideWithValue(OttoUserRepository(client)),
       memberRepositoryProvider.overrideWithValue(OttoMemberRepository(client)),
@@ -113,17 +103,10 @@ class OttoAdapter implements AppAdapter {
       replyRepositoryProvider.overrideWithValue(OttoReplyRepository(client)),
       searchRepositoryProvider.overrideWithValue(OttoSearchRepository(client)),
       imRepositoryProvider.overrideWithValue(OttoImRepository(client)),
-      pgcRepositoryProvider.overrideWithValue(OttoPgcRepository()),
       progressRepositoryProvider.overrideWithValue(OttoProgressRepository()),
       sponsorBlockRepositoryProvider.overrideWithValue(OttoSponsorBlockRepository()),
-      validateRepositoryProvider.overrideWithValue(OttoValidateRepository()),
-      liveRepositoryProvider.overrideWithValue(OttoLiveRepository()),
-      matchRepositoryProvider.overrideWithValue(OttoMatchRepository()),
-      musicRepositoryProvider.overrideWithValue(OttoMusicRepository()),
       downloadRepositoryProvider.overrideWithValue(OttoDownloadRepository(client)),
-      spaceRepositoryProvider.overrideWithValue(OttoSpaceRepository(client)),
       appRepositoryProvider.overrideWithValue(OttoAppRepository()),
-      danmakuFilterRepositoryProvider.overrideWithValue(OttoDanmakuFilterRepository()),
       msgRepositoryProvider.overrideWithValue(OttoMsgRepository(client)),
       blackRepositoryProvider.overrideWithValue(OttoBlackRepository(client)),
       // Page hosts / actions (previously Get.lazyPut).

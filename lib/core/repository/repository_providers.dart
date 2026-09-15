@@ -1,5 +1,4 @@
 import 'package:riverpod/riverpod.dart';
-import 'package:skf/core/repository/audio_repository.dart';
 import 'package:skf/core/repository/auth_repository.dart';
 import 'package:skf/core/repository/danmaku_repository.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
@@ -11,7 +10,6 @@ import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/repository/search_repository.dart';
 import 'package:skf/core/repository/user_repository.dart';
 import 'package:skf/core/repository/video_repository.dart';
-import 'package:skf/core/repository/pgc_repository.dart';
 
 /// Riverpod providers for core repository interfaces.
 ///
@@ -22,9 +20,6 @@ final videoRepositoryProvider = Provider<VideoRepository>(
   (ref) => throw UnimplementedError('Override in adapter'),
 );
 
-final audioRepositoryProvider = Provider<AudioRepository>(
-  (ref) => throw UnimplementedError('Override in adapter'),
-);
 
 final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => throw UnimplementedError('Override in adapter'),
@@ -66,6 +61,3 @@ final searchRepositoryProvider = Provider<SearchRepository>(
 (ref) => throw UnimplementedError('Override in adapter'),
 );
 
-final pgcRepositoryProvider = Provider<PgcRepository>(
-  (ref) => throw UnimplementedError('Override in adapter'),
-);
