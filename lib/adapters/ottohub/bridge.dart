@@ -40,6 +40,7 @@ import 'package:skf/pages/hot/view.dart';
 import 'package:skf/pages/webview/view.dart';
 import 'package:skf/pages/video/view.dart';
 import 'package:skf/pages/setting/view.dart';
+import 'package:skf/pages/login/view.dart';
 import 'package:skf/pages/fav/view.dart';
 import 'package:skf/pages/later/view.dart';
 import 'package:skf/pages/history/view.dart';
@@ -189,6 +190,8 @@ class OttoAdapter implements AppAdapter {
         GoRoute(path: '/atMe', builder: (_, _) => const AtMePage()),
         GoRoute(path: '/likeMe', builder: (_, _) => const LikeMePage()),
         GoRoute(path: '/msgLikeDetail', builder: (_, _) => const LikeDetailPage()),
+        // 登录
+        GoRoute(path: '/loginPage', builder: (_, _) => const LoginPage()),
         // 下载
         GoRoute(path: '/download', builder: (_, _) => const DownloadPage()),
       ];
