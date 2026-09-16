@@ -30,7 +30,8 @@ enum VideoQuality {
 
   static final _codeMap = {for (final i in values) i.code: i};
 
-  static VideoQuality fromCode(int code) => _codeMap[code]!;
+  static VideoQuality fromCode(int code) =>
+      _codeMap[code] ?? VideoQuality.fluent360;
 }
 
 /// 音频质量（B站 音质码，页面层持有）。
@@ -53,7 +54,7 @@ enum AudioQuality {
 
   static final _codeMap = {for (final i in values) i.code: i};
 
-  static AudioQuality fromCode(int code) => _codeMap[code]!;
+  static AudioQuality fromCode(int code) => _codeMap[code] ?? AudioQuality.values.first;
 }
 
 // ignore_for_file: constant_identifier_names
