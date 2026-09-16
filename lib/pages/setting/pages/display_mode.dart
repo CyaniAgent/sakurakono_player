@@ -8,7 +8,8 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:hive_ce/hive.dart';
 
 class SetDisplayMode extends StatefulWidget {
-  const SetDisplayMode({super.key});
+  final bool showAppBar;
+  const SetDisplayMode({super.key, this.showAppBar = true});
 
   @override
   State<SetDisplayMode> createState() => _SetDisplayModeState();
@@ -61,7 +62,7 @@ class _SetDisplayModeState extends State<SetDisplayMode> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('屏幕帧率设置')),
+      appBar: widget.showAppBar ? AppBar(title: const Text('屏幕帧率设置')) : null,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

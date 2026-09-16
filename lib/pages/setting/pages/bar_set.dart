@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class BarSetPage extends StatefulWidget {
-  const BarSetPage({super.key});
+  final bool showAppBar;
+  const BarSetPage({super.key, this.showAppBar = true});
 
   @override
   State<BarSetPage> createState() => _BarSetPageState();
@@ -69,14 +70,16 @@ class _BarSetPageState extends State<BarSetPage> with ReorderMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('$title编辑'),
-        actions: [
-          TextButton(onPressed: onReset, child: const Text('重置')),
-          TextButton(onPressed: saveEdit, child: const Text('保存')),
-          const SizedBox(width: 12),
-        ],
-      ),
+      appBar: widget.showAppBar
+          ? AppBar(
+              title: Text('$title编辑'),
+              actions: [
+                TextButton(onPressed: onReset, child: const Text('重置')),
+                TextButton(onPressed: saveEdit, child: const Text('保存')),
+                const SizedBox(width: 12),
+              ],
+            )
+          : null,
       body: ReorderableListView(
         onReorderItem: onReorderItem,
         proxyDecorator: proxyDecorator,

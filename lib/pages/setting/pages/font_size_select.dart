@@ -7,7 +7,8 @@ import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 
 class FontSizeSelectPage extends StatefulWidget {
-  const FontSizeSelectPage({super.key});
+  final bool showAppBar;
+  const FontSizeSelectPage({super.key, this.showAppBar = true});
 
   @override
   State<FontSizeSelectPage> createState() => _FontSizeSelectPageState();
@@ -30,19 +31,21 @@ class _FontSizeSelectPageState extends State<FontSizeSelectPage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        actions: [
-          TextButton(
-            onPressed: () {
-              currentSize = 1.0;
-              setFontSize();
-            },
-            child: const Text('重置'),
-          ),
-          TextButton(onPressed: setFontSize, child: const Text('确定')),
-          const SizedBox(width: 12),
-        ],
-      ),
+      appBar: widget.showAppBar
+          ? AppBar(
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    currentSize = 1.0;
+                    setFontSize();
+                  },
+                  child: const Text('重置'),
+                ),
+                TextButton(onPressed: setFontSize, child: const Text('确定')),
+                const SizedBox(width: 12),
+              ],
+            )
+          : null,
       body: SafeArea(
         child: Column(
           children: [

@@ -19,22 +19,22 @@ class OttoSettingHost implements SettingHost {
         SettingMenuItem(
           icon: const Icon(Icons.speed),
           title: '播放速度',
-          contentBuilder: (_) => const PlaySpeedPage(),
+          contentBuilder: (showAppBar) => PlaySpeedPage(showAppBar: showAppBar),
         ),
         SettingMenuItem(
           icon: const Icon(Icons.monitor),
           title: '屏幕帧率',
-          contentBuilder: (_) => const SetDisplayMode(),
+          contentBuilder: (showAppBar) => SetDisplayMode(showAppBar: showAppBar),
         ),
         SettingMenuItem(
           icon: const Icon(Icons.format_size),
           title: '字体大小',
-          contentBuilder: (_) => const FontSizeSelectPage(),
+          contentBuilder: (showAppBar) => FontSizeSelectPage(showAppBar: showAppBar),
         ),
         SettingMenuItem(
           icon: const Icon(Icons.view_week),
           title: '栏位设置',
-          contentBuilder: (_) => const BarSetPage(),
+          contentBuilder: (showAppBar) => BarSetPage(showAppBar: showAppBar),
         ),
       ];
 

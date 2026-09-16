@@ -14,7 +14,8 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive_ce/hive.dart';
 
 class PlaySpeedPage extends StatefulWidget {
-  const PlaySpeedPage({super.key});
+  final bool showAppBar;
+  const PlaySpeedPage({super.key, this.showAppBar = true});
 
   @override
   State<PlaySpeedPage> createState() => _PlaySpeedPageState();
@@ -183,20 +184,22 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('倍速设置'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              await video.delete(VideoBoxKey.speedsList);
-              speedList = Pref.speedList;
-              setState(() {});
-            },
-            child: const Text('重置'),
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
+      appBar: widget.showAppBar
+          ? AppBar(
+              title: const Text('倍速设置'),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await video.delete(VideoBoxKey.speedsList);
+                    speedList = Pref.speedList;
+                    setState(() {});
+                  },
+                  child: const Text('重置'),
+                ),
+                const SizedBox(width: 16),
+              ],
+            )
+          : null,
       body: ViewSafeArea(
         child: ListView(
           children: [
