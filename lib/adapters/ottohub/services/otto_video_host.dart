@@ -1,9 +1,9 @@
-// OttoHub 适配器的视频页宿主桩实现。
+// OttoHub 适配器的视频页宿主实现。
 //
-// OttoHub 复用 Bilibili 路由表（`routes => BiliBridge.registerRoutes()`），
-// 视频页主框架为通用层（lib/pages/video/）；OttoHub 播放能力由 SDK 承载，
-// 本桩仅保证页面可打开不崩：播放器返回可构造的 PlayerController 实例（不实际
-// 播放），面板/弹层返回占位或空实现（防御性降级，不抛异常）。
+// 视频页主框架为通用层(lib/pages/video/);播放器装配使用框架
+// lib/player(PlayerView + PlayerController,media_kit 后端),数据来自
+// OttoVideoRepository.videoUrl(ottohub SDK)。不支持的能力按契约返回
+// no-op/false(页面自动降级)。
 
 import 'package:flutter/material.dart';
 
@@ -12,9 +12,14 @@ import 'package:skf/core/models/sponsor_block_types.dart';
 import 'package:skf/core/models/user_types.dart';
 
 import 'package:skf/core/models/video_types.dart';
+import 'package:skf/core/player/core_player_service.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/video/controller.dart';
+import 'package:skf/core/contract/player/playback_models.dart';
+import 'package:skf/core/contract/player/playback_source_capability.dart';
 import 'package:skf/pages/video/video_host.dart';
+import 'package:skf/player/player_view.dart';
+import 'package:skf/router/app_navigator.dart';
 import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/player/models/data_source.dart';
 import 'package:skf/player/models/heart_beat_type.dart';
@@ -25,7 +30,16 @@ class _OttoPlayerHost implements VideoPlayerHost {
   PlayerController? _player;
 
   @override
-  PlayerController get player => _player ??= PlayerController();
+  PlayerController get player {
+    // dispose() 会把 currentInstance 置空——以此为"已销毁"信号自动重建。
+    if (_player == null || PlayerController.currentInstance != _player) {
+      final fresh = PlayerController();
+      PlayerController.currentInstance = fresh;
+      fresh.playerCount = 1;
+      _player = fresh;
+    }
+    return _player!;
+  }
 
   @override
   PlayerController acquirePlayer() => player;
@@ -97,7 +111,25 @@ class _OttoPlayerHost implements VideoPlayerHost {
     int? height,
     VideoVolume? volume,
     bool autoFullScreenFlag = false,
-  }) async {}
+  }) {
+    final player = acquirePlayer();
+    return player.open(
+      MediaDescriptor(
+        uri: source.videoSource,
+        audioUri: source.audioSource,
+        title: bvid,
+      ),
+      source: source,
+      seekTo: seekTo,
+      autoplay: autoplay,
+      isVertical: isVertical,
+      width: width,
+      height: height,
+      duration: duration,
+      onInit: onInit,
+      autoFullScreenFlag: autoFullScreenFlag,
+    );
+  }
 
   @override
   void setPlayCallBack(PlayCallback? playCallBack) {}
@@ -132,18 +164,7 @@ class OttoVideoHost extends VideoHost {
   List<VideoDecodeFormatType> get preferCodecs => const <VideoDecodeFormatType>[];
 
   @override
-  CorePlaybackConfig selectPlayback({
-    required CorePlayUrlModel data,
-    required int? cacheVideoQa,
-    required int cacheAudioQa,
-  }) {
-    return CorePlaybackConfig(
-      videoUrl: '',
-      audioUrl: '',
-      videoQaCode: VideoQuality.fluent360.code,
-      decodeFormat: VideoDecodeFormatType.AVC,
-    );
-  }
+  PlaybackSourceCapability get playbackSource => _OttoPlaybackSource();
 
   @override
   VideoBlock createBlock(VideoDetailController controller) => _OttoVideoBlock();
@@ -162,7 +183,14 @@ class OttoVideoHost extends VideoHost {
     bool isPipMode = false,
     required bool isPortrait,
   }) {
-    return const SizedBox.expand();
+    return PlayerView(
+      maxWidth: width,
+      maxHeight: height,
+      plPlayerController: playerHost.player,
+      headerControl: _OttoPlayerHeader(
+        title: videoTitle(heroTag) ?? '',
+      ),
+    );
   }
 
   @override
@@ -188,7 +216,7 @@ class OttoVideoHost extends VideoHost {
 
   @override
   Widget buildLocalIntroPanel({required Key key, required String heroTag}) =>
-      const SizedBox.shrink();
+      const SliverToBoxAdapter(child: SizedBox.shrink());
 
   @override
   Widget buildUgcIntroPanel({
@@ -197,12 +225,12 @@ class OttoVideoHost extends VideoHost {
     required bool isPortrait,
     required bool isHorizontal,
   }) {
-    return const SizedBox.shrink();
+    return const SliverToBoxAdapter(child: SizedBox.shrink());
   }
 
   @override
   Widget buildRelatedPanel({required Key key, required String heroTag}) =>
-      const SizedBox.shrink();
+      const SliverToBoxAdapter(child: SizedBox.shrink());
 
   @override
   Widget buildPgcIntroPage({
@@ -404,4 +432,66 @@ class _OttoVideoBlock implements VideoBlock {
 
   @override
   void dispose() {}
+}
+
+
+/// OttoHub 播放地址选择:取服务器返回的第一个直链(mp4 优先,m3u8 兜底)。
+class _OttoPlaybackSource implements PlaybackSourceCapability {
+  @override
+  bool get supported => true;
+
+  @override
+  List<VideoDecodeFormatType> get preferCodecs => const <VideoDecodeFormatType>[];
+
+  @override
+  CorePlaybackConfig selectPlayback({
+    required CorePlayUrlModel data,
+    required int? cacheVideoQa,
+    required int cacheAudioQa,
+  }) {
+    final urls = <String>[
+      for (final d in data.durl ?? <Map<String, dynamic>>[])
+        if (d['url'] is String) d['url'] as String,
+    ];
+    return CorePlaybackConfig(
+      videoUrl: urls.isNotEmpty ? urls.first : '',
+      audioUrl: '',
+      videoQaCode: cacheVideoQa ?? data.quality ?? 0,
+      decodeFormat: VideoDecodeFormatType.AVC,
+      width: null,
+      height: null,
+    );
+  }
+
+  @override
+  ({int width, int height})? partDimension(String heroTag, int cid) => null;
+}
+
+/// 最小播放器头部:返回按钮(标题由页面框架展示)。
+class _OttoPlayerHeader extends StatelessWidget {
+  const _OttoPlayerHeader({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: AppNavigator.back,
+          ),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
