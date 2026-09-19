@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart' show DioException;
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:skf/core/models/reply_types.dart';
 import 'package:skf/core/models/video_types.dart';
@@ -18,6 +19,14 @@ class OttoReplyRepository implements ReplyRepository {
   OttoReplyRepository(this._client);
   LoadingState<T> _err<T>(ApiException e) =>
       Error(e.errorCode, code: e.httpStatus);
+
+  /// 兜底:HTTP 层异常(超时/连接失败/未包装的 DioException)转为
+  /// Error 态,避免调用方面对一个永不完成的 Future。
+  LoadingState<T> _dioErr<T>(DioException e) {
+    debugPrint('OttoReplyRepository DioException: ${e.type} ${e.message}');
+    return Error('网络错误: ${e.message ?? e.type.name}',
+        code: e.response?.statusCode);
+  }
 
   @override
   Future<LoadingState<CoreMainListReply>> mainList({
@@ -79,7 +88,9 @@ class OttoReplyRepository implements ReplyRepository {
       }
     } on ApiException catch (e) {
       debugPrint('OttoReplyRepository.mainList ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: e.httpStatus);
+      return _err(e);
+    } on DioException catch (e) {
+      return _dioErr(e);
     }
   }
 
@@ -125,8 +136,12 @@ class OttoReplyRepository implements ReplyRepository {
         ));
       }
     } on ApiException catch (e) {
-      debugPrint('OttoReplyRepository.detailList ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: e.httpStatus);
+      debugPrint(
+        'OttoReplyRepository.detailList ApiException: ${e.errorCode}',
+      );
+      return _err(e);
+    } on DioException catch (e) {
+      return _dioErr(e);
     }
   }
 
@@ -213,7 +228,9 @@ class OttoReplyRepository implements ReplyRepository {
       return const Success(null);
     } on ApiException catch (e) {
       debugPrint('OttoReplyRepository.replyAdd ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: e.httpStatus);
+      return _err(e);
+    } on DioException catch (e) {
+      return _dioErr(e);
     }
   }
 
@@ -260,7 +277,9 @@ class OttoReplyRepository implements ReplyRepository {
       return const Success(null);
     } on ApiException catch (e) {
       debugPrint('OttoReplyRepository.report ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: e.httpStatus);
+      return _err(e);
+    } on DioException catch (e) {
+      return _dioErr(e);
     }
   }
 
@@ -285,7 +304,9 @@ class OttoReplyRepository implements ReplyRepository {
       return const Success(null);
     } on ApiException catch (e) {
       debugPrint('OttoReplyRepository.replyDel ApiException: ${e.errorCode}');
-      return Error(e.errorCode, code: e.httpStatus);
+      return _err(e);
+    } on DioException catch (e) {
+      return _dioErr(e);
     }
   }
 

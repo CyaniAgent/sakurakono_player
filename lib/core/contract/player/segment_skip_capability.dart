@@ -4,12 +4,11 @@
 
 import 'package:flutter/animation.dart' show Animation;
 import 'package:flutter/widgets.dart'
-    show AnimatedListState, BuildContext, GlobalKey, VoidCallback, Widget;
+    show AnimatedListState, BuildContext, GlobalKey, Widget;
 
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart'
     show Segment;
 import 'package:skf/core/models/sponsor_block_types.dart';
-import 'package:skf/pages/video/video_models.dart';
 
 /// 片段跳过引擎(页面级状态,由适配器实现)。
 abstract class SegmentSkipEngine {

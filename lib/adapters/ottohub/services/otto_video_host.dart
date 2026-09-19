@@ -4,27 +4,33 @@
 // lib/player(PlayerView + PlayerController,media_kit 后端),数据来自
 // OttoVideoRepository.videoUrl(ottohub SDK)。不支持的能力按契约返回
 // no-op/false(页面自动降级)。
+//
+// 已接入:播放器装配(含弹幕层 OttoPlDanmaku)、投稿简介面板、评论面板
+// (含评论 tab 计数与回顶)、相关视频面板、发弹幕面板、登录态
+// (经 OttoAccountProvider)。能力接口(segmentSkip/notes/downloadPanel/
+// audioMode/playlist/series 等)使用 DefaultPlayerCapabilities 默认降级。
 
 import 'package:flutter/material.dart';
 
-import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart';
-import 'package:skf/core/models/sponsor_block_types.dart';
-import 'package:skf/core/models/user_types.dart';
-
+import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
+import 'package:skf/adapters/ottohub/services/otto_danmaku_layer.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_intro_panel.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_page_hub.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_related_panel.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_reply_panel.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/player/core_player_service.dart';
-import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/video/controller.dart';
-import 'package:skf/core/contract/player/playback_models.dart';
 import 'package:skf/core/contract/player/playback_source_capability.dart';
+import 'package:skf/pages/video/controller.dart';
 import 'package:skf/pages/video/video_host.dart';
-import 'package:skf/player/player_view.dart';
-import 'package:skf/router/app_navigator.dart';
 import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/player/models/data_source.dart';
 import 'package:skf/player/models/heart_beat_type.dart';
 import 'package:skf/player/models/play_repeat.dart';
 import 'package:skf/player/player_controller.dart';
+import 'package:skf/player/player_view.dart';
+import 'package:skf/router/app_navigator.dart';
 
 class _OttoPlayerHost implements VideoPlayerHost {
   PlayerController? _player;
@@ -45,22 +51,10 @@ class _OttoPlayerHost implements VideoPlayerHost {
   PlayerController acquirePlayer() => player;
 
   @override
-  bool get tryLook => false;
-
-  @override
   bool get enableAudioNormalization => false;
 
   @override
   bool get enableHeart => false;
-
-  @override
-  bool get enableBlock => false;
-
-  @override
-  bool get enableSponsorBlock => false;
-
-  @override
-  bool get enablePgcSkip => false;
 
   @override
   bool get playerDanmakuVisible => false;
@@ -69,10 +63,10 @@ class _OttoPlayerHost implements VideoPlayerHost {
   void setPlayerDanmakuVisible(bool value) {}
 
   @override
-  bool get danmakuEnabled => false;
+  bool get danmakuEnabled => OttoDanmakuToggle.instance.enabled;
 
   @override
-  void toggleDanmakuEnabled() {}
+  void toggleDanmakuEnabled() => OttoDanmakuToggle.instance.toggle();
 
   @override
   PlayRepeat get playerPlayRepeat => PlayRepeat.listOrder;
@@ -142,38 +136,33 @@ class _OttoPlayerHost implements VideoPlayerHost {
 
   @override
   bool get showDmChart => false;
-  @override
-  String getCdnUrl(List<String> urls, {bool isAudio = false}) =>
-      urls.isEmpty ? '' : urls.first;
 }
 
-/// OttoHub 视频页宿主桩。
+/// OttoHub 视频页宿主。
 class OttoVideoHost extends VideoHost {
   final _playerHost = _OttoPlayerHost();
+  final _hub = OttoVideoPageHub();
+
+  /// 页面销毁前 registry 里还能查到控制器;销毁过程中面板重建时返回 null。
+  VideoDetailController? _controller(String heroTag) =>
+      videoDetailRegistry[heroTag];
 
   @override
   VideoPlayerHost get playerHost => _playerHost;
 
   @override
-  bool get isLogin => false;
+  bool get isLogin => appRead(ottoAccountProvider).isLogin;
 
   @override
-  bool get isVideoLogin => false;
-
-  @override
-  List<VideoDecodeFormatType> get preferCodecs => const <VideoDecodeFormatType>[];
+  bool get isVideoLogin => appRead(ottoAccountProvider).isLogin;
 
   @override
   PlaybackSourceCapability get playbackSource => _OttoPlaybackSource();
 
   @override
-  VideoBlock createBlock(VideoDetailController controller) => _OttoVideoBlock();
-
-  @override
-  void reportVideo(int aid) {}
-
-  @override
-  Future<void> onVideoDetailDispose(String heroTag) async {}
+  Future<void> onVideoDetailDispose(String heroTag) async {
+    _hub.dispose(heroTag);
+  }
 
   @override
   Widget buildPlayer({
@@ -183,13 +172,29 @@ class OttoVideoHost extends VideoHost {
     bool isPipMode = false,
     required bool isPortrait,
   }) {
+    final player = playerHost.player;
+    final vid = _controller(heroTag)?.cid;
     return PlayerView(
       maxWidth: width,
       maxHeight: height,
-      plPlayerController: playerHost.player,
-      headerControl: _OttoPlayerHeader(
-        title: videoTitle(heroTag) ?? '',
+      plPlayerController: player,
+      headerControl: ListenableBuilder(
+        listenable: _hub.state(heroTag),
+        builder: (context, _) =>
+            _OttoPlayerHeader(title: videoTitle(heroTag) ?? ''),
       ),
+      danmuWidget: vid == null || vid <= 0
+          ? null
+          : ListenableBuilder(
+              listenable: player,
+              builder: (_, _) => OttoPlDanmaku(
+                key: ValueKey(vid),
+                vid: vid,
+                playerController: player,
+                isFullScreen: player.isFullScreen,
+                size: Size(width, height),
+              ),
+            ),
     );
   }
 
@@ -225,26 +230,26 @@ class OttoVideoHost extends VideoHost {
     required bool isPortrait,
     required bool isHorizontal,
   }) {
-    return const SliverToBoxAdapter(child: SizedBox.shrink());
+    final bvid = _controller(heroTag)?.bvid;
+    if (bvid == null || bvid.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+    return OttoVideoIntroPanel(
+      key: key,
+      hub: _hub,
+      heroTag: heroTag,
+      bvid: bvid,
+    );
   }
 
   @override
-  Widget buildRelatedPanel({required Key key, required String heroTag}) =>
-      const SliverToBoxAdapter(child: SizedBox.shrink());
-
-  @override
-  Widget buildPgcIntroPage({
-    required Key key,
-    required String heroTag,
-    required int cid,
-    required double maxWidth,
-    required bool isLandscape,
-  }) {
-    return const SizedBox.shrink();
+  Widget buildRelatedPanel({required Key key, required String heroTag}) {
+    final bvid = _controller(heroTag)?.bvid;
+    if (bvid == null || bvid.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+    return OttoVideoRelatedPanel(key: key, bvid: bvid);
   }
-
-  @override
-  Widget buildSeasonPanel({required String heroTag}) => const SizedBox.shrink();
 
   @override
   Widget buildReplyPanel({
@@ -252,18 +257,42 @@ class OttoVideoHost extends VideoHost {
     required String heroTag,
     bool isNested = false,
   }) {
-    return const SizedBox.shrink();
+    final ctl = _controller(heroTag);
+    final vid = ctl?.aid ?? (ctl == null ? null : int.tryParse(ctl.bvid));
+    if (vid == null || vid <= 0) {
+      return const SizedBox.shrink();
+    }
+    return OttoVideoReplyPanel(
+      key: key,
+      hub: _hub,
+      heroTag: heroTag,
+      vid: vid,
+      isNested: isNested,
+    );
   }
 
   @override
-  Widget buildReplyTabLabel({required String heroTag}) => const SizedBox.shrink();
+  Widget buildReplyTabLabel({required String heroTag}) {
+    final state = _hub.state(heroTag);
+    return ListenableBuilder(
+      listenable: state,
+      builder: (context, _) => Tab(
+        text: state.commentCount > 0 ? '评论 ${state.commentCount}' : '评论',
+      ),
+    );
+  }
 
   @override
-  void animateReplyToTop(String heroTag) {}
-
-  @override
-  bool shouldShowSeasonPanel(String heroTag, {required bool isPortrait}) =>
-      false;
+  void animateReplyToTop(String heroTag) {
+    final ctr = _hub.replyScrollCtrs[heroTag];
+    if (ctr != null && ctr.hasClients) {
+      ctr.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 
   @override
   Future<void> showShootDanmakuSheet({
@@ -275,7 +304,17 @@ class OttoVideoHost extends VideoHost {
     void Function(String?)? onSave,
     ({int? mode, int? fontSize, Color? color})? dmConfig,
     ValueChanged<({int mode, int fontSize, Color color})>? onSaveDmConfig,
-  }) async {}
+  }) {
+    // OttoHub 弹幕按视频(vid)维度,cid 即 vid。
+    return showOttoSendDanmakuSheet(
+      vid: cid,
+      progress: progress,
+      initialValue: initialValue,
+      onSave: onSave,
+      dmConfig: dmConfig,
+      onSaveDmConfig: onSaveDmConfig,
+    );
+  }
 
   @override
   void startIntroTimer(String heroTag) {}
@@ -293,84 +332,16 @@ class OttoVideoHost extends VideoHost {
   Future<void> viewLater(String heroTag) async {}
 
   @override
-  void showMediaListPanel(BuildContext context, String heroTag) {}
-
-  @override
-  void showNoteList(BuildContext context, String heroTag) {}
-
-  @override
-  Future<void> showDownloadPanel(BuildContext context, String heroTag) async {}
-
-  @override
-  void openAudioPage(String heroTag) {}
-
-  @override
-  void onBlock(BuildContext context, String heroTag) {}
-
-  @override
-  void showSBDetail(String heroTag) {}
-
-  @override
-  Future<bool> getSteinEdgeInfo({
-    required String heroTag,
-    required String bvid,
-    required int? graphVersion,
-    int? edgeId,
-  }) async =>
-      false;
-
-  @override
-  Future<LoadingState<List<double>>> fetchDmTrend({
-    required String bvid,
-    required int cid,
-  }) async =>
-      const Error(null);
-
-  @override
-  Future<List<VideoSubtitleItem>?> fetchDmSubtitles({
-    required int aid,
-    required int cid,
-  }) async =>
-      null;
-
-  @override
-  bool isWatchLaterSource(Object? sourceType) => false;
-
-  @override
-  bool isFavSource(Object? sourceType) => false;
-
-  @override
-  int sourceMediaType(Object? sourceType) => -1;
-
-  @override
-  bool isFileSourceSource(Object? sourceType) => false;
-
-  @override
-  bool isPlayAllSource(Object? sourceType) => false;
-
-  @override
   ({int width, int height})? partDimension(String heroTag, int cid) => null;
 
   @override
-  void applyPgcClipInfo(String heroTag, List<Map<String, dynamic>>? clipInfoList) {}
-
-  @override
-  void applyContinuePlayingPart(String heroTag, {
-    required int? lastPlayCid,
-    required int currentCid,
-  }) {}
-
-  @override
-  bool isSteinGate(String heroTag) => false;
-
-  @override
-  String? videoTitle(String heroTag) => null;
-
-  @override
-  void onChangeEpisodeFromMedia(String heroTag, CoreMediaListItemModel item) {}
-
-  @override
   CoreFileEntryInfo? fileEntryInfo(Object? entry) => null;
+
+  @override
+  String? videoTitle(String heroTag) {
+    final title = _hub.state(heroTag).title;
+    return title.isEmpty ? null : title;
+  }
 
   @override
   bool get isShutdownTimerWaiting => false;
@@ -378,62 +349,6 @@ class OttoVideoHost extends VideoHost {
   @override
   void handleShutdownTimer() {}
 }
-
-/// OttoHub 片段跳过引擎桩：全部 no-op，不抛异常。
-class _OttoVideoBlock implements VideoBlock {
-  @override
-  List<Segment> get segmentProgressList => const <Segment>[];
-
-  @override
-  GlobalKey<AnimatedListState> get listKey => GlobalKey<AnimatedListState>();
-
-  @override
-  List<Object> get listData => const <Object>[];
-
-  @override
-  bool get isBlock => false;
-
-  @override
-  bool get enableBlock => false;
-
-  @override
-  void initSkip() {}
-
-  @override
-  void resetBlock() {}
-
-  @override
-  void handleSBData(List<CoreSegmentItemModel> list) {}
-
-  @override
-  Future<void> querySponsorBlock({required String bvid, required int cid}) async {}
-
-  @override
-  void onAddItem(Object item) {}
-
-  @override
-  void onRemoveItem(int index, Object item) {}
-
-  @override
-  Future<void>? onSkip(Object item, {bool isSeek = true}) => null;
-
-  @override
-  Duration? getFirstSegment([int pos = 0]) => null;
-
-  @override
-  Widget buildItem(Object item, Animation<double> animation) =>
-      const SizedBox.shrink();
-
-  @override
-  void cancelBlockListener() {}
-
-  @override
-  void showSBDetail() {}
-
-  @override
-  void dispose() {}
-}
-
 
 /// OttoHub 播放地址选择:取服务器返回的第一个直链(mp4 优先,m3u8 兜底)。
 class _OttoPlaybackSource implements PlaybackSourceCapability {

@@ -3,11 +3,9 @@
 // 实现方:各适配器(如 BiliVideoHost/OttoVideoHost/ExampleVideoHost)。
 // 消费方:lib/pages/video(仅允许依赖本契约,禁止 import 任何适配器)。
 
-import 'package:flutter/widgets.dart' show VoidCallback, Widget;
 
+import 'package:flutter/foundation.dart' show VoidCallback;
 import 'package:skf/core/models/video_types.dart';
-import 'package:skf/pages/video/video_models.dart';
-import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/pages/video/video_models.dart';
 import 'package:skf/player/models/data_source.dart';
 import 'package:skf/player/models/heart_beat_type.dart';

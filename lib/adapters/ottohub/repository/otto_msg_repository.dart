@@ -19,13 +19,69 @@ class OttoMsgRepository implements MsgRepository {
       Error(e.errorCode, code: e.httpStatus);
 
   
+  /// OttoHub 时间字符串("2026-09-17 23:58:05")→ Unix 秒。
+  static int _parseTime(String? time) {
+    final t = DateTime.tryParse(time ?? '');
+    if (t == null) return 0;
+    return t.millisecondsSinceEpoch ~/ 1000;
+  }
+
+  /// 通知跳转路由:1=视频 /videoV?aid=,2=博客 /blogDetail?bid=。
+  static String? _dynUri(int? contentType, int? contentId) {
+    if (contentId == null || contentId <= 0) return null;
+    return contentType == 2
+        ? '/blogDetail?bid=$contentId'
+        : '/videoV?aid=$contentId';
+  }
+
+  static CoreUser _noticeUser(IMNoticeItem n) => CoreUser(
+        mid: n.senderUid ?? n.mid,
+        nickname: n.senderUsername ?? '',
+        avatar: n.senderAvatarUrl ?? '',
+      );
+
   @override
   Future<LoadingState<CoreMsgReplyData>> msgFeedReplyMe({
     int? cursor,
     int? cursorTime,
   }) async {
-    // no SDK API — SDK 缺 oldIm.reply-feed 或等效端点
-    return _err(const ApiException('not_implemented'));
+    try {
+      // cursor 即 offset(kind 不传 = 评论+回复都收)。
+      final list = await _client.oldIm.getCommentReplies(
+        offset: cursor ?? 0,
+        num: 20,
+      );
+      return Success(CoreMsgReplyData(
+        cursor: CoreCursor(
+          isEnd: list.length < 20,
+          id: (cursor ?? 0) + list.length,
+        ),
+        items: list
+            .map((n) => CoreMsgReplyItem(
+                  id: n.rid ?? n.senderUid,
+                  user: _noticeUser(n),
+                  item: CoreMsgReplyContent(
+                    // OttoHub:content_type 1=视频 2=博客;businessId 即 vid/bid。
+                    subjectId: n.contentId,
+                    businessId: n.contentId,
+                    business: switch (n.contentType) {
+                      2 => 'blog',
+                      _ => 'video',
+                    },
+                    // kind 1=评论(源内容即目标) 2=回复(源=根,目标=被回复)。
+                    rootReplyContent: n.kind == 2 ? n.contentTitle : null,
+                    sourceContent: n.content,
+                    targetReplyContent: n.kind == 2 ? n.content : n.contentTitle,
+                  ),
+                  counts: 1,
+                  replyTime: _parseTime(n.time),
+                ))
+            .toList(),
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoMsgRepository.msgFeedReplyMe ApiException: \${e.errorCode}');
+      return _err(e);
+    }
   }
 
   @override
@@ -33,8 +89,34 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // no SDK API — SDK 缺 oldIm.at-feed 或等效端点
-    return _err(const ApiException('not_implemented'));
+    try {
+      final list = await _client.oldIm.getMentions(offset: cursor ?? 0, num: 20);
+      return Success(CoreMsgAtData(
+        cursor: CoreCursor(
+          isEnd: list.length < 20,
+          id: (cursor ?? 0) + list.length,
+        ),
+        items: list
+            .map((n) => CoreMsgAtItem(
+                  id: n.mid,
+                  user: _noticeUser(n),
+                  item: CoreMsgAtContent(
+                    business: switch (n.contentType) {
+                      2 => 'blog',
+                      _ => 'video',
+                    },
+                    sourceContent: n.excerpt ?? n.content ?? '',
+                    // 跳转:1=视频 2=博客(与站点 /v/{id}、/b/{id} 对齐)。
+                    nativeUri: _dynUri(n.contentType, n.contentId),
+                  ),
+                  atTime: _parseTime(n.time),
+                ))
+            .toList(),
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoMsgRepository.msgFeedAtMe ApiException: \${e.errorCode}');
+      return _err(e);
+    }
   }
 
   @override
@@ -42,8 +124,8 @@ class OttoMsgRepository implements MsgRepository {
     int? cursor,
     int? cursorTime,
   }) async {
-    // no SDK API — SDK 缺 oldIm.like-feed 或等效端点
-    return _err(const ApiException('not_implemented'));
+    // 站点消息中心仅评论/提及两类 inbox,无点赞通知端点。
+    return const Error('OttoHub 暂不支持点赞消息');
   }
 
   @override

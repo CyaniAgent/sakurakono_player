@@ -86,8 +86,8 @@ class OttoUserRepository implements UserRepository {
     String keyword = '',
     bool asc = false,
   }) async {
-    // no SDK API — SDK 缺 watch_later list 或等效端点
-    return _err(const ApiException('not_implemented'));
+    // OttoHub 无稍后再看概念——返回空列表,页面显示空态。
+    return Success(CoreLaterData());
   }
 
   @override
@@ -139,8 +139,8 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<bool>> historyStatus({Object? account}) async {
-    // no SDK API — SDK 缺 history status 或等效端点
-    return _err(const ApiException('not_implemented'));
+    // OttoHub 无历史暂停概念——返回默认"未暂停"以静默降级。
+    return const Success(false);
   }
 
   @override
@@ -151,8 +151,8 @@ class OttoUserRepository implements UserRepository {
 
   @override
   Future<LoadingState<void>> delHistory(String kid, {Object? account}) async {
-    // no SDK API — SDK 缺 history delete 或等效端点
-    return _err(const ApiException('not_implemented'));
+    // OttoHub 无删除历史端点——明确提示而非含糊报错。
+    return const Error('OttoHub 暂不支持删除历史');
   }
 
   @override

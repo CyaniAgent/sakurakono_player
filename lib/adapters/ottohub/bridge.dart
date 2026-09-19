@@ -41,6 +41,7 @@ import 'package:skf/pages/webview/view.dart';
 import 'package:skf/pages/video/view.dart';
 import 'package:skf/pages/setting/view.dart';
 import 'package:skf/pages/login/view.dart';
+import 'package:skf/adapters/ottohub/services/otto_dynamics_pages.dart';
 import 'package:skf/pages/fav/view.dart';
 import 'package:skf/pages/later/view.dart';
 import 'package:skf/pages/history/view.dart';
@@ -88,6 +89,9 @@ class OttoAdapter implements AppAdapter {
   @override
   Future<void> registerDependencies() async {
     final client = OttohubClient();
+    // 启动即从本地缓存恢复登录凭证(注入的实例与 override 是同一份)。
+    final account = OttoAccountProvider(client);
+    await account.restoreFromCache();
 
     // Register repositories using the modern (non-Old) OttoHub API modules.
     // Riverpod ProviderScope overrides — direct instantiation, no Get.find dependency
@@ -111,7 +115,7 @@ class OttoAdapter implements AppAdapter {
       msgRepositoryProvider.overrideWithValue(OttoMsgRepository(client)),
       blackRepositoryProvider.overrideWithValue(OttoBlackRepository(client)),
       // Page hosts / actions (previously Get.lazyPut).
-      ottoAccountProvider.overrideWithValue(OttoAccountProvider(client)),
+      ottoAccountProvider.overrideWithValue(account),
       videoHostProvider.overrideWithValue(OttoVideoHost()),
       settingHostProvider.overrideWithValue(OttoSettingHost()),
       memberHostProvider.overrideWithValue(OttoMemberHost()),
@@ -165,6 +169,12 @@ class OttoAdapter implements AppAdapter {
         ),
         // 动态
         GoRoute(path: '/dynamics', builder: (_, _) => const DynamicsPage()),
+        // 博客详情(OttoHub 动态形态)
+        GoRoute(
+          path: '/blogDetail',
+          builder: (_, state) =>
+              OttoDynDetailPage.fromQuery(state.uri.queryParameters['bid']),
+        ),
         // 关注 / 粉丝
         GoRoute(path: '/follow', builder: (_, _) => const FollowPage()),
         GoRoute(path: '/fan', builder: (_, _) => const FansPage()),

@@ -178,7 +178,7 @@ void main() {
     test('happy: dynamicDetail converts the blog detail into a core dynamic',
         () async {
       makeRepo(<String, String>{
-        'GET /blog/get_blog_detail': fixture('ottohub/blog_detail'),
+        'GET /blog/42/detail': fixture('ottohub/blog_detail'),
       });
 
       final result = await repo.dynamicDetail(id: '42');
@@ -200,7 +200,7 @@ void main() {
     test('happy: articleInfo strips the cv prefix and converts stats',
         () async {
       makeRepo(<String, String>{
-        'GET /blog/get_blog_detail': fixture('ottohub/blog_detail'),
+        'GET /blog/42/detail': fixture('ottohub/blog_detail'),
       });
 
       final result = await repo.articleInfo(cvId: 'cv42');
@@ -219,7 +219,7 @@ void main() {
     test('happy: opusDetail converts the blog detail into a core dynamic',
         () async {
       makeRepo(<String, String>{
-        'GET /blog/get_blog_detail': fixture('ottohub/blog_detail_minimal'),
+        'GET /blog/7/detail': fixture('ottohub/blog_detail_minimal'),
       });
 
       final result = await repo.opusDetail(opusId: '7');

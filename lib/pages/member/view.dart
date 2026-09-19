@@ -18,11 +18,9 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/extension/context_ext.dart';
 import 'package:skf/utils/num_utils.dart';
-import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MemberPage extends StatefulWidget {
   const MemberPage({super.key, this.mid, this.fromViewAid});

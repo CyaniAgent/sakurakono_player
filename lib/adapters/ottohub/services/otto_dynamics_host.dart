@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+
+import 'package:skf/adapters/ottohub/services/otto_dynamics_pages.dart';
+import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/search_types.dart' show CoreDimension;
 import 'package:skf/pages/dynamics/dynamics_host.dart';
+import 'package:skf/router/app_navigator.dart';
 
-/// OttoHub stub for [DynamicsHost].
+/// OttoHub 动态页宿主实现。
 ///
-/// OttoHub has no dynamics-page UI of its own (test-only adapter); the
-/// Bilibili pages are not reused here. All deep interactions degrade to
-/// no-op / placeholder (defensive degradation, no exceptions thrown).
+/// OttoHub 的「动态」内容形态为博客:全部/专栏 tab 展示站内最新博客
+/// (经 ottoBlogRepositoryProvider),其余 tab(投稿/番剧/UP)无对应
+/// 内容形态,显示占位。B站 专属交互(转发/抽奖/直播等)降级 no-op。
 class OttoDynamicsHost implements DynamicsHost {
 
   @override
-  Widget buildTabPage(CoreDynamicsTabType type) => const SizedBox.shrink();
+  Widget buildTabPage(CoreDynamicsTabType type) =>
+      OttoDynamicsTabPage(type: type);
 
   @override
   void showCreateDynPanel(BuildContext context) {}
@@ -20,7 +26,7 @@ class OttoDynamicsHost implements DynamicsHost {
   bool get isMainDynamicsTab => false;
 
   @override
-  int get currentUserId => -1;
+  int get currentUserId => appRead(accountProvider).userId ?? -1;
 
   @override
   Future<void> reloadTab(CoreDynamicsTabType type) async {}
@@ -51,7 +57,21 @@ class OttoDynamicsHost implements DynamicsHost {
   bool viewPgcFromUri(String uri) => false;
 
   @override
-  void toVideoPage({String? bvid, int? cid, CoreDimension? dimension}) {}
+  void toVideoPage({String? bvid, int? cid, CoreDimension? dimension}) {
+    final vid = int.tryParse(bvid ?? '');
+    if (vid != null && vid > 0) {
+      AppNavigator.toNamed(
+        '/videoV',
+        preventDuplicates: false,
+        arguments: <String, dynamic>{
+          'aid': vid,
+          'bvid': '$vid',
+          'cid': vid,
+          'heroTag': '$vid-${DateTime.now().millisecondsSinceEpoch}',
+        },
+      );
+    }
+  }
 
   @override
   void openLiveFollowPage() {}
@@ -66,6 +86,10 @@ class OttoDynamicsHost implements DynamicsHost {
     bool inApp = false,
     Map? parameters,
   }) {
+    AppNavigator.toNamed(
+      '/webview',
+      parameters: {'url': url},
+    );
   }
 
   @override

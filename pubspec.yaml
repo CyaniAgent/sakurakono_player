@@ -150,9 +150,15 @@ dependencies:
       url: https://github.com/bggRGjQaUbCoE/window_manager.git
       path: packages/window_manager
       ref: main
-  ottohub_sdk_dart: ^0.0.2
+  ottohub_sdk_dart: ^0.0.9
 
 dependency_overrides:
+  # API 包以 git 仓库维护(2026-09 REST 迁移已在 0.0.3):
+  # https://github.com/SakuraCake/ottohub_sdk_dart (包位于仓库子目录)。
+  ottohub_sdk_dart:
+    git:
+      url: https://github.com/SakuraCake/ottohub_sdk_dart
+      path: ottohub_sdk_dart
   # flutter_html 3.0.0（已停维护）使用 html 包内部 `query_selector.dart` 的
   # 顶层 `matches()`；html 0.15.6+ 将其重构移除，钉回最后可用版本。
   html: 0.15.5+1
@@ -206,8 +212,6 @@ dependency_overrides:
       url: https://github.com/My-Responsitories/flutter_cached_network_image_ce.git
       path: cached_network_image
       ref: develop
-  ottohub_sdk_dart:
-    path: lib/ottohub_sdk_fix
 
 dev_dependencies:
   flutter_test:

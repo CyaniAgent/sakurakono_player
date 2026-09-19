@@ -74,7 +74,7 @@ void main() {
 
     test('happy: memberInfo converts UserDetail fields', () async {
       makeRepo(<String, String>{
-        'GET /user/get_user_detail': fixture('ottohub/user_detail'),
+        'GET /user/7': fixture('ottohub/user_detail'),
       });
 
       final result = await repo.memberInfo(mid: 7);
@@ -91,7 +91,7 @@ void main() {
 
     test('error: memberInfo returns Error on status=error envelope', () async {
       makeRepo(<String, String>{
-        'GET /user/get_user_detail': fixture('ottohub/error_block'),
+        'GET /user/7': fixture('ottohub/error_block'),
       });
 
       final result = await repo.memberInfo(mid: 7);
@@ -105,7 +105,7 @@ void main() {
 
     test('happy: memberStat converts UserData into a raw stat map', () async {
       makeRepo(<String, String>{
-        'GET /profile/user_data': fixture('ottohub/user_data'),
+        'GET /profile': fixture('ottohub/user_data'),
       });
 
       final result = await repo.memberStat(mid: 7);
@@ -121,7 +121,7 @@ void main() {
 
     test('happy: memberCardInfo wraps the detail into a CoreCard', () async {
       makeRepo(<String, String>{
-        'GET /user/get_user_detail': fixture('ottohub/user_detail'),
+        'GET /user/7': fixture('ottohub/user_detail'),
       });
 
       final result = await repo.memberCardInfo(mid: 7);
@@ -181,7 +181,7 @@ void main() {
     test('happy: followUpGroup resolves uid from profile when mid is null',
         () async {
       makeRepo(<String, String>{
-        'GET /profile/user_profile': fixture('ottohub/user_profile'),
+        'GET /profile': fixture('ottohub/user_profile'),
         'GET /following/list/10086': fixture('ottohub/following_list'),
       });
 
@@ -210,7 +210,7 @@ void main() {
     test('happy: getfollowSearch converts searched users into CoreFollowData',
         () async {
       makeRepo(<String, String>{
-        'GET /user/select_user_list': fixture('ottohub/user_summaries'),
+        'GET /user/search': fixture('ottohub/user_search'),
       });
 
       final result = await repo.getfollowSearch(mid: 7, ps: 20, pn: 1, name: '甲');
@@ -221,13 +221,13 @@ void main() {
       expect(data.list!.first.mid, 1001);
       expect(data.list!.first.uname, '搜索结果甲');
       expect(data.list!.first.sign, '简介甲');
-      expect(data.list![1].sign, isNull);
+      expect(data.list![1].sign, '简介乙');
       expect(fake.requestCount, 1);
     });
 
     test('happy: space builds CoreSpaceData with the CoreCard', () async {
       makeRepo(<String, String>{
-        'GET /user/get_user_detail': fixture('ottohub/user_detail'),
+        'GET /user/7': fixture('ottohub/user_detail'),
       });
 
       final result = await repo.space(mid: 7);
@@ -243,7 +243,7 @@ void main() {
 
     test('happy: memberView returns the raw detail map', () async {
       makeRepo(<String, String>{
-        'GET /user/get_user_detail': fixture('ottohub/user_detail'),
+        'GET /user/7': fixture('ottohub/user_detail'),
       });
 
       final result = await repo.memberView(mid: 7);
@@ -259,7 +259,7 @@ void main() {
 
     test('happy: spaceOpus converts blog list into opus flow items', () async {
       makeRepo(<String, String>{
-        'GET /blog/user_blog_list': fixture('ottohub/blog_list'),
+        'GET /blog/users/7/blogs': fixture('ottohub/blog_list'),
       });
 
       final result = await repo.spaceOpus(hostMid: 7, page: 1);

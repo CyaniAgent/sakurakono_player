@@ -179,7 +179,7 @@ void main() {
     test('happy: sessionDetail falls back to a generic user lookup', () async {
       makeRepo(<String, String>{
         'GET /im/friend_list': fixture('ottohub/im_friend_list_empty'),
-        'GET /user/id_user_list': fixture('ottohub/user_summaries'),
+        'GET /user/1001': fixture('ottohub/user_1001_profile'),
       });
 
       final result = await repo.sessionDetail(talkerId: 1001);
@@ -196,7 +196,7 @@ void main() {
         () async {
       makeRepo(<String, String>{
         'GET /im/friend_list': fixture('ottohub/im_friend_list_empty'),
-        'GET /user/id_user_list': fixture('ottohub/user_summaries_empty'),
+        'GET /user/1001': fixture('ottohub/error_block'),
       });
 
       final result = await repo.sessionDetail(talkerId: 999);

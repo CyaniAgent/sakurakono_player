@@ -12,10 +12,7 @@
 import 'dart:async' show Future;
 import 'dart:ui' show Color;
 
-import 'package:flutter/animation.dart' show Animation;
 import 'package:flutter/widgets.dart' show
-    AnimatedListState,
-    BuildContext,
     GlobalKey,
     Key,
     ValueChanged,
@@ -24,20 +21,10 @@ import 'package:flutter/widgets.dart' show
 
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/contract/player/capabilities.dart';
-import 'package:skf/core/contract/player/danmaku_trend_capability.dart';
-import 'package:skf/core/contract/player/download_capability.dart';
-import 'package:skf/core/contract/player/interactive_capability.dart';
-import 'package:skf/core/contract/player/notes_capability.dart';
 import 'package:skf/core/contract/player/playback_models.dart';
-import 'package:skf/core/contract/player/playlist_capability.dart';
-import 'package:skf/core/contract/player/segment_skip_capability.dart';
-import 'package:skf/core/contract/player/series_capability.dart';
-import 'package:skf/core/contract/player/subtitle_capability.dart';
 import 'package:skf/core/contract/player/video_player_host.dart';
 import 'package:skf/core/models/video_types.dart';
-import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/providers.dart';
-import 'package:skf/pages/video/video_models.dart';
 
 export 'package:skf/core/contract/player/capabilities.dart';
 export 'package:skf/core/contract/player/danmaku_trend_capability.dart';

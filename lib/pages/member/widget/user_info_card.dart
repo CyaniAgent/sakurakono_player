@@ -776,54 +776,6 @@ class UserInfoCard extends StatelessWidget {
         ],
       );
 
-  Widget _buildChargeItem(
-    ColorScheme colorScheme,
-    List<dynamic>? list,
-    Object? count,
-    String desc,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        mainAxisSize: .min,
-        children: [
-          avatars(
-            gap: 10,
-            colorScheme: colorScheme,
-            users: list!.take(3),
-          ),
-          const SizedBox(width: 4),
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: NumUtils.numFormat(count),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                TextSpan(
-                  text: desc,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.outline,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Icon(
-            Icons.keyboard_arrow_right,
-            size: 20,
-            color: colorScheme.outline,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildFollowedUp(
     ColorScheme colorScheme,
     CoreFollowingsFollowedUpper item,

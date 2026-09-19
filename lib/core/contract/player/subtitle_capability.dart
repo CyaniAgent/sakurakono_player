@@ -1,6 +1,5 @@
 // 字幕能力:获取视频字幕轨道数据。
 
-import 'package:skf/core/models/video_types.dart';
 import 'package:skf/pages/video/video_models.dart';
 
 /// 字幕能力宿主。

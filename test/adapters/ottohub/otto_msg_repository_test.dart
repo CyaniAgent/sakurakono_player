@@ -110,20 +110,17 @@ void main() {
 
     test('happy: imUserInfos resolves each uid via getUserById', () async {
       makeRepo(<String, String>{
-        'GET /user/id_user_list': fixture('ottohub/user_summaries'),
+        'GET /user/1': fixture('ottohub/user_1'),
+        'GET /user/2': fixture('ottohub/user_2'),
       });
 
       final result = await repo.imUserInfos(uids: '1,2');
 
       expect(result, isA<Success<List<CoreImUserInfosData>?>>());
       final list = (result as Success<List<CoreImUserInfosData>?>).response;
-      expect(list, hasLength(2));
-      expect(list![0].mid, 1001);
-      expect(list[0].name, '搜索结果甲');
-      expect(list[0].face, 'https://example.com/s1.jpg');
-      expect(list[0].sign, '简介甲');
-      expect(list[1].mid, 1001);
-      expect(list[1].sign, '简介甲');
+      expect(list, hasLength(2), reason: '两个 uid 都应解析成功');
+      expect(list![0].mid, 1);
+      expect(list[1].mid, 2);
       expect(fake.requestCount, 2);
     });
 

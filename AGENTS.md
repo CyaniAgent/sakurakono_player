@@ -15,7 +15,7 @@
 - **能力降级模式(核心设计)**:可选播放器能力(片段跳过/系列/合集/笔记/听音频/互动/字幕/高能/下载/播放源)定义为 `core/contract/player/` 下的独立接口;`VideoHost with DefaultPlayerCapabilities` 提供 no-op 默认(`supported=false`),适配器覆写 getter 返回自身即接入;页面对 null/不支持自动降级隐藏。**禁止 pages import 任何适配器**。
 - **Controller 模式**:`CommonControllerRiverpod`/`CommonListControllerRiverpod`(ChangeNotifier);页面 `ListenableBuilder`。注册表模式:`Map<String, T> xxxRegistry` + `Provider.family`(member 页)。
 - **播放入口**:设置页「播放链接」→ `SettingHost.openVideoById`(适配器自实现跳转)。
-- **已知边界(待接入)**:OttoVideoHost.buildPlayer(播放器装配)、MemberHost.buildTab(用户页 tab)、DynamicsHost.buildTabPage(动态 tab)、登录 UI——接口都在,实现待写。
+- **已知边界(待接入)**:登录 UI 已有框架页(`/loginPage`,OttoHub 账密直传)+ 账号状态接线(启动恢复缓存/登录后同步 Riverpod)。视频页(播放器/弹幕/简介/评论/相关面板)、用户页(投稿/动态 tab)、动态页(博客流/博客详情 `/blogDetail`)均已接入。SDK 旧路由已按 2026-09 服务端 REST 迁移(comment/video/user/blog/danmaku;`/user/{uid}`、`/blog/latest`、`/blog/users/{uid}/blogs`、`/blog/{bid}/detail`、`/comment/videos/{vid}` 等)。
 
 ## SDK & env
 
@@ -70,7 +70,7 @@ lib/
 
 | Adapter | Status | Notes |
 |---|---|---|
-| OttoHub | 数据层大半真实现;UI Host 桩(播放器装配/用户页 tab/动态 tab 待接) | 唯一运行态适配器 |
+| OttoHub | 数据层大半真实现;视频页(播放器/弹幕/简介/评论/相关)、用户页(投稿/动态)、动态页(博客)已接入 | 唯一运行态适配器 |
 | Example | 骨架(全 UnimplementedError 指引) | 新适配器复制起点 |
 
 ## Testing
@@ -96,7 +96,7 @@ lib/
 ## Dependencies
 
 - git 分叉依赖(forks)大幅保留;删除的 11 个:Brotli/protobuf/http2/dio_http2_adapter/super_sliver_list/waterfall_flow/chat_bottom_container/flutter_sortable_wrap/live_photo_maker/dlna_dart/web_socket_channel。
-- `ottohub_sdk_dart` 仍为本地 path override(`lib/ottohub_sdk_fix/`)。
+- `ottohub_sdk_dart` 为 git 依赖(`github.com/SakuraCake/ottohub_sdk_dart`,包在子目录 `ottohub_sdk_dart/`,本地克隆于 `D:\...\GitHub\ottohub_sdk_dart`);0.0.3 已对齐 2026-09 服务端 REST 迁移,SDK 改动须在该仓库提交并推版。
 - `flutter_html` 3.0.0 需 `html: 0.15.5+1` pin(**勿删**)。
 
 ## Gotchas

@@ -64,8 +64,9 @@ class OttoMemberRepository implements MemberRepository {
     bool? includeCursor,
   }) async {
     try {
+      // 服务端默认页大小 20,offset 从 0 起按页偏移。
       final videos = await _client.video.getUserVideos(mid ?? 0,
-          offset: pn != null ? (pn - 1) * 30 : null);
+          offset: pn != null ? (pn - 1) * 20 : null);
       return Success(CoreSpaceArchiveData(
         item: videos.videoList
             .map((v) => CoreSpaceArchiveItem(
@@ -73,6 +74,8 @@ class OttoMemberRepository implements MemberRepository {
                   cover: v.coverUrl,
                   duration: v.duration,
                   play: v.viewCount,
+                  // 原版用户页卡片第二行展示投稿日期。
+                  publishTimeText: v.time.split(' ').first,
                   uri: v.vid.toString(),
                   param: v.vid.toString(),
                   goto: 'av',
@@ -81,6 +84,7 @@ class OttoMemberRepository implements MemberRepository {
                 ))
             .toList(),
         count: videos.videoList.length,
+        hasNext: videos.videoList.length >= 20,
       ));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.spaceArchive ApiException: ${e.errorCode}');
@@ -124,6 +128,11 @@ class OttoMemberRepository implements MemberRepository {
         'coreArchive': <String, dynamic>{
           'count': detail.videoNum,
         },
+        // OttoHub 用户页 tab:投稿(视频) + 动态(博客)。
+        'tab2': <Map<String, dynamic>>[
+          <String, dynamic>{'title': '投稿', 'param': 'contribute'},
+          <String, dynamic>{'title': '动态', 'param': 'dynamics'},
+        ],
       }));
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.space ApiException: ${e.errorCode}');

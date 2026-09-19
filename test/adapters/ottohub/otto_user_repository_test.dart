@@ -31,8 +31,8 @@ void main() {
     test('happy: userInfo merges profile and detail into CoreUserInfoData',
         () async {
       makeRepo(<String, String>{
-        'GET /profile/user_profile': fixture('ottohub/user_profile'),
-        'GET /user/get_user_detail': fixture('ottohub/user_detail_10086'),
+        'GET /profile': fixture('ottohub/user_profile'),
+        'GET /user/10086': fixture('ottohub/user_detail_10086'),
       });
 
       final result = await repo.userInfo();
@@ -50,7 +50,7 @@ void main() {
         () async {
       // Only the profile route is registered — the detail call gets a 404.
       makeRepo(<String, String>{
-        'GET /profile/user_profile': fixture('ottohub/user_profile'),
+        'GET /profile': fixture('ottohub/user_profile'),
       });
 
       final result = await repo.userInfo();
@@ -66,7 +66,7 @@ void main() {
 
     test('happy: userStatOwner converts follow/fan counts', () async {
       makeRepo(<String, String>{
-        'GET /profile/user_data': fixture('ottohub/user_data'),
+        'GET /profile': fixture('ottohub/user_data'),
       });
 
       final result = await repo.userStatOwner();
@@ -80,7 +80,7 @@ void main() {
 
     test('error: userStatOwner returns Error on status=error envelope', () async {
       makeRepo(<String, String>{
-        'GET /profile/user_data': fixture('ottohub/error_block'),
+        'GET /profile': fixture('ottohub/error_block'),
       });
 
       final result = await repo.userStatOwner();
@@ -95,7 +95,7 @@ void main() {
     test('happy: historyList converts VideoSummary items into CoreHistoryData',
         () async {
       makeRepo(<String, String>{
-        'GET /profile/history_video_list': fixture('ottohub/history_video_list'),
+        'GET /video/history-list': fixture('ottohub/history_video_list'),
       });
 
       final result = await repo.historyList(type: 'archive');
@@ -152,7 +152,7 @@ void main() {
 
     test('happy: spaceSetting returns the default privacy shell', () async {
       makeRepo(<String, String>{
-        'GET /profile/user_profile': fixture('ottohub/user_profile'),
+        'GET /profile': fixture('ottohub/user_profile'),
       });
 
       final result = await repo.spaceSetting();
@@ -165,7 +165,7 @@ void main() {
 
     test('happy: getUserRealName converts detail username', () async {
       makeRepo(<String, String>{
-        'GET /user/get_user_detail': fixture('ottohub/user_detail'),
+        'GET /user/7': fixture('ottohub/user_detail'),
       });
 
       final result = await repo.getUserRealName(7);

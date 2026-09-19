@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "data": {
+    "uid": "1",
+    "username": "搜索结果甲",
+    "intro": "简介甲",
+    "avatar_url": "https://example.com/s1.jpg"
+  }
+}

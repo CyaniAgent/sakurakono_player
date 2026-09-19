@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/repository/repository_providers.dart';
-import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/app_meta.dart';
 import 'package:skf/router/app_navigator.dart';
 

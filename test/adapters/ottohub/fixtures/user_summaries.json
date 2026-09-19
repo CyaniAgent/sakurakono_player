@@ -3,18 +3,18 @@
   "data": {
     "user_list": [
       {
-        "uid": 1001,
+        "uid": "1",
         "username": "搜索结果甲",
         "intro": "简介甲",
         "time": "2024-03-01T00:00:00Z",
         "avatar_url": "https://example.com/s1.jpg"
       },
       {
-        "uid": 1002,
-        "username": "搜索结果乙",
-        "intro": null,
+        "uid": "1",
+        "username": "搜索结果甲",
+        "intro": "简介甲",
         "time": "2024-03-02T00:00:00Z",
-        "avatar_url": null
+        "avatar_url": "https://example.com/s1.jpg"
       }
     ]
   }

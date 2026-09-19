@@ -3,28 +3,34 @@
   "data": {
     "comment_list": [
       {
-        "vcid": 601,
-        "parent_vcid": 0,
-        "uid": 2001,
+        "vcid": "601",
+        "parent_vcid": "0",
+        "uid": "2001",
         "content": "视频评论一",
         "time": "2024-05-01 10:30:00",
-        "child_comment_num": 3,
-        "if_my_comment": 0,
+        "is_pinned": 0,
+        "pin_order": 0,
+        "child_comment_num": "3",
+        "if_my_comment": "0",
         "username": "评论者甲",
         "honour": null,
-        "avatar_url": "https://example.com/cmt1.jpg"
+        "avatar_url": "https://example.com/cmt1.jpg",
+        "child_comments": []
       },
       {
-        "vcid": 602,
-        "parent_vcid": 601,
-        "uid": 2002,
+        "vcid": "602",
+        "parent_vcid": "601",
+        "uid": "2002",
         "content": "视频评论二",
         "time": "2024-05-02 11:00:00",
+        "is_pinned": 0,
+        "pin_order": 0,
         "child_comment_num": null,
-        "if_my_comment": 1,
+        "if_my_comment": "1",
         "username": null,
         "honour": null,
-        "avatar_url": null
+        "avatar_url": null,
+        "child_comments": []
       }
     ]
   }

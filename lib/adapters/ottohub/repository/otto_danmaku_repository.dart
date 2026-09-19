@@ -28,7 +28,8 @@ class OttoDanmakuRepository implements DanmakuRepository {
         progress: (d.time * 1000).round(), // seconds → ms
         mode: _modeToInt(d.mode),
         color: int.tryParse(d.color.replaceFirst('#', ''), radix: 16),
-        fontsize: int.tryParse(d.fontSize),
+        // 服务端返回形如 "25px"。
+        fontsize: int.tryParse(d.fontSize.replaceAll(RegExp(r'[^0-9]'), '')),
       );
 
   static int? _modeToInt(String mode) {

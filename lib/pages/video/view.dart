@@ -29,7 +29,6 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, clampDouble;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 
@@ -262,7 +261,12 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     if (!videoDetailController.plPlayerController.isCloseAll) {
       host.onVideoDetailDispose(heroTag);
       videoDetailController.makeHeartBeat();
-      plPlayerController.dispose();
+      // Windows media_kit:controller 先于 Video widget unmount 释放会在
+      // native 层访问已释放纹理导致进程崩溃 —— 推迟到本帧之后释放。
+      final player = plPlayerController;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        player.dispose();
+      });
     }
     removeObserverMobile(this);
 

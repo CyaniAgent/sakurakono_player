@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/about/view.dart';
 import 'package:skf/pages/setting/setting_host.dart';
 import 'package:skf/pages/setting/pages/display_mode.dart';
@@ -11,8 +13,8 @@ import 'package:skf/utils/utils.dart';
 
 /// OttoHub 的设置域宿主实现。
 ///
-/// 注入框架级设置子页(播放速度/显示模式/字号/栏位);账号类操作
-/// (切换账号/退出)无 SDK API,降级为 toast 提示(防御性降级,不抛异常)。
+/// 注入框架级设置子页(播放速度/显示模式/字号/栏位);切换账号无
+/// SDK API 降级为 toast,退出登录经账号提供者清除本地凭证。
 class OttoSettingHost implements SettingHost {
   @override
   List<SettingMenuItem> get menuItems => [
@@ -55,11 +57,13 @@ class OttoSettingHost implements SettingHost {
       SmartDialog.showToast('OttoHub 暂不支持');
 
   @override
-  bool get hasAccount => false;
+  bool get hasAccount => appRead(ottoAccountProvider).isLogin;
 
   @override
-  Future<void> logout(BuildContext context) =>
-      SmartDialog.showToast('OttoHub 暂不支持');
+  Future<void> logout(BuildContext context) async {
+    appRead(ottoAccountProvider).clearCredentials();
+    SmartDialog.showToast('已退出登录');
+  }
 
   @override
   void openVideoById(String id) {

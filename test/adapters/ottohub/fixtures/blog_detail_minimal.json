@@ -1,13 +1,11 @@
 {
   "status": "ok",
-  "data": {
-    "bid": 7,
-    "uid": 1,
-    "title": "最小博客",
-    "content": "只有必填字段",
-    "time": "2024-04-02T00:00:00Z",
-    "like_count": 0,
-    "favorite_count": 0,
-    "view_count": 0
-  }
+  "bid": 7,
+  "uid": 1,
+  "title": "最小博客",
+  "content": "只有必填字段",
+  "time": "2024-04-02T00:00:00Z",
+  "like_count": 0,
+  "favorite_count": 0,
+  "view_count": 0
 }

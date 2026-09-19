@@ -30,7 +30,7 @@ void main() {
     test('happy: mainList converts video comments (type 2) with exact values',
         () async {
       makeRepo(<String, String>{
-        'GET /comment/video_comment_list': fixture('ottohub/video_comments'),
+        'GET /comment/videos/42': fixture('ottohub/video_comments'),
       });
 
       final result = await repo.mainList(
@@ -66,7 +66,7 @@ void main() {
 
     test('happy: mainList converts blog comments (type 1) via bcid', () async {
       makeRepo(<String, String>{
-        'GET /comment/blog_comment_list': fixture('ottohub/blog_comments'),
+        'GET /comment/blogs/42': fixture('ottohub/blog_comments'),
       });
 
       final result = await repo.mainList(
@@ -89,7 +89,7 @@ void main() {
     test('happy: detailList builds root/cursor from the sub-comment page',
         () async {
       makeRepo(<String, String>{
-        'GET /comment/video_comment_list': fixture('ottohub/video_comments'),
+        'GET /comment/videos/42': fixture('ottohub/video_comments'),
       });
 
       final result = await repo.detailList(
@@ -112,7 +112,7 @@ void main() {
     test('happy: replyAdd posts the video comment and returns Success(null)',
         () async {
       makeRepo(<String, String>{
-        'POST /comment/comment_video': fixture('ottohub/comment_result'),
+        'POST /comment/videos/42': fixture('ottohub/comment_result'),
       });
 
       final result = await repo.replyAdd(
@@ -129,7 +129,7 @@ void main() {
     test('happy: replyDel posts the video-comment delete and returns Success(null)',
         () async {
       makeRepo(<String, String>{
-        'POST /comment/delete_video_comment': fixture('ottohub/ok'),
+        'DELETE /comment/video-comments/601': fixture('ottohub/ok'),
       });
 
       final result = await repo.replyDel(type: 2, oid: 42, rpid: 601);
@@ -166,7 +166,7 @@ void main() {
 
     test('error: mainList returns Error on status=error envelope', () async {
       makeRepo(<String, String>{
-        'GET /comment/video_comment_list': fixture('ottohub/error_comment'),
+        'GET /comment/videos/42': fixture('ottohub/error_comment'),
       });
 
       final result = await repo.mainList(

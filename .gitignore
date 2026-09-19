@@ -163,3 +163,5 @@ skf_release.json
 # Pix Agent
 .pi/
 .pi-lens/
+analyze_full.txt
+analyze_host.txt

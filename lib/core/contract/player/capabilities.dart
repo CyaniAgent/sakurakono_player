@@ -3,7 +3,6 @@
 // 适配器覆写 getter 返回自身实现;未覆写时使用 Unsupported 实现:
 // `supported == false` + 方法全部 no-op,页面据此降级隐藏入口/面板。
 
-import 'package:flutter/animation.dart' show Animation;
 import 'package:flutter/widgets.dart';
 
 import 'package:skf/common/widgets/progress_bar/segment_progress_bar.dart'

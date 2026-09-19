@@ -2,8 +2,6 @@
 
 import 'package:flutter/widgets.dart' show BuildContext;
 import 'package:skf/core/models/user_types.dart';
-import 'package:skf/core/models/video_types.dart';
-import 'package:skf/pages/video/video_models.dart';
 
 /// 合集/播放列表能力宿主。
 abstract class PlaylistCapability {

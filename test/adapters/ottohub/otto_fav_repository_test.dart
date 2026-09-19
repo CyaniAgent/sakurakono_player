@@ -223,7 +223,7 @@ void main() {
 
     test('happy: noteList converts favorite blog items into notes', () async {
       makeRepo(<String, String>{
-        'GET /profile/favorite_blog_list': fixture('ottohub/favorite_blog_list'),
+        'GET /blog/favorite-list': fixture('ottohub/favorite_blog_list'),
       });
 
       final result = await repo.noteList(page: 1);
