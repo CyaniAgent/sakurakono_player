@@ -256,7 +256,12 @@ class MainControllerNotifier extends ChangeNotifier
     if (navBarSort == null || navBarSort.isEmpty) {
       _navigationBars = _host.tabs;
     } else {
-      _navigationBars = navBarSort.map((i) => _host.tabs[i]).toList();
+      // 存量偏好可能含越界索引或漏掉新增 tab:过滤后为空则回退全量。
+      final bars = navBarSort
+          .where((i) => i >= 0 && i < _host.tabs.length)
+          .map((i) => _host.tabs[i])
+          .toList();
+      _navigationBars = bars.isEmpty ? _host.tabs : bars;
     }
     final defPage = Pref.defaultHomePageIndex;
     _selectedIndex = defPage.clamp(0, _navigationBars.length - 1);
