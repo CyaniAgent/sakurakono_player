@@ -78,8 +78,9 @@ void main() {
         <String, dynamic>{'url': 'https://example.com/video.mp4'},
         <String, dynamic>{'url': 'https://example.com/video.m3u8'},
       ]);
-      expect(play.quality, 1920); // video_width
-      expect(play.timeLength, 3661);
+      expect(play.quality, 0); // OttoHub 无画质概念
+      expect(play.timeLength, 3661 * 1000); // 秒 → 毫秒
+      expect(play.lastPlayTime, 0); // last_watch_second 为空
       expect(fake.requestCount, 1);
     });
 

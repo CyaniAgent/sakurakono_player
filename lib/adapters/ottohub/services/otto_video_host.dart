@@ -14,11 +14,13 @@ import 'package:flutter/material.dart';
 
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_danmaku_layer.dart';
+import 'package:skf/adapters/ottohub/services/otto_send_danmaku_panel.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_intro_panel.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_page_hub.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_related_panel.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_reply_panel.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/player/core_player_service.dart';
 import 'package:skf/core/contract/player/playback_source_capability.dart';
@@ -54,7 +56,7 @@ class _OttoPlayerHost implements VideoPlayerHost {
   bool get enableAudioNormalization => false;
 
   @override
-  bool get enableHeart => false;
+  bool get enableHeart => true;
 
   @override
   bool get playerDanmakuVisible => false;
@@ -66,7 +68,13 @@ class _OttoPlayerHost implements VideoPlayerHost {
   bool get danmakuEnabled => OttoDanmakuToggle.instance.enabled;
 
   @override
-  void toggleDanmakuEnabled() => OttoDanmakuToggle.instance.toggle();
+  void toggleDanmakuEnabled() {
+    OttoDanmakuToggle.instance.toggle();
+    // 刷新当前视频页 tab 栏开关图标。
+    for (final heroTag in videoDetailRegistry.keys) {
+      videoDetailRegistry[heroTag]?.notifyChange();
+    }
+  }
 
   @override
   PlayRepeat get playerPlayRepeat => PlayRepeat.listOrder;
@@ -83,8 +91,17 @@ class _OttoPlayerHost implements VideoPlayerHost {
     int? seasonId,
     int? pgcType,
     required CoreVideoType videoType,
-  }) =>
-      null;
+  }) {
+    // OttoHub: saveWatchHistory(vid, 秒);progress -1 表示看完。
+    final seconds = progress < 0 ? null : progress ~/ 1000;
+    return appRead(videoRepositoryProvider).heartBeat(
+      aid: '$aid',
+      bvid: bvid,
+      cid: '$cid',
+      progress: seconds ?? -1,
+      videoType: videoType,
+    ).then((_) => null);
+  }
 
   @override
   Future<void> playerSetDataSource({
@@ -126,7 +143,8 @@ class _OttoPlayerHost implements VideoPlayerHost {
   }
 
   @override
-  void setPlayCallBack(PlayCallback? playCallBack) {}
+  void setPlayCallBack(PlayCallback? playCallBack) =>
+      acquirePlayer().registerPlayCallBack(playCallBack);
 
   @override
   void updatePlayCount() {}

@@ -8,6 +8,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:skf/adapters/ottohub/services/otto_image_save.dart';
+import 'package:skf/adapters/ottohub/services/otto_video_popup_menu.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/badge.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
@@ -22,6 +24,7 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/date_utils.dart';
 import 'package:skf/utils/duration_utils.dart';
 import 'package:skf/utils/grid.dart';
+import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/utils.dart';
 
 class OttoVideoRelatedPanel extends StatefulWidget {
@@ -89,8 +92,8 @@ class _OttoVideoRelatedPanelState extends State<OttoVideoRelatedPanel>
   }
 }
 
-/// 横向视频卡片(复原原 VideoCardH 版式;封面保存/弹出菜单等
-/// B站 专属能力不移植)。公开供用户页投稿 tab 复用。
+/// 横向视频卡片(复原原 VideoCardH 版式:右下角弹出菜单 +
+/// 长按/右键封面保存弹窗)。公开供用户页投稿 tab 复用。
 class OttoVideoCardH extends StatelessWidget {
   const OttoVideoCardH({super.key, required this.videoItem});
 
@@ -112,59 +115,89 @@ class OttoVideoCardH extends StatelessWidget {
     );
   }
 
+  void _onLongPress() {
+    ottoImageSaveDialog(
+      title: videoItem.title,
+      cover: videoItem.cover,
+      videoId: videoItem.bvid,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dimension = videoItem.dimension ?? const <String, dynamic>{};
+    final owner = videoItem.owner ?? const <String, dynamic>{};
     return Material(
       type: .transparency,
-      child: InkWell(
-        onTap: _onTap,
-        child: Padding(
-          padding: const .symmetric(
-            horizontal: Style.safeSpace,
-            vertical: 5,
-          ),
-          child: Row(
-            crossAxisAlignment: .start,
-            children: [
-              AspectRatio(
-                aspectRatio: coverAspectRatio(
-                  dimension['width'] as num?,
-                  dimension['height'] as num?,
-                ),
-                child: LayoutBuilder(
-                  builder: (context, boxConstraints) {
-                    final maxWidth = boxConstraints.maxWidth;
-                    final maxHeight = boxConstraints.maxHeight;
-                    return Stack(
-                      clipBehavior: .none,
-                      children: [
-                        NetworkImgLayer(
-                          src: videoItem.cover,
-                          width: maxWidth,
-                          height: maxHeight,
-                        ),
-                        if (videoItem.duration != null &&
-                            videoItem.duration! > 0)
-                          PBadge(
-                            text: DurationUtils.formatDuration(
-                              videoItem.duration,
-                            ),
-                            right: 6.0,
-                            bottom: 6.0,
-                            type: .gray,
-                          ),
-                      ],
-                    );
-                  },
-                ),
+      child: Stack(
+        clipBehavior: .none,
+        children: [
+          InkWell(
+            onTap: _onTap,
+            onLongPress: _onLongPress,
+            onSecondaryTap: PlatformUtils.isMobile ? null : _onLongPress,
+            child: Padding(
+              padding: const .symmetric(
+                horizontal: Style.safeSpace,
+                vertical: 5,
               ),
-              const SizedBox(width: 10),
-              content(theme),
-            ],
+              child: Row(
+                crossAxisAlignment: .start,
+                children: [
+                  AspectRatio(
+                    aspectRatio: coverAspectRatio(
+                      dimension['width'] as num?,
+                      dimension['height'] as num?,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, boxConstraints) {
+                        final maxWidth = boxConstraints.maxWidth;
+                        final maxHeight = boxConstraints.maxHeight;
+                        return Stack(
+                          clipBehavior: .none,
+                          children: [
+                            NetworkImgLayer(
+                              src: videoItem.cover,
+                              width: maxWidth,
+                              height: maxHeight,
+                            ),
+                            if (videoItem.duration != null &&
+                                videoItem.duration! > 0)
+                              PBadge(
+                                text: DurationUtils.formatDuration(
+                                  videoItem.duration,
+                                ),
+                                right: 6.0,
+                                bottom: 6.0,
+                                type: .gray,
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  content(theme),
+                ],
+              ),
+            ),
           ),
-        ),
+          Positioned(
+            bottom: 0,
+            right: 12,
+            width: 29,
+            height: 29,
+            child: OttoVideoPopupMenu(
+              iconSize: 17,
+              videoId: videoItem.bvid ?? '',
+              title: videoItem.title,
+              cover: videoItem.cover,
+              ownerId: owner['mid'] as int?,
+              ownerName: owner['name'] as String?,
+            ),
+          ),
+        ],
       ),
     );
   }

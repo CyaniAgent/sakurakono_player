@@ -263,3 +263,18 @@ class _OttoMemberBlogTabState extends State<OttoMemberBlogTab> {
     );
   }
 }
+
+/// 用户动态独立页(/memberDynamics 路由目标;复用用户动态 tab)。
+class OttoMemberDynamicsPage extends StatelessWidget {
+  const OttoMemberDynamicsPage({super.key, required this.mid});
+
+  final int mid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('动态')),
+      body: OttoMemberBlogTab(mid: mid),
+    );
+  }
+}

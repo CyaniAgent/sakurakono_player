@@ -17,7 +17,10 @@ import 'package:flutter/material.dart' hide ListTile;
 import 'package:skf/core/container/app_container.dart';
 
 class ReplyMePage extends StatefulWidget {
-  const ReplyMePage({super.key});
+  const ReplyMePage({super.key, this.showAppBar = true});
+
+  /// false 时嵌入外层容器(如消息中心 tab),不渲染自带 AppBar。
+  final bool showAppBar;
 
   @override
   State<ReplyMePage> createState() => _ReplyMePageState();
@@ -31,7 +34,8 @@ class _ReplyMePageState extends State<ReplyMePage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+      appBar: widget.showAppBar
+          ? AppBar(
         title: const Text('回复我的'),
         actions: [
           IconButton(
@@ -47,7 +51,8 @@ class _ReplyMePageState extends State<ReplyMePage> {
           ),
           const SizedBox(width: 10),
         ],
-      ),
+      )
+          : null,
       body: refreshIndicator(
         onRefresh: _replyMeController.onRefresh,
         child: CustomScrollView(

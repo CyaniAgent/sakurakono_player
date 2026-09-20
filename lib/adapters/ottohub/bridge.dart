@@ -29,6 +29,7 @@ import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
 import 'package:skf/core/adapter/app_adapter.dart';
 import 'package:skf/core/adapter/play_input_kind.dart';
+import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/models/media_id.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
@@ -42,6 +43,7 @@ import 'package:skf/pages/video/view.dart';
 import 'package:skf/pages/setting/view.dart';
 import 'package:skf/pages/login/view.dart';
 import 'package:skf/adapters/ottohub/services/otto_dynamics_pages.dart';
+import 'package:skf/adapters/ottohub/services/otto_member_pages.dart';
 import 'package:skf/pages/fav/view.dart';
 import 'package:skf/pages/later/view.dart';
 import 'package:skf/pages/history/view.dart';
@@ -63,6 +65,8 @@ import 'package:skf/pages/msg_feed_top/reply_me/view.dart';
 import 'package:skf/pages/msg_feed_top/at_me/view.dart';
 import 'package:skf/pages/msg_feed_top/like_me/view.dart';
 import 'package:skf/pages/msg_feed_top/like_detail/view.dart';
+import 'package:skf/pages/msg_feed_top/msg_center_page.dart';
+import 'package:skf/pages/fav/fav_detail_page.dart';
 import 'package:skf/pages/download/view.dart';
 import 'package:skf/utils/extension/string_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -202,6 +206,28 @@ class OttoAdapter implements AppAdapter {
         GoRoute(path: '/msgLikeDetail', builder: (_, _) => const LikeDetailPage()),
         // 登录
         GoRoute(path: '/loginPage', builder: (_, _) => const LoginPage()),
+        // 收藏夹详情
+        GoRoute(
+          path: '/favDetail',
+          builder: (_, state) => FavDetailPage(
+            mediaId:
+                int.tryParse(
+                  state.uri.queryParameters['mediaId'] ?? '',
+                ) ??
+                0,
+            heroTag: state.uri.queryParameters['heroTag'],
+            folder: state.extra as CoreFavFolderInfo?,
+          ),
+        ),
+        // 消息中心(聚合 回复/@/点赞)
+        GoRoute(path: '/whisper', builder: (_, _) => const MsgCenterPage()),
+        // 用户动态
+        GoRoute(
+          path: '/memberDynamics',
+          builder: (_, state) => OttoMemberDynamicsPage(
+            mid: int.tryParse(state.uri.queryParameters['mid'] ?? '') ?? 0,
+          ),
+        ),
         // 下载
         GoRoute(path: '/download', builder: (_, _) => const DownloadPage()),
       ];

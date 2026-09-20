@@ -152,7 +152,7 @@ class OttoUserRepository implements UserRepository {
   @override
   Future<LoadingState<void>> delHistory(String kid, {Object? account}) async {
     // OttoHub 无删除历史端点——明确提示而非含糊报错。
-    return const Error('OttoHub 暂不支持删除历史');
+    return const Error('暂不支持删除历史');
   }
 
   @override

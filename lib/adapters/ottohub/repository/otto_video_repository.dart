@@ -108,8 +108,12 @@ class OttoVideoRepository implements VideoRepository {
       if (d.videoM3u8Url != null)
         <String, dynamic>{'url': d.videoM3u8Url},
     ],
-    quality: d.videoWidth ?? 0,
-    timeLength: d.duration,
+    // OttoHub 无画质概念,0 = 未知,避免把宽度误当画质码。
+    quality: 0,
+    // 契约 timeLength 单位为毫秒,SDK duration 为秒。
+    timeLength: d.duration * 1000,
+    // 断点续播:上次观看秒 → 毫秒。
+    lastPlayTime: (d.lastWatchSecond ?? 0) * 1000,
   );
 
   // ---------------------------------------------------------------------------

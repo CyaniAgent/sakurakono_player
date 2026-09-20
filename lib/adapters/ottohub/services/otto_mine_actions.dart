@@ -1,18 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/router/app_navigator.dart';
 
 /// OttoHub 的 mine 域导航/账号动作契约实现。
 ///
-/// OttoHub 复用 Bilibili 路由表（`routes => BiliBridge.registerRoutes()`），
-/// 导航类动作直接走共享路由；账号类操作（切换账号/退出/无痕模式）无 SDK
-/// API，降级为 toast 提示/空操作（防御性降级，不抛异常）。
+/// 导航类动作走共享路由(OttoBridge.routes);菜单项含 离线缓存/
+/// 历史记录/我的收藏/动态。账号类操作(切换账号/退出)无 SDK API,
+/// 降级为 toast 提示(防御性降级,不抛异常)。
 class OttoMineActions implements MineActions {
 
   @override
-  List<MineMenuItem> get menuItems => const <MineMenuItem>[];
+  List<MineMenuItem> get menuItems => <MineMenuItem>[
+    MineMenuItem(
+      icon: CustomIcons.folderDownloadOutline,
+      title: '离线缓存',
+      onTap: () => AppNavigator.toNamed('/download'),
+    ),
+    MineMenuItem(
+      icon: CustomIcons.history,
+      title: '历史记录',
+      loginRequired: true,
+      onTap: () => AppNavigator.toNamed('/history'),
+    ),
+    MineMenuItem(
+      icon: CustomIcons.star_favorite_line,
+      title: '我的收藏',
+      loginRequired: true,
+      onTap: () => AppNavigator.toNamed('/fav'),
+    ),
+    MineMenuItem(
+      icon: Icons.dynamic_feed,
+      title: '动态',
+      loginRequired: true,
+      onTap: () => AppNavigator.toNamed('/dynamics'),
+    ),
+  ];
 
   @override
   bool get hasHome => false;
@@ -27,14 +52,14 @@ class OttoMineActions implements MineActions {
   void openSearch() => AppNavigator.toNamed('/search');
 
   @override
-  void openReply() => AppNavigator.toNamed('/myReply');
+  void openReply() => AppNavigator.toNamed('/replyMe');
 
   @override
   void openSetting() => AppNavigator.toNamed('/setting', preventDuplicates: false);
 
   @override
   Future<void>? switchAccountDialog(BuildContext context) {
-    SmartDialog.showToast('OttoHub 暂不支持');
+    SmartDialog.showToast('暂不支持切换账号');
     return null;
   }
 
@@ -66,7 +91,7 @@ class OttoMineActions implements MineActions {
       )?.whenComplete(onPop);
 
   @override
-  Future<void> logout() => SmartDialog.showToast('OttoHub 暂不支持');
+  Future<void> logout() => SmartDialog.showToast('请在 OttoHub 客户端退出登录');
 
   @override
   bool get canToggleAnonymity => false;

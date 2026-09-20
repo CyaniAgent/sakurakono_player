@@ -107,11 +107,12 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 : Text(item.subtitle!, style: subTitleStyle),
           ),
         ),
-        ListTile(
-          onTap: () => showPlayInputDialog(context),
-          leading: const Icon(Icons.play_circle_outline),
-          title: Text('播放链接', style: titleStyle),
-        ),
+        if (_host.playInputEnabled)
+          ListTile(
+            onTap: () => showPlayInputDialog(context),
+            leading: const Icon(Icons.play_circle_outline),
+            title: Text('播放链接', style: titleStyle),
+          ),
         ListTile(
           onTap: () => _host.switchAccountDialog(context),
           leading: const Icon(Icons.switch_account_outlined),

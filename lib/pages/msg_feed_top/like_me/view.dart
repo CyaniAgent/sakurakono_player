@@ -19,7 +19,10 @@ import 'package:flutter/material.dart' hide ListTile;
 import 'package:skf/core/container/app_container.dart';
 
 class LikeMePage extends StatefulWidget {
-  const LikeMePage({super.key});
+  const LikeMePage({super.key, this.showAppBar = true});
+
+  /// false 时嵌入外层容器(如消息中心 tab),不渲染自带 AppBar。
+  final bool showAppBar;
 
   @override
   State<LikeMePage> createState() => _LikeMePageState();
@@ -33,7 +36,8 @@ class _LikeMePageState extends State<LikeMePage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+      appBar: widget.showAppBar
+          ? AppBar(
         title: const Text('收到的赞'),
         actions: [
           IconButton(
@@ -49,7 +53,8 @@ class _LikeMePageState extends State<LikeMePage> {
           ),
           const SizedBox(width: 10),
         ],
-      ),
+      )
+          : null,
       body: refreshIndicator(
         onRefresh: _likeMeController.onRefresh,
         child: CustomScrollView(

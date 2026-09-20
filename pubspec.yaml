@@ -57,6 +57,11 @@ dependencies:
     git:
       url: https://github.com/My-Responsitories/catcher_2.git
       ref: dev
+  chat_bottom_container:
+    git:
+      url: https://github.com/bggRGjQaUbCoE/flutter_chat_packages.git
+      path: packages/chat_bottom_container
+      ref: dev
   characters: ^1.4.1
   collection: ^1.19.1
   connectivity_plus: ^7.1.1

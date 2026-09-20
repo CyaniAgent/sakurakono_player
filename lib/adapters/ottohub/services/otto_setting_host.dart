@@ -4,17 +4,16 @@ import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/about/view.dart';
 import 'package:skf/pages/setting/setting_host.dart';
-import 'package:skf/pages/setting/pages/display_mode.dart';
 import 'package:skf/pages/setting/pages/font_size_select.dart';
 import 'package:skf/pages/setting/pages/play_speed_set.dart';
-import 'package:skf/pages/setting/pages/bar_set.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/utils.dart';
 
 /// OttoHub 的设置域宿主实现。
 ///
-/// 注入框架级设置子页(播放速度/显示模式/字号/栏位);切换账号无
-/// SDK API 降级为 toast,退出登录经账号提供者清除本地凭证。
+/// 注入框架级设置子页(播放速度/字号);「屏幕帧率」为 Android 专用、
+/// 「栏位设置」依赖 B站 首页路由参数,均不注入。切换账号无 SDK API
+/// 降级为 toast,退出登录经账号提供者清除本地凭证。
 class OttoSettingHost implements SettingHost {
   @override
   List<SettingMenuItem> get menuItems => [
@@ -24,19 +23,9 @@ class OttoSettingHost implements SettingHost {
           contentBuilder: (showAppBar) => PlaySpeedPage(showAppBar: showAppBar),
         ),
         SettingMenuItem(
-          icon: const Icon(Icons.monitor),
-          title: '屏幕帧率',
-          contentBuilder: (showAppBar) => SetDisplayMode(showAppBar: showAppBar),
-        ),
-        SettingMenuItem(
           icon: const Icon(Icons.format_size),
           title: '字体大小',
           contentBuilder: (showAppBar) => FontSizeSelectPage(showAppBar: showAppBar),
-        ),
-        SettingMenuItem(
-          icon: const Icon(Icons.view_week),
-          title: '栏位设置',
-          contentBuilder: (showAppBar) => BarSetPage(showAppBar: showAppBar),
         ),
       ];
 
@@ -54,10 +43,13 @@ class OttoSettingHost implements SettingHost {
 
   @override
   Future<void> switchAccountDialog(BuildContext context) =>
-      SmartDialog.showToast('OttoHub 暂不支持');
+      SmartDialog.showToast('暂不支持切换账号');
 
   @override
   bool get hasAccount => appRead(ottoAccountProvider).isLogin;
+
+  @override
+  bool get playInputEnabled => false;
 
   @override
   Future<void> logout(BuildContext context) async {

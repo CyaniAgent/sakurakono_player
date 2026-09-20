@@ -52,4 +52,8 @@ abstract class SettingHost {
   /// 播放链接分派：纯数字 ID 打开视频页
   /// （B站: `PageUtils.toVideoPage`，bvid=aid=cid=数字串）。
   void openVideoById(String id);
+
+  /// 是否展示「播放链接」入口（纯数字 ID 播放；无对应播放语义的
+  /// 宿主返回 false 隐藏，如 OttoHub——ID 输入无分发意义）。
+  bool get playInputEnabled => true;
 }

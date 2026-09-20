@@ -125,7 +125,7 @@ class OttoMsgRepository implements MsgRepository {
     int? cursorTime,
   }) async {
     // 站点消息中心仅评论/提及两类 inbox,无点赞通知端点。
-    return const Error('OttoHub 暂不支持点赞消息');
+    return const Error('暂无点赞消息');
   }
 
   @override

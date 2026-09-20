@@ -34,7 +34,7 @@ class OttoDynamicsTabPage extends StatelessWidget {
       case CoreDynamicsTabType.pgc:
       case CoreDynamicsTabType.article:
       case CoreDynamicsTabType.up:
-        return const Center(child: Text('OttoHub 暂不支持该动态类型'));
+        return const Center(child: Text('暂不支持该动态类型'));
     }
   }
 }
@@ -244,7 +244,7 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
             child: switch (_state) {
               Loading() => const Padding(
                 padding: EdgeInsets.all(48),
-                child: Center(child: CircularProgressIndicator()),
+                child: DynamicCardSkeleton(),
               ),
               Error() => HttpError(
                 isSliver: false,

@@ -2,14 +2,13 @@
 //
 // 版式复原自原 B站 适配器 UgcIntroPanel(bb7d917 快照):
 // TranslucentColumn + UP主行(挂件头像) + 可展开标题 + StatWidget
-// 信息行 + 简介 + 点赞/投币/收藏操作行。数据来自
+// 信息行 + 简介 + 点赞/分享操作行。数据来自
 // OttoVideoRepository.videoIntro(bvid = OttoHub 纯数字 vid);
-// OttoHub 无 关注/投币/收藏/稍后再看 API,对应操作 toast 降级。
-// 成功后回写 hub 页面状态(标题/评论数/UP mid),评论 tab 计数、
-// UP 徽章与播放器头部随之刷新。
+// OttoHub 无 关注/投币/收藏 API,B站 概念按钮(点踩/投币/收藏/
+// 再看)不展示。成功后回写 hub 页面状态(标题/评论数/UP mid),
+// 评论 tab 计数、UP 徽章与播放器头部随之刷新。
 
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:skf/adapters/ottohub/services/otto_action_item.dart';
@@ -99,10 +98,6 @@ class _OttoVideoIntroPanelState extends State<OttoVideoIntroPanel> {
 
   static int _statInt(Map<String, dynamic>? stat, String key) =>
       (stat?[key] as num?)?.toInt() ?? 0;
-
-  Future<void> _actionUnsupported() async {
-    SmartDialog.showToast('OttoHub 暂不支持');
-  }
 
   Future<void> _actionLike() async {
     final res = await appRead(
@@ -296,37 +291,6 @@ class _OttoVideoIntroPanelState extends State<OttoVideoIntroPanel> {
             selectStatus: _hasLike,
             semanticsLabel: '点赞',
             text: NumUtils.numFormat(_likeCount),
-          ),
-          OttoActionItem(
-            icon: const Icon(FontAwesomeIcons.thumbsDown),
-            onTap: _actionUnsupported,
-            selectStatus: false,
-            semanticsLabel: '点踩',
-            text: '点踩',
-          ),
-          OttoActionItem(
-            icon: const Icon(FontAwesomeIcons.b),
-            onTap: _actionUnsupported,
-            selectStatus: false,
-            semanticsLabel: '投币',
-            text: stat?['coin'] == null
-                ? null
-                : NumUtils.numFormat(stat?['coin']),
-          ),
-          OttoActionItem(
-            icon: const Icon(FontAwesomeIcons.star),
-            selectIcon: const Icon(FontAwesomeIcons.solidStar),
-            onTap: _actionUnsupported,
-            selectStatus: false,
-            semanticsLabel: '收藏',
-            text: NumUtils.numFormat(stat?['favorite']),
-          ),
-          OttoActionItem(
-            icon: const Icon(FontAwesomeIcons.clock),
-            onTap: _actionUnsupported,
-            selectStatus: false,
-            semanticsLabel: '再看',
-            text: '再看',
           ),
           OttoActionItem(
             icon: const Icon(FontAwesomeIcons.shareFromSquare),

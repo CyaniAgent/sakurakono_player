@@ -17,7 +17,10 @@ import 'package:flutter/material.dart' hide ListTile;
 import 'package:skf/core/container/app_container.dart';
 
 class AtMePage extends StatefulWidget {
-  const AtMePage({super.key});
+  const AtMePage({super.key, this.showAppBar = true});
+
+  /// false 时嵌入外层容器(如消息中心 tab),不渲染自带 AppBar。
+  final bool showAppBar;
 
   @override
   State<AtMePage> createState() => _AtMePageState();
@@ -31,7 +34,8 @@ class _AtMePageState extends State<AtMePage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+      appBar: widget.showAppBar
+          ? AppBar(
         title: const Text('@我的'),
         actions: [
           IconButton(
@@ -47,7 +51,8 @@ class _AtMePageState extends State<AtMePage> {
           ),
           const SizedBox(width: 10),
         ],
-      ),
+      )
+          : null,
       body: refreshIndicator(
         onRefresh: _atMeController.onRefresh,
         child: CustomScrollView(

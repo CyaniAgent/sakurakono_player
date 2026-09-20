@@ -12,6 +12,7 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
+import 'package:skf/adapters/ottohub/services/otto_reply_pub_page.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_page_hub.dart';
 import 'package:skf/common/skeleton/video_reply.dart';
 import 'package:skf/common/widgets/badge.dart';
@@ -19,6 +20,7 @@ import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/pendant_avatar.dart';
 import 'package:skf/common/widgets/sliver/sliver_floating_header.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/reply_types.dart';
 import 'package:skf/core/models/ui/badge_type.dart';
@@ -169,44 +171,56 @@ class _OttoVideoReplyPanelState extends State<OttoVideoReplyPanel>
   }
 
   Future<void> _showReplyInput([CoreReplyItem? parent]) async {
-    final controller = TextEditingController();
-    final message = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(parent == null ? '发表评论' : '回复 ${parent.member?.uname}'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLines: 3,
-          decoration: const InputDecoration(hintText: '输入评论内容'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: AppNavigator.back,
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () =>
-                AppNavigator.back(result: controller.text.trim()),
-            child: const Text('发送'),
-          ),
-        ],
-      ),
+    final vid = _vid;
+    if (vid == null) return;
+    final message = await showOttoReplySheet(
+      oid: vid,
+      parent: parent?.rpid,
+      hint: parent == null ? '输入评论内容' : '回复 @${parent.member?.uname}:',
     );
     if (message == null || message.isEmpty || !mounted) return;
-    final res = await appRead(replyRepositoryProvider).replyAdd(
-      type: 2,
-      oid: _vid!,
-      message: message,
-      parent: parent?.rpid,
+    // 本地插入(发送成功即时上屏,免整页刷新)。
+    final account = appRead(accountProvider);
+    final mid = account.userId ?? 0;
+    final member = CoreReplyMember(
+      mid: mid,
+      uname: account.displayName ?? '',
+      avatar: account.face,
     );
-    if (!mounted) return;
-    if (res.isSuccess) {
-      SmartDialog.showToast('评论成功');
-      _query();
-    } else {
-      res.toast();
-    }
+    final item = CoreReplyItem(
+      oid: vid,
+      mid: mid,
+      parent: parent?.rpid ?? 0,
+      content: message,
+      ctime: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      member: member,
+    );
+    setState(() {
+      if (parent == null) {
+        _items.insert(0, item);
+        widget.hub.state(heroTag).commentCount += 1;
+      } else {
+        // 二级回复列表不在本面板展开,仅本地累加父评论计数。
+        final index = _items.indexWhere((e) => e.rpid == parent.rpid);
+        if (index != -1) {
+          final old = _items[index];
+          _items[index] = CoreReplyItem(
+            rpid: old.rpid,
+            oid: old.oid,
+            type: old.type,
+            mid: old.mid,
+            root: old.root,
+            parent: old.parent,
+            like: old.like,
+            rcount: old.rcount + 1,
+            content: old.content,
+            ctime: old.ctime,
+            member: old.member,
+            likeState: old.likeState,
+          );
+        }
+      }
+    });
   }
 
   @override
