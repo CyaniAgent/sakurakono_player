@@ -62,12 +62,12 @@ include(flutter/generated_plugins.cmake)
 # Support files are copied into place next to the executable, so that it can
 # run in place. This is done instead of making a separate bundle (as on Linux)
 # so that building and running from within Visual Studio will work.
-set(BUILD_BUNDLE_DIR "$<TARGET_FILE_DIR:${BINARY_NAME}>")
-# Make the "install" step default, as it's required to run.
+# 模板原值是生成器表达式 "$<TARGET_FILE_DIR:${BINARY_NAME}>":MSBuild 经
+# cmd 调安装脚本时 < > 会被当作重定向符,概率性把安装路径破坏成
+# C:\Program Files 下的乱码目录(表现为 INSTALL 失败/产物目录空)。
+# 改用具体路径;切换 Debug/Release 配置时同步改这里。
 set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
-endif()
+set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/runner/Debug" CACHE PATH "..." FORCE)
 
 set(INSTALL_BUNDLE_DATA_DIR "${CMAKE_INSTALL_PREFIX}/data")
 set(INSTALL_BUNDLE_LIB_DIR "${CMAKE_INSTALL_PREFIX}")
