@@ -94,7 +94,12 @@ class _RenderVideoTime extends RenderBox {
   @override
   void describeSemanticsConfiguration(SemanticsConfiguration config) {
     super.describeSemanticsConfiguration(config);
-    config.label = 'position:$_position\nduration:$_duration';
+    // label 非空时必须带 textDirection,否则触发
+    // semantics.dart 'attributedLabel.string == '' || textDirection != null'
+    // 断言(Windows 上进一步破坏 AXTree 更新,Debug 模式下崩溃)。
+    config
+      ..textDirection = TextDirection.ltr
+      ..label = 'position:$_position\nduration:$_duration';
   }
 
   @override
