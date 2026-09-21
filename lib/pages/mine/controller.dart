@@ -78,7 +78,11 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
 
   /// 点击菜单项：需登录的菜单项在未登录时忽略。
   void onMenuItemTap(MineMenuItem item) {
-    if (item.loginRequired && !isLogin) return;
+    if (item.loginRequired && !isLogin) {
+      SmartDialog.showToast('请先登录');
+      MineActions.of().openLoginPage();
+      return;
+    }
     item.onTap();
   }
 

@@ -32,7 +32,7 @@ class OttoMineActions implements MineActions {
       onTap: () => AppNavigator.toNamed('/fav'),
     ),
     MineMenuItem(
-      icon: Icons.dynamic_feed,
+      icon: CustomIcons.motion_photos_on,
       title: '动态',
       loginRequired: true,
       onTap: () => AppNavigator.toNamed('/dynamics'),

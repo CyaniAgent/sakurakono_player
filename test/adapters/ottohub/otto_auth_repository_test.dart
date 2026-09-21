@@ -33,6 +33,8 @@ class _FakeAccountProvider extends OttoAccountProvider {
     required String token,
     String? uname,
     String? face,
+    String? username,
+    String? password,
   }) {
     updateCalls++;
     lastUid = uid;

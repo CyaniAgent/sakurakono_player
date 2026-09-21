@@ -70,7 +70,11 @@ class _RcmdPageState extends State<RcmdPage> with AutomaticKeepAliveClientMixin 
     LoadingState<List<dynamic>?> loadingState,
   ) {
     return switch (loadingState) {
-      Loading() => const SliverToBoxAdapter(child: VideoCardVSkeleton()),
+      Loading() => SliverGrid.builder(
+          gridDelegate: gridDelegate,
+          itemCount: 10,
+          itemBuilder: (context, index) => const VideoCardVSkeleton(),
+        ),
       Error(:final errMsg) => SliverToBoxAdapter(
           child: HttpError(errMsg: errMsg, onReload: controller.onReload),
         ),

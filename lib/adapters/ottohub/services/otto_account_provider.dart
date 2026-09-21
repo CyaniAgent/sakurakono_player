@@ -65,10 +65,13 @@ class OttoAccountProvider extends AccountProvider {
   }
 
   /// Hive keys used for persisting credentials across app restarts.
+  /// OttoHub token 无刷新机制,另存账密用于过期后静默重登。
   static const _tokenKey = 'ottohub_token';
   static const _uidKey = 'ottohub_uid';
   static const _nameKey = 'ottohub_name';
   static const _faceKey = 'ottohub_face';
+  static const _userKey = 'ottohub_username';
+  static const _passKey = 'ottohub_password';
 
   @override
   Future<void> restoreFromCache() async {
@@ -101,6 +104,8 @@ class OttoAccountProvider extends AccountProvider {
     required String token,
     String? uname,
     String? face,
+    String? username,
+    String? password,
   }) {
     _client.token = token;
     _loggedInUid = uid;
@@ -114,6 +119,12 @@ class OttoAccountProvider extends AccountProvider {
     GStorage.userInfo.put(_uidKey, uid);
     if (uname != null) GStorage.userInfo.put(_nameKey, uname);
     if (face != null) GStorage.userInfo.put(_faceKey, face);
+    if (username != null && username.isNotEmpty) {
+      GStorage.userInfo.put(_userKey, username);
+    }
+    if (password != null && password.isNotEmpty) {
+      GStorage.userInfo.put(_passKey, password);
+    }
     // 我的页头部数据源(mine controller 从该缓存渲染账号块)。
     GStorage.userInfo.put(
       'userInfoCache',
@@ -139,7 +150,42 @@ class OttoAccountProvider extends AccountProvider {
     GStorage.userInfo.delete(_uidKey);
     GStorage.userInfo.delete(_nameKey);
     GStorage.userInfo.delete(_faceKey);
+    GStorage.userInfo.delete(_userKey);
+    GStorage.userInfo.delete(_passKey);
     GStorage.userInfo.delete('userInfoCache');
+  }
+
+  /// 凭证过期自愈:启动时用便宜接口探测一次,401/403 则用保存的
+  /// 账密静默重登并刷新本地凭证。
+  Future<void> ensureSessionValid() async {
+    if (!rxIsLogin) return;
+    final username = GStorage.userInfo.get(_userKey) as String?;
+    final password = GStorage.userInfo.get(_passKey) as String?;
+    if (username == null ||
+        username.isEmpty ||
+        password == null ||
+        password.isEmpty) {
+      return;
+    }
+    try {
+      await _client.oldIm.getNewMessageNum();
+    } on ApiException catch (e) {
+      if (e.httpStatus != 401 && e.httpStatus != 403) return;
+      try {
+        final result = await _client.auth.login(username, password);
+        updateCredentials(
+          uid: result.uid,
+          token: result.token,
+          uname: result.email,
+          face: result.avatarUrl,
+        );
+        debugPrint('OttoAccountProvider: token expired, re-login ok');
+      } catch (reloginErr) {
+        debugPrint('OttoAccountProvider: re-login failed: $reloginErr');
+      }
+    } catch (_) {
+      // 网络等非凭证异常,交给正常错误链路。
+    }
   }
 
   Map<String, String> get authHeaders => {};

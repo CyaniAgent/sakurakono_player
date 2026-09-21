@@ -48,6 +48,9 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
   );
 
   Widget upPanelPart(ThemeData theme) {
+    if (!DynamicsHost.of().showUpPanel) {
+      return const SizedBox.shrink();
+    }
     final isTop = upPanelPosition == .top;
     final needBg = upPanelPosition.index > 2;
     return Material(
@@ -118,9 +121,10 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     Widget? leading;
     List<Widget>? actions;
 
+    final visibleTabs = DynamicsHost.of().visibleTabs;
     Widget child = tabBarView(
       controller: _dynamicsController.tabController,
-      children: CoreDynamicsTabType.values
+      children: visibleTabs
           .map((e) => DynamicsHost.of().buildTabPage(e))
           .toList(),
     );
@@ -181,7 +185,8 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
             labelStyle:
                 TabBarTheme.of(context).labelStyle?.copyWith(fontSize: 13) ??
                 const TextStyle(fontSize: 13),
-            tabs: CoreDynamicsTabType.values
+            tabs: DynamicsHost.of()
+                .visibleTabs
                 .map((e) => Tab(text: e.label))
                 .toList(),
             onTap: (index) {

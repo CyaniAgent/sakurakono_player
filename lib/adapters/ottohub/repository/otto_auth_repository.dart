@@ -80,11 +80,14 @@ class OttoAuthRepository implements AuthRepository {
 
       // Notify account provider so it persists the token and updates
       // reactive auth state (rxIsLogin, rxFace, etc.).
+      // OttoHub token 无刷新机制,同时保存账密供过期后静默重登。
       appRead(ottoAccountProvider).updateCredentials(
         uid: result.uid,
         token: result.token,
         uname: result.email,
         face: result.avatarUrl,
+        username: username,
+        password: password,
       );
 
       return _okMap(<String, dynamic>{

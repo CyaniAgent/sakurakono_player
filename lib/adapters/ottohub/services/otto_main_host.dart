@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
@@ -54,7 +57,11 @@ class OttoMainHost implements MainHost {
   Future<int?> fetchUnreadDynamic() async => null;
 
   @override
-  void checkAppUpdate() {}
+  void checkAppUpdate() {
+    // OttoHub 无应用更新 API;借该启动钩子做一次凭证过期探测,
+    // 失效则用保存的账密静默重登。
+    unawaited(appRead(ottoAccountProvider).ensureSessionValid());
+  }
 
   @override
   void initScheme() {}
