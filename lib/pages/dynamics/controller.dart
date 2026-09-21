@@ -37,22 +37,16 @@ class DynamicsController
 
   final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
 
-  List<CoreDynamicsTabType> get _visibleTabs => DynamicsHost.of().visibleTabs;
-
   CoreDynamicsTabType get _currentTabType =>
-      _visibleTabs[tabController.index.clamp(0, _visibleTabs.length - 1)];
+      CoreDynamicsTabType.values[tabController.index];
 
 
   DynamicsController() {
     initAccountListener();
-    final visibleTabs = DynamicsHost.of().visibleTabs;
     tabController = TabController(
       vsync: this,
-      length: visibleTabs.length,
-      initialIndex: Pref.defaultDynamicTypeIndex.clamp(
-        0,
-        visibleTabs.length - 1,
-      ),
+      length: CoreDynamicsTabType.values.length,
+      initialIndex: Pref.defaultDynamicTypeIndex,
     );
     queryData();
   }
@@ -61,7 +55,7 @@ class DynamicsController
   Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
 
   void _jumpToTab(int mid) {
-    tabController.index = mid == -1 ? 0 : (_visibleTabs.length > 4 ? 4 : 0);
+    tabController.index = mid == -1 ? 0 : 4;
   }
 
   void onSelectUp(int mid) {

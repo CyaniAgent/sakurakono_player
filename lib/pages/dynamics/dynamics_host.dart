@@ -21,13 +21,6 @@ abstract class DynamicsHost {
 
   // ---- page composition (top-level view) ----
 
-  /// 实际展示的动态 tab。适配器可裁剪无对应内容形态的 tab
-  /// (B站: 全部 tab;OttoHub: 仅「全部」博客流)。
-  List<CoreDynamicsTabType> get visibleTabs => CoreDynamicsTabType.values;
-
-  /// 是否展示顶部关注 UP 头像行(无对应 API 的宿主返回 false)。
-  bool get showUpPanel => true;
-
   /// Build the tab page widget for [type] (Bilibili: `DynamicsTabPage`).
   Widget buildTabPage(CoreDynamicsTabType type);
 

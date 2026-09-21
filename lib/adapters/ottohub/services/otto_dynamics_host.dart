@@ -10,21 +10,10 @@ import 'package:skf/router/app_navigator.dart';
 
 /// OttoHub 动态页宿主实现。
 ///
-/// 「动态」内容形态为博客:仅「全部」tab 展示站内最新博客
-/// (经 Core DynamicsRepository.followDynamic,登录后可用)。
-/// 关注 UP 头像行无对应 API,不展示。B站 专属交互(转发/抽奖/直播等)
-/// 降级 no-op。
+/// OttoHub 的「动态」内容形态为博客:全部/专栏 tab 展示站内最新博客
+/// (经 ottoBlogRepositoryProvider),其余 tab(投稿/番剧/UP)无对应
+/// 内容形态,显示占位。B站 专属交互(转发/抽奖/直播等)降级 no-op。
 class OttoDynamicsHost implements DynamicsHost {
-
-  @override
-  List<CoreDynamicsTabType> get visibleTabs => const [
-        // OttoHub 动态内容形态只有博客流,其余 tab(投稿/番剧/专栏/UP)
-        // 无对应 API,不展示死占位。
-        CoreDynamicsTabType.all,
-      ];
-
-  @override
-  bool get showUpPanel => false;
 
   @override
   Widget buildTabPage(CoreDynamicsTabType type) =>
