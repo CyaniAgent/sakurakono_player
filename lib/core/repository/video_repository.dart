@@ -24,9 +24,23 @@ abstract class VideoRepository {
   });
 
   /// Hot / popular video list.
+  ///
+  /// [timeLimitDays] narrows the ranking to a recent window (e.g. 7 = weekly,
+  /// 30 = monthly, 90 = seasonal); null means the adapter's default window.
   Future<LoadingState<List<CoreHotVideoItemModel>>> hotVideoList({
     required int pn,
     required int ps,
+    int? timeLimitDays,
+  });
+
+  /// Videos of one site-wide category (zone).
+  ///
+  /// [category] is the neutral category id provided by [ZoneHost]; adapters
+  /// map it to their own taxonomy. Single batch — pagination support is
+  /// adapter-dependent, callers should not expect more than the first page.
+  Future<LoadingState<List<CoreHotVideoItemModel>>> categoryVideoList({
+    required int category,
+    int num,
   });
 
   // ---------------------------------------------------------------------------

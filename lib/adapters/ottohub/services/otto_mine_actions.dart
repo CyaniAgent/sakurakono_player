@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/router/app_navigator.dart';
@@ -8,8 +10,8 @@ import 'package:skf/router/app_navigator.dart';
 /// OttoHub 的 mine 域导航/账号动作契约实现。
 ///
 /// 导航类动作走共享路由(OttoBridge.routes);菜单项含 离线缓存/
-/// 历史记录/我的收藏/动态。账号类操作(切换账号/退出)无 SDK API,
-/// 降级为 toast 提示(防御性降级,不抛异常)。
+/// 历史记录/我的收藏/动态。SDK 无登出端点,退出登录为客户端本地
+/// 清除凭证(clearCredentials),登录态经 Riverpod 同步到各监听方。
 class OttoMineActions implements MineActions {
 
   @override
@@ -58,8 +60,9 @@ class OttoMineActions implements MineActions {
   void openSetting() => AppNavigator.toNamed('/setting', preventDuplicates: false);
 
   @override
-  Future<void>? switchAccountDialog(BuildContext context) {
-    SmartDialog.showToast('暂不支持切换账号');
+  Future<dynamic>? switchAccountDialog(BuildContext context) {
+    // 单账号体系:清凭证退出后直接进入登录页。
+    logout();
     return null;
   }
 
@@ -91,7 +94,12 @@ class OttoMineActions implements MineActions {
       )?.whenComplete(onPop);
 
   @override
-  Future<void> logout() => SmartDialog.showToast('请在 OttoHub 客户端退出登录');
+  Future<void> logout() async {
+    // SDK 无登出端点:客户端清除本地 token/账密缓存并同步账号态
+    // (clearCredentials → accountProvider 更新 → mine 页监听自动重置)。
+    appRead(ottoAccountProvider).clearCredentials();
+    SmartDialog.showToast('已退出登录');
+  }
 
   @override
   bool get canToggleAnonymity => false;

@@ -108,14 +108,21 @@ class NetworkImgLayer extends StatelessWidget {
         borderRadius: isEmote || isAvatar ? null : borderRadius,
       ),
       child: Center(
-        child: Image.asset(
-          isAvatar ? Assets.avatarPlaceHolder : Assets.loading,
-          width: width,
-          height: height,
-          cacheWidth: width.cacheSize(context),
-          colorBlendMode: reduce ? BlendMode.modulate : null,
-          color: reduce ? reduceLuxColor : null,
-        ),
+        child: isAvatar
+            ? Icon(
+                Icons.person_rounded,
+                size: width * 0.6,
+                color: Theme.of(context).colorScheme.outline,
+                semanticLabel: '默认头像',
+              )
+            : Image.asset(
+                Assets.loading,
+                width: width,
+                height: height,
+                cacheWidth: width.cacheSize(context),
+                colorBlendMode: reduce ? BlendMode.modulate : null,
+                color: reduce ? reduceLuxColor : null,
+              ),
       ),
     );
   }

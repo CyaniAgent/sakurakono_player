@@ -195,13 +195,38 @@ class OttoVideoRepository implements VideoRepository {
   Future<LoadingState<List<CoreHotVideoItemModel>>> hotVideoList({
     required int pn,
     required int ps,
+    int? timeLimitDays,
   }) async {
     try {
-      final result = await _api.getPopular(offset: pn, num: ps);
+      final result = await _api.getPopular(
+        timeLimit: timeLimitDays,
+        offset: (pn - 1) * ps,
+        num: ps,
+      );
       return _ok(result.videoList.map(_toCoreHotVideo).toList());
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.hotVideoList ApiException: ${e.errorCode}');
       return _err(e);
+    }
+  }
+
+  @override
+  Future<LoadingState<List<CoreHotVideoItemModel>>> categoryVideoList({
+    required int category,
+    int num = 50,
+  }) async {
+    try {
+      final result = await _api.getCategory('$category', num: num);
+      return _ok(result.videoList.map(_toCoreHotVideo).toList());
+    } on ApiException catch (e) {
+      debugPrint(
+        'OttoVideoRepository.categoryVideoList ApiException: ${e.errorCode}',
+      );
+      return _err(e);
+    } catch (e) {
+      // SDK 对非 success 响应直接解包 data(可能抛类型错误):统一降级错误态。
+      debugPrint('OttoVideoRepository.categoryVideoList error: $e');
+      return Error(e.toString());
     }
   }
 

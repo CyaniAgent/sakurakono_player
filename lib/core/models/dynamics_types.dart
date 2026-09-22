@@ -8,13 +8,11 @@ library;
 // Enums
 // ---------------------------------------------------------------------------
 
-/// Tab type for filtering the dynamic feed.
+/// 动态/博客流分类(中立形状,适配器自行映射数据源)。
 enum CoreDynamicsTabType {
-  all('全部'),
-  video('投稿'),
-  pgc('番剧'),
-  article('专栏'),
-  up('UP'),
+  latest('最新'),
+  follow('关注'),
+  recommend('推荐'),
   ;
 
   final String label;

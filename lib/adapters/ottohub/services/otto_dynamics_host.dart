@@ -10,17 +10,16 @@ import 'package:skf/router/app_navigator.dart';
 
 /// OttoHub 动态页宿主实现。
 ///
-/// 「动态」内容形态为博客+视频:全部 tab 为关注时间线(followDynamic),
-/// 投稿/专栏/UP 为对应内容过滤,番剧无对应 API 不展示。
-/// B站 专属交互(转发/抽奖/直播等)降级 no-op。
+/// 三分类:最新 = 站内最新博客(blogFeed),关注 = 关注时间线
+/// (followDynamic,UP 面板选中时切对应用户流),推荐 = 随机博客
+/// (randomBlogFeed)。B站 专属交互(转发/抽奖/直播等)降级 no-op。
 class OttoDynamicsHost implements DynamicsHost {
 
   @override
   List<CoreDynamicsTabType> get visibleTabs => const [
-        CoreDynamicsTabType.all,
-        CoreDynamicsTabType.video,
-        CoreDynamicsTabType.article,
-        CoreDynamicsTabType.up,
+        CoreDynamicsTabType.latest,
+        CoreDynamicsTabType.follow,
+        CoreDynamicsTabType.recommend,
       ];
 
   @override

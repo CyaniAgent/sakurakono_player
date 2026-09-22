@@ -86,7 +86,7 @@ class LikeMeController
     return switch (result) {
       Loading() => LoadingState.loading(),
       Success(:final response) => Success(response),
-      Error(:final errMsg) => Error(errMsg),
+      Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
   }
 

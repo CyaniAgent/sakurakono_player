@@ -156,14 +156,25 @@ class HomeControllerNotifier extends ChangeNotifier
 
   void _loadTabs() {
     final savedTabs = GStorage.setting.get(SettingBoxKey.tabBarSort) as List?;
-    // 存量偏好可能含越界索引或漏掉新增 tab:过滤后为空则回退全量。
+    // 存量偏好可能含越界索引或漏掉新增 tab(如后加的「分区」):
+    // 按保存顺序映射后,把未出现的 tab 按默认顺序补齐,保证不丢 tab。
     final List<HomeTabItem> tabs;
     if (savedTabs != null) {
-      final bars = savedTabs
-          .where((i) => i >= 0 && i < _host.homeTabs.length)
-          .map((i) => _host.homeTabs[i])
-          .toList();
-      tabs = bars.isEmpty ? _host.homeTabs : bars;
+      final mapped = <HomeTabItem>[];
+      for (final i in savedTabs) {
+        if (i is int && i >= 0 && i < _host.homeTabs.length) {
+          final tab = _host.homeTabs[i];
+          if (!mapped.any((e) => e.id == tab.id)) {
+            mapped.add(tab);
+          }
+        }
+      }
+      for (final tab in _host.homeTabs) {
+        if (!mapped.any((e) => e.id == tab.id)) {
+          mapped.add(tab);
+        }
+      }
+      tabs = mapped;
     } else {
       tabs = _host.homeTabs;
     }

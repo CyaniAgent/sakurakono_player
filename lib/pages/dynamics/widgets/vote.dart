@@ -575,7 +575,7 @@ Future<void> showVoteDialog(
               ) {
                 Loading() => LoadingState.loading(),
                 Success(:final response) => Success(response),
-                Error(:final errMsg) => Error(errMsg),
+                Error(:final errMsg, :final code) => Error(errMsg, code: code),
               },
             ),
           ),

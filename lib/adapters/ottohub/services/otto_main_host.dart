@@ -5,16 +5,18 @@ import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
-import 'package:skf/pages/hot/controller.dart';
-import 'package:skf/pages/hot/view.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/pages/common/msg_unread_type.dart';
+import 'package:skf/pages/hot/controller.dart' show HotCoordinator;
+import 'package:skf/pages/hot/view.dart';
 import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/pages/home/view.dart';
 import 'package:skf/pages/main/main_host.dart';
 import 'package:skf/pages/mine/view.dart';
 import 'package:skf/pages/rcmd/controller.dart';
 import 'package:skf/pages/rcmd/view.dart';
+import 'package:skf/pages/zone/controller.dart';
+import 'package:skf/pages/zone/view.dart';
 
 /// OttoHub MainHost：主 tab 集（首页/动态/我的,与原版三 tab 一致）。
 /// 首页子 tab 用共享 RcmdController/RcmdPage（走 core VideoRepository——
@@ -73,21 +75,27 @@ class OttoMainHost implements MainHost {
 
   @override
   List<HomeTabItem> get homeTabs => const [
-        HomeTabItem(id: 'rcmd', label: '推荐'),
         HomeTabItem(id: 'hot', label: '热门'),
+        HomeTabItem(id: 'rcmd', label: '首页'),
+        HomeTabItem(id: 'zone', label: '分区'),
       ];
 
   @override
   String get defaultHomeTabId => 'rcmd';
 
   @override
-  ScrollOrRefreshMixin homeTabCtrFor(HomeTabItem tab) => tab.id == 'hot'
-      ? appRead(hotControllerProvider)
-      : appRead(rcmdControllerProvider);
+  ScrollOrRefreshMixin homeTabCtrFor(HomeTabItem tab) => switch (tab.id) {
+        'hot' => HotCoordinator.instance,
+        'zone' => ZoneCoordinator.instance,
+        _ => appRead(rcmdControllerProvider),
+      };
 
   @override
-  Widget homeTabPageFor(HomeTabItem tab) =>
-      tab.id == 'hot' ? const HotPage() : const RcmdPage();
+  Widget homeTabPageFor(HomeTabItem tab) => switch (tab.id) {
+        'hot' => const HotPage(),
+        'zone' => const ZonePage(),
+        _ => const RcmdPage(),
+      };
 
   @override
   Future<String> fetchDefaultSearchWord() async => '';

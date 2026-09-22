@@ -280,4 +280,267 @@ as String?,
 
 }
 
+/// @nodoc
+mixin _$CoreSlide {
+
+ String get imgUrl; String? get title; String? get href;
+/// Create a copy of CoreSlide
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CoreSlideCopyWith<CoreSlide> get copyWith => _$CoreSlideCopyWithImpl<CoreSlide>(this as CoreSlide, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoreSlide&&(identical(other.imgUrl, imgUrl) || other.imgUrl == imgUrl)&&(identical(other.title, title) || other.title == title)&&(identical(other.href, href) || other.href == href));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,imgUrl,title,href);
+
+@override
+String toString() {
+  return 'CoreSlide(imgUrl: $imgUrl, title: $title, href: $href)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CoreSlideCopyWith<$Res>  {
+  factory $CoreSlideCopyWith(CoreSlide value, $Res Function(CoreSlide) _then) = _$CoreSlideCopyWithImpl;
+@useResult
+$Res call({
+ String imgUrl, String? title, String? href
+});
+
+
+
+
+}
+/// @nodoc
+class _$CoreSlideCopyWithImpl<$Res>
+    implements $CoreSlideCopyWith<$Res> {
+  _$CoreSlideCopyWithImpl(this._self, this._then);
+
+  final CoreSlide _self;
+  final $Res Function(CoreSlide) _then;
+
+/// Create a copy of CoreSlide
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? imgUrl = null,Object? title = freezed,Object? href = freezed,}) {
+  return _then(_self.copyWith(
+imgUrl: null == imgUrl ? _self.imgUrl : imgUrl // ignore: cast_nullable_to_non_nullable
+as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String?,href: freezed == href ? _self.href : href // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CoreSlide].
+extension CoreSlidePatterns on CoreSlide {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CoreSlide value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CoreSlide() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CoreSlide value)  $default,){
+final _that = this;
+switch (_that) {
+case _CoreSlide():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CoreSlide value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CoreSlide() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String imgUrl,  String? title,  String? href)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CoreSlide() when $default != null:
+return $default(_that.imgUrl,_that.title,_that.href);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String imgUrl,  String? title,  String? href)  $default,) {final _that = this;
+switch (_that) {
+case _CoreSlide():
+return $default(_that.imgUrl,_that.title,_that.href);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String imgUrl,  String? title,  String? href)?  $default,) {final _that = this;
+switch (_that) {
+case _CoreSlide() when $default != null:
+return $default(_that.imgUrl,_that.title,_that.href);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _CoreSlide implements CoreSlide {
+  const _CoreSlide({required this.imgUrl, this.title, this.href});
+  
+
+@override final  String imgUrl;
+@override final  String? title;
+@override final  String? href;
+
+/// Create a copy of CoreSlide
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CoreSlideCopyWith<_CoreSlide> get copyWith => __$CoreSlideCopyWithImpl<_CoreSlide>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoreSlide&&(identical(other.imgUrl, imgUrl) || other.imgUrl == imgUrl)&&(identical(other.title, title) || other.title == title)&&(identical(other.href, href) || other.href == href));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,imgUrl,title,href);
+
+@override
+String toString() {
+  return 'CoreSlide(imgUrl: $imgUrl, title: $title, href: $href)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CoreSlideCopyWith<$Res> implements $CoreSlideCopyWith<$Res> {
+  factory _$CoreSlideCopyWith(_CoreSlide value, $Res Function(_CoreSlide) _then) = __$CoreSlideCopyWithImpl;
+@override @useResult
+$Res call({
+ String imgUrl, String? title, String? href
+});
+
+
+
+
+}
+/// @nodoc
+class __$CoreSlideCopyWithImpl<$Res>
+    implements _$CoreSlideCopyWith<$Res> {
+  __$CoreSlideCopyWithImpl(this._self, this._then);
+
+  final _CoreSlide _self;
+  final $Res Function(_CoreSlide) _then;
+
+/// Create a copy of CoreSlide
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? imgUrl = null,Object? title = freezed,Object? href = freezed,}) {
+  return _then(_CoreSlide(
+imgUrl: null == imgUrl ? _self.imgUrl : imgUrl // ignore: cast_nullable_to_non_nullable
+as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String?,href: freezed == href ? _self.href : href // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 // dart format on

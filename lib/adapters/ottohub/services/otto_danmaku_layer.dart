@@ -186,13 +186,19 @@ class _OttoPlDanmakuState extends State<OttoPlDanmaku> {
     );
     return ValueListenableBuilder<bool>(
       valueListenable: OttoDanmakuToggle.enabledListenable,
-      builder: (context, enabled, _) => AnimatedOpacity(
-        opacity: enabled ? Pref.danmakuOpacity : 0,
-        duration: const Duration(milliseconds: 100),
-        child: DanmakuScreen<int>(
-          createdController: (e) => _controller = e,
-          option: option,
-          size: widget.size,
+      builder: (context, enabled, _) => ExcludeSemantics(
+        // 弹幕幕布产生数百个语义节点且零无障碍价值,排除以避免
+        // semantics 树在面板开合/路由退出时的断言与崩溃(object.dart
+        // 'node.built'/'parentDataDirty')。
+        excluding: true,
+        child: AnimatedOpacity(
+          opacity: enabled ? Pref.danmakuOpacity : 0,
+          duration: const Duration(milliseconds: 100),
+            child: DanmakuScreen<int>(
+              createdController: (e) => _controller = e,
+              option: option,
+              size: widget.size,
+            ),
         ),
       ),
     );

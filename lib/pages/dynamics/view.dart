@@ -73,6 +73,18 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     );
   }
 
+  /// UP 关注列表面板:仅在「关注」分类下展示(面板筛选的就是关注流)。
+  Widget? get _upPanelOrNull {
+    final theme = Theme.of(context);
+    return ListenableBuilder(
+      listenable: _dynamicsController.tabController,
+      builder: (_, _) => _dynamicsController.currentTabType ==
+              CoreDynamicsTabType.follow
+          ? upPanelPart(theme)
+          : const SizedBox.shrink(),
+    );
+  }
+
   Widget _buildUpPanel(LoadingState<CoreFollowUpModel> upState) {
     return switch (upState) {
       Loading() => const SizedBox.shrink(),
@@ -80,10 +92,25 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
         upData: response,
         dynamicsController: _dynamicsController,
       ),
-      Error() => Center(
-        child: IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: _dynamicsController.onReload,
+      Error(:final errMsg) => Center(
+        child: Column(
+          mainAxisSize: .min,
+          spacing: 2,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: errMsg ?? '加载失败,点击重试',
+              onPressed: _dynamicsController.onReload,
+            ),
+            Text(
+              '加载失败\n点击重试',
+              textAlign: .center,
+              style: TextStyle(
+                fontSize: 10,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+          ],
         ),
       ),
     };
@@ -130,7 +157,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
       case UpPanelPosition.top:
         child = Column(
           children: [
-            upPanelPart(theme),
+            _upPanelOrNull!,
             Expanded(child: child),
           ],
         );
@@ -138,7 +165,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
       case UpPanelPosition.leftFixed:
         child = Row(
           children: [
-            upPanelPart(theme),
+            _upPanelOrNull!,
             Expanded(child: child),
           ],
         );
@@ -147,15 +174,15 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
         child = Row(
           children: [
             Expanded(child: child),
-            upPanelPart(theme),
+            _upPanelOrNull!,
           ],
         );
         actions = [_createDynamicBtn(theme)];
       case UpPanelPosition.leftDrawer:
-        drawer = upPanelPart(theme);
+        drawer = _upPanelOrNull;
         actions = [_createDynamicBtn(theme)];
       case UpPanelPosition.rightDrawer:
-        endDrawer = upPanelPart(theme);
+        endDrawer = _upPanelOrNull;
         leading = _createDynamicBtn(theme, isRight: false);
     }
 

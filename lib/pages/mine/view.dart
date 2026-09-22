@@ -5,6 +5,7 @@ import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/flutter/list_tile.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
+import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/svg/level_icon.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -12,7 +13,6 @@ import 'package:skf/pages/common/common_page.dart';
 import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/mine/widgets/item.dart';
-import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/utils.dart';
@@ -276,12 +276,20 @@ class _MediaPageState extends CommonPageState<MinePage>
                             ),
                         ],
                       )
-                    : ClipOval(
-                        child: Image.asset(
-                          width: 55,
-                          height: 55,
-                          cacheHeight: 55.cacheSize(context),
-                          Assets.avatarPlaceHolder,
+                    : Container(
+                        width: 55,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          shape: .circle,
+                          color: theme.colorScheme.onInverseSurface.withValues(
+                            alpha: 0.4,
+                          ),
+                        ),
+                        alignment: .center,
+                        child: Icon(
+                          Icons.person_rounded,
+                          size: 33,
+                          color: theme.colorScheme.outline,
                           semanticLabel: "默认头像",
                         ),
                       ),
@@ -578,11 +586,10 @@ class _MediaPageState extends CommonPageState<MinePage>
       ),
       Error(:final errMsg) => SizedBox(
         height: 160,
-        child: Center(
-          child: Text(
-            errMsg ?? '',
-            textAlign: .center,
-          ),
+        child: HttpError(
+          isSliver: false,
+          errMsg: errMsg,
+          onReload: controller.onRefresh,
         ),
       ),
     };

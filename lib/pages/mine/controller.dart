@@ -308,5 +308,15 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
   }
 }
 
-/// 我的页控制器（单实例）。
-final mineControllerProvider = Provider<MineController>((ref) => MineController());
+/// 我的页控制器(单实例):监听全局登录态,登录后自动刷新、
+/// 登出后重置账号块(AccountMixin.initAccountListener 为空实现,
+/// 这里直接在 provider 侧挂 Riverpod 监听)。
+final mineControllerProvider = Provider<MineController>((ref) {
+  final controller = MineController();
+  ref.listen<AccountState>(accountProvider, (prev, next) {
+    if (prev?.isLogin != next.isLogin) {
+      controller.onChangeAccount(next.isLogin);
+    }
+  });
+  return controller;
+});

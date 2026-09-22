@@ -25,6 +25,7 @@ import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_mine_actions.dart';
 import 'package:skf/adapters/ottohub/services/otto_setting_host.dart';
+import 'package:skf/adapters/ottohub/services/otto_zone_host.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/adapters/ottohub/services/otto_main_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_host.dart';
@@ -176,7 +177,7 @@ class OttoAdapter implements AppAdapter {
       progressRepositoryProvider.overrideWithValue(OttoProgressRepository()),
       sponsorBlockRepositoryProvider.overrideWithValue(OttoSponsorBlockRepository()),
       downloadRepositoryProvider.overrideWithValue(OttoDownloadRepository(client)),
-      appRepositoryProvider.overrideWithValue(OttoAppRepository()),
+      appRepositoryProvider.overrideWithValue(OttoAppRepository(client)),
       msgRepositoryProvider.overrideWithValue(OttoMsgRepository(client)),
       blackRepositoryProvider.overrideWithValue(OttoBlackRepository(client)),
       // Page hosts / actions (previously Get.lazyPut).
@@ -186,6 +187,7 @@ class OttoAdapter implements AppAdapter {
       memberHostProvider.overrideWithValue(OttoMemberHost()),
       mainHostProvider.overrideWithValue(OttoMainHost()),
       dynamicsHostProvider.overrideWithValue(OttoDynamicsHost()),
+      zoneHostProvider.overrideWithValue(OttoZoneHost()),
       mineActionsProvider.overrideWithValue(OttoMineActions()),
       downloadActionsProvider.overrideWithValue(OttoDownloadActions()),
       // Generic page bar-state bridges: interface -> Riverpod notifiers.

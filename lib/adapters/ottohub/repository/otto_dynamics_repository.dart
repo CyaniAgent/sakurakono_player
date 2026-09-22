@@ -100,59 +100,81 @@ class OttoDynamicsRepository implements DynamicsRepository {
       }).toList();
   }
 
-  /// 专栏 tab 数据:站内最新博客列表 → 图文动态卡。
-  Future<LoadingState<CoreDynamicsDataModel>> blogFeed({String? offset}) async {
-    try {
-      final list = await _client.oldBlog.getNewBlogList(
-        offset: offset != null ? int.tryParse(offset) : null,
-        num: 20,
+  /// 「最新」分类数据:站内最新博客列表 → 图文动态卡(可翻页)。
+  Future<LoadingState<CoreDynamicsDataModel>> blogFeed({String? offset}) async =>
+      _blogFeedOf(
+        fetch: (limit) => _client.oldBlog.getNewBlogList(
+          offset: offset != null ? int.tryParse(offset) : null,
+          num: limit,
+        ),
+        paged: true,
       );
-      final items = list.map((b) {
-        final idStr = b.bid.toString();
-        final pics = b.thumbnails
-            ?.map((url) => CoreOpusPicModel(src: url, url: url))
-            .toList();
-        return CoreDynamicItemModel(
-          idStr: idStr,
-          type: 'DYNAMIC_TYPE_DRAW',
-          basic: CoreBasic(commentIdStr: idStr),
-          modules: CoreItemModulesModel(
-            moduleAuthor: CoreModuleAuthorModel(
-              mid: b.uid,
-              name: b.username,
-              face: b.avatarUrl,
-              pubTime: b.time,
-            ),
-            moduleStat: CoreModuleStatModel(
-              comment: CoreDynamicStat(count: b.commentCount ?? 0),
-              forward: CoreDynamicStat(count: 0),
-              like: CoreDynamicStat(count: b.likeCount, status: false),
-              favorite: CoreDynamicStat(count: b.favoriteCount),
-            ),
-            moduleDynamic: CoreModuleDynamicModel(
-              desc: CoreDynamicDescModel(text: b.content ?? b.title),
-              major: CoreDynamicMajorModel(
-                type: 'MAJOR_TYPE_OPUS',
-                opus: CoreDynamicOpusModel(
-                  title: b.title,
-                  summary: CoreSummaryModel(text: b.content ?? b.title),
-                  pics: pics,
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList();
+
+  /// 「推荐」分类数据:随机博客推荐(服务端无 offset 参数,
+  /// 单批返回;下拉刷新即换一批)。
+  Future<LoadingState<CoreDynamicsDataModel>> randomBlogFeed() async =>
+      _blogFeedOf(
+        fetch: (limit) => _client.oldBlog.getRandomBlogList(num: limit),
+        paged: false,
+      );
+
+  /// 博客列表 → 图文动态卡的公共管道([fetch] 由最新/推荐各自的
+  /// SDK 端点提供;推荐端点无分页,超出数量的返回直接丢弃)。
+  Future<LoadingState<CoreDynamicsDataModel>> _blogFeedOf({
+    required Future<List<BlogSummary>> Function(int limit) fetch,
+    required bool paged,
+  }) async {
+    try {
+      const limit = 20;
+      final list = await fetch(limit);
+      final items = list.map(_blogToDynamic).toList();
       final nextOffset = items.isNotEmpty ? items.length.toString() : null;
       return Success(CoreDynamicsDataModel(
         items: items,
         offset: nextOffset,
-        hasMore: list.length >= 20,
+        hasMore: paged && list.length >= limit,
       ));
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.blogFeed ApiException: ${e.errorCode}');
       return _err(e);
     }
+  }
+
+  CoreDynamicItemModel _blogToDynamic(BlogSummary b) {
+    final idStr = b.bid.toString();
+    final pics = b.thumbnails
+        ?.map((url) => CoreOpusPicModel(src: url, url: url))
+        .toList();
+    return CoreDynamicItemModel(
+      idStr: idStr,
+      type: 'DYNAMIC_TYPE_DRAW',
+      basic: CoreBasic(commentIdStr: idStr),
+      modules: CoreItemModulesModel(
+        moduleAuthor: CoreModuleAuthorModel(
+          mid: b.uid,
+          name: b.username,
+          face: b.avatarUrl,
+          pubTime: b.time,
+        ),
+        moduleStat: CoreModuleStatModel(
+          comment: CoreDynamicStat(count: b.commentCount ?? 0),
+          forward: CoreDynamicStat(count: 0),
+          like: CoreDynamicStat(count: b.likeCount, status: false),
+          favorite: CoreDynamicStat(count: b.favoriteCount),
+        ),
+        moduleDynamic: CoreModuleDynamicModel(
+          desc: CoreDynamicDescModel(text: b.content ?? b.title),
+          major: CoreDynamicMajorModel(
+            type: 'MAJOR_TYPE_OPUS',
+            opus: CoreDynamicOpusModel(
+              title: b.title,
+              summary: CoreSummaryModel(text: b.content ?? b.title),
+              pics: pics,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   /// 单个用户的动态流(UP tab)。
@@ -183,17 +205,16 @@ class OttoDynamicsRepository implements DynamicsRepository {
     int? hostMid,
     String? offset,
     Set<int>? tempBannedList,
-    CoreDynamicsTabType type = .all,
   }) async {
+    // 关注时间线需要登录态:未登录直接给出可读错误(UI 映射为登录引导)。
+    if (_currentUid <= 0) {
+      return const Error('需要登录', code: 401);
+    }
     try {
       final timeline = await _client.following.getTimeline(
         offset: offset != null ? int.tryParse(offset) : null,
       );
-      var items = _mapTimeline(timeline);
-      // 投稿 tab:客户端过滤视频形态。
-      if (type == CoreDynamicsTabType.video) {
-        items = items.where((e) => e.type == 'DYNAMIC_TYPE_AV').toList();
-      }
+      final items = _mapTimeline(timeline);
       // Compute next offset from current count so the caller can paginate.
       final nextOffset = items.isNotEmpty ? items.length.toString() : null;
       return Success(CoreDynamicsDataModel(

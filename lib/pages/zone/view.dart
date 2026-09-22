@@ -8,32 +8,25 @@ import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/pages/hot/controller.dart';
-import 'package:skf/utils/feed_back.dart';
+import 'package:skf/pages/zone/controller.dart';
+import 'package:skf/pages/zone/zone_host.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/storage_pref.dart';
 
-/// 热门页(框架级):三个时间窗口子榜(本周/本月/本季),
-/// 数据来自 core `VideoRepository.hotVideoList(timeLimitDays:)`。
-class HotPage extends StatefulWidget {
-  const HotPage({super.key});
+/// 分区页(框架级,首页「分区」子 tab):分类清单来自适配器 [ZoneHost],
+/// 各分区视频走 core `VideoRepository.categoryVideoList`(单批,无加载更多)。
+class ZonePage extends StatefulWidget {
+  const ZonePage({super.key});
 
   @override
-  State<HotPage> createState() => _HotPageState();
+  State<ZonePage> createState() => _ZonePageState();
 }
 
-class _HotPageState extends State<HotPage>
+class _ZonePageState extends State<ZonePage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  static const _periods = <({String label, int days})>[
-    (label: '本周热门', days: 7),
-    (label: '本月热门', days: 30),
-    (label: '本季热门', days: 90),
-  ];
+  late final List<ZoneCategory> _categories = ZoneHost.of().categories;
 
-  late final _tabController = TabController(
-    length: _periods.length,
-    vsync: this,
-  );
+  TabController? _tabController;
 
   @override
   bool get wantKeepAlive => true;
@@ -41,36 +34,40 @@ class _HotPageState extends State<HotPage>
   @override
   void initState() {
     super.initState();
-    _bindActiveSubController();
-    _tabController.addListener(_onTabChanged);
-  }
-
-  void _onTabChanged() {
-    if (!_tabController.indexIsChanging) {
+    if (_categories.isNotEmpty) {
+      _tabController = TabController(length: _categories.length, vsync: this)
+        ..addListener(_onTabChanged);
       _bindActiveSubController();
     }
   }
 
-  /// 外壳双击回顶/刷新作用于当前子榜。
+  void _onTabChanged() {
+    if (!(_tabController?.indexIsChanging ?? true)) {
+      _bindActiveSubController();
+    }
+  }
+
+  /// 外壳双击回顶/刷新作用于当前选中分区。
   void _bindActiveSubController() {
-    HotCoordinator.active =
-        appRead(hotControllerProvider(_periods[_tabController.index].days));
+    final index = _tabController?.index ?? 0;
+    ZoneCoordinator.active =
+        appRead(zoneControllerProvider(_categories[index].id));
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
-    _tabController.dispose();
-    if (HotCoordinator.active != null) {
-      HotCoordinator.active = null;
-    }
+    _tabController?.removeListener(_onTabChanged);
+    _tabController?.dispose();
+    ZoneCoordinator.active = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final theme = Theme.of(context);
+    if (_categories.isEmpty) {
+      return const Center(child: Text('暂无分区'));
+    }
     return Column(
       children: [
         Padding(
@@ -80,34 +77,23 @@ class _HotPageState extends State<HotPage>
             width: double.infinity,
             child: TabBar(
               controller: _tabController,
-              tabs: _periods.map((e) => Tab(text: e.label)).toList(),
+              tabs: _categories.map((e) => Tab(text: e.label)).toList(),
               isScrollable: true,
               dividerColor: Colors.transparent,
               dividerHeight: 0,
               splashBorderRadius: Style.mdRadius,
               tabAlignment: TabAlignment.center,
-              labelStyle: TabBarTheme.of(context).labelStyle?.copyWith(
-                    fontSize: 14,
-                  ) ??
-                  const TextStyle(fontSize: 14),
-              unselectedLabelColor: theme.colorScheme.onSurface,
-              onTap: (_) {
-                feedBack();
-                if (!_tabController.indexIsChanging) {
-                  HotCoordinator.active?.animateToTop();
-                }
-              },
             ),
           ),
         ),
         Expanded(
           child: CustomTabBarView(
             controller: _tabController,
-            children: _periods
+            children: _categories
                 .map(
-                  (e) => _HotRankPage(
-                    key: ValueKey(e.days),
-                    timeLimitDays: e.days,
+                  (e) => _ZoneCategoryPage(
+                    key: ValueKey(e.id),
+                    category: e,
                   ),
                 )
                 .toList(),
@@ -118,19 +104,19 @@ class _HotPageState extends State<HotPage>
   }
 }
 
-class _HotRankPage extends StatefulWidget {
-  const _HotRankPage({super.key, required this.timeLimitDays});
+class _ZoneCategoryPage extends StatefulWidget {
+  const _ZoneCategoryPage({super.key, required this.category});
 
-  final int timeLimitDays;
+  final ZoneCategory category;
 
   @override
-  State<_HotRankPage> createState() => _HotRankPageState();
+  State<_ZoneCategoryPage> createState() => _ZoneCategoryPageState();
 }
 
-class _HotRankPageState extends State<_HotRankPage>
+class _ZoneCategoryPageState extends State<_ZoneCategoryPage>
     with AutomaticKeepAliveClientMixin {
-  late final HotController controller =
-      appRead(hotControllerProvider(widget.timeLimitDays));
+  late final ZoneController controller =
+      appRead(zoneControllerProvider(widget.category.id));
 
   @override
   bool get wantKeepAlive => true;
@@ -184,14 +170,10 @@ class _HotRankPageState extends State<_HotRankPage>
         SliverGrid.builder(
           gridDelegate: gridDelegate,
           itemCount: response.length,
-          itemBuilder: (context, index) {
-            if (index == response.length - 1) {
-              controller.onLoadMore();
-            }
-            return HotVideoCard(item: response[index]);
-          },
+          itemBuilder: (context, index) => HotVideoCard(item: response[index]),
         ),
-      Success() => const SliverToBoxAdapter(child: VideoCardVSkeleton()),
+      // 单批数据:空列表即该分区暂无内容,不是骨架屏。
+      Success() => HttpError(errMsg: '该分区暂无内容'),
     };
   }
 }

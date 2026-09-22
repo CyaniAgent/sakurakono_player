@@ -52,7 +52,7 @@ class _FollowTagPanelState extends State<FollowTagPanel> {
                 response.toList()
                   ..removeFirstWhere((e) => e.tagid == 0),
               ),
-              Error(:final errMsg) => Error(errMsg),
+              Error(:final errMsg, :final code) => Error(errMsg, code: code),
             };
         _showDefaultBtn = tags.isEmpty;
         setState(() {});

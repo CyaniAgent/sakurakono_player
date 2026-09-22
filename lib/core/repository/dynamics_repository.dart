@@ -8,12 +8,11 @@ import 'package:skf/core/result/loading_state.dart';
 /// contract. All methods that wrap API responses use [LoadingState] for
 /// loading/success/error tri-state results.
 abstract class DynamicsRepository {
-  /// 跟随动态列表
+  /// 关注时间线(登录态)。
   Future<LoadingState<CoreDynamicsDataModel>> followDynamic({
     int? hostMid,
     String? offset,
     Set<int>? tempBannedList,
-    CoreDynamicsTabType type = .all,
   });
 
   /// 关注列表（首页）

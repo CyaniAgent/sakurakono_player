@@ -8,6 +8,7 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/rcmd/controller.dart';
+import 'package:skf/pages/rcmd/widgets/home_slideshow.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:skf/utils/num_utils.dart';
@@ -43,6 +44,7 @@ class _RcmdPageState extends State<RcmdPage> with AutomaticKeepAliveClientMixin 
           controller: controller.scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
+            const SliverToBoxAdapter(child: HomeSlideshow()),
             SliverPadding(
               padding: const .only(top: Style.cardSpace, bottom: 100),
               sliver: ListenableBuilder(

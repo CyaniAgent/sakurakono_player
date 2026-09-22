@@ -39,8 +39,11 @@ class DynamicsController
 
   List<CoreDynamicsTabType> get _visibleTabs => DynamicsHost.of().visibleTabs;
 
-  CoreDynamicsTabType get _currentTabType =>
+  /// 当前选中分类(view 的 UP 面板显隐按此 gating)。
+  CoreDynamicsTabType get currentTabType =>
       _visibleTabs[tabController.index.clamp(0, _visibleTabs.length - 1)];
+
+  CoreDynamicsTabType get _currentTabType => currentTabType;
 
 
   DynamicsController() {
@@ -61,7 +64,9 @@ class DynamicsController
   Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
 
   void _jumpToTab(int mid) {
-    tabController.index = mid == -1 ? 0 : (_visibleTabs.length > 4 ? 4 : 0);
+    // UP 筛选作用于「关注」分类;取消选中亦回到该分类刷新。
+    final followIndex = _visibleTabs.indexOf(CoreDynamicsTabType.follow);
+    tabController.index = followIndex >= 0 ? followIndex : 0;
   }
 
   void onSelectUp(int mid) {
@@ -76,11 +81,13 @@ class DynamicsController
 
     if (mid != -1) {
       hostMid = mid;
-      DynamicsHost.of().reloadTab(CoreDynamicsTabType.up);
+      DynamicsHost.of().reloadTab(_currentTabType);
     }
 
     currentMid = mid;
     _jumpToTab(mid);
+    // 「关注」分类页监听本控制器,选择变更后按 currentMid 切换数据源。
+    notifyChange();
   }
 
   Future<void> singleRefresh() {

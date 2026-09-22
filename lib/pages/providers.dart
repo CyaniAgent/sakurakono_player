@@ -9,6 +9,7 @@ import 'package:skf/pages/member/member_host.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/setting/setting_host.dart';
 import 'package:skf/pages/video/video_host.dart';
+import 'package:skf/pages/zone/zone_host.dart';
 import 'package:riverpod/riverpod.dart';
 
 // ---------------------------------------------------------------------------
@@ -62,6 +63,10 @@ final mainHostProvider = Provider<MainHost>((ref) {
 });
 
 final dynamicsHostProvider = Provider<DynamicsHost>((ref) {
+  throw UnimplementedError('Override via appRead');
+});
+
+final zoneHostProvider = Provider<ZoneHost>((ref) {
   throw UnimplementedError('Override via appRead');
 });
 

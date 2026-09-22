@@ -16,3 +16,16 @@ abstract class CoreUpdateInfo with _$CoreUpdateInfo {
     String? publishedAt,
   }) = _CoreUpdateInfo;
 }
+
+/// One home-page slideshow (carousel) entry.
+///
+/// [href] is an opaque deep link owned by the adapter's site (e.g. a video or
+/// blog permalink); routing is resolved adapter-side.
+@freezed
+abstract class CoreSlide with _$CoreSlide {
+  const factory CoreSlide({
+    required String imgUrl,
+    String? title,
+    String? href,
+  }) = _CoreSlide;
+}
