@@ -56,6 +56,9 @@ class OttoUserRepository implements UserRepository {
         face: detail?.avatarUrl,
         mid: profile.uid,
         uname: profile.username,
+        // OttoHub 经验/徽章(getUserDetail)。
+        levelInfo: CoreLevelInfo(currentExp: detail?.experience),
+        honour: detail?.honour,
       ));
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.userInfo ApiException: ${e.errorCode}');

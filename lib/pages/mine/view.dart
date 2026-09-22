@@ -167,19 +167,21 @@ class _MediaPageState extends CommonPageState<MinePage>
             onPressed: actions.openReply,
             icon: const Icon(Icons.message_outlined),
           ),
-        ValueListenableBuilder<bool>(
-          valueListenable: MineController.anonymity,
-          builder: (_, anonymity, _) => IconButton(
-            iconSize: iconSize,
-            padding: padding,
-            style: style,
-            tooltip: "${anonymity ? '退出' : '进入'}无痕模式",
-            onPressed: MineController.onChangeAnonymity,
-            icon: anonymity
-                ? const Icon(MdiIcons.incognito)
-                : const Icon(MdiIcons.incognitoOff),
+        // 无痕模式为 B站 概念,适配器不支持时不展示入口。
+        if (actions.canToggleAnonymity)
+          ValueListenableBuilder<bool>(
+            valueListenable: MineController.anonymity,
+            builder: (_, anonymity, _) => IconButton(
+              iconSize: iconSize,
+              padding: padding,
+              style: style,
+              tooltip: "${anonymity ? '退出' : '进入'}无痕模式",
+              onPressed: MineController.onChangeAnonymity,
+              icon: anonymity
+                  ? const Icon(MdiIcons.incognito)
+                  : const Icon(MdiIcons.incognitoOff),
+            ),
           ),
-        ),
         IconButton(
           iconSize: iconSize,
           padding: padding,
@@ -311,32 +313,60 @@ class _MediaPageState extends CommonPageState<MinePage>
                             flash: userInfo.isSeniorMember == 1,
                             height: 10,
                           ),
+                          if (userInfo.honour?.isNotEmpty == true)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondaryContainer,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
+                              ),
+                              child: Text(
+                                userInfo.honour!,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color:
+                                      theme.colorScheme.onSecondaryContainer,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 8),
+                      // 硬币/经验按数据分段展示(B站 两项都有;OttoHub 仅经验)。
                       Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(
-                              text: '硬币 ',
-                              style: coinLabelStyle,
-                            ),
-                            TextSpan(
-                              text: userInfo.money?.toString() ?? '-',
-                              style: coinValStyle,
-                            ),
-                            TextSpan(
-                              text: "      经验 ",
-                              style: coinLabelStyle,
-                            ),
-                            TextSpan(
-                              text: levelInfo?.currentExp?.toString() ?? '-',
-                              style: coinValStyle,
-                            ),
-                            TextSpan(
-                              text: "/${levelInfo?.nextExp ?? '-'}",
-                              style: coinLabelStyle,
-                            ),
+                            if (userInfo.money != null) ...[
+                              TextSpan(
+                                text: '硬币 ',
+                                style: coinLabelStyle,
+                              ),
+                              TextSpan(
+                                text: userInfo.money!.toString(),
+                                style: coinValStyle,
+                              ),
+                              const TextSpan(text: '      '),
+                            ],
+                            if (levelInfo?.currentExp != null) ...[
+                              TextSpan(
+                                text: '经验 ',
+                                style: coinLabelStyle,
+                              ),
+                              TextSpan(
+                                text: levelInfo!.currentExp!.toString(),
+                                style: coinValStyle,
+                              ),
+                              if (levelInfo.nextExp != null)
+                                TextSpan(
+                                  text: "/${levelInfo.nextExp}",
+                                  style: coinLabelStyle,
+                                ),
+                            ],
                           ],
                         ),
                       ),

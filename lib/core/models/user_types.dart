@@ -21,6 +21,9 @@ class CoreUserInfoData {
   String? uname;
   int? vipDueDate;
   int? vipStatus;
+
+  /// 徽章文案(OttoHub honour)。
+  String? honour;
   int? vipType;
   int? isSeniorMember;
 
@@ -34,6 +37,7 @@ class CoreUserInfoData {
     this.uname,
     this.vipDueDate,
     this.vipStatus,
+    this.honour,
     this.vipType,
     this.isSeniorMember,
   });
