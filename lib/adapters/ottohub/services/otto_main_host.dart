@@ -5,6 +5,8 @@ import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/common/bar_hide_type.dart';
+import 'package:skf/pages/hot/controller.dart';
+import 'package:skf/pages/hot/view.dart';
 import 'package:skf/pages/common/common_controller.dart';
 import 'package:skf/pages/common/msg_unread_type.dart';
 import 'package:skf/pages/dynamics/view.dart';
@@ -72,17 +74,20 @@ class OttoMainHost implements MainHost {
   @override
   List<HomeTabItem> get homeTabs => const [
         HomeTabItem(id: 'rcmd', label: '推荐'),
+        HomeTabItem(id: 'hot', label: '热门'),
       ];
 
   @override
   String get defaultHomeTabId => 'rcmd';
 
   @override
-  ScrollOrRefreshMixin homeTabCtrFor(HomeTabItem tab) =>
-      appRead(rcmdControllerProvider);
+  ScrollOrRefreshMixin homeTabCtrFor(HomeTabItem tab) => tab.id == 'hot'
+      ? appRead(hotControllerProvider)
+      : appRead(rcmdControllerProvider);
 
   @override
-  Widget homeTabPageFor(HomeTabItem tab) => const RcmdPage();
+  Widget homeTabPageFor(HomeTabItem tab) =>
+      tab.id == 'hot' ? const HotPage() : const RcmdPage();
 
   @override
   Future<String> fetchDefaultSearchWord() async => '';

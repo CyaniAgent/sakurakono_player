@@ -10,10 +10,18 @@ import 'package:skf/router/app_navigator.dart';
 
 /// OttoHub 动态页宿主实现。
 ///
-/// OttoHub 的「动态」内容形态为博客:全部/专栏 tab 展示站内最新博客
-/// (经 ottoBlogRepositoryProvider),其余 tab(投稿/番剧/UP)无对应
-/// 内容形态,显示占位。B站 专属交互(转发/抽奖/直播等)降级 no-op。
+/// 「动态」内容形态为博客+视频:全部 tab 为关注时间线(followDynamic),
+/// 投稿/专栏/UP 为对应内容过滤,番剧无对应 API 不展示。
+/// B站 专属交互(转发/抽奖/直播等)降级 no-op。
 class OttoDynamicsHost implements DynamicsHost {
+
+  @override
+  List<CoreDynamicsTabType> get visibleTabs => const [
+        CoreDynamicsTabType.all,
+        CoreDynamicsTabType.video,
+        CoreDynamicsTabType.article,
+        CoreDynamicsTabType.up,
+      ];
 
   @override
   Widget buildTabPage(CoreDynamicsTabType type) =>
@@ -51,7 +59,16 @@ class OttoDynamicsHost implements DynamicsHost {
     CoreDynamicItemModel item, {
     bool isPush = false,
     bool viewComment = false,
-  }) async {}
+  }) async {
+    // OttoHub 动态按内容形态分发:视频 → 播放页,博客 → 博客详情。
+    final idStr = item.idStr;
+    if (idStr == null || idStr.isEmpty) return;
+    if (item.type == 'DYNAMIC_TYPE_AV') {
+      toVideoPage(bvid: idStr);
+    } else {
+      AppNavigator.toNamed('/blogDetail', parameters: {'bid': idStr});
+    }
+  }
 
   @override
   bool viewPgcFromUri(String uri) => false;

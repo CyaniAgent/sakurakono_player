@@ -43,6 +43,141 @@ class OttoDynamicsRepository implements DynamicsRepository {
   // Dynamic feed timeline
   // ---------------------------------------------------------------------------
 
+  /// 时间线 → 核心动态模型。
+  ///
+  /// 框架 module_panel 按 DYNAMIC_TYPE_* 渲染:
+  /// 视频 → 封面卡(major.archive),博客 → 文字+图片九宫格(major.opus)。
+  /// ActionPanel 对 comment/forward/like.status 强解包,必须给出非空值。
+  List<CoreDynamicItemModel> _mapTimeline(TimelineListData timeline) {
+    return timeline.timelineList.map((t) {
+        final isVideo = t.vid != null;
+        final idStr = isVideo ? t.vid!.toString() : t.bid?.toString();
+        // 框架 module_panel 按 DYNAMIC_TYPE_* 渲染:
+        // 视频 → 封面卡(major.archive),博客 → 文字+图片九宫格(major.opus)。
+        // ActionPanel 对 comment/forward/like.status 强解包,必须给出非空值。
+        final pics = t.thumbnails
+            ?.map((url) => CoreOpusPicModel(src: url, url: url))
+            .toList();
+        return CoreDynamicItemModel(
+          idStr: idStr,
+          type: isVideo ? 'DYNAMIC_TYPE_AV' : 'DYNAMIC_TYPE_DRAW',
+          basic: CoreBasic(commentIdStr: idStr),
+          modules: CoreItemModulesModel(
+            moduleAuthor: CoreModuleAuthorModel(
+              mid: t.uid,
+              name: t.username,
+              face: t.avatarUrl,
+              pubTime: t.time,
+            ),
+            moduleStat: CoreModuleStatModel(
+              comment: CoreDynamicStat(count: 0),
+              forward: CoreDynamicStat(count: 0),
+              like: CoreDynamicStat(count: t.likeCount, status: false),
+              favorite: CoreDynamicStat(count: t.favoriteCount),
+            ),
+            moduleDynamic: CoreModuleDynamicModel(
+              desc: CoreDynamicDescModel(text: t.content),
+              major: isVideo
+                  ? CoreDynamicMajorModel(
+                      type: 'MAJOR_TYPE_ARCHIVE',
+                      archive: CoreDynamicArchiveModel(
+                        aid: t.vid,
+                        bvid: idStr,
+                        cover: t.coverUrl,
+                        title: t.title,
+                      ),
+                    )
+                  : CoreDynamicMajorModel(
+                      type: 'MAJOR_TYPE_OPUS',
+                      opus: CoreDynamicOpusModel(
+                        summary: CoreSummaryModel(text: t.content),
+                        pics: pics,
+                      ),
+                    ),
+            ),
+          ),
+        );
+      }).toList();
+  }
+
+  /// 专栏 tab 数据:站内最新博客列表 → 图文动态卡。
+  Future<LoadingState<CoreDynamicsDataModel>> blogFeed({String? offset}) async {
+    try {
+      final list = await _client.oldBlog.getNewBlogList(
+        offset: offset != null ? int.tryParse(offset) : null,
+        num: 20,
+      );
+      final items = list.map((b) {
+        final idStr = b.bid.toString();
+        final pics = b.thumbnails
+            ?.map((url) => CoreOpusPicModel(src: url, url: url))
+            .toList();
+        return CoreDynamicItemModel(
+          idStr: idStr,
+          type: 'DYNAMIC_TYPE_DRAW',
+          basic: CoreBasic(commentIdStr: idStr),
+          modules: CoreItemModulesModel(
+            moduleAuthor: CoreModuleAuthorModel(
+              mid: b.uid,
+              name: b.username,
+              face: b.avatarUrl,
+              pubTime: b.time,
+            ),
+            moduleStat: CoreModuleStatModel(
+              comment: CoreDynamicStat(count: b.commentCount ?? 0),
+              forward: CoreDynamicStat(count: 0),
+              like: CoreDynamicStat(count: b.likeCount, status: false),
+              favorite: CoreDynamicStat(count: b.favoriteCount),
+            ),
+            moduleDynamic: CoreModuleDynamicModel(
+              desc: CoreDynamicDescModel(text: b.content ?? b.title),
+              major: CoreDynamicMajorModel(
+                type: 'MAJOR_TYPE_OPUS',
+                opus: CoreDynamicOpusModel(
+                  title: b.title,
+                  summary: CoreSummaryModel(text: b.content ?? b.title),
+                  pics: pics,
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList();
+      final nextOffset = items.isNotEmpty ? items.length.toString() : null;
+      return Success(CoreDynamicsDataModel(
+        items: items,
+        offset: nextOffset,
+        hasMore: list.length >= 20,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoDynamicsRepository.blogFeed ApiException: ${e.errorCode}');
+      return _err(e);
+    }
+  }
+
+  /// 单个用户的动态流(UP tab)。
+  Future<LoadingState<CoreDynamicsDataModel>> userDynFeed({
+    required int uid,
+    String? offset,
+  }) async {
+    try {
+      final timeline = await _client.following.getUserTimeline(
+        uid,
+        offset: offset != null ? int.tryParse(offset) : null,
+      );
+      var items = _mapTimeline(timeline);
+      final nextOffset = items.isNotEmpty ? items.length.toString() : null;
+      return Success(CoreDynamicsDataModel(
+        items: items,
+        offset: nextOffset,
+        hasMore: timeline.timelineList.length >= 20,
+      ));
+    } on ApiException catch (e) {
+      debugPrint('OttoDynamicsRepository.userDynFeed ApiException: ${e.errorCode}');
+      return _err(e);
+    }
+  }
+
   @override
   Future<LoadingState<CoreDynamicsDataModel>> followDynamic({
     int? hostMid,
@@ -54,37 +189,11 @@ class OttoDynamicsRepository implements DynamicsRepository {
       final timeline = await _client.following.getTimeline(
         offset: offset != null ? int.tryParse(offset) : null,
       );
-      final items = timeline.timelineList.map((t) {
-        final idStr = t.vid?.toString() ?? t.bid?.toString();
-        return CoreDynamicItemModel(
-          idStr: idStr,
-          type: t.contentType,
-          basic: CoreBasic(commentIdStr: idStr),
-          modules: CoreItemModulesModel(
-            moduleAuthor: CoreModuleAuthorModel(
-              mid: t.uid,
-              name: t.username,
-              face: t.avatarUrl,
-              pubTime: t.time,
-            ),
-            moduleStat: CoreModuleStatModel(
-              like: CoreDynamicStat(count: t.likeCount),
-              favorite: CoreDynamicStat(count: t.favoriteCount),
-            ),
-            moduleDynamic: CoreModuleDynamicModel(
-              desc: CoreDynamicDescModel(text: t.content),
-              major: CoreDynamicMajorModel(
-                type: 'archive',
-                archive: CoreDynamicArchiveModel(
-                  aid: t.vid,
-                  cover: t.coverUrl,
-                  title: t.title,
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList();
+      var items = _mapTimeline(timeline);
+      // 投稿 tab:客户端过滤视频形态。
+      if (type == CoreDynamicsTabType.video) {
+        items = items.where((e) => e.type == 'DYNAMIC_TYPE_AV').toList();
+      }
       // Compute next offset from current count so the caller can paginate.
       final nextOffset = items.isNotEmpty ? items.length.toString() : null;
       return Success(CoreDynamicsDataModel(
@@ -277,7 +386,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
       final detail = await _client.oldBlog.getBlogDetail(numericId);
       return _ok(CoreDynamicItemModel(
         idStr: detail.bid.toString(),
-        type: 'blog',
+        type: 'DYNAMIC_TYPE_DRAW',
         basic: CoreBasic(commentIdStr: detail.bid.toString()),
         modules: CoreItemModulesModel(
           moduleAuthor: CoreModuleAuthorModel(
@@ -376,7 +485,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
       final detail = await _client.oldBlog.getBlogDetail(numericId);
       return _ok(CoreDynamicItemModel(
         idStr: detail.bid.toString(),
-        type: 'blog',
+        type: 'DYNAMIC_TYPE_DRAW',
         basic: CoreBasic(commentIdStr: detail.bid.toString()),
         modules: CoreItemModulesModel(
           moduleAuthor: CoreModuleAuthorModel(

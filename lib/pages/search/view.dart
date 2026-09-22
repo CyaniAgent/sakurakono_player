@@ -195,13 +195,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         fontWeight: .bold,
       ),
     );
-    final outline = theme.colorScheme.outline;
     final secondary = theme.colorScheme.secondary;
-    final style = TextStyle(
-      height: 1,
-      fontSize: 13,
-      color: outline,
-    );
     return SliverPadding(
       padding: .fromLTRB(
         10,
@@ -217,43 +211,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: Row(
                 mainAxisAlignment: .spaceBetween,
                 children: [
-                  isTrending
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            text,
-                            const SizedBox(width: 14),
-                            TextButton(
-                              style: const ButtonStyle(
-                                visualDensity: .compact,
-                                tapTargetSize: .shrinkWrap,
-                                padding: WidgetStatePropertyAll(
-                                  .symmetric(horizontal: 10),
-                                ),
-                              ),
-                              onPressed: () =>
-                                  AppNavigator.toNamed('/searchTrending'),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '完整榜单',
-                                    strutStyle: const StrutStyle(
-                                      leading: 0,
-                                      height: 1,
-                                    ),
-                                    style: style,
-                                  ),
-                                  Icon(
-                                    size: 18,
-                                    Icons.keyboard_arrow_right,
-                                    color: outline,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : text,
+                  text,
                   TextButton.icon(
                     style: const ButtonStyle(
                       visualDensity: .compact,

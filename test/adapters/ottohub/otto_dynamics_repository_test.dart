@@ -64,7 +64,7 @@ void main() {
       expect(data.items, hasLength(2));
       final first = data.items!.first;
       expect(first.idStr, '42');
-      expect(first.type, 'video');
+      expect(first.type, 'DYNAMIC_TYPE_AV');
       expect(first.basic!.commentIdStr, '42');
       expect(first.modules!.moduleAuthor!.mid, 10086);
       expect(first.modules!.moduleAuthor!.name, '测试用户');
@@ -73,8 +73,12 @@ void main() {
       expect(first.modules!.moduleStat!.like!.count, 99);
       expect(first.modules!.moduleStat!.favorite!.count, 11);
       expect(first.modules!.moduleDynamic!.desc!.text, '发布了一个新视频');
-      expect(first.modules!.moduleDynamic!.major!.type, 'archive');
+      expect(first.modules!.moduleStat!.comment!.count, 0);
+      expect(first.modules!.moduleStat!.forward!.count, 0);
+      expect(first.modules!.moduleStat!.like!.status, isFalse);
+      expect(first.modules!.moduleDynamic!.major!.type, 'MAJOR_TYPE_ARCHIVE');
       expect(first.modules!.moduleDynamic!.major!.archive!.aid, 42);
+      expect(first.modules!.moduleDynamic!.major!.archive!.bvid, '42');
       expect(first.modules!.moduleDynamic!.major!.archive!.cover,
           'https://example.com/dyn1.jpg');
       expect(first.modules!.moduleDynamic!.major!.archive!.title, '动态视频');
@@ -186,7 +190,7 @@ void main() {
       expect(result, isA<Success<CoreDynamicItemModel>>());
       final item = (result as Success<CoreDynamicItemModel>).response;
       expect(item.idStr, '42');
-      expect(item.type, 'blog');
+      expect(item.type, 'DYNAMIC_TYPE_DRAW');
       expect(item.basic!.commentIdStr, '42');
       expect(item.modules!.moduleAuthor!.mid, 10086);
       expect(item.modules!.moduleAuthor!.name, '测试用户');
@@ -227,7 +231,7 @@ void main() {
       expect(result, isA<Success<CoreDynamicItemModel>>());
       final item = (result as Success<CoreDynamicItemModel>).response;
       expect(item.idStr, '7');
-      expect(item.type, 'blog');
+      expect(item.type, 'DYNAMIC_TYPE_DRAW');
       // Minimal detail: no avatar/username — author fields fall back to null.
       expect(item.modules!.moduleAuthor!.name, isNull);
       expect(item.modules!.moduleDynamic!.desc!.text, '只有必填字段');

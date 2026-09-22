@@ -7,7 +7,6 @@ import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/common/widgets/pair.dart';
 import 'package:skf/core/adapter/adapter_registry.dart';
-import 'package:skf/core/models/im_types.dart' show CoreImSettingType;
 import 'package:skf/core/models/msg_types.dart';
 import 'package:skf/core/models/ui/image_type.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -39,20 +38,6 @@ class _LikeMePageState extends State<LikeMePage> {
       appBar: widget.showAppBar
           ? AppBar(
         title: const Text('收到的赞'),
-        actions: [
-          IconButton(
-            onPressed: () => AppNavigator.toNamed(
-              '/whisperSettings',
-              arguments: {'type': CoreImSettingType.receiveLike},
-            ),
-            icon: Icon(
-              size: 20,
-              Icons.settings,
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-            ),
-          ),
-          const SizedBox(width: 10),
-        ],
       )
           : null,
       body: refreshIndicator(

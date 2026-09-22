@@ -95,10 +95,11 @@ class OttoSearchRepository implements SearchRepository {
   // ---------------------------------------------------------------------------
 
   @override
+  // OttoHub 无搜索联想 API:返回空数据让联想区优雅隐藏(而非报错)。
   Future<LoadingState<CoreSearchSuggestModel>> searchSuggest({
     required String term,
   }) async =>
-      _err(const ApiException('not_implemented'));
+      _ok(CoreSearchSuggestModel());
 
   @override
   Future<LoadingState<CorePgcInfoModel>> pgcInfo({
@@ -115,15 +116,17 @@ class OttoSearchRepository implements SearchRepository {
       _err(const ApiException('not_implemented'));
 
   @override
+  // OttoHub 无热搜 API:返回空数据让热搜区优雅隐藏。
   Future<LoadingState<CoreSearchTrendingData>> searchTrending({
     int limit = 30,
     bool needsTop = false,
   }) async =>
-      _err(const ApiException('not_implemented'));
+      _ok(CoreSearchTrendingData());
 
   @override
+  // OttoHub 无搜索发现 API:返回空数据让发现区优雅隐藏。
   Future<LoadingState<CoreSearchRcmdData>> searchRecommend() async =>
-      _err(const ApiException('not_implemented'));
+      _ok(CoreSearchRcmdData());
 
   @override
   Future<LoadingState<CoreTopicPubSearchData>> topicPubSearch({

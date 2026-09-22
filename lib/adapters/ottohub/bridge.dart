@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/ottohub/repository/otto_app_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_auth_repository.dart';
@@ -49,6 +50,8 @@ import 'package:skf/pages/later/view.dart';
 import 'package:skf/pages/history/view.dart';
 import 'package:skf/pages/search/view.dart';
 import 'package:skf/pages/search_result/view.dart';
+import 'package:skf/adapters/ottohub/services/otto_search_result_panel.dart';
+import 'package:skf/core/models/search_types.dart' show CoreSearchType;
 import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/pages/follow/view.dart';
 import 'package:skf/pages/fan/view.dart';
@@ -92,9 +95,67 @@ class OttoAdapter implements AppAdapter {
 
   @override
   Future<void> registerDependencies() async {
-    final client = OttohubClient();
+    // 401 自愈拦截器:token 失效时用保存的账密静默重登,刷新 token 后
+    // 重试原请求一次(重试标记 otto_relogin 防循环)。
+    OttoAccountProvider? accountRef;
+    OttohubClient? clientRef;
+    final dio = Dio(BaseOptions(
+      baseUrl: 'https://api.ottohub.cn/api',
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 15),
+    ));
+    dio.interceptors.add(InterceptorsWrapper(
+      onError: (err, handler) async {
+        final request = err.requestOptions;
+        final account = accountRef;
+        final client = clientRef;
+        if (err.response?.statusCode != 401 ||
+            request.extra['otto_relogin'] == true ||
+            account == null ||
+            client == null) {
+          return handler.next(err);
+        }
+        final saved = account.savedCredentials;
+        if (saved == null) return handler.next(err);
+        try {
+          final result = await client.auth.login(
+            saved.username,
+            saved.password,
+          );
+          client.token = result.token;
+          account.updateCredentials(
+            uid: result.uid,
+            token: result.token,
+            uname: result.email,
+            face: result.avatarUrl,
+            username: saved.username,
+            password: saved.password,
+          );
+          // SDK 把 token 注入在 query(GET/DELETE)或 body(POST/PUT),
+          // 重试前替换为新 token,否则原请求仍携带失效 token。
+          if (request.method == 'GET' || request.method == 'DELETE') {
+            request.queryParameters['token'] = result.token;
+          } else if (request.data is Map) {
+            (request.data as Map)['token'] = result.token;
+          }
+          request.extra['otto_relogin'] = true;
+          final retry = await dio.fetch(request);
+          return handler.resolve(retry);
+        } catch (_) {
+          return handler.next(err);
+        }
+      },
+    ));
+    final client = OttohubClient(
+      dio: dio,
+      // HTTP 层错误统一包装成 ApiException(如 401 → error_token),
+      // 让各 repository 的 on ApiException catch 能接住并给出错误态。
+      config: const BaseApiConfig(wrapHttpErrors: true),
+    );
+    clientRef = client;
     // 启动即从本地缓存恢复登录凭证(注入的实例与 override 是同一份)。
     final account = OttoAccountProvider(client);
+    accountRef = account;
     await account.restoreFromCache();
 
     // Register repositories using the modern (non-Old) OttoHub API modules.
@@ -169,7 +230,13 @@ class OttoAdapter implements AppAdapter {
         GoRoute(path: '/search', builder: (_, _) => const SearchPage()),
         GoRoute(
           path: '/searchResult',
-          builder: (_, _) => const SearchResultPage(),
+          builder: (_, _) => SearchResultPage(
+            // OttoHub 仅视频域可搜,其余 tab(番剧/影视/直播间/专栏)无内容。
+            panelBuilder: (type, {required tag, required keyword}) =>
+                type == CoreSearchType.video
+                    ? OttoSearchResultPanel(keyword: keyword)
+                    : const OttoSearchUnsupportedPanel(),
+          ),
         ),
         // 动态
         GoRoute(path: '/dynamics', builder: (_, _) => const DynamicsPage()),

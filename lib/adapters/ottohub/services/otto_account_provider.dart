@@ -155,36 +155,54 @@ class OttoAccountProvider extends AccountProvider {
     GStorage.userInfo.delete('userInfoCache');
   }
 
-  /// 凭证过期自愈:启动时用便宜接口探测一次,401/403 则用保存的
+  /// 已保存的账密(登录时持久化,供 401 自愈重登);未存过返回 null。
+  ({String username, String password})? get savedCredentials {
+    final u = GStorage.userInfo.get(_userKey) as String?;
+    final p = GStorage.userInfo.get(_passKey) as String?;
+    if (u == null || u.isEmpty || p == null || p.isEmpty) return null;
+    return (username: u, password: p);
+  }
+
+  /// 凭证过期自愈:启动时用便宜接口探测一次,凭证失效则用保存的
   /// 账密静默重登并刷新本地凭证。
+  ///
+  /// 失效判定覆盖两种形态:HTTP 401(wrapHttpErrors 后
+  /// ApiException('error_token', 401))与 HTTP 200 + error_token。
   Future<void> ensureSessionValid() async {
     if (!rxIsLogin) return;
-    final username = GStorage.userInfo.get(_userKey) as String?;
-    final password = GStorage.userInfo.get(_passKey) as String?;
-    if (username == null ||
-        username.isEmpty ||
-        password == null ||
-        password.isEmpty) {
-      return;
-    }
+    final saved = savedCredentials;
+    if (saved == null) return;
     try {
       await _client.oldIm.getNewMessageNum();
     } on ApiException catch (e) {
-      if (e.httpStatus != 401 && e.httpStatus != 403) return;
-      try {
-        final result = await _client.auth.login(username, password);
-        updateCredentials(
-          uid: result.uid,
-          token: result.token,
-          uname: result.email,
-          face: result.avatarUrl,
-        );
+      final authFailed = e.errorCode == 'error_token' ||
+          e.httpStatus == 401 ||
+          e.httpStatus == 403;
+      if (!authFailed) return;
+      if (await relogin(saved.username, saved.password)) {
         debugPrint('OttoAccountProvider: token expired, re-login ok');
-      } catch (reloginErr) {
-        debugPrint('OttoAccountProvider: re-login failed: $reloginErr');
       }
     } catch (_) {
       // 网络等非凭证异常,交给正常错误链路。
+    }
+  }
+
+  /// 用账密静默重登并刷新凭证;成功返回 true。
+  Future<bool> relogin(String username, String password) async {
+    try {
+      final result = await _client.auth.login(username, password);
+      updateCredentials(
+        uid: result.uid,
+        token: result.token,
+        uname: result.email,
+        face: result.avatarUrl,
+        username: username,
+        password: password,
+      );
+      return true;
+    } catch (e) {
+      debugPrint('OttoAccountProvider: re-login failed: $e');
+      return false;
     }
   }
 

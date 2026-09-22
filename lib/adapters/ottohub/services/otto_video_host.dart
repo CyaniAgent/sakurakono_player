@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_danmaku_layer.dart';
+import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/adapters/ottohub/services/otto_send_danmaku_panel.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_intro_panel.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_page_hub.dart';
@@ -198,8 +199,13 @@ class OttoVideoHost extends VideoHost {
       plPlayerController: player,
       headerControl: ListenableBuilder(
         listenable: _hub.state(heroTag),
-        builder: (context, _) =>
-            _OttoPlayerHeader(title: videoTitle(heroTag) ?? ''),
+        builder: (context, _) => _OttoPlayerHeader(
+          host: this,
+          title: videoTitle(heroTag) ?? '',
+          heroTag: heroTag,
+          vid: vid,
+          player: player,
+        ),
       ),
       danmuWidget: vid == null || vid <= 0
           ? null
@@ -400,14 +406,34 @@ class _OttoPlaybackSource implements PlaybackSourceCapability {
   ({int width, int height})? partDimension(String heroTag, int cid) => null;
 }
 
-/// 最小播放器头部:返回按钮(标题由页面框架展示)。
+/// 播放器头部(复原原 HeaderControl 顶栏按钮排):返回 + 标题 +
+/// 发弹幕 + 弹幕开关。
 class _OttoPlayerHeader extends StatelessWidget {
-  const _OttoPlayerHeader({required this.title});
+  const _OttoPlayerHeader({
+    required this.host,
+    required this.title,
+    required this.heroTag,
+    required this.vid,
+    required this.player,
+  });
 
+  final OttoVideoHost host;
   final String title;
+  final String heroTag;
+  final int? vid;
+  final PlayerController player;
 
   @override
   Widget build(BuildContext context) {
+    Future<void> onSendDanmaku() {
+      return host.showShootDanmakuSheet(
+        heroTag: heroTag,
+        bvid: vid?.toString() ?? '',
+        cid: vid ?? 0,
+        progress: player.position,
+      );
+    }
+
     return SafeArea(
       child: Row(
         children: [
@@ -421,6 +447,47 @@ class _OttoPlayerHeader extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          SizedBox(
+            width: 40,
+            height: 34,
+            child: IconButton(
+              tooltip: '发弹幕',
+              style: IconButton.styleFrom(padding: EdgeInsets.zero),
+              onPressed: onSendDanmaku,
+              icon: const Icon(
+                Icons.comment_outlined,
+                size: 19,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 40,
+            height: 34,
+            child: ListenableBuilder(
+              listenable: OttoDanmakuToggle.instance,
+              builder: (context, _) {
+                final enabled = OttoDanmakuToggle.instance.enabled;
+                return IconButton(
+                  tooltip: enabled ? '关闭弹幕' : '开启弹幕',
+                  style: IconButton.styleFrom(padding: EdgeInsets.zero),
+                  onPressed: () {
+                    // 弹幕开关:全局 toggle + 刷新视频页 tab 栏图标
+                    // (与 _OttoPlayerHost.toggleDanmakuEnabled 同步逻辑)。
+                    OttoDanmakuToggle.instance.toggle();
+                    for (final heroTag in videoDetailRegistry.keys) {
+                      videoDetailRegistry[heroTag]?.notifyChange();
+                    }
+                  },
+                  icon: Icon(
+                    enabled ? CustomIcons.dm_on : CustomIcons.dm_off,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                );
+              },
             ),
           ),
         ],

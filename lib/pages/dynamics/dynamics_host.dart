@@ -21,6 +21,10 @@ abstract class DynamicsHost {
 
   // ---- page composition (top-level view) ----
 
+  /// 实际展示的动态 tab。适配器可裁剪无对应内容形态的 tab
+  /// (OttoHub 无番剧域,不展示该占位)。
+  List<CoreDynamicsTabType> get visibleTabs => CoreDynamicsTabType.values;
+
   /// Build the tab page widget for [type] (Bilibili: `DynamicsTabPage`).
   Widget buildTabPage(CoreDynamicsTabType type);
 

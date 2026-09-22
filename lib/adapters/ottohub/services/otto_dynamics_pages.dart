@@ -12,11 +12,14 @@ import 'package:skf/common/skeleton/dynamic_card.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart'
     show refreshIndicator;
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/adapters/ottohub/repository/otto_dynamics_repository.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/reply_types.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
 
 /// 主动态页单个 tab 的内容(由 OttoDynamicsHost.buildTabPage 装配)。
@@ -27,13 +30,20 @@ class OttoDynamicsTabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repo = appRead(dynamicsRepositoryProvider) as OttoDynamicsRepository;
     switch (type) {
       case CoreDynamicsTabType.all:
         return const OttoFollowDynTab();
       case CoreDynamicsTabType.video:
-      case CoreDynamicsTabType.pgc:
+        return OttoDynListTab(
+          fetch: (offset) =>
+              repo.followDynamic(offset: offset, type: CoreDynamicsTabType.video),
+        );
       case CoreDynamicsTabType.article:
+        return OttoDynListTab(fetch: (offset) => repo.blogFeed(offset: offset));
       case CoreDynamicsTabType.up:
+        return const OttoUpDynTab();
+      case CoreDynamicsTabType.pgc:
         return const Center(child: Text('暂不支持该动态类型'));
     }
   }
@@ -106,6 +116,7 @@ class _OttoFollowDynTabState extends State<OttoFollowDynTab> {
         );
       }
       return HttpError(
+        isSliver: false,
         errMsg: _errMsg == '需要登录' ? '登录后查看关注动态' : _errMsg,
         onReload: () => _query(more: false),
       );
@@ -306,6 +317,149 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
           const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
         ],
       ),
+    );
+  }
+}
+
+/// 通用分页动态列表(投稿/专栏 tab 共用)。
+class OttoDynListTab extends StatefulWidget {
+  const OttoDynListTab({super.key, required this.fetch});
+
+  final Future<LoadingState<CoreDynamicsDataModel>> Function(String? offset)
+      fetch;
+
+  @override
+  State<OttoDynListTab> createState() => _OttoDynListTabState();
+}
+
+class _OttoDynListTabState extends State<OttoDynListTab> {
+  List<CoreDynamicItemModel> _items = <CoreDynamicItemModel>[];
+  String? _nextOffset;
+  bool _hasMore = true;
+  bool _isLoading = false;
+  bool _firstLoaded = false;
+  String? _errMsg;
+
+  @override
+  void initState() {
+    super.initState();
+    _query(more: false);
+  }
+
+  Future<void> _query({required bool more}) async {
+    if (_isLoading || (more && !_hasMore)) return;
+    _isLoading = true;
+    final res = await widget.fetch(more ? _nextOffset : null);
+    if (!mounted) return;
+    _isLoading = false;
+    switch (res) {
+      case Success(:final response):
+        setState(() {
+          final page = response.items ?? <CoreDynamicItemModel>[];
+          if (more) {
+            _items.addAll(page);
+          } else {
+            _items = page;
+            _firstLoaded = true;
+            _errMsg = null;
+          }
+          _nextOffset = response.offset;
+          _hasMore = response.hasMore == true && page.isNotEmpty;
+        });
+      case final Error err:
+        if (more) {
+          setState(() => _hasMore = false);
+        } else {
+          setState(
+            () => _errMsg = err.errMsg == '需要登录' ? '登录后查看' : err.errMsg,
+          );
+        }
+      case Loading():
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_firstLoaded) {
+      if (_errMsg == null) {
+        return ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: 5,
+          itemBuilder: (_, _) => const DynamicCardSkeleton(),
+        );
+      }
+      return HttpError(
+        isSliver: false,
+        errMsg: _errMsg,
+        onReload: () => _query(more: false),
+      );
+    }
+    if (_items.isEmpty) {
+      return refreshIndicator(
+        onRefresh: () => _query(more: false),
+        child: const CustomScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(child: Text('暂无内容')),
+            ),
+          ],
+        ),
+      );
+    }
+    return refreshIndicator(
+      onRefresh: () => _query(more: false),
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
+            ),
+            sliver: SliverList.builder(
+              itemBuilder: (context, index) {
+                if (index == _items.length) {
+                  if (_hasMore) _query(more: true);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: Text(
+                        _hasMore ? '加载中...' : '没有更多了',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  );
+                }
+                return DynamicPanel(item: _items[index]);
+              },
+              itemCount: _items.length + 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// UP tab:展示选中 UP 的动态;未选择时回落到当前用户自己的动态。
+class OttoUpDynTab extends StatelessWidget {
+  const OttoUpDynTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = appRead(dynamicsControllerProvider);
+    final mid = controller.currentMid != -1
+        ? controller.currentMid
+        : (appRead(accountProvider).userId ?? -1);
+    if (mid <= 0) {
+      return const Center(child: Text('登录后查看'));
+    }
+    final repo = appRead(dynamicsRepositoryProvider) as OttoDynamicsRepository;
+    return OttoDynListTab(
+      key: ValueKey(mid),
+      fetch: (offset) => repo.userDynFeed(uid: mid, offset: offset),
     );
   }
 }

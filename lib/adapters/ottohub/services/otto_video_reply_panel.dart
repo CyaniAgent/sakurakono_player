@@ -170,13 +170,18 @@ class _OttoVideoReplyPanelState extends State<OttoVideoReplyPanel>
     );
   }
 
+  /// 评论草稿(打开面板未发送时由 onSave 持久化,再次打开回填)。
+  String? _replyDraft;
+
   Future<void> _showReplyInput([CoreReplyItem? parent]) async {
     final vid = _vid;
     if (vid == null) return;
     final message = await showOttoReplySheet(
       oid: vid,
       parent: parent?.rpid,
-      hint: parent == null ? '输入评论内容' : '回复 @${parent.member?.uname}:',
+      hint: parent == null ? '输入评论内容' : ' 回复 @${parent.member?.uname} : ',
+      initialValue: _replyDraft,
+      onSave: (text) => _replyDraft = text.isEmpty ? null : text,
     );
     if (message == null || message.isEmpty || !mounted) return;
     // 本地插入(发送成功即时上屏,免整页刷新)。
