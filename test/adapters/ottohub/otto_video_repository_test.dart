@@ -22,7 +22,10 @@ void main() {
       ),
     )
       ..httpClientAdapter = fake;
-    repo = OttoVideoRepository(OttohubClient(dio: dio));
+    // wrapHttpErrors 与生产 bridge 一致:HTTP 错误包装成 ApiException。
+    repo = OttoVideoRepository(
+      OttohubClient(dio: dio, config: const BaseApiConfig(wrapHttpErrors: true)),
+    );
     return repo;
   }
 
@@ -187,6 +190,78 @@ void main() {
         isEmpty,
       );
       expect(fake.requestCount, 1);
+    });
+  });
+
+  group('OttoVideoRepository hotVideoList (period ranking)', () {
+    test('happy: page 1 weekly ranking maps time_limit and zero offset',
+        () async {
+      makeRepo(<String, String>{
+        'GET /video/popular': fixture('ottohub/video_list'),
+      });
+
+      final result = await repo.hotVideoList(pn: 1, ps: 20, timeLimitDays: 7);
+
+      expect(result, isA<Success<List<CoreHotVideoItemModel>>>());
+      final list = (result as Success<List<CoreHotVideoItemModel>>).response;
+      expect(list, hasLength(2));
+      expect(list.first.title, '推荐视频A');
+      expect(fake.loggedRequests.single.queryParameters['time_limit'], 7);
+      expect(fake.loggedRequests.single.queryParameters['offset'], 0);
+      expect(fake.loggedRequests.single.queryParameters['num'], 20);
+    });
+
+    test('happy: page 3 maps pn to row offset (pn-1)*ps, monthly window',
+        () async {
+      makeRepo(<String, String>{
+        'GET /video/popular': fixture('ottohub/video_list'),
+      });
+
+      final result = await repo.hotVideoList(pn: 3, ps: 20, timeLimitDays: 30);
+
+      expect(result, isA<Success<List<CoreHotVideoItemModel>>>());
+      expect(fake.loggedRequests.single.queryParameters['time_limit'], 30);
+      expect(fake.loggedRequests.single.queryParameters['offset'], 40);
+    });
+
+    test('happy: null timeLimitDays omits the window parameter', () async {
+      makeRepo(<String, String>{
+        'GET /video/popular': fixture('ottohub/video_list'),
+      });
+
+      final result = await repo.hotVideoList(pn: 1, ps: 20);
+
+      expect(result, isA<Success<List<CoreHotVideoItemModel>>>());
+      expect(fake.loggedRequests.single.queryParameters.containsKey(
+        'time_limit',
+      ), isFalse);
+    });
+  });
+
+  group('OttoVideoRepository categoryVideoList (zone)', () {
+    test('happy: category id goes into the path, num clamped to server cap',
+        () async {
+      makeRepo(<String, String>{
+        'GET /video/category/0': fixture('ottohub/video_list'),
+      });
+
+      final result = await repo.categoryVideoList(category: 0, num: 50);
+
+      expect(result, isA<Success<List<CoreHotVideoItemModel>>>());
+      expect(
+        (result as Success<List<CoreHotVideoItemModel>>).response,
+        hasLength(2),
+      );
+      // 服务端 num 上限 20(超出 http_400),仓库层钳制。
+      expect(fake.loggedRequests.single.queryParameters['num'], 20);
+    });
+
+    test('error: unrouted category surfaces as Error', () async {
+      makeRepo(<String, String>{});
+
+      final result = await repo.categoryVideoList(category: 9, num: 50);
+
+      expect(result, isA<Error>());
     });
   });
 }

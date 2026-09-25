@@ -32,14 +32,54 @@ class OttoDynamicsTabPage extends StatelessWidget {
     return switch (type) {
       // 最新:站内最新博客流(可翻页)。
       CoreDynamicsTabType.latest =>
-        OttoDynListTab(fetch: (offset) => repo.blogFeed(offset: offset)),
+        OttoDynListTab(
+          tabType: type,
+          fetch: (offset) => repo.blogFeed(offset: offset),
+        ),
       // 关注:关注时间线(视频+博客);UP 面板选中某人时切到该用户的流。
       CoreDynamicsTabType.follow => const OttoFollowDynTab(),
       // 推荐:随机博客推荐(单批,刷新换一批)。
       CoreDynamicsTabType.recommend =>
-        OttoDynListTab(fetch: (offset) => repo.randomBlogFeed()),
+        OttoDynListTab(
+          tabType: type,
+          fetch: (offset) => repo.randomBlogFeed(),
+        ),
     };
   }
+}
+
+/// 各分类 tab 列表状态注册表:供 host 转发下拉刷新/双击回顶等调用,
+/// 对齐原适配器「tab 级控制器转发」的行为(bb7d917)。
+/// 假设动态页单实例(单条 /dynamics 路由):同分类后挂载者覆盖前者。
+class OttoDynTabRegistry {
+  static final _states = <CoreDynamicsTabType, _OttoDynListTabState>{};
+
+  static void _attach(CoreDynamicsTabType type, _OttoDynListTabState state) =>
+      _states[type] = state;
+
+  static void _detach(CoreDynamicsTabType type, _OttoDynListTabState state) {
+    if (identical(_states[type], state)) {
+      _states.remove(type);
+    }
+  }
+
+  static _OttoDynListTabState? _of(CoreDynamicsTabType type) => _states[type];
+
+  /// 刷新该分类列表(等价下拉刷新)。
+  static Future<void> refresh(CoreDynamicsTabType type) async =>
+      _of(type)?.refresh();
+
+  /// 回顶。
+  static void animateToTop(CoreDynamicsTabType type) =>
+      _of(type)?.animateToTop();
+
+  /// 该分类列表的滚动视图是否已挂载。
+  static bool hasScrollClients(CoreDynamicsTabType type) =>
+      _of(type)?.hasClients ?? false;
+
+  /// 该分类列表当前滚动距离(未挂载为 0)。
+  static double scrollPixels(CoreDynamicsTabType type) =>
+      _of(type)?.scrollPixels ?? 0;
 }
 
 /// 关注分类 tab:未选中 UP 时为关注时间线(followDynamic),
@@ -57,6 +97,7 @@ class OttoFollowDynTab extends StatelessWidget {
         final mid = controller.currentMid;
         return OttoDynListTab(
           key: ValueKey('follow-up-$mid'),
+          tabType: CoreDynamicsTabType.follow,
           fetch: (offset) => _fetch(mid, offset),
         );
       },
@@ -216,7 +257,11 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
                     ),
                   ),
             Error(:final errMsg) => SliverToBoxAdapter(
-              child: HttpError(errMsg: errMsg, onReload: _queryReplies),
+              child: HttpError(
+                isSliver: false,
+                errMsg: errMsg,
+                onReload: _queryReplies,
+              ),
             ),
           },
           const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
@@ -226,8 +271,15 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
   }
 }
 /// 通用分页动态列表(最新/推荐/关注分类共用)。
+/// [tabType] 非空时注册到 [OttoDynTabRegistry],接受 host 级刷新/回顶转发。
 class OttoDynListTab extends StatefulWidget {
-  const OttoDynListTab({super.key, required this.fetch});
+  const OttoDynListTab({
+    super.key,
+    this.tabType,
+    required this.fetch,
+  });
+
+  final CoreDynamicsTabType? tabType;
 
   final Future<LoadingState<CoreDynamicsDataModel>> Function(String? offset)
       fetch;
@@ -237,21 +289,60 @@ class OttoDynListTab extends StatefulWidget {
 }
 
 class _OttoDynListTabState extends State<OttoDynListTab> {
+  final _scrollController = ScrollController();
+
   List<CoreDynamicItemModel> _items = <CoreDynamicItemModel>[];
   String? _nextOffset;
   bool _hasMore = true;
   bool _isLoading = false;
   bool _firstLoaded = false;
+
+  /// 加载更多进行中收到下拉刷新:记下,当前查询结束后补一次。
+  bool _pendingRefresh = false;
   String? _errMsg;
 
   @override
   void initState() {
     super.initState();
+    if (widget.tabType != null) {
+      OttoDynTabRegistry._attach(widget.tabType!, this);
+    }
     _query(more: false);
   }
 
+  @override
+  void dispose() {
+    if (widget.tabType != null) {
+      OttoDynTabRegistry._detach(widget.tabType!, this);
+    }
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  /// 供 host 转发:刷新当前列表(等价下拉刷新)。
+  Future<void> refresh() => _query(more: false);
+
+  /// 供 host 转发:滚动回顶。
+  void animateToTop() {
+    if (!_scrollController.hasClients) return;
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  bool get hasClients => _scrollController.hasClients;
+
+  double get scrollPixels =>
+      _scrollController.hasClients ? _scrollController.position.pixels : 0;
+
   Future<void> _query({required bool more}) async {
-    if (_isLoading || (more && !_hasMore)) return;
+    if (_isLoading) {
+      if (!more) _pendingRefresh = true;
+      return;
+    }
+    if (more && !_hasMore) return;
     _isLoading = true;
     final res = await widget.fetch(more ? _nextOffset : null);
     if (!mounted) return;
@@ -281,6 +372,10 @@ class _OttoDynListTabState extends State<OttoDynListTab> {
       case Loading():
         break;
     }
+    if (_pendingRefresh && mounted) {
+      _pendingRefresh = false;
+      await _query(more: false);
+    }
   }
 
   @override
@@ -302,10 +397,11 @@ class _OttoDynListTabState extends State<OttoDynListTab> {
     if (_items.isEmpty) {
       return refreshIndicator(
         onRefresh: () => _query(more: false),
-        child: const CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverFillRemaining(
+            const SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: Text('暂无内容')),
             ),
@@ -316,6 +412,7 @@ class _OttoDynListTabState extends State<OttoDynListTab> {
     return refreshIndicator(
       onRefresh: () => _query(more: false),
       child: CustomScrollView(
+        controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           SliverPadding(

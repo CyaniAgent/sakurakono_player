@@ -37,6 +37,10 @@ class FakeHttpAdapter implements HttpClientAdapter {
   /// Number of requests served, for asserting a route was actually hit.
   int requestCount = 0;
 
+  /// Every incoming [RequestOptions] in arrival order, so tests can assert
+  /// query parameters / payload the repository layer produced.
+  final List<RequestOptions> loggedRequests = [];
+
   @override
   Future<ResponseBody> fetch(
     RequestOptions options,
@@ -44,6 +48,7 @@ class FakeHttpAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     requestCount++;
+    loggedRequests.add(options);
     final body = _routes[_routeKey(options)];
     if (body == null) {
       return ResponseBody.fromString(

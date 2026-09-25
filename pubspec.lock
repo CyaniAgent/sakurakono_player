@@ -1273,10 +1273,10 @@ packages:
     description:
       path: ottohub_sdk_dart
       ref: HEAD
-      resolved-ref: "4c9939e06aaccf21284143e4aea2619730bf4311"
+      resolved-ref: "9166faea80ef54dbdc0ad90442ed90bb596a44be"
       url: "https://github.com/SakuraCake/ottohub_sdk_dart"
     source: git
-    version: "0.0.11"
+    version: "0.0.13"
   package_config:
     dependency: transitive
     description:

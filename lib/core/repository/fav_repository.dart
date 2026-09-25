@@ -9,6 +9,8 @@ abstract class FavRepository {
 
   Future<LoadingState<void>> unfavFavFolder(Object mediaId);
 
+  /// [collection] 非空时按该收藏夹(合集)过滤内容,为 null 时返回
+  /// 全量收藏平铺列表(无按夹列表能力的适配器忽略此参数)。
   Future<LoadingState<CoreFavDetailData>> userFavFolderDetail({
     required int mediaId,
     required int pn,
@@ -16,6 +18,7 @@ abstract class FavRepository {
     String keyword = '',
     CoreFavOrderType order = CoreFavOrderType.mtime,
     int type = 0,
+    String? collection,
   });
 
   Future<LoadingState<void>> cancelSub({

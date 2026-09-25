@@ -1,0 +1,22 @@
+{
+  "status": "success",
+  "data": {
+    "slides": [
+      {
+        "img_url": "https://img.ottohub.cn/image/slide1.png",
+        "title": "第一条轮播",
+        "href": "https://www.ottohub.cn/v/32823"
+      },
+      {
+        "img_url": "https://img.ottohub.cn/image/slide2.png",
+        "title": "第二条轮播",
+        "href": "https://www.ottohub.cn/b/55481"
+      },
+      {
+        "img_url": "https://img.ottohub.cn/image/slide3.png",
+        "title": null,
+        "href": null
+      }
+    ]
+  }
+}

@@ -283,7 +283,7 @@ as String?,
 /// @nodoc
 mixin _$CoreSlide {
 
- String get imgUrl; String? get title; String? get href;
+ String get imgUrl; String? get title; String? get href; int? get width; int? get height;
 /// Create a copy of CoreSlide
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -294,16 +294,16 @@ $CoreSlideCopyWith<CoreSlide> get copyWith => _$CoreSlideCopyWithImpl<CoreSlide>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoreSlide&&(identical(other.imgUrl, imgUrl) || other.imgUrl == imgUrl)&&(identical(other.title, title) || other.title == title)&&(identical(other.href, href) || other.href == href));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoreSlide&&(identical(other.imgUrl, imgUrl) || other.imgUrl == imgUrl)&&(identical(other.title, title) || other.title == title)&&(identical(other.href, href) || other.href == href)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,imgUrl,title,href);
+int get hashCode => Object.hash(runtimeType,imgUrl,title,href,width,height);
 
 @override
 String toString() {
-  return 'CoreSlide(imgUrl: $imgUrl, title: $title, href: $href)';
+  return 'CoreSlide(imgUrl: $imgUrl, title: $title, href: $href, width: $width, height: $height)';
 }
 
 
@@ -314,7 +314,7 @@ abstract mixin class $CoreSlideCopyWith<$Res>  {
   factory $CoreSlideCopyWith(CoreSlide value, $Res Function(CoreSlide) _then) = _$CoreSlideCopyWithImpl;
 @useResult
 $Res call({
- String imgUrl, String? title, String? href
+ String imgUrl, String? title, String? href, int? width, int? height
 });
 
 
@@ -331,12 +331,14 @@ class _$CoreSlideCopyWithImpl<$Res>
 
 /// Create a copy of CoreSlide
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? imgUrl = null,Object? title = freezed,Object? href = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? imgUrl = null,Object? title = freezed,Object? href = freezed,Object? width = freezed,Object? height = freezed,}) {
   return _then(_self.copyWith(
 imgUrl: null == imgUrl ? _self.imgUrl : imgUrl // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,href: freezed == href ? _self.href : href // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,width: freezed == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as int?,height: freezed == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -421,10 +423,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String imgUrl,  String? title,  String? href)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String imgUrl,  String? title,  String? href,  int? width,  int? height)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CoreSlide() when $default != null:
-return $default(_that.imgUrl,_that.title,_that.href);case _:
+return $default(_that.imgUrl,_that.title,_that.href,_that.width,_that.height);case _:
   return orElse();
 
 }
@@ -442,10 +444,10 @@ return $default(_that.imgUrl,_that.title,_that.href);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String imgUrl,  String? title,  String? href)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String imgUrl,  String? title,  String? href,  int? width,  int? height)  $default,) {final _that = this;
 switch (_that) {
 case _CoreSlide():
-return $default(_that.imgUrl,_that.title,_that.href);case _:
+return $default(_that.imgUrl,_that.title,_that.href,_that.width,_that.height);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -462,10 +464,10 @@ return $default(_that.imgUrl,_that.title,_that.href);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String imgUrl,  String? title,  String? href)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String imgUrl,  String? title,  String? href,  int? width,  int? height)?  $default,) {final _that = this;
 switch (_that) {
 case _CoreSlide() when $default != null:
-return $default(_that.imgUrl,_that.title,_that.href);case _:
+return $default(_that.imgUrl,_that.title,_that.href,_that.width,_that.height);case _:
   return null;
 
 }
@@ -477,12 +479,14 @@ return $default(_that.imgUrl,_that.title,_that.href);case _:
 
 
 class _CoreSlide implements CoreSlide {
-  const _CoreSlide({required this.imgUrl, this.title, this.href});
+  const _CoreSlide({required this.imgUrl, this.title, this.href, this.width, this.height});
   
 
 @override final  String imgUrl;
 @override final  String? title;
 @override final  String? href;
+@override final  int? width;
+@override final  int? height;
 
 /// Create a copy of CoreSlide
 /// with the given fields replaced by the non-null parameter values.
@@ -494,16 +498,16 @@ _$CoreSlideCopyWith<_CoreSlide> get copyWith => __$CoreSlideCopyWithImpl<_CoreSl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoreSlide&&(identical(other.imgUrl, imgUrl) || other.imgUrl == imgUrl)&&(identical(other.title, title) || other.title == title)&&(identical(other.href, href) || other.href == href));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoreSlide&&(identical(other.imgUrl, imgUrl) || other.imgUrl == imgUrl)&&(identical(other.title, title) || other.title == title)&&(identical(other.href, href) || other.href == href)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,imgUrl,title,href);
+int get hashCode => Object.hash(runtimeType,imgUrl,title,href,width,height);
 
 @override
 String toString() {
-  return 'CoreSlide(imgUrl: $imgUrl, title: $title, href: $href)';
+  return 'CoreSlide(imgUrl: $imgUrl, title: $title, href: $href, width: $width, height: $height)';
 }
 
 
@@ -514,7 +518,7 @@ abstract mixin class _$CoreSlideCopyWith<$Res> implements $CoreSlideCopyWith<$Re
   factory _$CoreSlideCopyWith(_CoreSlide value, $Res Function(_CoreSlide) _then) = __$CoreSlideCopyWithImpl;
 @override @useResult
 $Res call({
- String imgUrl, String? title, String? href
+ String imgUrl, String? title, String? href, int? width, int? height
 });
 
 
@@ -531,12 +535,14 @@ class __$CoreSlideCopyWithImpl<$Res>
 
 /// Create a copy of CoreSlide
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? imgUrl = null,Object? title = freezed,Object? href = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? imgUrl = null,Object? title = freezed,Object? href = freezed,Object? width = freezed,Object? height = freezed,}) {
   return _then(_CoreSlide(
 imgUrl: null == imgUrl ? _self.imgUrl : imgUrl // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,href: freezed == href ? _self.href : href // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,width: freezed == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as int?,height: freezed == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

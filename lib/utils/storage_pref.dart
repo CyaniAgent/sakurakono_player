@@ -8,6 +8,7 @@ import 'package:skf/utils/extension/iterable_ext.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:skf/utils/page_transition.dart';
 import 'package:skf/utils/storage.dart';
+import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:crypto/crypto.dart';
@@ -24,7 +25,13 @@ abstract final class Pref {
   /// is 检查可自愈旧版本误存的适配器类型对象（隐式下转型会在启动时崩溃）。
   static CoreUserInfoData? get userInfoCache {
     final value = GStorage.userInfo.get('userInfoCache');
-    return value is CoreUserInfoData ? value : null;
+    if (value is CoreUserInfoData) return value;
+    // 现行为 Map 形态(CoreUserInfoData 无 Hive TypeAdapter,存对象会抛
+    // unknown type),Hive 读回是 Map<dynamic, dynamic>。
+    if (value is Map) {
+      return CoreUserInfoData.fromJson(Map<String, dynamic>.from(value));
+    }
+    return null;
   }
 
   static List<double> get dynamicDetailRatio => List<double>.from(
@@ -111,8 +118,22 @@ abstract final class Pref {
   static double get recommendCardWidth =>
       _setting.get(SettingBoxKey.recommendCardWidth, defaultValue: 240.0);
 
+  /// UP 面板位置:PiliPlus 原版默认「左侧常驻」(leftFixed)——
+  /// 桌面端/手机端均为左缘竖条 + 右侧内容流。
   static int get upPanelPosition =>
-      _setting.get(SettingBoxKey.upPanelPosition, defaultValue: 0);
+      _setting.get(SettingBoxKey.upPanelPosition,
+          defaultValue: UpPanelPosition.leftFixed.index);
+
+  /// 首页轮播样式:0 = 均匀大卡 + 右侧窄卡窥视(默认),
+  /// 1 = 不均匀大卡(Material multi-browse)。
+  static int get carouselStyle =>
+      _setting.get(SettingBoxKey.carouselStyle, defaultValue: 0);
+
+  static set carouselStyle(int value) =>
+      _setting.put(SettingBoxKey.carouselStyle, value);
+
+  static set upPanelPosition(int value) =>
+      _setting.put(SettingBoxKey.upPanelPosition, value);
 
   static int? get fullScreenMode =>
       _setting.get(SettingBoxKey.fullScreenMode);

@@ -35,7 +35,9 @@ class DynamicsController
   /// Attach a Riverpod [Ref] for repository access.
   /// Call this during controller initialization after construction.
 
-  final upPanelPosition = UpPanelPosition.values[Pref.upPanelPosition];
+  /// 实时读取:设置页切换 UP 面板位置后,notifyListeners 即生效。
+  UpPanelPosition get upPanelPosition =>
+      UpPanelPosition.values[Pref.upPanelPosition];
 
   List<CoreDynamicsTabType> get _visibleTabs => DynamicsHost.of().visibleTabs;
 

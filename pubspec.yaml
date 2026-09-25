@@ -155,7 +155,7 @@ dependencies:
       url: https://github.com/bggRGjQaUbCoE/window_manager.git
       path: packages/window_manager
       ref: main
-  ottohub_sdk_dart: ^0.0.9
+  ottohub_sdk_dart: ^0.0.13
 
 dependency_overrides:
   # API 包以 git 仓库维护(2026-09 REST 迁移已在 0.0.3):

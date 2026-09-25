@@ -73,18 +73,6 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
     );
   }
 
-  /// UP 关注列表面板:仅在「关注」分类下展示(面板筛选的就是关注流)。
-  Widget? get _upPanelOrNull {
-    final theme = Theme.of(context);
-    return ListenableBuilder(
-      listenable: _dynamicsController.tabController,
-      builder: (_, _) => _dynamicsController.currentTabType ==
-              CoreDynamicsTabType.follow
-          ? upPanelPart(theme)
-          : const SizedBox.shrink(),
-    );
-  }
-
   Widget _buildUpPanel(LoadingState<CoreFollowUpModel> upState) {
     return switch (upState) {
       Loading() => const SizedBox.shrink(),
@@ -157,7 +145,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
       case UpPanelPosition.top:
         child = Column(
           children: [
-            _upPanelOrNull!,
+            upPanelPart(theme),
             Expanded(child: child),
           ],
         );
@@ -165,7 +153,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
       case UpPanelPosition.leftFixed:
         child = Row(
           children: [
-            _upPanelOrNull!,
+            upPanelPart(theme),
             Expanded(child: child),
           ],
         );
@@ -174,15 +162,15 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
         child = Row(
           children: [
             Expanded(child: child),
-            _upPanelOrNull!,
+            upPanelPart(theme),
           ],
         );
         actions = [_createDynamicBtn(theme)];
       case UpPanelPosition.leftDrawer:
-        drawer = _upPanelOrNull;
+        drawer = upPanelPart(theme);
         actions = [_createDynamicBtn(theme)];
       case UpPanelPosition.rightDrawer:
-        endDrawer = _upPanelOrNull;
+        endDrawer = upPanelPart(theme);
         leading = _createDynamicBtn(theme, isRight: false);
     }
 

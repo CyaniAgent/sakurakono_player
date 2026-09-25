@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/pages/about/view.dart';
+import 'package:skf/pages/dynamics/controller.dart';
+import 'package:skf/pages/rcmd/widgets/home_slideshow.dart';
 import 'package:skf/pages/setting/common_setting.dart';
+import 'package:skf/pages/setting/models/model.dart';
 import 'package:skf/pages/setting/pages/font_size_select.dart';
 import 'package:skf/pages/setting/pages/play_speed_set.dart';
 import 'package:skf/pages/setting/setting_host.dart';
 import 'package:skf/pages/setting/setting_parts/models/play_settings.dart';
+import 'package:skf/pages/setting/widgets/select_dialog.dart';
 import 'package:skf/router/app_navigator.dart';
+import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/utils.dart';
 
 /// OttoHub 的设置域宿主实现。
@@ -32,6 +38,77 @@ class OttoSettingHost implements SettingHost {
           contentBuilder: (showAppBar) => CommonSetting(
             title: '播放器设置',
             settings: playSettings,
+            showAppBar: showAppBar,
+          ),
+        ),
+        SettingMenuItem(
+          icon: const Icon(Icons.view_carousel_outlined),
+          title: '首页轮播',
+          subtitle: '轮播样式',
+          contentBuilder: (showAppBar) => CommonSetting(
+            title: '首页轮播',
+            settings: [
+              NormalModel(
+                title: '轮播样式',
+                leading: const Icon(Icons.style),
+                getSubtitle: () => Pref.carouselStyle == 1
+                    ? '当前:「不均匀大卡(multi-browse)」'
+                    : '当前:「均匀大卡 + 右侧窄卡窥视」',
+                onTap: (context, setState) async {
+                  final result = await showDialog<int>(
+                    context: context,
+                    builder: (context) => SelectDialog<int>(
+                      title: '轮播样式',
+                      value: Pref.carouselStyle,
+                      values: const [
+                        (0, '均匀大卡 + 右侧窄卡窥视'),
+                        (1, '不均匀大卡(multi-browse)'),
+                      ],
+                    ),
+                  );
+                  if (result != null) {
+                    Pref.carouselStyle = result;
+                    HomeSlideshow.carouselStyle.value = result;
+                    setState();
+                  }
+                },
+              ),
+            ],
+            showAppBar: showAppBar,
+          ),
+        ),
+        SettingMenuItem(
+          icon: const Icon(Icons.view_week_outlined),
+          title: '动态页布局',
+          subtitle: 'UP 关注面板位置',
+          contentBuilder: (showAppBar) => CommonSetting(
+            title: '动态页布局',
+            settings: [
+              NormalModel(
+                title: 'UP 面板位置',
+                leading: const Icon(Icons.group_outlined),
+                getSubtitle: () =>
+                    '当前:「${UpPanelPosition.values[Pref.upPanelPosition].label}」',
+                onTap: (context, setState) async {
+                  final result = await showDialog<int>(
+                    context: context,
+                    builder: (context) => SelectDialog<int>(
+                      title: 'UP 面板位置',
+                      value: Pref.upPanelPosition,
+                      values: UpPanelPosition.values
+                          .map((e) => (e.index, e.label))
+                          .toList(),
+                    ),
+                  );
+                  if (result != null) {
+                    Pref.upPanelPosition = result;
+                    // 控制器实时读取 Pref,通知后动态页立即按新位置重排。
+                    appRead(dynamicsControllerProvider).notifyListeners();
+                    setState();
+                  }
+                },
+              ),
+            ],
             showAppBar: showAppBar,
           ),
         ),

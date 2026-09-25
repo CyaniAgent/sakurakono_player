@@ -13,6 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:skf/adapters/ottohub/services/otto_action_item.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_page_hub.dart';
+import 'package:skf/common/skeleton/skeleton.dart';
 import 'package:skf/common/style.dart';
 import 'package:skf/common/widgets/animated_height.dart';
 import 'package:skf/common/widgets/expandable.dart';
@@ -127,10 +128,8 @@ class _OttoVideoIntroPanelState extends State<OttoVideoIntroPanel> {
         child: ListenableBuilder(
           listenable: widget.hub.state(widget.heroTag),
           builder: (context, _) => switch (_state) {
-            Loading() => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 48),
-              child: Center(child: CircularProgressIndicator()),
-            ),
+            // 原地骨架:按真实版式占位(复原自原 UgcIntroPanel),加载完成零跳动。
+            Loading() => const _IntroSkeleton(),
             Error() => HttpError(
               isSliver: false,
               errMsg: _state is Error ? (_state as Error).errMsg : null,
@@ -144,10 +143,8 @@ class _OttoVideoIntroPanelState extends State<OttoVideoIntroPanel> {
   }
 
   Widget _buildBody(CoreVideoDetailData videoDetail) {
-    final isLoading = videoDetail.bvid == null;
     return GestureDetector(
       onTap: () {
-        if (isLoading) return;
         setState(() => _expand = !_expand);
       },
       child: TranslucentColumn(
@@ -299,6 +296,68 @@ class _OttoVideoIntroPanelState extends State<OttoVideoIntroPanel> {
             semanticsLabel: '分享',
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 简介面板加载骨架:按真实版式原地占位(UP 行/标题两行/信息行/操作行),
+/// 复原原 UgcIntroPanel 的 in-place 加载,加载完成零跳动。
+class _IntroSkeleton extends StatelessWidget {
+  const _IntroSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onInverseSurface;
+    Widget bar(double width, double height) => Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
+    return Skeleton(
+      child: TranslucentColumn(
+      crossAxisAlignment: .start,
+      children: [
+        // UP 主行
+        Row(
+          spacing: 10,
+          children: [
+            CircleAvatar(radius: 17.5, backgroundColor: color),
+            bar(110, 13),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // 标题两行
+        bar(.infinity, 15),
+        const SizedBox(height: 8),
+        bar(220, 15),
+        const SizedBox(height: 10),
+        // 播放/弹幕/日期信息行
+        Row(
+          spacing: 10,
+          children: [
+            bar(52, 12),
+            bar(44, 12),
+            bar(88, 12),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // 点赞/分享操作行
+        SizedBox(
+          height: 48,
+          child: Row(
+            crossAxisAlignment: .start,
+            children: [
+              bar(44, 40),
+              const SizedBox(width: 18),
+              bar(44, 40),
+            ],
+          ),
+        ),
+      ],
       ),
     );
   }

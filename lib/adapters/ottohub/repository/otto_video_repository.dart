@@ -216,7 +216,8 @@ class OttoVideoRepository implements VideoRepository {
     int num = 50,
   }) async {
     try {
-      final result = await _api.getCategory('$category', num: num);
+      // 服务端 num 上限 20(超出直接 http_400),这里钳制。
+      final result = await _api.getCategory('$category', num: num.clamp(1, 20));
       return _ok(result.videoList.map(_toCoreHotVideo).toList());
     } on ApiException catch (e) {
       debugPrint(

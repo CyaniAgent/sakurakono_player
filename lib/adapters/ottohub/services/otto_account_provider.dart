@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:riverpod/riverpod.dart';
@@ -47,11 +49,14 @@ class OttoAccountProvider extends AccountProvider {
 
   void _syncRiverpod() {
     try {
-      appRead(accountProvider.notifier)
-        ..updateLogin(rxIsLogin)
-        ..updateFace(rxFace)
-        ..updateUserId(userId)
-        ..updateDisplayName(_loggedInName);
+      // 单次原子更新:分步 update 会让登录态监听方看到中间态
+      // (如 isLogin 已 true 而 userId 未到 → 发出 missing_mid 请求)。
+      appRead(accountProvider.notifier).updateAccount(
+        userId: userId,
+        displayName: _loggedInName,
+        face: rxFace,
+        isLogin: rxIsLogin,
+      );
     } catch (_) {
       // appContainer 未就绪,等下次读取。
       _riverpodSynced = false;
@@ -126,16 +131,18 @@ class OttoAccountProvider extends AccountProvider {
       GStorage.userInfo.put(_passKey, password);
     }
     // 我的页头部数据源(mine controller 从该缓存渲染账号块)。
-    GStorage.userInfo.put(
-      'userInfoCache',
-      CoreUserInfoData(
-        isLogin: true,
-        mid: int.tryParse(uid),
-        uname: uname,
-        face: face,
-      ),
-    );
+    // CoreUserInfoData 无 Hive 适配器,以 Map 形态存储(读取侧
+    // Pref.userInfoCache 兼容两种形态)。
+    GStorage.userInfo.put('userInfoCache', userInfoCacheValue);
   }
+
+  /// 当前账号块的 Map 缓存(与 Pref.userInfoCache 的读取约定一致)。
+  Map<String, dynamic> get userInfoCacheValue => CoreUserInfoData(
+        isLogin: true,
+        mid: userId,
+        uname: displayName,
+        face: face,
+      ).toJson();
 
   /// Clear cached credentials on logout.
   void clearCredentials() {
@@ -169,6 +176,11 @@ class OttoAccountProvider extends AccountProvider {
   /// 失效判定覆盖两种形态:HTTP 401(wrapHttpErrors 后
   /// ApiException('error_token', 401))与 HTTP 200 + error_token。
   Future<void> ensureSessionValid() async {
+    // 启动钩子里容器已就绪:主动触发一次惰性同步,让重启恢复的
+    // token 立刻反映到 Riverpod(侧栏头像/我的页)。调用链处于
+    // MainControllerNotifier 的 provider 构建中,同步写 accountProvider
+    // 会触发 "modified while building",故推迟到微任务。
+    unawaited(Future.microtask(_ensureRiverpodSync));
     if (!rxIsLogin) return;
     final saved = savedCredentials;
     if (saved == null) return;

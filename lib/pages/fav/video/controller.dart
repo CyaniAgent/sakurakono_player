@@ -11,12 +11,10 @@ class FavController
     queryData();
   }
 
-  /// Attach a Riverpod [Ref] for repository access.
-  /// Call this during controller initialization after construction.
+  /// 登录态/uid 实时读取:登录前后下拉刷新即生效,无需重启。
+  bool get isLogin => appRead(accountProvider).isLogin;
 
-  late final bool isLogin = appRead(accountProvider).isLogin;
-
-  late final int mid = appRead(accountProvider).userId ?? 0;
+  int get mid => appRead(accountProvider).userId ?? 0;
 
 
   @override
@@ -51,5 +49,14 @@ class FavController
   }
 }
 
-/// 收藏页控制器（单实例）。
-final favControllerProvider = Provider<FavController>((ref) => FavController());
+/// 收藏页控制器（单实例）。登录态变更(登录/登出/换号)时自动重拉;
+/// onRefresh 重置 page/isEnd,避免以旧页码拉出新账号的错误切片。
+final favControllerProvider = Provider<FavController>((ref) {
+  final controller = FavController();
+  ref.listen(accountProvider, (prev, next) {
+    if (prev?.isLogin != next.isLogin || prev?.userId != next.userId) {
+      Future.microtask(controller.onRefresh);
+    }
+  });
+  return controller;
+});

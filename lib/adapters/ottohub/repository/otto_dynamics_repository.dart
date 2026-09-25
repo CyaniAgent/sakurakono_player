@@ -48,7 +48,8 @@ class OttoDynamicsRepository implements DynamicsRepository {
   /// 框架 module_panel 按 DYNAMIC_TYPE_* 渲染:
   /// 视频 → 封面卡(major.archive),博客 → 文字+图片九宫格(major.opus)。
   /// ActionPanel 对 comment/forward/like.status 强解包,必须给出非空值。
-  List<CoreDynamicItemModel> _mapTimeline(TimelineListData timeline) {
+  /// 用户页动态 tab(memberDynamic)复用同一映射。
+  static List<CoreDynamicItemModel> mapTimeline(TimelineListData timeline) {
     return timeline.timelineList.map((t) {
         final isVideo = t.vid != null;
         final idStr = isVideo ? t.vid!.toString() : t.bid?.toString();
@@ -187,7 +188,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
         uid,
         offset: offset != null ? int.tryParse(offset) : null,
       );
-      var items = _mapTimeline(timeline);
+      var items = mapTimeline(timeline);
       final nextOffset = items.isNotEmpty ? items.length.toString() : null;
       return Success(CoreDynamicsDataModel(
         items: items,
@@ -214,7 +215,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
       final timeline = await _client.following.getTimeline(
         offset: offset != null ? int.tryParse(offset) : null,
       );
-      final items = _mapTimeline(timeline);
+      final items = mapTimeline(timeline);
       // Compute next offset from current count so the caller can paginate.
       final nextOffset = items.isNotEmpty ? items.length.toString() : null;
       return Success(CoreDynamicsDataModel(

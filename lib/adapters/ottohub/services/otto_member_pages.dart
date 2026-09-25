@@ -87,8 +87,26 @@ class _OttoMemberArchiveTabState extends State<OttoMemberArchiveTab>
   @override
   Widget build(BuildContext context) {
     if (!_firstLoaded) {
-      if (_errMsg == null) return gridSkeleton;
-      return HttpError(errMsg: _errMsg, onReload: () => _query(more: false));
+      // tab 页是 box 上下文:骨架Sliver 需包进滚动视图,错误态用 isSliver:false。
+      if (_errMsg == null) {
+        return refreshIndicator(
+          onRefresh: () => _query(more: false),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 7, bottom: 100),
+                sliver: gridSkeleton,
+              ),
+            ],
+          ),
+        );
+      }
+      return HttpError(
+        isSliver: false,
+        errMsg: _errMsg,
+        onReload: () => _query(more: false),
+      );
     }
     if (_items.isEmpty) {
       return refreshIndicator(
@@ -216,7 +234,11 @@ class _OttoMemberBlogTabState extends State<OttoMemberBlogTab> {
           itemBuilder: (_, _) => const DynamicCardSkeleton(),
         );
       }
-      return HttpError(errMsg: _errMsg, onReload: () => _query(more: false));
+      return HttpError(
+        isSliver: false,
+        errMsg: _errMsg,
+        onReload: () => _query(more: false),
+      );
     }
     if (_items.isEmpty) {
       return refreshIndicator(

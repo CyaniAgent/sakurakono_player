@@ -46,7 +46,8 @@ class CoreUserInfoData {
         isLogin: json['isLogin'] ?? false,
         face: json['face'],
         levelInfo: json['level_info'] != null
-            ? CoreLevelInfo.fromJson(json['level_info'] as Map<String, dynamic>)
+            ? CoreLevelInfo.fromJson(
+                Map<String, dynamic>.from(json['level_info'] as Map))
             : null,
         mid: json['mid'],
         money: json['money'] is int
@@ -58,7 +59,25 @@ class CoreUserInfoData {
         vipStatus: json['vipStatus'],
         vipType: json['vipType'],
         isSeniorMember: json['is_senior_member'],
+        honour: json['honour'],
       );
+
+  /// Hive 缓存用 Map 形态(CoreUserInfoData 无 TypeAdapter,存对象会抛
+  /// unknown type;键名与 [fromJson] 对应)。
+  Map<String, dynamic> toJson() => {
+        'isLogin': isLogin,
+        'face': face,
+        'level_info': levelInfo?.toJson(),
+        'mid': mid,
+        'money': money,
+        'scores': scores,
+        'uname': uname,
+        'vipDueDate': vipDueDate,
+        'vipStatus': vipStatus,
+        'vipType': vipType,
+        'is_senior_member': isSeniorMember,
+        'honour': honour,
+      };
 }
 
 class CoreLevelInfo {
@@ -81,6 +100,13 @@ class CoreLevelInfo {
         nextExp:
             json['current_level'] == 6 ? json['current_exp'] : json['next_exp'],
       );
+
+  Map<String, dynamic> toJson() => {
+        'current_level': currentLevel,
+        'current_min': currentMin,
+        'current_exp': currentExp,
+        'next_exp': nextExp,
+      };
 }
 
 // ---------------------------------------------------------------------------

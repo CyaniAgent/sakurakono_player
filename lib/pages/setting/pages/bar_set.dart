@@ -19,30 +19,30 @@ class _BarSetPageState extends State<BarSetPage> with ReorderMixin {
   late final String title;
   late final List<Pair<EnumWithLabel, bool>> list;
   late EdgeInsets padding;
-
-  @override
-  void initState() {
-    super.initState();
-    final Map<String, dynamic> args = AppNavigator.argsOf(context);
-    key = args['key'];
-    title = args['title'];
-    final List? cache = GStorage.setting.get(key);
-    list = (args['defaultBars'] as List<EnumWithLabel>)
-        .map((e) => Pair(first: e, second: cache?.contains(e.index) ?? true))
-        .toList();
-    if (cache != null && cache.isNotEmpty) {
-      final cacheIndex = {for (int i = 0; i < cache.length; i++) cache[i]: i};
-      list.sort((a, b) {
-        final indexA = cacheIndex[a.first.index] ?? cacheIndex.length;
-        final indexB = cacheIndex[b.first.index] ?? cacheIndex.length;
-        return indexA.compareTo(indexB);
-      });
-    }
-  }
+  bool _argsApplied = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // GoRouterState 依赖 InheritedWidget,不能在 initState 读取。
+    if (!_argsApplied) {
+      _argsApplied = true;
+      final Map<String, dynamic> args = AppNavigator.argsOf(context);
+      key = args['key'];
+      title = args['title'];
+      final List? cache = GStorage.setting.get(key);
+      list = (args['defaultBars'] as List<EnumWithLabel>)
+          .map((e) => Pair(first: e, second: cache?.contains(e.index) ?? true))
+          .toList();
+      if (cache != null && cache.isNotEmpty) {
+        final cacheIndex = {for (int i = 0; i < cache.length; i++) cache[i]: i};
+        list.sort((a, b) {
+          final indexA = cacheIndex[a.first.index] ?? cacheIndex.length;
+          final indexB = cacheIndex[b.first.index] ?? cacheIndex.length;
+          return indexA.compareTo(indexB);
+        });
+      }
+    }
     final viewPad = MediaQuery.viewPaddingOf(context);
     padding = .only(top: 10, right: viewPad.right + 34, bottom: viewPad.bottom);
   }

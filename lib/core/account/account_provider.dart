@@ -78,6 +78,24 @@ class AccountNotifier extends StateNotifier<AccountState> {
     );
   }
 
+  /// 一次原子更新全部字段:登录态监听方(userId/isLogin 分别变化会触发
+  /// 多次)不会看到"有 mid 没 isLogin"之类的中间态而发出无效请求。
+  void updateAccount({
+    int? userId,
+    String? displayName,
+    String? face,
+    required bool isLogin,
+  }) {
+    state = state.copyWith(
+      userId: userId,
+      clearUserId: userId == null,
+      displayName: displayName,
+      clearDisplayName: displayName == null,
+      face: face,
+      isLogin: isLogin,
+    );
+  }
+
   /// Reset all state.
   void reset() {
     state = const AccountState();

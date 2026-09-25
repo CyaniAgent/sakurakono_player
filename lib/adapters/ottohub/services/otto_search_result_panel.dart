@@ -82,8 +82,26 @@ class _OttoSearchResultPanelState extends State<OttoSearchResultPanel>
   @override
   Widget build(BuildContext context) {
     if (!_firstLoaded) {
-      if (_errMsg == null) return gridSkeleton;
-      return HttpError(errMsg: _errMsg, onReload: () => _query(more: false));
+      // tab 页 box 上下文:骨架 Sliver 包进滚动视图,错误态 isSliver:false。
+      if (_errMsg == null) {
+        return refreshIndicator(
+          onRefresh: () => _query(more: false),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 7, bottom: 100),
+                sliver: gridSkeleton,
+              ),
+            ],
+          ),
+        );
+      }
+      return HttpError(
+        isSliver: false,
+        errMsg: _errMsg,
+        onReload: () => _query(more: false),
+      );
     }
     if (_items.isEmpty) {
       return refreshIndicator(

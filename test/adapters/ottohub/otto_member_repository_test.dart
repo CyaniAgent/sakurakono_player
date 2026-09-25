@@ -166,14 +166,23 @@ void main() {
       expect(result, isA<Success<CoreDynamicsDataModel>>());
       final data = (result as Success<CoreDynamicsDataModel>).response;
       expect(data.items, hasLength(2));
+      // 与动态页共用 mapTimeline:视频 → DYNAMIC_TYPE_AV + 封面卡,
+      // 博客 → DYNAMIC_TYPE_DRAW,ActionPanel 依赖的 moduleStat 必须非空。
       final first = data.items!.first;
       expect(first.idStr, '42');
-      expect(first.type, 'video');
+      expect(first.type, 'DYNAMIC_TYPE_AV');
       expect(first.basic!.commentIdStr, '42');
       expect(first.modules!.moduleAuthor!.mid, 10086);
       expect(first.modules!.moduleAuthor!.name, '测试用户');
       expect(first.modules!.moduleAuthor!.face, 'https://example.com/avatar.jpg');
       expect(first.modules!.moduleDynamic!.desc!.text, '发布了一个新视频');
+      expect(
+        first.modules!.moduleDynamic!.major!.archive!.cover,
+        'https://example.com/dyn1.jpg',
+      );
+      expect(first.modules!.moduleStat!.like!.count, 99);
+      expect(data.items![1].type, 'DYNAMIC_TYPE_DRAW');
+      expect(data.items![1].modules!.moduleStat!.forward, isNotNull);
       expect(data.hasMore, isFalse);
       expect(fake.requestCount, 1);
     });
@@ -228,6 +237,7 @@ void main() {
     test('happy: space builds CoreSpaceData with the CoreCard', () async {
       makeRepo(<String, String>{
         'GET /user/7': fixture('ottohub/user_detail'),
+        'GET /following/status/7': fixture('ottohub/follow_status'),
       });
 
       final result = await repo.space(mid: 7);
@@ -238,7 +248,27 @@ void main() {
       expect(space.coreCard!.mid, 7);
       expect(space.coreCard!.name, '用户七');
       expect(space.coreCard!.face, 'https://example.com/u7.jpg');
-      expect(fake.requestCount, 1);
+      // 统计与关系:following/status 映射(follow_status=1 → 已关注 2)。
+      expect(space.coreCard!.fans, 800);
+      expect(space.coreCard!.attention, 50);
+      expect(space.relation, 2);
+      // 头图:详情封面合成进 images,用户信息头据此渲染。
+      expect(space.images, isNotNull);
+      expect(space.images!.imgUrl, 'https://example.com/u7cover.jpg');
+      expect(fake.requestCount, 2);
+    });
+
+    test('happy: space keeps Success when the relation status fails', () async {
+      makeRepo(<String, String>{
+        'GET /user/7': fixture('ottohub/user_detail'),
+      });
+
+      final result = await repo.space(mid: 7);
+
+      expect(result, isA<Success<CoreSpaceData>>());
+      final space = (result as Success<CoreSpaceData>).response;
+      expect(space.relation, isNull);
+      expect(space.images!.imgUrl, 'https://example.com/u7cover.jpg');
     });
 
     test('happy: memberView returns the raw detail map', () async {

@@ -3,7 +3,8 @@ import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/adapters/ottohub/models/space_opus/cover.dart';
 import 'package:skf/adapters/ottohub/models/space_opus/item.dart';
 import 'package:skf/adapters/ottohub/models/space_opus/stat.dart';
-import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicsDataModel, CoreDynamicItemModel, CoreBasic, CoreItemModulesModel, CoreModuleAuthorModel, CoreModuleDynamicModel, CoreDynamicDescModel;
+import 'package:skf/adapters/ottohub/repository/otto_dynamics_repository.dart';
+import 'package:skf/core/models/dynamics_types.dart' show CoreDynamicsDataModel;
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/follow_item.dart';
 import 'package:skf/core/models/member_types.dart' hide CoreDynamicsDataModel, CoreDynamicItemModel, CoreBasic, CoreItemModulesModel, CoreModuleAuthorModel, CoreModuleDynamicModel, CoreDynamicDescModel;
@@ -117,13 +118,34 @@ class OttoMemberRepository implements MemberRepository {
   }) async {
     try {
       final detail = await _client.oldUser.getUserDetail(mid ?? 0);
+      // OttoHub followStatus: 0=未关注 1=已关注 2=互相关注 → core 关系码
+      // 0/2/4;未登录(error_token)或响应异常时忽略,保持「未关注」态。
+      int? relation;
+      try {
+        final status = await _client.following.getStatus(detail.uid);
+        relation = switch (status.followStatus) {
+          1 => 2,
+          2 => 4,
+          _ => 0,
+        };
+      } catch (e) {
+        debugPrint('OttoMemberRepository.space relation skip: $e');
+      }
       return Success(CoreSpaceData.fromJson(<String, dynamic>{
+        'relation': relation,
         'CoreCard': <String, dynamic>{
           'mid': detail.uid,
           'name': detail.username,
           'face': detail.avatarUrl,
           'sign': detail.intro,
           'top_photo': detail.coverUrl,
+          'fans': detail.fansCount,
+          'attention': detail.followingsCount,
+        },
+        // 头图:用户详情仅提供一张封面,昼夜图同源。
+        'images': <String, dynamic>{
+          'img_url': detail.coverUrl,
+          'night_imgurl': detail.coverUrl,
         },
         'coreArchive': <String, dynamic>{
           'count': detail.videoNum,
@@ -252,25 +274,10 @@ class OttoMemberRepository implements MemberRepository {
     try {
       final timeline = await _client.following.getUserTimeline(mid,
           offset: offset != null ? int.tryParse(offset) : null);
+      // 与动态页同一映射:视频 → 封面卡(DYNAMIC_TYPE_AV),博客 → 图文卡;
+      // ActionPanel 强解包的 moduleStat 由映射保证非空。
       return Success(CoreDynamicsDataModel(
-        items: timeline.timelineList
-            .map((t) => CoreDynamicItemModel(
-                  idStr: t.vid?.toString() ?? t.bid?.toString(),
-                  type: t.contentType,
-                  basic: CoreBasic(commentIdStr: t.vid?.toString()),
-                  modules: CoreItemModulesModel(
-                    moduleAuthor: CoreModuleAuthorModel(
-                      mid: t.uid,
-                      name: t.username,
-                      face: t.avatarUrl,
-                      pubTime: t.time,
-                    ),
-                    moduleDynamic: CoreModuleDynamicModel(
-                      desc: CoreDynamicDescModel(text: t.content),
-                    ),
-                  ),
-                ))
-            .toList(),
+        items: OttoDynamicsRepository.mapTimeline(timeline),
         hasMore: timeline.timelineList.length >= 20,
       ));
     } on ApiException catch (e) {

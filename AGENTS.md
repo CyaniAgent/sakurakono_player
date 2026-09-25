@@ -10,12 +10,13 @@
 ## Current Phase
 
 - **去 B 站化重构完成(2026-09-16)**:bilibili 适配器 982 文件删除;标准抽象接口层(`lib/core/contract/`)落地;OttoHub 为唯一真实适配器;存储键/B 站依赖已清理。
+- **首页/动态/我的还原批次(2026-09-22)**:首页子 tab 重排为 热门(本周/本月/本季,timeLimit 7/30/90)/首页(顶部 `CarouselView.weighted` 轮播,数据 `AppRepository.slideshow()`,适配器探测首条封面尺寸上报 `CoreSlide.width/height`、高度按封面比例+官方上限推导,宽屏 M3 multi-browse `[1,2,3,2,1]`/窄屏 full-screen `[1]`,不覆写 padding/shape)/分区(`ZoneHost` 分类清单 + `categoryVideoList`,**服务端 num 上限 20**),默认「首页」;动态页三分类 最新(blogFeed)/关注(followDynamic,UP 面板全分类常驻,`OttoDynTabRegistry` 转发刷新/回顶)/推荐(randomBlogFeed),`CoreDynamicsTabType` 已中立化;用户详情页信息头由 `OttoMemberRepository.space()` 合成 images/统计/relation(following.getStatus),动态 tab 复用 `OttoDynamicsRepository.mapTimeline`;收藏详情页(`FavDetailPage`)复原 SliverAppBar.medium 信息卡,`userFavFolderDetail(collection:)` 按合集过滤(`getVideoCollectionDetail(uid, collection)`),`FavActions` 按成员门控隐藏无能力入口;我的页面未登录头像与 `NetworkImgLayer` avatar 占位改 MD 图标(Assets.avatarPlaceHolder 已删),登出为客户端清凭证(`clearCredentials`),mine provider 挂 Riverpod 登录态监听。
 - **路由**:纯 go_router(`MaterialApp.router`,`AppRouter.create`;门面 `AppNavigator`:`to/toNamed/back/parametersOf/arguments`)。路由表由激活适配器提供:`OttoBridge.routes`(28 条指向框架页)。
 - **DI/状态**:Riverpod 全局 `appContainer`(`lib/core/container/app_container.dart`,非 widget 代码用 `appRead(provider)`)+ `ProviderContainer(overrides: adapterOverrides)`。
 - **能力降级模式(核心设计)**:可选播放器能力(片段跳过/系列/合集/笔记/听音频/互动/字幕/高能/下载/播放源)定义为 `core/contract/player/` 下的独立接口;`VideoHost with DefaultPlayerCapabilities` 提供 no-op 默认(`supported=false`),适配器覆写 getter 返回自身即接入;页面对 null/不支持自动降级隐藏。**禁止 pages import 任何适配器**。
-- **Controller 模式**:`CommonControllerRiverpod`/`CommonListControllerRiverpod`(ChangeNotifier);页面 `ListenableBuilder`。注册表模式:`Map<String, T> xxxRegistry` + `Provider.family`(member 页)。
+- **Controller 模式**:`CommonControllerRiverpod`/`CommonListControllerRiverpod`(ChangeNotifier);页面 `ListenableBuilder`。注册表模式:`Map<String, T> xxxRegistry` + `Provider.family`(member 页)。首页内嵌子页(热门子榜/分区)经 `HotCoordinator`/`ZoneCoordinator` 把外壳双击回顶/刷新代理到当前子页。
 - **播放入口**:设置页「播放链接」→ `SettingHost.openVideoById`(适配器自实现跳转)。
-- **已知边界(待接入)**:登录 UI 已有框架页(`/loginPage`,OttoHub 账密直传)+ 账号状态接线(启动恢复缓存/登录后同步 Riverpod)。视频页(播放器/弹幕/简介/评论/相关面板)、用户页(投稿/动态 tab)、动态页(博客流/博客详情 `/blogDetail`)均已接入。SDK 旧路由已按 2026-09 服务端 REST 迁移(comment/video/user/blog/danmaku;`/user/{uid}`、`/blog/latest`、`/blog/users/{uid}/blogs`、`/blog/{bid}/detail`、`/comment/videos/{vid}` 等)。
+- **已知边界(待接入)**:登录 UI 已有框架页(`/loginPage`,OttoHub 账密直传)+ 账号状态接线(启动恢复缓存/登录后同步 Riverpod)。视频页(播放器/弹幕/简介/评论/相关面板)、用户页(投稿/动态 tab)、动态页(博客流/博客详情 `/blogDetail`)均已接入。SDK 旧路由已按 2026-09 服务端 REST 迁移(comment/video/user/blog/danmaku;`/user/{uid}`、`/blog/latest`、`/blog/users/{uid}/blogs`、`/blog/{bid}/detail`、`/comment/videos/{vid}` 等)。OttoHub 分区名(0动画/1鬼畜/3音乐/4影视/5游戏/6综合/7娱乐)为内容抽样推断,**官方无名称表,修正点在 `otto_zone_host.dart`**;getCategory 无 offset(单批),randomBlog 无分页。
 
 ## SDK & env
 
@@ -70,7 +71,7 @@ lib/
 
 | Adapter | Status | Notes |
 |---|---|---|
-| OttoHub | 数据层大半真实现;视频页(播放器/弹幕/简介/评论/相关)、用户页(投稿/动态)、动态页(博客)已接入 | 唯一运行态适配器 |
+| OttoHub | 数据层大半真实现;视频页、用户页、首页(轮播/热门三榜/分区)、动态(最新/关注/推荐)、我的(本地登出)已接入 | 唯一运行态适配器 |
 | Example | 骨架(全 UnimplementedError 指引) | 新适配器复制起点 |
 
 ## Testing

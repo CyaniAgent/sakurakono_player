@@ -113,37 +113,20 @@ class _RcmdPageState extends State<RcmdPage> with AutomaticKeepAliveClientMixin 
                     final actualIndex = index > controller.lastRefreshAt!
                         ? index - 1
                         : index;
-                    return _RcmdCard(
-                      item: response[actualIndex],
-                      onRemove: () => _removeAt(actualIndex),
-                    );
+                    return _RcmdCard(item: response[actualIndex]);
                   }
-                  return _RcmdCard(
-                    item: response[index],
-                    onRemove: () => _removeAt(index),
-                  );
+                  return _RcmdCard(item: response[index]);
                 },
               )
             : const VideoCardVSkeleton(),
     };
   }
-
-  void _removeAt(int index) {
-    if (controller.loadingState case Success(:final response?)) {
-      if (controller.lastRefreshAt != null && index < controller.lastRefreshAt!) {
-        controller.lastRefreshAt = controller.lastRefreshAt! - 1;
-      }
-      response.removeAt(index);
-      controller.loadingState = Success(response);
-    }
-  }
 }
 
 class _RcmdCard extends StatelessWidget {
-  const _RcmdCard({required this.item, required this.onRemove});
+  const _RcmdCard({required this.item});
 
   final CoreRcmdVideoItemModel item;
-  final VoidCallback onRemove;
 
   void _onTap() {
     if (item.goto != null && item.goto != 'av') return;
@@ -168,7 +151,6 @@ class _RcmdCard extends StatelessWidget {
       clipBehavior: .hardEdge,
       child: InkWell(
         onTap: _onTap,
-        onLongPress: onRemove,
         child: Column(
           crossAxisAlignment: .start,
           children: [

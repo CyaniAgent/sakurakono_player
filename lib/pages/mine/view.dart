@@ -235,6 +235,14 @@ class _MediaPageState extends CommonPageState<MinePage>
       final userInfo = controller.userInfo;
       final levelInfo = userInfo.levelInfo;
       final hasLevel = levelInfo != null;
+      // 适配器可能只给 current_exp 不给 next_exp(OttoHub),此时无法
+      // 计算进度,置 0;有值时夹取到 [0,1] 防溢出。
+      final expProgress = hasLevel
+          ? (levelInfo.nextExp ?? 0) > 0
+              ? ((levelInfo.currentExp ?? 0) / levelInfo.nextExp!)
+                    .clamp(0.0, 1.0)
+              : 0.0
+          : 0.0;
       final isVip = userInfo.vipStatus != null && userInfo.vipStatus! > 0;
       final userStat = controller.userStat;
       return Column(
@@ -383,9 +391,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                         constraints: const BoxConstraints(maxWidth: 225),
                         child: LinearProgressIndicator(
                           minHeight: 2.25,
-                          value: hasLevel
-                              ? levelInfo.currentExp! / levelInfo.nextExp!
-                              : 0,
+                          value: expProgress,
                           backgroundColor: theme.colorScheme.outline.withValues(
                             alpha: 0.4,
                           ),
@@ -584,13 +590,12 @@ class _MediaPageState extends CommonPageState<MinePage>
           );
         },
       ),
-      Error(:final errMsg) => SizedBox(
-        height: 160,
-        child: HttpError(
-          isSliver: false,
-          errMsg: errMsg,
-          onReload: controller.onRefresh,
-        ),
+      // HttpError 自带图/文案/按钮,高度约 300,固定高度容器会溢出
+      // (曾以 SizedBox(height:160) 包裹触发 RenderFlex overflow)。
+      Error(:final errMsg) => HttpError(
+        isSliver: false,
+        errMsg: errMsg,
+        onReload: controller.onRefresh,
       ),
     };
   }

@@ -60,9 +60,13 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
 
   MineController() {
     initAccountListener();
-    CoreUserInfoData? userInfoCache = Pref.userInfoCache;
+    final CoreUserInfoData? userInfoCache = Pref.userInfoCache;
     if (userInfoCache != null) {
       _userInfo = userInfoCache;
+    }
+    // 有缓存或已登录都拉取:重启恢复 token 后缓存可能缺失,
+    // 此时也要刷新账号块与收藏区。
+    if (userInfoCache != null || accountService.isLogin) {
       queryData();
       queryUserInfo();
     }
@@ -92,22 +96,22 @@ class MineController extends CommonDataControllerRiverpod<CoreFavFolderData, Cor
       if (response.isLogin == true) {
         userInfo = response;
         if (response != Pref.userInfoCache) {
-          GStorage.userInfo.put('userInfoCache', response);
+          GStorage.userInfo.put('userInfoCache', response.toJson());
         }
         appRead(accountProvider.notifier)
-          ..updateFace(response.face!)
+          ..updateFace(response.face ?? '')
           ..updateLogin(true);
       } else {
         _onLogoutMain();
         return;
       }
     } else {
-      final errMsg = res.toString();
-      SmartDialog.showToast(errMsg);
-      if (errMsg == '账号未登录') {
+      // 网络类失败不打扰用户(收藏区等各自错误态已可见),仅账号
+      // 失效才走登出链。
+      if (res.toString().contains('账号未登录')) {
         _onLogoutMain();
-        return;
       }
+      return;
     }
     queryUserStatOwner();
   }

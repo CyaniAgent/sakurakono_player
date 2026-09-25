@@ -1,7 +1,10 @@
 {
   "status": "ok",
-  "video_num": "12",
-  "blog_num": "3",
-  "followings_count": "50",
-  "fans_count": "800"
+  "data": {
+    "status": "ok",
+    "video_num": "12",
+    "blog_num": "3",
+    "followings_count": "50",
+    "fans_count": "800"
+  }
 }

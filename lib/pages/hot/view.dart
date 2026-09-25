@@ -177,7 +177,12 @@ class _HotRankPageState extends State<_HotRankPage>
 
   Widget _buildBody(LoadingState<List<CoreHotVideoItemModel>?> loadingState) {
     return switch (loadingState) {
-      Loading() => const SliverToBoxAdapter(child: VideoCardVSkeleton()),
+      // 骨架与真实列表同 delegate 网格铺满,加载完成零跳动。
+      Loading() => SliverGrid.builder(
+          gridDelegate: gridDelegate,
+          itemCount: 10,
+          itemBuilder: (_, _) => const VideoCardVSkeleton(),
+        ),
       Error(:final errMsg) =>
         HttpError(errMsg: errMsg, onReload: controller.onReload),
       Success(:final response) when response != null && response.isNotEmpty =>
@@ -191,7 +196,8 @@ class _HotRankPageState extends State<_HotRankPage>
             return HotVideoCard(item: response[index]);
           },
         ),
-      Success() => const SliverToBoxAdapter(child: VideoCardVSkeleton()),
+      // 空列表即暂无内容,不是骨架屏。
+      Success() => HttpError(errMsg: '暂无热门内容', onReload: controller.onReload),
     };
   }
 }

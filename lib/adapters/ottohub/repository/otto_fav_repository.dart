@@ -1,11 +1,16 @@
 import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
+import 'package:skf/core/account/account_provider.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/core/repository/fav_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
-import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 // ignore: implementation_imports
 import 'package:ottohub_sdk_dart/src/models/old_api/old_profile_models.dart'
     show FavoriteBlogItem;
+// ignore: implementation_imports
+import 'package:ottohub_sdk_dart/src/models/old_api/old_collection_models.dart'
+    show CollectionDetail, CollectionVideoItem;
 
 /// Implementation of [FavRepository] that delegates to OttoHub SDK APIs.
 ///
@@ -20,7 +25,7 @@ import 'package:ottohub_sdk_dart/src/models/old_api/old_profile_models.dart'
 /// | favVideo                   | ✅ `IVideoApi.toggleFavorite(vid)` per resource|
 /// | userfavFolder              | ✅ `IOldCollectionApi.getUserVideoCollections` |
 /// | allFavFolders              | ✅ `IOldCollectionApi.getUserVideoCollections` |
-/// | userFavFolderDetail        | ✅ `IVideoApi.getFavoriteList({offset, num})` |
+/// | userFavFolderDetail        | ✅ `getVideoCollectionDetail(uid, collection)`(按夹)/ `IVideoApi.getFavoriteList`(平铺) |
 /// | addOrEditFolder            | ✅ `IOldCollectionApi.setVideoCollection({vid, collection})` |
 /// | favFolderInfo              | ✅ `IOldCollectionApi.getVideoCollection(vid)` |
 /// | sortFav                    | ✅ `IOldCollectionApi.setVideoCollectionSortOrder` |
@@ -121,6 +126,12 @@ class OttoFavRepository implements FavRepository {
   // User's collection folders  ✅  supported via IOldCollectionApi
   // ═════════════════════════════════════════════════════════════════════════
 
+  /// 服务端对「无合集」返回 HTTP 200 + {"status":"error","message":
+  /// "Not found"}(wrapHttpErrors 后为 ApiException('Not found')),
+  /// 视为空列表而非错误。
+  static bool _isNoCollection(ApiException e) =>
+      e.errorCode == 'Not found' || e.errorCode == 'not_found';
+
   @override
   Future<LoadingState<CoreFavFolderData>> userfavFolder({
     required int pn,
@@ -131,7 +142,7 @@ class OttoFavRepository implements FavRepository {
     // model expects numeric folder IDs.  We synthesize IDs from the index.
     try {
       if (mid == null) return _err(const ApiException('missing_mid'));
-      final names = await _client.oldCollection.getUserVideoCollections(mid);
+      final names = await _collectionsOf(mid);
       final start = (pn - 1) * ps;
       final page = start < names.length
           ? names.sublist(start, start + ps > names.length ? names.length : start + ps)
@@ -152,12 +163,21 @@ class OttoFavRepository implements FavRepository {
     }
   }
 
+  Future<List<String>> _collectionsOf(int uid) async {
+    try {
+      return await _client.oldCollection.getUserVideoCollections(uid);
+    } on ApiException catch (e) {
+      if (_isNoCollection(e)) return const <String>[];
+      rethrow;
+    }
+  }
+
   @override
   Future<LoadingState<CoreFavFolderData>> allFavFolders(Object mid) async {
     try {
       final uid = int.tryParse(mid.toString());
       if (uid == null) return _err(const ApiException('invalid_media_id'));
-      final names = await _client.oldCollection.getUserVideoCollections(uid);
+      final names = await _collectionsOf(uid);
       final list = names.asMap().entries.map((e) => CoreFavFolderInfo(
         id: e.key,
         title: e.value,
@@ -211,7 +231,18 @@ class OttoFavRepository implements FavRepository {
     String keyword = '',
     CoreFavOrderType order = CoreFavOrderType.mtime,
     int type = 0,
+    String? collection,
   }) async {
+    // 按夹过滤:SDK `getVideoCollectionDetail(uid, collection)` 按合集名
+    // 返回整份视频列表,仓库层做分页切片;collection 为空时退回全量平铺。
+    if (collection != null && collection.isNotEmpty) {
+      return _collectionDetail(
+        mediaId: mediaId,
+        pn: pn,
+        ps: ps,
+        collection: collection,
+      );
+    }
     // SDK `IVideoApi.getFavoriteList({offset, num})` returns the current
     // user's favorite videos as a flat paginated list — the folder id is
     // not part of the response, so `info` is synthesized from mediaId.
@@ -244,6 +275,69 @@ class OttoFavRepository implements FavRepository {
       ));
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.userFavFolderDetail ApiException: ${e.errorCode}');
+      return _err(e);
+    }
+  }
+
+  /// 按合集名取收藏夹内容与真实信息(标题/封面/条数)。
+  Future<LoadingState<CoreFavDetailData>> _collectionDetail({
+    required int mediaId,
+    required int pn,
+    required int ps,
+    required String collection,
+  }) async {
+    try {
+      final uid = appRead(accountProvider).userId;
+      if (uid == null) {
+        return _err(const ApiException('需要登录'));
+      }
+      CollectionDetail detail;
+      try {
+        detail = await _client.oldCollection.getVideoCollectionDetail(
+          uid: uid,
+          collection: collection,
+        );
+      } on ApiException catch (e) {
+        // 空合集服务端报 Not found → 空列表,不是错误态。
+        if (_isNoCollection(e)) {
+          detail = CollectionDetail(
+            collection: collection,
+            videoList: const <CollectionVideoItem>[],
+          );
+        } else {
+          rethrow;
+        }
+      }
+      final total = detail.videoList.length;
+      final start = (pn - 1) * ps;
+      final end = start + ps > total ? total : start + ps;
+      final page = start < total
+          ? detail.videoList.sublist(start, end)
+          : const <CollectionVideoItem>[];
+      final medias = page.map((v) => CoreFavDetailItemModel(
+        id: v.vid,
+        type: 2,
+        title: v.title,
+        cover: v.coverUrl,
+        upper: CoreOwner(mid: v.uid, name: v.username, face: v.avatarUrl),
+        cntInfo: CoreCntInfo(play: v.viewCount),
+      )).toList();
+      return _ok(CoreFavDetailData(
+        info: CoreFavFolderInfo(
+          id: mediaId,
+          title: detail.collection,
+          mid: uid,
+          cover: detail.videoList.firstOrNull?.coverUrl ?? '',
+          mediaCount: total,
+        ),
+        medias: medias,
+        hasMore: end < total,
+      ));
+    } on ApiException catch (e) {
+      debugPrint(
+        'OttoFavRepository.userFavFolderDetail(collection) ApiException: '
+        '${e.errorCode}',
+      );
       return _err(e);
     }
   }

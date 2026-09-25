@@ -1,13 +1,16 @@
 {
   "status": "ok",
-  "uid": 10086,
-  "email": "user@example.com",
-  "phone": null,
-  "qq": null,
-  "username": "测试用户",
-  "time": "2023-01-01T00:00:00Z",
-  "sex": "男",
-  "intro": "个人简介",
-  "honour": null,
-  "experience": 100
+  "data": {
+    "status": "ok",
+    "uid": 10086,
+    "email": "user@example.com",
+    "phone": null,
+    "qq": null,
+    "username": "测试用户",
+    "time": "2023-01-01T00:00:00Z",
+    "sex": "男",
+    "intro": "个人简介",
+    "honour": null,
+    "experience": 100
+  }
 }

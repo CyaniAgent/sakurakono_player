@@ -193,6 +193,7 @@ abstract final class SettingBoxKey {
       recommendCardWidth = 'recommendCardWidth',
       dynamicsWaterfallFlow = 'dynamicsWaterfallFlow',
       upPanelPosition = 'upPanelPosition',
+      carouselStyle = 'carouselStyle',
       dynamicsShowAllFollowedUp = 'dynamicsShowAllFollowedUp',
       useSideBar = 'useSideBar',
       enableMYBar = 'enableMYBar',

@@ -36,22 +36,28 @@ class OttoDynamicsHost implements DynamicsHost {
   int get currentUserId => appRead(accountProvider).userId ?? -1;
 
   @override
-  Future<void> reloadTab(CoreDynamicsTabType type) async {}
+  Future<void> reloadTab(CoreDynamicsTabType type) =>
+      OttoDynTabRegistry.refresh(type);
 
   @override
-  Future<void> refreshTab(CoreDynamicsTabType type) async {}
+  Future<void> refreshTab(CoreDynamicsTabType type) =>
+      OttoDynTabRegistry.refresh(type);
 
   @override
-  void animateTabToTop(CoreDynamicsTabType type) {}
+  void animateTabToTop(CoreDynamicsTabType type) =>
+      OttoDynTabRegistry.animateToTop(type);
 
   @override
-  bool tabHasScrollClients(CoreDynamicsTabType type) => false;
+  bool tabHasScrollClients(CoreDynamicsTabType type) =>
+      OttoDynTabRegistry.hasScrollClients(type);
 
   @override
-  double tabScrollPixels(CoreDynamicsTabType type) => 0;
+  double tabScrollPixels(CoreDynamicsTabType type) =>
+      OttoDynTabRegistry.scrollPixels(type);
 
   @override
-  void tabAnimToTop(CoreDynamicsTabType type) {}
+  void tabAnimToTop(CoreDynamicsTabType type) =>
+      OttoDynTabRegistry.animateToTop(type);
 
   @override
   Future<void> pushDynDetail(
