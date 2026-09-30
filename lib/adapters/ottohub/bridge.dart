@@ -19,6 +19,7 @@ import 'package:skf/adapters/ottohub/repository/otto_download_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_progress_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_sponsor_block_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
+import 'package:skf/adapters/ottohub/services/otto_whisper_detail_page.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_dynamics_host.dart';
 import 'package:skf/adapters/ottohub/services/otto_download_actions.dart';
@@ -48,6 +49,9 @@ import 'package:skf/adapters/ottohub/services/otto_dynamics_pages.dart';
 import 'package:skf/adapters/ottohub/services/otto_member_pages.dart';
 import 'package:skf/pages/fav/view.dart';
 import 'package:skf/pages/later/view.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/utils/utils.dart';
+import 'package:skf/pages/history/history_actions.dart';
 import 'package:skf/pages/history/view.dart';
 import 'package:skf/pages/search/view.dart';
 import 'package:skf/pages/search_result/view.dart';
@@ -56,6 +60,7 @@ import 'package:skf/core/models/search_types.dart' show CoreSearchType;
 import 'package:skf/pages/dynamics/view.dart';
 import 'package:skf/pages/follow/view.dart';
 import 'package:skf/pages/fan/view.dart';
+import 'package:skf/pages/member/edit_profile.dart';
 import 'package:skf/pages/member/view.dart';
 import 'package:skf/pages/blacklist/view.dart';
 import 'package:skf/pages/setting/pages/font_size_select.dart';
@@ -65,11 +70,7 @@ import 'package:skf/pages/setting/pages/bar_set.dart';
 import 'package:skf/pages/main/view.dart';
 import 'package:skf/pages/follow_type/followed/view.dart';
 import 'package:skf/pages/follow_type/follow_same/view.dart';
-import 'package:skf/pages/msg_feed_top/reply_me/view.dart';
-import 'package:skf/pages/msg_feed_top/at_me/view.dart';
-import 'package:skf/pages/msg_feed_top/like_me/view.dart';
-import 'package:skf/pages/msg_feed_top/like_detail/view.dart';
-import 'package:skf/pages/msg_feed_top/msg_center_page.dart';
+import 'package:skf/pages/msg_feed_top/message_page.dart';
 import 'package:skf/pages/fav/fav_detail_page.dart';
 import 'package:skf/pages/download/view.dart';
 import 'package:skf/utils/extension/string_ext.dart';
@@ -80,6 +81,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Registers 13 repository implementations that map to the modern OttoHub SDK
 /// API (non-Old modules): Video, Auth, Danmaku, Follow, Black, User, Member,
 /// Dynamics, Reply, Fav, Msg, Im, and Fan.
+/// 历史记录条目点击:经框架播放页打开(vid 即 cid)。
+void ottoOpenHistoryVideo({
+  int? aid,
+  String? bvid,
+  required int cid,
+  String? cover,
+  String? title,
+  Object? dimension,
+}) {
+  final vid = aid ?? int.tryParse(bvid ?? '') ?? cid;
+  AppNavigator.toNamed(
+    '/videoV',
+    preventDuplicates: false,
+    arguments: <String, dynamic>{
+      'aid': vid,
+      'bvid': '$vid',
+      'cid': cid,
+      'cover': cover,
+      'title': title,
+      'heroTag': Utils.makeHeroTag(vid),
+    },
+  );
+}
+
 class OttoAdapter implements AppAdapter {
   @override
   String get name => 'ottohub';
@@ -226,6 +251,9 @@ class OttoAdapter implements AppAdapter {
           path: '/history',
           builder: (_, state) => HistoryPage(
             type: state.uri.queryParameters['type'],
+            actions: const HistoryActions(
+              onViewVideo: ottoOpenHistoryVideo,
+            ),
           ),
         ),
         // 搜索
@@ -261,6 +289,8 @@ class OttoAdapter implements AppAdapter {
             fromViewAid: state.uri.queryParameters['from_view_aid'],
           ),
         ),
+        // 编辑资料(本人空间「编辑资料」入口)
+        GoRoute(path: '/editProfile', builder: (_, _) => const EditProfilePage()),
         GoRoute(path: '/blackListPage', builder: (_, _) => const BlackListPage()),
         // 设置子页
         GoRoute(
@@ -268,11 +298,8 @@ class OttoAdapter implements AppAdapter {
         GoRoute(path: '/displayModeSetting', builder: (_, _) => const SetDisplayMode()),
         GoRoute(path: '/playSpeedSet', builder: (_, _) => const PlaySpeedPage()),
         GoRoute(path: '/barSetting', builder: (_, _) => const BarSetPage()),
-        // 消息
-        GoRoute(path: '/replyMe', builder: (_, _) => const ReplyMePage()),
-        GoRoute(path: '/atMe', builder: (_, _) => const AtMePage()),
-        GoRoute(path: '/likeMe', builder: (_, _) => const LikeMePage()),
-        GoRoute(path: '/msgLikeDetail', builder: (_, _) => const LikeDetailPage()),
+        // 消息(私信会话列表)
+        GoRoute(path: '/whisper', builder: (_, _) => const MessagePage()),
         // 登录
         GoRoute(path: '/loginPage', builder: (_, _) => const LoginPage()),
         // 收藏夹详情
@@ -288,8 +315,13 @@ class OttoAdapter implements AppAdapter {
             folder: state.extra as CoreFavFolderInfo?,
           ),
         ),
-        // 消息中心(聚合 回复/@/点赞)
-        GoRoute(path: '/whisper', builder: (_, _) => const MsgCenterPage()),
+        // 用户私信会话页。
+        GoRoute(
+          path: '/whisperDetail',
+          builder: (_, state) => WhisperDetailPage.fromQuery(
+            state.uri.queryParameters,
+          ),
+        ),
         // 用户动态
         GoRoute(
           path: '/memberDynamics',

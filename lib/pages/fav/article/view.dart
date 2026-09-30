@@ -70,7 +70,7 @@ class _FavArticlePageState extends State<FavArticlePage>
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: _favArticleController.onReload),
+            : const HttpError(isNotFound: true, errMsg: '还没有收藏'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _favArticleController.onReload,

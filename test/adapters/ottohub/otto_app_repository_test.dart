@@ -83,12 +83,17 @@ void main() {
 
     test('happy: probed first-slide size is reported on CoreSlide', () async {
       final probedUrls = <String>[];
-      makeRepo(<String, String>{
-        'GET /system/slideshow': fixture('ottohub/slideshow'),
-      }, probeImageSize: (url) async {
+
+      // 显式可空返回:与生产 prober 契约一致(内联 async 闭包会被推断为
+      // 非空 Future<(int,int)>,触发 timeout 闭包的运行时子类型检查)。
+      Future<(int, int)?> probe(String url) async {
         probedUrls.add(url);
         return (1600, 900);
-      });
+      }
+
+      makeRepo(<String, String>{
+        'GET /system/slideshow': fixture('ottohub/slideshow'),
+      }, probeImageSize: probe);
 
       final result = await repo.slideshow();
 
@@ -99,6 +104,7 @@ void main() {
     });
 
     test('happy: probe failure keeps CoreSlide size null', () async {
+      final probedUrls = <String>[];
       makeRepo(<String, String>{
         'GET /system/slideshow': fixture('ottohub/slideshow'),
       }, probeImageSize: (_) async => throw const HttpException('offline'));
@@ -109,6 +115,7 @@ void main() {
       final slides = (result as Success<List<CoreSlide>>).response;
       expect(slides[0].width, isNull);
       expect(slides[0].height, isNull);
+      expect(probedUrls, isEmpty);
     });
 
     test('edge: empty slides list succeeds with no entries', () async {

@@ -74,7 +74,11 @@ class _RcmdPageState extends State<RcmdPage> with AutomaticKeepAliveClientMixin 
     return switch (loadingState) {
       Loading() => SliverGrid.builder(
           gridDelegate: gridDelegate,
-          itemCount: 10,
+          itemCount: Grid.skeletonCount(
+            MediaQuery.heightOf(context),
+            viewportWidth: MediaQuery.widthOf(context),
+            textScale: MediaQuery.textScalerOf(context).scale(1),
+          ),
           itemBuilder: (context, index) => const VideoCardVSkeleton(),
         ),
       Error(:final errMsg) => SliverToBoxAdapter(
@@ -157,6 +161,7 @@ class _RcmdCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: 16 / 9,
               child: Stack(
+                clipBehavior: .none,
                 fit: .expand,
                 children: [
                   NetworkImgLayer(src: item.cover, width: 320, height: 180),
@@ -174,6 +179,61 @@ class _RcmdCard extends StatelessWidget {
                           _formatDuration(item.duration),
                           style: const TextStyle(color: Colors.white, fontSize: 11),
                         ),
+                      ),
+                    ),
+                  // 右下角菜单按钮(复原原版卡片;仅保留 OttoHub 可用动作)。
+                  if (item.goto == 'av' || item.goto == null)
+                    Positioned(
+                      right: -5,
+                      bottom: -2,
+                      width: 29,
+                      height: 29,
+                      child: PopupMenuButton<String>(
+                        padding: .zero,
+                        icon: Icon(
+                          Icons.more_vert_outlined,
+                          color: colorScheme.outline,
+                          size: 17,
+                        ),
+                        position: PopupMenuPosition.under,
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'copy',
+                            height: 42,
+                            child: Row(
+                              spacing: 10,
+                              mainAxisSize: .min,
+                              children: [
+                                const Icon(Icons.link, size: 16),
+                                Text(item.bvid ?? '${item.aid}'),
+                              ],
+                            ),
+                          ),
+                          if ((item.owner?['mid'] as int?) != null)
+                            PopupMenuItem(
+                              value: 'member',
+                              height: 42,
+                              child: Row(
+                                spacing: 10,
+                                mainAxisSize: .min,
+                                children: [
+                                  const Icon(Icons.person_outline, size: 16),
+                                  const Text('作者主页'),
+                                ],
+                              ),
+                            ),
+                        ],
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'copy':
+                              Utils.copyText(item.bvid ?? '${item.aid}');
+                            case 'member':
+                              final mid = item.owner?['mid'] as int?;
+                              if (mid != null) {
+                                AppNavigator.toNamed('/member?mid=$mid');
+                              }
+                          }
+                        },
                       ),
                     ),
                 ],

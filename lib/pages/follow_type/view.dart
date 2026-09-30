@@ -66,7 +66,7 @@ abstract class FollowTypePageState<T extends StatefulWidget> extends State<T> {
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: controller.onReload),
+            : const HttpError(isNotFound: true, errMsg: '暂无用户'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: controller.onReload,

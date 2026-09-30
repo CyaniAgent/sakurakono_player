@@ -70,8 +70,21 @@ class NetworkImgLayer extends StatelessWidget {
     } else {
       memCacheHeight = height.cacheSize(context);
     }
+    // OttoHub CDN 的图片 URL 带轮换签名(?sign=&t=),完整 URL 每次请求
+    // 都变会让磁盘缓存永久 miss。缓存 key 去掉 query(仅作 key,真实请求
+    // 仍用完整 URL),签名轮换后磁盘缓存依然命中。
+    final processedUrl = AdapterRegistry.active.processImageUrl(
+      src,
+      quality: quality,
+    );
+    String? cacheKey;
+    final uri = Uri.tryParse(processedUrl);
+    if (uri != null && uri.hasQuery) {
+      cacheKey = uri.replace(queryParameters: const {}).toString();
+    }
     return CachedNetworkImage(
-      imageUrl: AdapterRegistry.active.processImageUrl(src, quality: quality),
+      imageUrl: processedUrl,
+      cacheKey: cacheKey,
       width: width,
       height: height,
       memCacheWidth: memCacheWidth,

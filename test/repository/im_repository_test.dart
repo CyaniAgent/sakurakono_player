@@ -11,6 +11,7 @@ import 'im_repository_test.mocks.dart';
 void main() {
   provideDummy<LoadingState<CoreImRspSendMsg>>(const Success(CoreImRspSendMsg()));
   provideDummy<LoadingState<void>>(const Success<void>(null));
+  provideDummy<LoadingState<List<CoreImFriend>>>(const Success(<CoreImFriend>[]));
   late MockImRepository mockRepo;
 
   setUp(() {
@@ -18,6 +19,26 @@ void main() {
   });
 
   group('ImRepository', () {
+    test('happy: friendList() returns Success with friends', () async {
+      when(mockRepo.friendList(
+        offset: anyNamed('offset'),
+        num: anyNamed('num'),
+        ifTimeDesc: anyNamed('ifTimeDesc'),
+      )).thenAnswer((_) async => const Success(<CoreImFriend>[]));
+      final result = await mockRepo.friendList(offset: 0, num: 12);
+      expect(result, isA<Success<List<CoreImFriend>>>());
+    });
+
+    test('error: friendList() returns Error', () async {
+      when(mockRepo.friendList(
+        offset: anyNamed('offset'),
+        num: anyNamed('num'),
+        ifTimeDesc: anyNamed('ifTimeDesc'),
+      )).thenAnswer((_) async => const Error('网络错误'));
+      final result = await mockRepo.friendList();
+      expect(result, isA<Error>());
+    });
+
     test('happy: sendMsg() returns Success with data', () async {
       when(mockRepo.sendMsg(
         senderUid: anyNamed('senderUid'),

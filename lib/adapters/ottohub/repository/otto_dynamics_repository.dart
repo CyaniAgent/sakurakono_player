@@ -6,6 +6,8 @@ import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/repository/dynamics_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
+import 'package:skf/adapters/ottohub/services/otto_http_cache.dart';
+import 'package:skf/adapters/ottohub/services/otto_markdown.dart';
 
 /// Implementation of [DynamicsRepository] that delegates to OttoHub SDK APIs.
 ///
@@ -77,7 +79,11 @@ class OttoDynamicsRepository implements DynamicsRepository {
               favorite: CoreDynamicStat(count: t.favoriteCount),
             ),
             moduleDynamic: CoreModuleDynamicModel(
-              desc: CoreDynamicDescModel(text: t.content),
+              // 正文为 markdown:列表内剥离图片/样式标记,仅展示纯文本
+              // (完整渲染在详情页 MarkdownText)。
+              desc: CoreDynamicDescModel(
+                text: stripMarkdownToPlain(t.content ?? t.title),
+              ),
               major: isVideo
                   ? CoreDynamicMajorModel(
                       type: 'MAJOR_TYPE_ARCHIVE',
@@ -164,12 +170,18 @@ class OttoDynamicsRepository implements DynamicsRepository {
           favorite: CoreDynamicStat(count: b.favoriteCount),
         ),
         moduleDynamic: CoreModuleDynamicModel(
-          desc: CoreDynamicDescModel(text: b.content ?? b.title),
+          // 正文为 markdown:列表内剥离图片/样式标记,仅展示纯文本
+          // (完整渲染在详情页 MarkdownText)。
+          desc: CoreDynamicDescModel(
+            text: stripMarkdownToPlain(b.content ?? b.title),
+          ),
           major: CoreDynamicMajorModel(
             type: 'MAJOR_TYPE_OPUS',
             opus: CoreDynamicOpusModel(
               title: b.title,
-              summary: CoreSummaryModel(text: b.content ?? b.title),
+              summary: CoreSummaryModel(
+                text: stripMarkdownToPlain(b.content ?? b.title),
+              ),
               pics: pics,
             ),
           ),
@@ -405,7 +417,16 @@ class OttoDynamicsRepository implements DynamicsRepository {
     }
     try {
       // In OttoHub, "dynamics" are primarily blogs; try blog detail first.
+      // 正文为 markdown:desc.text 保留原文,详情页由统一 MarkdownText
+      // 渲染(内联图片/粗体/代码块等)。成功响应写 http 缓存,失败时回退
+      // 上次数据(有缓存就能看,无则提示)。
       final detail = await _client.oldBlog.getBlogDetail(numericId);
+      OttoHttpCache.getInstance().then(
+        (c) => c.putJson(
+          OttoHttpCache.keyFor('/blog/detail', {'bid': numericId}),
+          detail.toJson(),
+        ),
+      );
       return _ok(CoreDynamicItemModel(
         idStr: detail.bid.toString(),
         type: 'DYNAMIC_TYPE_DRAW',
@@ -427,6 +448,33 @@ class OttoDynamicsRepository implements DynamicsRepository {
         ),
       ));
     } on ApiException catch (e) {
+      // 网络失败回退上次缓存(有缓存就能看,无则提示)。
+      final cached = await OttoHttpCache.getInstance().then(
+        (c) => c.getJson(OttoHttpCache.keyFor('/blog/detail', {'bid': numericId})),
+      );
+      if (cached != null) {
+        final detail = BlogDetail.fromJson(cached);
+        return _ok(CoreDynamicItemModel(
+          idStr: detail.bid.toString(),
+          type: 'DYNAMIC_TYPE_DRAW',
+          basic: CoreBasic(commentIdStr: detail.bid.toString()),
+          modules: CoreItemModulesModel(
+            moduleAuthor: CoreModuleAuthorModel(
+              mid: detail.uid,
+              name: detail.username,
+              face: detail.avatarUrl,
+              pubTime: detail.time,
+            ),
+            moduleStat: CoreModuleStatModel(
+              like: CoreDynamicStat(count: detail.likeCount),
+              comment: CoreDynamicStat(count: detail.commentCount),
+            ),
+            moduleDynamic: CoreModuleDynamicModel(
+              desc: CoreDynamicDescModel(text: detail.content),
+            ),
+          ),
+        ));
+      }
       debugPrint('OttoDynamicsRepository.dynamicDetail ApiException: ${e.errorCode}');
       return _err(e);
     }

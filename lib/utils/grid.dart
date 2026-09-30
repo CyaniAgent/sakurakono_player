@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:skf/common/skeleton/video_card_h.dart';
+import 'package:skf/common/style.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,12 +12,47 @@ mixin GridMixin {
   Widget get gridSkeleton => SliverGrid.builder(
     gridDelegate: gridDelegate,
     itemBuilder: (_, _) => const VideoCardHSkeleton(),
-    itemCount: 10,
+    itemCount: Grid.hSkeletonCount(null),
   );
 }
 
 abstract final class Grid {
   static final double smallCardWidth = Pref.smallCardWidth;
+
+  /// 按视口高度估算骨架条目数:铺满一屏 + 少量滚动缓冲。
+  /// [itemHeight] 为该页面骨架条目的估高;参数缺失时回退 10。
+  static int skeletonCountByHeight(double? viewportHeight, double itemHeight) {
+    if (viewportHeight == null || viewportHeight <= 0 || itemHeight <= 0) {
+      return 10;
+    }
+    return max(6, (viewportHeight / itemHeight).ceil() + 2);
+  }
+
+  /// 竖版视频卡网格骨架数量(与真实网格同口径:recommendCardWidth 列宽
+  /// + textScaler 缩放的文字区)。[viewportWidth] 为网格横向可用宽度。
+  static int skeletonCount(
+    double? viewportHeight, {
+    required double viewportWidth,
+    required double textScale,
+  }) {
+    final cols = (viewportWidth / smallCardWidth).ceil();
+    final cardWidth = viewportWidth / max(1, cols);
+    return skeletonCountByHeight(
+      viewportHeight,
+      cardWidth / Style.aspectRatio + textScale * 90,
+    );
+  }
+
+  /// 横版视频卡网格骨架数量(卡宽 = 小卡宽×2,文字区 110)。
+  static int hSkeletonCount(double? viewportHeight) =>
+      skeletonCountByHeight(
+        viewportHeight,
+        smallCardWidth * 2 / Style.aspectRatio + 112,
+      );
+
+  /// 评论/动态等行式列表骨架数量(估高 ~120)。
+  static int lineSkeletonCount(double? viewportHeight) =>
+      skeletonCountByHeight(viewportHeight, 120);
 
   static SliverGridDelegateWithMaxCrossAxisExtent videoCardHDelegate({
     double mainAxisExtent = 110,

@@ -5,6 +5,8 @@
 // /video/user/{uid});动态走 ottoBlogRepositoryProvider(适配器内部博客
 // 仓库 → /blog/users/{uid}/blogs)。
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'package:skf/adapters/ottohub/services/otto_video_related_panel.dart';
@@ -74,7 +76,11 @@ class _OttoMemberArchiveTabState extends State<OttoMemberArchiveTab>
           _hasMore = response.hasNext == true && pageItems.isNotEmpty;
         });
       case final Error err:
-        if (more) return;
+        if (more) {
+          // 翻页失败:终止分页,避免末项每次重建都重复请求。
+          setState(() => _hasMore = false);
+          return;
+        }
         setState(() {
           _firstLoaded = true;
           _errMsg = err.errMsg ?? '加载失败';
@@ -227,17 +233,28 @@ class _OttoMemberBlogTabState extends State<OttoMemberBlogTab> {
   Widget build(BuildContext context) {
     final padding = MediaQuery.viewPaddingOf(context);
     if (!_firstLoaded) {
+      // 宽屏:骨架/错误态与内容列同宽,消除首屏宽度跳变。
+      Widget child;
       if (_errMsg == null) {
-        return ListView.builder(
+        child = ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: 5,
+          itemCount: Grid.lineSkeletonCount(
+            MediaQuery.heightOf(context),
+          ),
           itemBuilder: (_, _) => const DynamicCardSkeleton(),
         );
+      } else {
+        child = HttpError(
+          isSliver: false,
+          errMsg: _errMsg,
+          onReload: () => _query(more: false),
+        );
       }
-      return HttpError(
-        isSliver: false,
-        errMsg: _errMsg,
-        onReload: () => _query(more: false),
+      return Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: Grid.smallCardWidth * 2),
+          child: child,
+        ),
       );
     }
     if (_items.isEmpty) {
@@ -259,26 +276,37 @@ class _OttoMemberBlogTabState extends State<OttoMemberBlogTab> {
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          SliverPadding(
-            padding: EdgeInsets.only(bottom: padding.bottom + 100),
-            sliver: SliverList.builder(
-              itemBuilder: (context, index) {
-                if (index == _items.length) {
-                  if (_hasMore) _query(more: true);
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Center(
-                      child: Text(
-                        _hasMore ? '加载中...' : '没有更多了',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  );
-                }
-                return DynamicPanel(item: _items[index]);
-              },
-              itemCount: _items.length + 1,
-            ),
+          // 桌面宽视口:内容列按「小卡宽 × 2」居中,不全宽铺开。
+          SliverLayoutBuilder(
+            builder: (context, constraints) {
+              final extra =
+                  (constraints.crossAxisExtent - Grid.smallCardWidth * 2) / 2;
+              return SliverPadding(
+                padding: EdgeInsets.only(
+                  left: math.max(extra, 0),
+                  right: math.max(extra, 0),
+                  bottom: padding.bottom + 100,
+                ),
+                sliver: SliverList.builder(
+                  itemBuilder: (context, index) {
+                    if (index == _items.length) {
+                      if (_hasMore) _query(more: true);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text(
+                            _hasMore ? '加载中...' : '没有更多了',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      );
+                    }
+                    return DynamicPanel(item: _items[index]);
+                  },
+                  itemCount: _items.length + 1,
+                ),
+              );
+            },
           ),
         ],
       ),

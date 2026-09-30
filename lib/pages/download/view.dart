@@ -213,7 +213,11 @@ class _DownloadPageState extends State<DownloadPage> with GridMixin {
                   if (_downloadActions.waitDownloadQueue.isNotEmpty) {
                     return const SliverToBoxAdapter();
                   }
-                  return const HttpError();
+                  // OttoHub 无下载域(适配器 stub):恒空,弱化空态而非错误页。
+                  return const HttpError(
+                    isNotFound: true,
+                    errMsg: '暂无可离线缓存的内容',
+                  );
                 },
               ),
                 SliverToBoxAdapter(

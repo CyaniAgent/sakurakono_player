@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 // ignore: implementation_imports
@@ -11,6 +13,7 @@ import 'package:skf/core/result/loading_state.dart';
 /// Converts a [VideoSummary] to a [CoreHistoryItemModel] with available fields.
 CoreHistoryItemModel _convertVideoSummaryToHistory(VideoSummary v) {
   return CoreHistoryItemModel(
+    kid: v.vid,
     title: v.title,
     cover: v.coverUrl,
     history: CoreHistory(
@@ -23,6 +26,10 @@ CoreHistoryItemModel _convertVideoSummaryToHistory(VideoSummary v) {
     authorName: v.username,
     authorMid: v.uid,
     duration: v.duration,
+    // OttoHub 无分 P 概念,恒单 P;viewAt 供列表时间展示(秒级,同 B 站)。
+    videos: 1,
+    viewAt:
+        (DateTime.tryParse(v.time)?.millisecondsSinceEpoch ?? 0) ~/ 1000,
   );
 }
 
@@ -39,6 +46,31 @@ class OttoUserRepository implements UserRepository {
       Error(e.errorCode, code: e.httpStatus);
 
   // ── Profile & stats ──────────────────────────────────────────────
+
+  @override
+  Future<LoadingState<void>> publishBlog({
+    required String title,
+    required String content,
+  }) async {
+    try {
+      await _client.oldCreator.submitBlog(title: title, content: content);
+      return const Success(null);
+    } on ApiException catch (e) {
+      debugPrint('OttoUserRepository.publishBlog ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
+  }
+
+  @override
+  Future<LoadingState<String>> uploadImage(File file) async {
+    try {
+      final result = await _client.oldCreator.submitImage(file);
+      return Success(result.imageUrl);
+    } on ApiException catch (e) {
+      debugPrint('OttoUserRepository.uploadImage ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
+  }
 
   @override
   Future<LoadingState<CoreUserInfoData>> userInfo() async {

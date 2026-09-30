@@ -97,4 +97,13 @@ abstract class ImRepository {
     int? sessionType,
     int? uid,
   });
+
+  /// Get friend (private-message session) list, newest first.
+  ///
+  /// [num] is capped by the server (OttoHub: max 12 per page).
+  Future<LoadingState<List<CoreImFriend>>> friendList({
+    int? offset,
+    int? num,
+    int? ifTimeDesc,
+  });
 }

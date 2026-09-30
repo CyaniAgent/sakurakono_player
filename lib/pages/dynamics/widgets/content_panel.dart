@@ -9,6 +9,7 @@ import 'package:skf/pages/dynamics/widgets/rich_node_panel.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/common/widgets/context_menu/dyn_menu_helper.dart';
+import 'package:skf/common/widgets/markdown_text.dart';
 
 
 Widget content(
@@ -71,6 +72,9 @@ Widget content(
               ),
             ),
           ),
+        // OttoHub 正文为 markdown(无 gRPC 富文本节点):详情页用统一
+        // MarkdownText 完整渲染(内联图片/粗体/代码等);信息流列表用
+        // 剥离后的纯文本 + 最多 6 行折叠,点击进详情。
         if (richNodes != null)
           isDetail && floor == 1
               ? SelectionText.rich(
@@ -94,7 +98,27 @@ Widget content(
                   maxLines: isSave ? null : 6,
                   onShowMore: () => DynamicsHost.of().pushDynDetail(item, isPush: true),
                   primary: theme.colorScheme.primary,
-                ),
+                )
+        else if ((text ?? '').isNotEmpty && floor == 1 && isDetail)
+          MarkdownText(
+            text!,
+            baseStyle: TextStyle(
+              fontSize: isSave ? 15 : 16,
+              color: theme.colorScheme.onSurface,
+            ),
+          )
+        else if ((text ?? '').isNotEmpty)
+          GestureDetector(
+            onTap: () => DynamicsHost.of().pushDynDetail(item, isPush: true),
+            child: MarkdownPlain(
+              text!,
+              maxLines: 6,
+              style: TextStyle(
+                fontSize: floor == 1 ? 15 : 14,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+          ),
         if (pics != null && pics.isNotEmpty)
           ImageGridView(
             fullScreen: true,

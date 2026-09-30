@@ -173,8 +173,10 @@ class OttoAccountProvider extends AccountProvider {
   /// 凭证过期自愈:启动时用便宜接口探测一次,凭证失效则用保存的
   /// 账密静默重登并刷新本地凭证。
   ///
-  /// 失效判定覆盖两种形态:HTTP 401(wrapHttpErrors 后
-  /// ApiException('error_token', 401))与 HTTP 200 + error_token。
+  /// 失效判定覆盖三种形态:HTTP 200 + error_token、HTTP 401/403,以及
+  /// HTTP 404——服务端对「可解密但会话已不存在」的 token 会直接回
+  /// nginx 404(而非 401),不覆盖会导致自愈永不触发。探测端点固定,
+  /// 此处的 404 只能来自凭证态,不影响内容接口的正常 404 链路。
   Future<void> ensureSessionValid() async {
     // 启动钩子里容器已就绪:主动触发一次惰性同步,让重启恢复的
     // token 立刻反映到 Riverpod(侧栏头像/我的页)。调用链处于
@@ -189,7 +191,8 @@ class OttoAccountProvider extends AccountProvider {
     } on ApiException catch (e) {
       final authFailed = e.errorCode == 'error_token' ||
           e.httpStatus == 401 ||
-          e.httpStatus == 403;
+          e.httpStatus == 403 ||
+          e.httpStatus == 404;
       if (!authFailed) return;
       if (await relogin(saved.username, saved.password)) {
         debugPrint('OttoAccountProvider: token expired, re-login ok');

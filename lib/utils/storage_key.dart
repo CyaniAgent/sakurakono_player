@@ -194,6 +194,7 @@ abstract final class SettingBoxKey {
       dynamicsWaterfallFlow = 'dynamicsWaterfallFlow',
       upPanelPosition = 'upPanelPosition',
       carouselStyle = 'carouselStyle',
+      blogDraft = 'blogDraft',
       dynamicsShowAllFollowedUp = 'dynamicsShowAllFollowedUp',
       useSideBar = 'useSideBar',
       enableMYBar = 'enableMYBar',

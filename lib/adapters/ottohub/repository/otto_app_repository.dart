@@ -17,13 +17,15 @@ class OttoAppRepository implements AppRepository {
   OttoAppRepository(
     this._api, {
     Future<(int, int)?> Function(String url)? probeImageSize,
-  }) : _probeImageSize = probeImageSize ?? _defaultProbeImageSize;
+  }) : _probeImageSize = probeImageSize ?? _defaultProbeImageSize,
+       _probeCache = {};
 
   final OttohubClient _api;
 
-  /// 封面尺寸探测(服务端 slideshow 无宽高字段):取首条封面按 16px 降采样
-  /// 解码读出真实比例,轮播据此推导高度。可注入替换/置空(测试离线)。
+  /// 封面尺寸探测缓存(服务端 slideshow 无宽高字段):URL → (宽, 高)。
+  /// 命中缓存零网络零等待;未命中才探测并写缓存。可注入替换(测试离线)。
   final Future<(int, int)?> Function(String url) _probeImageSize;
+  final Map<String, (int, int)> _probeCache;
 
   static Future<(int, int)?> _defaultProbeImageSize(String url) async {
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 4);
@@ -43,6 +45,32 @@ class OttoAppRepository implements AppRepository {
     } finally {
       client.close(force: true);
     }
+  }
+
+  /// 带缓存的探测:命中零等待;未命中探测(4s 超时竞速)后写缓存。
+  /// 用 Completer 竞速而非 `timeout(onTimeout:)`——后者会因实际 Future
+  /// 的泛型具体化(非空 record)导致 onTimeout 闭包运行时子类型检查失败。
+  Future<(int, int)?> _probeWithCache(String url) async {
+    final cached = _probeCache[url];
+    if (cached != null) return cached;
+    final result = Completer<(int, int)?>();
+    final timer = Timer(const Duration(seconds: 4), () {
+      if (!result.isCompleted) result.complete(null);
+    });
+    unawaited(
+      _probeImageSize(url).then(
+        (size) {
+          if (size != null) _probeCache[url] = size;
+          if (!result.isCompleted) result.complete(size);
+        },
+        onError: (Object e) {
+          if (!result.isCompleted) result.complete(null);
+        },
+      ),
+    );
+    final size = await result.future;
+    timer.cancel();
+    return size;
   }
 
   @override
@@ -65,18 +93,10 @@ class OttoAppRepository implements AppRepository {
                 ),
               )
               .toList();
-      // 轮播整体高度由首条封面的真实比例决定:尽力探测一次(4s 超时),
+      // 轮播整体高度由首条封面的真实比例决定:带缓存探测(命中零等待),
       // 失败则不上报,UI 退回按视口推导。
       if (coreSlides.isNotEmpty) {
-        final Future<(int, int)?> probe =
-            _probeImageSize(coreSlides.first.imgUrl);
-        (int, int)? size;
-        try {
-          size = await probe.timeout(const Duration(seconds: 4));
-        } on Exception {
-          // 探测失败/超时不阻塞轮播,交由 UI 按视口推导。
-          size = null;
-        }
+        final size = await _probeWithCache(coreSlides.first.imgUrl);
         if (size != null) {
           coreSlides[0] = coreSlides[0].copyWith(
             width: size.$1,

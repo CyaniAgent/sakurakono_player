@@ -9,13 +9,9 @@ abstract final class Assets {
   static const vipIcon = 'assets/images/big-vip.svg';
   static const loading = 'assets/images/loading.png';
   static const buffering = 'assets/images/loading.webp';
-  static const trendingBanner = 'assets/images/trending_banner.png';
   static const error = 'assets/images/error.svg';
 
-  static const livingChart = 'assets/images/live.gif';
-  static const livingStatic = 'assets/images/live.png';
   static const livingRect = 'assets/images/live/live.gif';
-  static const livingBackground = 'assets/images/live/default_bg.webp';
 
   static const List<String> mpvAnime4KShaders = [
     'Anime4K_Clamp_Highlights.glsl',

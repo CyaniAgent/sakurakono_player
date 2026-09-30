@@ -273,6 +273,7 @@ class MyApp extends StatelessWidget {
         final (light, dark) = getAllTheme();
         return MaterialApp.router(
           title: Constants.appName,
+          debugShowCheckedModeBanner: false,
           theme: light,
           darkTheme: dark,
           themeMode: ThemeUtils.themeMode = Pref.themeMode,

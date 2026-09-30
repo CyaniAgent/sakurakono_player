@@ -50,9 +50,6 @@ abstract class MineActions {
   /// 打开搜索页。
   void openSearch();
 
-  /// 打开评论记录页。
-  void openReply();
-
   /// 打开设置页。
   void openSetting();
 

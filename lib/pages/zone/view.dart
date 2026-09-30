@@ -166,7 +166,11 @@ class _ZoneCategoryPageState extends State<_ZoneCategoryPage>
       // 骨架与真实列表同 delegate 网格铺满,加载完成零跳动。
       Loading() => SliverGrid.builder(
           gridDelegate: gridDelegate,
-          itemCount: 10,
+          itemCount: Grid.skeletonCount(
+            MediaQuery.heightOf(context),
+            viewportWidth: MediaQuery.widthOf(context),
+            textScale: MediaQuery.textScalerOf(context).scale(1),
+          ),
           itemBuilder: (_, _) => const VideoCardVSkeleton(),
         ),
       Error(:final errMsg) =>

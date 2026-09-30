@@ -7,6 +7,7 @@ import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/app_types.dart';
 import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/result/loading_state.dart';
+import 'package:skf/common/style.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:skf/utils/utils.dart';
@@ -17,17 +18,18 @@ import 'package:skf/utils/utils.dart';
 /// 布局与视觉遵循 Material 3 官方规范与官方示例(Flutter SDK
 /// `examples/api/lib/material/carousel/carousel.0.dart`),样式可在设置中
 /// 切换、即时生效:
-/// - 均匀大卡(默认,`Pref.carouselStyle == 0`):等宽大卡 + 右侧 ~50px
-///   窄卡窥视,数量按「视口 − 窄卡」÷ 卡宽偏好动态计算;
+/// - 均匀大卡(默认,`Pref.carouselStyle == 0`):卡宽固定 = 高度 × 16/9
+///   (封面 16:9 完整,与卡片数量解耦),数量 = 视口内能容纳的整卡数,
+///   剩余宽度全部归右缘窄卡窥视条;
 /// - 不均匀大卡(`carouselStyle == 1`):官方 multi-browse
 ///   `[1, 2, 3, 2, 1]`(consumeMaxWeight: false)。
 /// - 窄屏(<600)一律 full-screen `[1]`。
 /// `padding`/`shape`/`backgroundColor`/`elevation` 一律不覆写,使用组件
 /// 默认值:每卡 4px 内边距形成卡片间隙,M3 圆角 28,surface 底、无阴影。
-/// 高度不写死:适配器探测首条封面真实尺寸并随 [CoreSlide.width/height]
-/// 上报时,按大卡宽度 ÷ 封面比例推导(与官方「窗口高一半」「280 封顶」
-/// 取最小,下限 140),未上报则按官方比例与「宽一半」推导。8s 自动轮播
-/// (infinite 环绕,逐卡前进),手动切换后重新计时。
+/// 高度与下方信息流「整卡」高度逐像素对齐(用与首页网格相同的列数/
+/// 列宽/文字区公式计算)。
+/// 上限「窗口高一半 ÷ 280 封顶」,下限 140。
+/// 8s 自动轮播(infinite 环绕,逐卡前进),手动切换后重新计时。
 class HomeSlideshow extends StatefulWidget {
   const HomeSlideshow({super.key});
 
@@ -119,35 +121,6 @@ class _HomeSlideshowState extends State<HomeSlideshow> {
     );
   }
 
-  /// 依当前样式与视口宽计算权重布局。
-  /// 均匀样式:大卡等宽、数量按「视口 − 窄卡」÷ 卡宽偏好动态计算,
-  /// 末位固定 ~50px 窄卡窥视;multi-browse:官方 [1,2,3,2,1] 不均匀;
-  /// 窄屏(<600)一律 full-screen [1]。
-  ({List<int> weights, double cardWidth, bool consumeMax}) _layoutFor(
-    double viewport,
-    int style,
-    bool compact,
-  ) {
-    if (compact) {
-      return (weights: const <int>[1], cardWidth: viewport, consumeMax: true);
-    }
-    if (style == 1) {
-      return (
-        weights: const <int>[1, 2, 3, 2, 1],
-        cardWidth: viewport * 3 / 9,
-        consumeMax: false,
-      );
-    }
-    const peek = 50.0;
-    final count = math.max(1, ((viewport - peek) / Pref.recommendCardWidth).floor());
-    final bigWidth = ((viewport - peek) / count).round();
-    return (
-      weights: <int>[...List<int>.filled(count, bigWidth), peek.round()],
-      cardWidth: bigWidth.toDouble(),
-      consumeMax: false,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_slides.isEmpty) return const SizedBox.shrink();
@@ -158,25 +131,68 @@ class _HomeSlideshowState extends State<HomeSlideshow> {
       builder: (context, style, _) => LayoutBuilder(
         builder: (context, constraints) {
           final viewport = constraints.maxWidth;
-          final (:weights, :cardWidth, :consumeMax) =
-              _layoutFor(viewport, style, compact);
-          // 高度优先由适配器上报的首条封面真实比例推导(大卡完整显示
-          // 不裁切),与官方「窗口高一半」「280 封顶」取最小,下限 140;
-          // 未上报时按官方比例与「宽一半」推导,不写死。
-          final slide = _slides.first;
-          final reportedAspect = slide.width != null &&
-                  slide.width! > 0 &&
-                  slide.height != null &&
-                  slide.height! > 0
-              ? slide.width! / slide.height!
-              : null;
+          // 列数/列宽:与首页信息流网格完全相同的公式,轮播卡与下方卡片
+          // 逐列对齐、宽度一致。
+          const spacing = Style.cardSpace;
+          final feedCols = math.max(
+            1,
+            ((viewport - spacing) / (Pref.recommendCardWidth + spacing))
+                .ceil(),
+          );
+          final feedCardWidth =
+              (viewport - spacing * (feedCols - 1)) / feedCols;
+          // 高度 = 信息流「整卡」高度(列宽 ÷ 比例 + 文字区),逐像素一致;
+          // 上限「窗口高一半 ÷ 280 封顶」,下限 140。
           final double maxHeight = math.min(size.height / 2, 280.0);
-          final double height = reportedAspect != null
-              ? (cardWidth / reportedAspect).clamp(140.0, maxHeight)
-              : math.min(maxHeight, size.width / 2);
+          final double height =
+              (feedCardWidth / Style.aspectRatio +
+                      MediaQuery.textScalerOf(context).scale(90))
+                  .clamp(140.0, maxHeight);
+          // 布局:卡宽固定 = 高度 × 16/9(封面完整不裁切,与卡片数量解耦),
+          // 数量 = 视口内能容纳的整卡数,剩余宽度全部归右缘窄卡窥视;
+          // multi-browse 不均匀卡;窄屏 full-screen。
+          final bool multiBrowse = style == 1;
+          final List<int> weights;
+          final double cardWidth;
+          final bool consumeMax;
+          if (compact) {
+            weights = const <int>[1];
+            cardWidth = viewport;
+            consumeMax = true;
+          } else if (multiBrowse) {
+            weights = const <int>[1, 2, 3, 2, 1];
+            cardWidth = viewport * 3 / 9;
+            consumeMax = false;
+          } else {
+            const peek = 50.0;
+            final slideWidth = height * 16 / 9;
+            if (viewport < slideWidth + peek) {
+              // 过渡态(窗口最小化动画等)视口可能瞬间归零:退化为
+              // full-screen 单卡,避免出现非正权重(SDK 构建断言)。
+              weights = const <int>[1];
+              cardWidth = viewport;
+              consumeMax = true;
+            } else {
+              final count = math.max(
+                1,
+                ((viewport - peek) / slideWidth).floor(),
+              );
+              // 余量不并入卡宽:卡宽恒为 高度×16/9,数量增减只改变窥视条宽度。
+              final peekWidth = math.max(1.0, viewport - count * slideWidth);
+              weights = <int>[
+                ...List<int>.filled(count, slideWidth.round()),
+                peekWidth.round(),
+              ];
+              cardWidth = slideWidth;
+              consumeMax = false;
+            }
+          }
           return SizedBox(
             height: height,
             child: CarouselView.weighted(
+              // flexWeights 变化(窗口缩放/样式切换)时 SDK didUpdateWidget 会在
+              // position 未 attach 时断言(carousel.dart:555),改用 key 重建。
+              key: ValueKey<String>(weights.join('_')),
               controller: _controller,
               flexWeights: weights,
               consumeMaxWeight: consumeMax,

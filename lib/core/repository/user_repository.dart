@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/core/models/user_types.dart';
 import 'package:skf/core/result/loading_state.dart';
@@ -9,6 +11,15 @@ import 'package:skf/core/result/loading_state.dart';
 /// resources. Implementations are provided by the active adapter (e.g. BiliBridge).
 abstract class UserRepository {
   // ── Profile & stats ──────────────────────────────────────────────
+
+  /// 发布动态/博客(markdown 正文);适配器无对应能力时报错。
+  Future<LoadingState<void>> publishBlog({
+    required String title,
+    required String content,
+  });
+
+  /// 上传图片,返回图床 URL(发表动态插图用)。
+  Future<LoadingState<String>> uploadImage(File file);
 
   Future<LoadingState<CoreUserInfoData>> userInfo();
 

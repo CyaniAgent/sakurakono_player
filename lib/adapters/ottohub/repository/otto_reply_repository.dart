@@ -5,6 +5,9 @@ import 'package:skf/core/models/video_types.dart';
 import 'package:skf/core/repository/reply_repository.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
+// ignore: implementation_imports
+import 'package:ottohub_sdk_dart/src/models/old_api/old_comment_models.dart'
+    show BlogComment, VideoComment;
 
 /// Implementation of [ReplyRepository] that delegates to OttoHub SDK APIs.
 ///
@@ -19,6 +22,9 @@ class OttoReplyRepository implements ReplyRepository {
   OttoReplyRepository(this._client);
   LoadingState<T> _err<T>(ApiException e) =>
       Error(e.errorCode, code: e.httpStatus);
+
+  /// 评论翻页超出末页:服务端报 400。
+  bool _isNoMoreReplies(ApiException e) => e.httpStatus == 400;
 
   /// 兜底:HTTP 层异常(超时/连接失败/未包装的 DioException)转为
   /// Error 态,避免调用方面对一个永不完成的 Future。
@@ -36,63 +42,57 @@ class OttoReplyRepository implements ReplyRepository {
     required String? offset,
     required int? cursorNext,
   }) async {
+    // 服务端在 offset 超出末页时返回 400(而非空列表):视为「没有更多」。
+    Future<List<dynamic>> fetch() => type == 2
+        ? _client.oldComment.getVideoCommentList(
+            vid: oid,
+            offset: offset != null ? int.tryParse(offset) : null,
+            num: 20,
+          )
+        : _client.oldComment.getBlogCommentList(
+            bid: oid,
+            offset: offset != null ? int.tryParse(offset) : null,
+            num: 20,
+          );
     try {
-      if (type == 2) {
-        // video comment
-        final comments = await _client.oldComment.getVideoCommentList(
-          vid: oid,
-          offset: offset != null ? int.tryParse(offset) : null,
-          num: 20,
-        );
-        return Success(CoreMainListReply(
-          replies: comments
-              .map((c) => <String, dynamic>{
-                    'rpid': c.vcid,
-                    'content': {'message': c.content},
-                    'mid': c.uid,
-                    'member': {
-                      'mid': c.uid,
-                      'uname': c.username ?? '',
-                      'avatar': c.avatarUrl ?? '',
-                    },
-                    'like': 0,
-                    'rcount': c.childCommentNum ?? 0,
-                    'ctime': _parseTime(c.time),
-                  })
-              .toList(),
-        ));
-      } else {
-        // blog comment (type 1)
-        final comments = await _client.oldComment.getBlogCommentList(
-          bid: oid,
-          offset: offset != null ? int.tryParse(offset) : null,
-          num: 20,
-        );
-        return Success(CoreMainListReply(
-          replies: comments
-              .map((c) => <String, dynamic>{
-                    'rpid': c.bcid,
-                    'content': {'message': c.content},
-                    'mid': c.uid,
-                    'member': {
-                      'mid': c.uid,
-                      'uname': c.username ?? '',
-                      'avatar': c.avatarUrl ?? '',
-                    },
-                    'like': 0,
-                    'rcount': c.childCommentNum ?? 0,
-                    'ctime': _parseTime(c.time),
-                  })
-              .toList(),
-        ));
-      }
+      final comments = await fetch();
+      return Success(CoreMainListReply(replies: _replyMaps(comments)));
     } on ApiException catch (e) {
+      // 非首屏翻页遇 400 = 已到末页,返回空列表而非错误态。
+      if (e.httpStatus == 400 && offset != null) {
+        return const Success(CoreMainListReply(replies: []));
+      }
       debugPrint('OttoReplyRepository.mainList ApiException: ${e.errorCode}');
       return _err(e);
     } on DioException catch (e) {
       return _dioErr(e);
     }
   }
+
+  /// SDK 强类型评论 → gRPC 形态 map(供 CoreReplyItem.fromMap 消费)。
+  /// 博客评论带 bcid,视频评论带 vcid(无 bcid getter,动态调用会抛)。
+  List<Map<String, dynamic>> _replyMaps(List<dynamic> comments) => comments
+      .map(
+        (c) => <String, dynamic>{
+          'rpid': _replyId(c),
+          'content': {'message': c.content},
+          'mid': c.uid,
+          'member': {
+            'mid': c.uid,
+            'uname': c.username ?? '',
+            'avatar': c.avatarUrl ?? '',
+          },
+          'like': 0,
+          'rcount': c.childCommentNum ?? 0,
+          'ctime': _parseTime(c.time),
+        },
+      )
+      .toList();
+
+  static int _replyId(dynamic c) =>
+      c is BlogComment ? c.bcid : (c as VideoComment).vcid;
+
+
 
   @override
   Future<LoadingState<CoreDetailListReply>> detailList({
@@ -103,6 +103,32 @@ class OttoReplyRepository implements ReplyRepository {
     required CoreMode mode,
     required String? offset,
   }) async {
+    // SDK 返回强类型评论列表;键名与 gRPC 形态不同(vcid/uid/time/
+    // username/avatar_url/child_comment_num),显式映射成
+    // CoreReplyItem.fromMap 认的形状回填 `replies`。
+    List<Map<String, dynamic>> toMaps(List<dynamic> comments) => comments
+        .map((raw) {
+          final c = (raw as dynamic).toJson() as Map<String, dynamic>;
+          final id = (c['vcid'] ?? c['bcid']) as int? ?? 0;
+          final uid = c['uid'] as int? ?? 0;
+          return <String, dynamic>{
+            'rpid': id,
+            'oid': oid,
+            'type': type,
+            'mid': uid,
+            'root': root,
+            'parent': (c['parent_vcid'] ?? c['parent_bcid']) as int? ?? 0,
+            'content': c['content'],
+            'ctime': _parseTime(c['time'] as String? ?? ''),
+            'rcount': c['child_comment_num'],
+            'member': <String, dynamic>{
+              'mid': uid,
+              'uname': c['username'],
+              'avatar': c['avatar_url'],
+            },
+          };
+        })
+        .toList();
     try {
       if (type == 2) {
         final comments = await _client.oldComment.getVideoCommentList(
@@ -113,8 +139,9 @@ class OttoReplyRepository implements ReplyRepository {
         );
         return Success(CoreDetailListReply(
           root: <String, dynamic>{
-            'rpid': rpid,
+            'rpid': root,
           },
+          replies: toMaps(comments),
           cursor: <String, dynamic>{
             'is_end': comments.length < 20,
           },
@@ -128,14 +155,19 @@ class OttoReplyRepository implements ReplyRepository {
         );
         return Success(CoreDetailListReply(
           root: <String, dynamic>{
-            'rpid': rpid,
+            'rpid': root,
           },
+          replies: toMaps(comments),
           cursor: <String, dynamic>{
             'is_end': comments.length < 20,
           },
         ));
       }
     } on ApiException catch (e) {
+      // 无更多子评论时服务端报 400:返回空列表而非错误态。
+      if (_isNoMoreReplies(e)) {
+        return Success(const CoreDetailListReply(replies: []));
+      }
       debugPrint(
         'OttoReplyRepository.detailList ApiException: ${e.errorCode}',
       );

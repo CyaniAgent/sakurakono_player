@@ -185,7 +185,7 @@ class _FollowChildPageState extends State<FollowChildPage>
                   );
                 },
               )
-            : HttpError(onReload: _followController.onReload),
+            : const HttpError(isNotFound: true, errMsg: '暂无用户'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _followController.onReload,

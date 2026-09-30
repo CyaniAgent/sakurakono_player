@@ -162,7 +162,7 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: _favNoteController.onReload),
+            : const HttpError(isNotFound: true, errMsg: '还没有收藏'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _favNoteController.onReload,

@@ -126,6 +126,20 @@ abstract class CoreImSession with _$CoreImSession {
   }) = _CoreImSession;
 }
 
+/// IM friend/session entry (OttoHub friend_list item).
+@freezed
+abstract class CoreImFriend with _$CoreImFriend {
+  const factory CoreImFriend({
+    @Default(0) int uid,
+    @Default('') String username,
+    String? intro,
+    String? avatarUrl,
+    String? lastTime,
+    String? lastMessage,
+    int? newMessageNum,
+  }) = _CoreImFriend;
+}
+
 /// Keyword blocking item (replaces gRPC [KeywordBlockingItem]).
 @freezed
 abstract class CoreImKeywordBlockingItem with _$CoreImKeywordBlockingItem {

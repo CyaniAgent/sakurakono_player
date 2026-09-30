@@ -39,6 +39,9 @@ class DynamicsController
   UpPanelPosition get upPanelPosition =>
       UpPanelPosition.values[Pref.upPanelPosition];
 
+  /// 设置页切换面板位置后调用,通知动态页按新位置重排。
+  void refreshUpPanelPosition() => notifyListeners();
+
   List<CoreDynamicsTabType> get _visibleTabs => DynamicsHost.of().visibleTabs;
 
   /// 当前选中分类(view 的 UP 面板显隐按此 gating)。

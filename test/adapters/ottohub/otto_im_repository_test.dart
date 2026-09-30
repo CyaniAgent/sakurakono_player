@@ -117,6 +117,44 @@ void main() {
       expect(fake.requestCount, 1);
     });
 
+    test('happy: friendList maps friend entries field by field', () async {
+      makeRepo(<String, String>{
+        'GET /im/friend_list': fixture('ottohub/im_friend_list'),
+      });
+
+      final result = await repo.friendList(offset: 0, num: 12);
+
+      expect(result, isA<Success<List<CoreImFriend>>>());
+      final friends = (result as Success<List<CoreImFriend>>).response;
+      expect(friends, hasLength(2));
+      final first = friends.first;
+      expect(first.uid, 3001);
+      expect(first.username, '私信好友甲');
+      expect(first.intro, '好友简介甲');
+      expect(first.avatarUrl, 'https://example.com/friend1.jpg');
+      expect(first.lastTime, '2024-07-03T08:00:00Z');
+      expect(first.lastMessage, '在吗');
+      expect(first.newMessageNum, 2);
+      // Second friend: nullable fields stay null.
+      expect(friends[1].intro, isNull);
+      expect(friends[1].avatarUrl, isNull);
+      expect(friends[1].lastTime, isNull);
+      expect(friends[1].lastMessage, isNull);
+      expect(friends[1].newMessageNum, 0);
+      expect(fake.requestCount, 1);
+    });
+
+    test('error: friendList surfaces ApiException as Error', () async {
+      makeRepo(<String, String>{
+        'GET /im/friend_list': fixture('ottohub/error_im'),
+      });
+
+      final result = await repo.friendList();
+
+      expect(result, isA<Error>());
+      expect(fake.requestCount, 1);
+    });
+
     test('happy: clearUnread marks all system messages read', () async {
       makeRepo(<String, String>{
         'POST /im/read_all_system_message': fixture('ottohub/ok'),

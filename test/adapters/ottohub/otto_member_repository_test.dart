@@ -187,6 +187,34 @@ void main() {
       expect(fake.requestCount, 1);
     });
 
+    test('happy: updateProfile calls the API for each provided field', () async {
+      makeRepo(<String, String>{
+        'POST /profile/update_username': '{"status":"ok"}',
+        'POST /profile/update_intro': '{"status":"ok"}',
+        'POST /profile/update_sex': '{"status":"ok"}',
+      });
+
+      final result = await repo.updateProfile(
+        username: '新昵称',
+        intro: '新签名',
+        sex: '保密',
+      );
+
+      expect(result, const Success<void>(null));
+      expect(fake.requestCount, 3);
+    });
+
+    test('happy: updateProfile skips null fields', () async {
+      makeRepo(<String, String>{
+        'POST /profile/update_intro': '{"status":"ok"}',
+      });
+
+      final result = await repo.updateProfile(intro: '只改签名');
+
+      expect(result, const Success<void>(null));
+      expect(fake.requestCount, 1);
+    });
+
     test('happy: followUpGroup resolves uid from profile when mid is null',
         () async {
       makeRepo(<String, String>{

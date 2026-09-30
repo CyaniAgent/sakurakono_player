@@ -3,22 +3,35 @@
 // 三分类装配:最新 = 站内最新博客(blogFeed),关注 = 关注时间线
 // (followDynamic;UP 面板选中时切 userDynFeed),推荐 = 随机博客
 // (randomBlogFeed)。动态详情页(/blogDetail)为 DynamicPanel(isDetail:
-// true) + 博客评论,列表骨架用框架 DynamicCardSkeleton。
+// true) + 「N条回复」固定头(本地排序:最热/最新)+ 评论列表
+// (OttoReplyItem,VideoReplySkeleton 骨架)+ 回复 FAB。
+
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import 'package:skf/common/skeleton/dynamic_card.dart';
+import 'package:skf/common/skeleton/video_reply.dart';
+import 'package:skf/common/widgets/view_safe_area.dart';
+import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart'
     show refreshIndicator;
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
 import 'package:skf/adapters/ottohub/repository/otto_dynamics_repository.dart';
+import 'package:skf/adapters/ottohub/services/otto_reply_item.dart';
+import 'package:skf/adapters/ottohub/services/otto_reply_pub_page.dart';
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/core/models/reply_types.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/pages/dynamics/controller.dart';
+import 'package:skf/pages/dynamics/widgets/author_panel.dart';
 import 'package:skf/pages/dynamics/widgets/dynamic_panel.dart';
+import 'package:skf/router/app_navigator.dart';
+import 'package:skf/utils/grid.dart';
+import 'package:skf/utils/num_utils.dart';
 
 /// 主动态页单个 tab 的内容(由 OttoDynamicsHost.buildTabPage 装配)。
 class OttoDynamicsTabPage extends StatelessWidget {
@@ -31,19 +44,17 @@ class OttoDynamicsTabPage extends StatelessWidget {
     final repo = appRead(dynamicsRepositoryProvider) as OttoDynamicsRepository;
     return switch (type) {
       // 最新:站内最新博客流(可翻页)。
-      CoreDynamicsTabType.latest =>
-        OttoDynListTab(
-          tabType: type,
-          fetch: (offset) => repo.blogFeed(offset: offset),
-        ),
+      CoreDynamicsTabType.latest => OttoDynListTab(
+        tabType: type,
+        fetch: (offset) => repo.blogFeed(offset: offset),
+      ),
       // 关注:关注时间线(视频+博客);UP 面板选中某人时切到该用户的流。
       CoreDynamicsTabType.follow => const OttoFollowDynTab(),
       // 推荐:随机博客推荐(单批,刷新换一批)。
-      CoreDynamicsTabType.recommend =>
-        OttoDynListTab(
-          tabType: type,
-          fetch: (offset) => repo.randomBlogFeed(),
-        ),
+      CoreDynamicsTabType.recommend => OttoDynListTab(
+        tabType: type,
+        fetch: (offset) => repo.randomBlogFeed(),
+      ),
     };
   }
 }
@@ -113,6 +124,237 @@ class OttoFollowDynTab extends StatelessWidget {
   }
 }
 
+/// 二级回复弹层(点开「共 N 条回复」;对齐上游视频页的底部滑入交互:
+/// 根评论置顶 + 子回复列表 + 回复入口,拖拽/点外部关闭)。
+class OttoReplyDetailPage extends StatefulWidget {
+  const OttoReplyDetailPage({
+    super.key,
+    required this.reply,
+    this.replyType = 1,
+  });
+
+  final CoreReplyItem reply;
+
+  /// 评论主体类型(1=博客,2=视频),决定 detailList 与发送接口。
+  final int replyType;
+
+  /// 底部滑入弹层入口(替代整页 push,对齐上游视频评论区交互)。
+  static void to(
+    BuildContext context,
+    CoreReplyItem reply, {
+    int replyType = 1,
+  }) => AppNavigator.to(OttoReplyDetailPage(reply: reply, replyType: replyType));
+
+  @override
+  State<OttoReplyDetailPage> createState() => _OttoReplyDetailPageState();
+}
+
+class _OttoReplyDetailPageState extends State<OttoReplyDetailPage> {
+  List<CoreReplyItem> _items = <CoreReplyItem>[];
+
+  /// 服务端已返回的条目数(本地插入不计入,保证翻页 offset 正确)。
+  int _serverCount = 0;
+  bool _isLoading = false;
+  bool _hasMore = false;
+  bool _firstLoaded = false;
+  String? _errMsg;
+
+  @override
+  void initState() {
+    super.initState();
+    _query();
+  }
+
+  Future<void> _query() async {
+    if (_isLoading) return;
+    _isLoading = true;
+    final res = await appRead(replyRepositoryProvider).detailList(
+      type: widget.replyType,
+      oid: widget.reply.oid,
+      root: widget.reply.rpid,
+      rpid: widget.reply.rpid,
+      mode: CoreMode.defaultMode,
+      offset: _serverCount == 0 ? null : '$_serverCount',
+    );
+    if (!mounted) return;
+    _isLoading = false;
+    switch (res) {
+      case Success(:final response):
+        final page = (response.replies ?? const <Object?>[])
+            .whereType<Map<String, dynamic>>()
+            .map(CoreReplyItem.fromMap)
+            .toList();
+        setState(() {
+          if (_serverCount == 0) {
+            _items = page;
+          } else {
+            _items.addAll(page);
+          }
+          _serverCount += page.length;
+          _hasMore = page.length >= 20;
+          _firstLoaded = true;
+          _errMsg = null;
+        });
+      case final Error err:
+        setState(() {
+          _firstLoaded = true;
+          _errMsg = err.errMsg ?? '加载失败';
+        });
+      case Loading():
+        break;
+    }
+  }
+
+  /// 回复根评论:输入弹层 → 本地追加(不计入服务端计数)。
+  Future<void> _reply() async {
+    final parent = widget.reply;
+    final message = await showOttoReplySheet(
+      oid: parent.oid,
+      parent: parent.rpid,
+      hint: ' 回复 @${parent.member?.uname} : ',
+      replyType: widget.replyType,
+    );
+    if (message == null || message.isEmpty || !mounted) return;
+    final account = appRead(accountProvider);
+    final mid = account.userId ?? 0;
+    final item = CoreReplyItem(
+      oid: parent.oid,
+      mid: mid,
+      root: parent.rpid,
+      parent: parent.rpid,
+      content: message,
+      ctime: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      member: CoreReplyMember(
+        mid: mid,
+        uname: account.displayName ?? '',
+        avatar: account.face,
+      ),
+    );
+    setState(() => _items = [..._items, item]);
+  }
+
+  @override
+  @override
+  Widget build(BuildContext context) {
+    // 底部滑入弹层形态(对齐上游视频评论区交互)。
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: ViewSafeArea(
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: 640,
+            maxHeight: MediaQuery.heightOf(context) * 0.75,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 8, bottom: 4),
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: !_firstLoaded
+                    ? (_errMsg == null
+                          ? ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: Grid.lineSkeletonCount(
+                                MediaQuery.heightOf(context),
+                              ),
+                              itemBuilder: (_, _) => const VideoReplySkeleton(),
+                            )
+                          : HttpError(
+                              isSliver: false,
+                              errMsg: _errMsg,
+                              onReload: _query,
+                            ))
+                    : CustomScrollView(
+                        slivers: [
+                          // 根评论置顶(上游 firstFloor 语义)。
+                          SliverToBoxAdapter(
+                            child: OttoReplyItem(
+                              item: widget.reply,
+                              upMid: null,
+                              onReply: _reply,
+                            ),
+                          ),
+                          SliverPadding(
+                            padding: const EdgeInsets.only(left: 34),
+                            sliver: switch (_repliesState()) {
+                              _ReplyListState.empty => const SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Center(child: Text('还没有回复')),
+                                ),
+                              ),
+                              _ReplyListState.error => SliverToBoxAdapter(
+                                child: HttpError(
+                                  isSliver: false,
+                                  errMsg: _errMsg,
+                                  onReload: _query,
+                                ),
+                              ),
+                              _ReplyListState.list => SliverList.builder(
+                                itemBuilder: (context, index) {
+                                  if (index == _items.length) {
+                                    if (_hasMore) _query();
+                                    return Container(
+                                      alignment: .center,
+                                      height: 100,
+                                      child: Text(
+                                        _hasMore ? '加载中...' : '没有更多了',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    );
+                                  }
+                                  return OttoReplyItem(
+                                    item: _items[index],
+                                    upMid: null,
+                                    onReply: _reply,
+                                  );
+                                },
+                                itemCount: _items.length + 1,
+                              ),
+                            },
+                          ),
+                          SliverPadding(
+                            padding: EdgeInsets.only(
+                              bottom:
+                                  MediaQuery.viewPaddingOf(context).bottom + 40,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 列表三态:空/错误/正常(修复首载失败后错误不可见)。
+  _ReplyListState _repliesState() {
+    if (_items.isEmpty) {
+      return _errMsg != null ? _ReplyListState.error : _ReplyListState.empty;
+    }
+    return _ReplyListState.list;
+  }
+}
+
+enum _ReplyListState { empty, error, list }
+
 /// 动态详情页(/blogDetail?bid=,博客即动态)。
 ///
 /// 复原原 dynamics_detail 结构:DynamicPanel(isDetail: true) +
@@ -126,8 +368,8 @@ class OttoDynDetailPage extends StatefulWidget {
   State<OttoDynDetailPage> createState() => _OttoDynDetailPageState();
 
   static OttoDynDetailPage fromQuery(String? bid) => OttoDynDetailPage(
-        bid: int.tryParse(bid ?? '') ?? 0,
-      );
+    bid: int.tryParse(bid ?? '') ?? 0,
+  );
 }
 
 class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
@@ -136,11 +378,42 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
   LoadingState<List<CoreReplyItem>> _replies =
       LoadingState<List<CoreReplyItem>>.loading();
 
+  /// 评论总数(动态 moduleStat.comment.count;服务端未回传时回退条目数)。
+  int? _count;
+
+  /// 排序:true = 按热度,false = 按时间(本地排序;服务端无排序参数)。
+  bool _sortByHot = true;
+  bool _hasMore = false;
+
+  /// 加载更多进行中守卫(防 itemBuilder 同帧多次触发)。
+  bool _isLoadingMore = false;
+
+  /// 服务端已返回的评论数(本地插入不计,保证翻页 offset 正确)。
+  int _serverReplyCount = 0;
+
+  /// AppBar 作者信息渐显:滚动超过 55px 后显示(对齐上游)。
+  late final ScrollController _scrollController = ScrollController()
+    ..addListener(_onScroll);
+  bool _showTitle = false;
+
+  void _onScroll() {
+    final show = _scrollController.hasClients &&
+        _scrollController.positions.first.pixels > 55;
+    if (show != _showTitle) setState(() => _showTitle = show);
+  }
+
+  static const _pageSize = 20;
+
   @override
   void initState() {
     super.initState();
     _query();
-    _queryReplies();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _query() async {
@@ -174,102 +447,259 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
     switch (res) {
       case Success(:final response):
         setState(() {
-          _replies = Success(
-            (response.replies ?? const <Object?>[])
-                .whereType<Map<String, dynamic>>()
-                .map(CoreReplyItem.fromMap)
-                .toList(),
-          );
+          final page = (response.replies ?? const <Object?>[])
+              .whereType<Map<String, dynamic>>()
+              .map(CoreReplyItem.fromMap)
+              .toList();
+          _replies = Success(page);
+          _serverReplyCount = page.length;
+          _hasMore = page.length >= _pageSize;
         });
       case final Error err:
-        setState(
-          () => _replies = Error(err.errMsg, code: err.code),
-        );
+        setState(() => _replies = Error(err.errMsg, code: err.code));
       case Loading():
         break;
     }
+  }
+
+  /// 加载更多(offset 按服务端返回条数计,本地插入不计;近似 hasMore)。
+  Future<void> _onLoadMore() async {
+    if (_isLoadingMore || _replies is! Success<List<CoreReplyItem>>) return;
+    _isLoadingMore = true;
+    final current = (_replies as Success<List<CoreReplyItem>>).response;
+    final res = await appRead(replyRepositoryProvider).mainList(
+      type: 1,
+      oid: widget.bid,
+      mode: CoreMode.defaultMode,
+      offset: '$_serverReplyCount',
+      cursorNext: null,
+    );
+    if (!mounted) return;
+    _isLoadingMore = false;
+    switch (res) {
+      case Success(:final response):
+        final page = (response.replies ?? const <Object?>[])
+            .whereType<Map<String, dynamic>>()
+            .map(CoreReplyItem.fromMap)
+            .toList();
+        setState(() {
+          current.addAll(page);
+          _serverReplyCount += page.length;
+          _hasMore = page.length >= _pageSize;
+          _replies = Success(current);
+        });
+      case Error():
+        setState(() => _hasMore = false);
+      case Loading():
+        break;
+    }
+  }
+
+  /// 本地排序(服务端无排序参数):热度 = like 降序,时间 = ctime 降序。
+  List<CoreReplyItem> _sorted(List<CoreReplyItem> items) {
+    final list = [...items];
+    list.sort(
+      (a, b) =>
+          _sortByHot ? b.like.compareTo(a.like) : b.ctime.compareTo(a.ctime),
+    );
+    return list;
+  }
+
+  /// 发表根评论:输入弹层 → 本地插入(发送成功即时上屏)。
+  Future<void> _reply() async {
+    final message = await showOttoReplySheet(
+      oid: widget.bid,
+      hint: '输入评论内容',
+      replyType: 1,
+    );
+    if (message == null || message.isEmpty || !mounted) return;
+    final account = appRead(accountProvider);
+    final mid = account.userId ?? 0;
+    final item = CoreReplyItem(
+      oid: widget.bid,
+      mid: mid,
+      content: message,
+      ctime: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      member: CoreReplyMember(
+        mid: mid,
+        uname: account.displayName ?? '',
+        avatar: account.face,
+      ),
+    );
+    setState(() {
+      switch (_replies) {
+        case Success(:final response):
+          _replies = Success([item, ...response]);
+        case _:
+          _replies = Success([item]);
+      }
+      _count = (_count ?? 0) + 1;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('动态详情')),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: switch (_state) {
-              Loading() => const Padding(
-                padding: EdgeInsets.all(48),
-                child: DynamicCardSkeleton(),
-              ),
-              Error() => HttpError(
-                isSliver: false,
-                errMsg: _state is Error ? (_state as Error).errMsg : null,
-                onReload: _query,
-              ),
-              Success(:final response) => DynamicPanel(
-                item: response,
-                isDetail: true,
-              ),
-            },
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: AnimatedOpacity(
+            opacity: _showTitle ? 1 : 0,
+            duration: const Duration(milliseconds: 300),
+            child: IgnorePointer(
+              ignoring: !_showTitle,
+              child: _state is Success<CoreDynamicItemModel>
+                  ? AuthorPanel(
+                      item: (_state as Success<CoreDynamicItemModel>).response,
+                      isDetail: true,
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Text(
-                '评论',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: null,
+        onPressed: _reply,
+        child: const Icon(Icons.reply),
+      ),
+      body: refreshIndicator(
+        onRefresh: () async {
+          await _query();
+          await _queryReplies();
+        },
+        // 宽屏:内容列按「小卡宽 × 2」居中,不全宽铺开(与动态 tab 一致)。
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: Grid.smallCardWidth * 2),
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: switch (_state) {
+                    Loading() => const Padding(
+                      padding: EdgeInsets.all(48),
+                      child: DynamicCardSkeleton(),
+                    ),
+                    Error() => HttpError(
+                      isSliver: false,
+                      errMsg: _state is Error ? (_state as Error).errMsg : null,
+                      onReload: _query,
+                    ),
+                    Success(:final response) => DynamicPanel(
+                      item: response,
+                      isDetail: true,
+                    ),
+                  },
                 ),
-              ),
-            ),
-          ),
-          switch (_replies) {
-            Loading() => SliverList.builder(
-              itemBuilder: (_, _) => const DynamicCardSkeleton(),
-              itemCount: 3,
-            ),
-            Success(:final response) => response.isNotEmpty
-                ? SliverList.builder(
-                    itemBuilder: (context, index) => ListTile(
-                      dense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      title: Text(
-                        response[index].member?.uname ?? '',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                // 「N条回复 + 排序」固定头(上游 buildReplyHeader 版式);
+                // 计数取动态 moduleStat.comment.count,未回传回退条目数。
+                Builder(
+                  builder: (context) {
+                    final count = _state is Success<CoreDynamicItemModel>
+                        ? (_state as Success<CoreDynamicItemModel>)
+                              .response
+                              .modules
+                              ?.moduleStat
+                              ?.comment
+                              ?.count
+                        : null;
+                    final replies = switch (_replies) {
+                      Success(:final response) => response,
+                      _ => const <CoreReplyItem>[],
+                    };
+                    return SliverPinnedHeader(
+                      backgroundColor: theme.colorScheme.surface,
+                      child: Padding(
+                        padding: const .fromLTRB(12, 2.5, 6, 2.5),
+                        child: Row(
+                          mainAxisAlignment: .spaceBetween,
+                          children: [
+                            Text(
+                              '共${NumUtils.numFormat(count ?? replies.length)}条回复',
+                            ),
+                            TextButton.icon(
+                              onPressed: () =>
+                                  setState(() => _sortByHot = !_sortByHot),
+                              icon: const Icon(Icons.sort, size: 16),
+                              label: Text(_sortByHot ? '最热' : '最新'),
+                            ),
+                          ],
                         ),
                       ),
-                      subtitle: Text(
-                        response[index].content,
-                        style: theme.textTheme.bodyMedium,
+                    );
+                  },
+                ),
+                Builder(
+                  builder: (context) => switch (_replies) {
+                    Loading() => SliverList.builder(
+                      itemBuilder: (_, _) => const VideoReplySkeleton(),
+                      itemCount: Grid.lineSkeletonCount(
+                        MediaQuery.heightOf(context),
                       ),
                     ),
-                    itemCount: response.length,
-                  )
-                : const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Center(child: Text('还没有评论')),
+                    Success(:final response) =>
+                      response.isNotEmpty
+                          ? Builder(
+                              builder: (context) {
+                                final items = _sorted(response);
+                                return SliverList.builder(
+                                  // 排序切换即时生效;末尾占位触发加载更多。
+                                  itemBuilder: (context, index) {
+                                    if (index == items.length) {
+                                      if (_hasMore) _onLoadMore();
+                                      return Container(
+                                        alignment: .center,
+                                        height: 125,
+                                        child: Text(
+                                          _hasMore ? '加载中...' : '没有更多了',
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      );
+                                    }
+                                    return OttoReplyItem(
+                                      item: items[index],
+                                      upMid: null,
+                                      onReply: _reply,
+                                      onOpenDetail: items[index].rcount > 0
+                                          ? () => OttoReplyDetailPage.to(
+                                              context,
+                                              items[index],
+                                            )
+                                          : null,
+                                    );
+                                  },
+                                  itemCount: items.length + 1,
+                                );
+                              },
+                            )
+                          : const SliverToBoxAdapter(
+                              child: HttpError(
+                                isNotFound: true,
+                                isSliver: false,
+                                errMsg: '还没有评论',
+                              ),
+                            ),
+                    Error(:final errMsg) => SliverToBoxAdapter(
+                      child: HttpError(
+                        isSliver: false,
+                        errMsg: errMsg,
+                        onReload: _queryReplies,
+                      ),
                     ),
-                  ),
-            Error(:final errMsg) => SliverToBoxAdapter(
-              child: HttpError(
-                isSliver: false,
-                errMsg: errMsg,
-                onReload: _queryReplies,
-              ),
+                  },
+                ),
+                const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
+              ],
             ),
-          },
-          const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
-        ],
+          ),
+        ),
       ),
     );
   }
 }
+
 /// 通用分页动态列表(最新/推荐/关注分类共用)。
 /// [tabType] 非空时注册到 [OttoDynTabRegistry],接受 host 级刷新/回顶转发。
 class OttoDynListTab extends StatefulWidget {
@@ -282,13 +712,14 @@ class OttoDynListTab extends StatefulWidget {
   final CoreDynamicsTabType? tabType;
 
   final Future<LoadingState<CoreDynamicsDataModel>> Function(String? offset)
-      fetch;
+  fetch;
 
   @override
   State<OttoDynListTab> createState() => _OttoDynListTabState();
 }
 
-class _OttoDynListTabState extends State<OttoDynListTab> {
+class _OttoDynListTabState extends State<OttoDynListTab>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
 
   List<CoreDynamicItemModel> _items = <CoreDynamicItemModel>[];
@@ -379,13 +810,27 @@ class _OttoDynListTabState extends State<OttoDynListTab> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (!_firstLoaded) {
       if (_errMsg == null) {
-        return ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: 5,
-          itemBuilder: (_, _) => const DynamicCardSkeleton(),
+        // 桌面宽视口:内容列按「小卡宽 × 2」居中,不全宽铺开。
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: Grid.smallCardWidth * 2,
+            ),
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: Grid.lineSkeletonCount(
+                MediaQuery.heightOf(context),
+              ),
+              itemBuilder: (_, _) => const DynamicCardSkeleton(),
+            ),
+          ),
         );
       }
       return HttpError(
@@ -415,28 +860,38 @@ class _OttoDynListTabState extends State<OttoDynListTab> {
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          SliverPadding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
-            ),
-            sliver: SliverList.builder(
-              itemBuilder: (context, index) {
-                if (index == _items.length) {
-                  if (_hasMore) _query(more: true);
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Center(
-                      child: Text(
-                        _hasMore ? '加载中...' : '没有更多了',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  );
-                }
-                return DynamicPanel(item: _items[index]);
-              },
-              itemCount: _items.length + 1,
-            ),
+          // 非全宽适配(复原原 DynMixin.buildPage):视口宽超过
+          // 「小卡宽 × 2」时内容列居中,两侧留白。
+          SliverLayoutBuilder(
+            builder: (context, constraints) {
+              final extra =
+                  (constraints.crossAxisExtent - Grid.smallCardWidth * 2) / 2;
+              return SliverPadding(
+                padding: EdgeInsets.only(
+                  left: math.max(extra, 0),
+                  right: math.max(extra, 0),
+                  bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
+                ),
+                sliver: SliverList.builder(
+                  itemBuilder: (context, index) {
+                    if (index == _items.length) {
+                      if (_hasMore) _query(more: true);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text(
+                            _hasMore ? '加载中...' : '没有更多了',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      );
+                    }
+                    return DynamicPanel(item: _items[index]);
+                  },
+                  itemCount: _items.length + 1,
+                ),
+              );
+            },
           ),
         ],
       ),

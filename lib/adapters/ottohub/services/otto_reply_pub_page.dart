@@ -19,12 +19,14 @@ import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/feed_back.dart';
 
 /// 弹出发送评论面板(底部滑入);成功后返回消息文本。
+/// [replyType] 决定发送接口(2=视频,1=博客/动态),调用方必须传对。
 Future<String?> showOttoReplySheet({
   required int oid,
   int? parent,
   required String hint,
   String? initialValue,
   void Function(String)? onSave,
+  int replyType = 2,
 }) async {
   return AppNavigator.push<String>(
     PublishRoute(
@@ -35,18 +37,22 @@ Future<String?> showOttoReplySheet({
         hint: hint,
         initialValue: initialValue,
         onSave: onSave,
+        replyType: replyType,
       ),
     ),
   );
 }
 
 class OttoReplyPubPage extends CommonTextPubPage {
-  /// 评论主体 ID(视频 vid)。
+  /// 评论主体 ID(视频 vid / 博客 bid)。
   final int oid;
 
   /// 被回复的评论 ID(null = 发表根评论)。
   final int? parent;
   final String hint;
+
+  /// 评论主体类型(2=视频,1=博客)。
+  final int replyType;
 
   const OttoReplyPubPage({
     super.key,
@@ -55,6 +61,7 @@ class OttoReplyPubPage extends CommonTextPubPage {
     required this.oid,
     required this.hint,
     this.parent,
+    this.replyType = 2,
   });
 
   @override
@@ -183,7 +190,7 @@ class _OttoReplyPubPageState extends CommonTextPubPageState<OttoReplyPubPage> {
     feedBack();
     SmartDialog.showLoading(msg: '发送中...');
     final res = await appRead(replyRepositoryProvider).replyAdd(
-      type: 2,
+      type: widget.replyType,
       oid: widget.oid,
       message: editController.text.trim(),
       parent: widget.parent,

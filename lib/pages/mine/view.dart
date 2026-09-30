@@ -14,7 +14,6 @@ import 'package:skf/pages/mine/controller.dart';
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/pages/mine/widgets/item.dart';
 import 'package:skf/utils/platform_utils.dart';
-import 'package:skf/utils/storage.dart';
 import 'package:skf/utils/utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_svg/svg.dart';
@@ -158,15 +157,6 @@ class _MediaPageState extends CommonPageState<MinePage>
           ),
           ?actions.buildMsgBadge(),
         ],
-        if (GStorage.reply != null)
-          IconButton(
-            iconSize: iconSize,
-            padding: padding,
-            style: style,
-            tooltip: '评论记录',
-            onPressed: actions.openReply,
-            icon: const Icon(Icons.message_outlined),
-          ),
         // 无痕模式为 B站 概念,适配器不支持时不展示入口。
         if (actions.canToggleAnonymity)
           ValueListenableBuilder<bool>(
@@ -324,11 +314,14 @@ class _MediaPageState extends CommonPageState<MinePage>
                               overflow: .ellipsis,
                             ),
                           ),
-                          UserLevel(
-                            levelInfo?.currentLevel ?? 0,
-                            flash: userInfo.isSeniorMember == 1,
-                            height: 10,
-                          ),
+                          // LV 徽章按数据门控:OttoHub 无等级体系
+                          // (currentLevel 恒空)时不渲染。
+                          if (levelInfo?.currentLevel != null)
+                            UserLevel(
+                              levelInfo!.currentLevel!,
+                              flash: userInfo.isSeniorMember == 1,
+                              height: 10,
+                            ),
                           if (userInfo.honour?.isNotEmpty == true)
                             Container(
                               padding: const EdgeInsets.symmetric(

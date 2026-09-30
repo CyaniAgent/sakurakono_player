@@ -48,20 +48,26 @@ class OttoSearchRepository implements SearchRepository {
         offset: (page - 1) * 30,
         num: 30,
       );
+      // 键名对齐 CoreHotVideoItemModel.fromJson(嵌套 owner/stat)。
       return _ok(CoreSearchAllData(
         numResults: result.totalCount,
         list: result.videoList.map((v) => <String, dynamic>{
           'title': v.title,
-          'author': v.username,
-          'author_id': v.uid,
-          'pic': v.coverUrl,
+          'desc': v.intro ?? '',
+          'cover': v.coverUrl,
           'bvid': v.vid.toString(),
           'aid': v.vid,
-          'video_review': v.likeCount,
-          'danmaku': v.likeCount,
+          'cid': v.vid,
           'duration': v.duration,
-          'pubdate': v.time,
-          'description': v.intro ?? '',
+          // pubdate 为秒级时间戳(int);v.time 是日期字符串需转换。
+          'pubdate':
+              (DateTime.tryParse(v.time)?.millisecondsSinceEpoch ?? 0) ~/ 1000,
+          'owner': {'mid': v.uid, 'name': v.username},
+          'stat': {
+            'view': v.viewCount,
+            'like': v.likeCount,
+            'favorite': v.favoriteCount,
+          },
         }).toList(),
       ));
     } on ApiException catch (e) {

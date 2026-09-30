@@ -135,6 +135,13 @@ abstract final class Pref {
   static set upPanelPosition(int value) =>
       _setting.put(SettingBoxKey.upPanelPosition, value);
 
+  /// 发表动态未发送草稿。
+  static String get blogDraft =>
+      _setting.get(SettingBoxKey.blogDraft, defaultValue: '');
+
+  static set blogDraft(String value) =>
+      _setting.put(SettingBoxKey.blogDraft, value);
+
   static int? get fullScreenMode =>
       _setting.get(SettingBoxKey.fullScreenMode);
 
@@ -636,6 +643,9 @@ abstract final class Pref {
 
   static double get danmakuOpacity =>
       _setting.get(SettingBoxKey.danmakuOpacity, defaultValue: 1.0);
+
+  static set danmakuOpacity(double value) =>
+      _setting.put(SettingBoxKey.danmakuOpacity, value);
 
   static double get danmakuFontScale => _setting.get(
     SettingBoxKey.danmakuFontScale,

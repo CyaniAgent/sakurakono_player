@@ -129,7 +129,7 @@ class _FavTopicPageState extends State<FavTopicPage>
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: _controller.onReload),
+            : const HttpError(isNotFound: true, errMsg: '还没有收藏'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _controller.onReload,

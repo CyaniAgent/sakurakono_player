@@ -103,7 +103,9 @@ class OttoSettingHost implements SettingHost {
                   if (result != null) {
                     Pref.upPanelPosition = result;
                     // 控制器实时读取 Pref,通知后动态页立即按新位置重排。
-                    appRead(dynamicsControllerProvider).notifyListeners();
+                    appRead(
+                      dynamicsControllerProvider,
+                    ).refreshUpPanelPosition();
                     setState();
                   }
                 },

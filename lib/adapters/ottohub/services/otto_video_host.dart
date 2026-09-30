@@ -12,8 +12,10 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:skf/adapters/ottohub/services/otto_danmaku_settings.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/adapters/ottohub/services/otto_danmaku_layer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
 import 'package:skf/adapters/ottohub/services/otto_send_danmaku_panel.dart';
 import 'package:skf/adapters/ottohub/services/otto_video_intro_panel.dart';
@@ -435,20 +437,26 @@ class _OttoPlayerHeader extends StatelessWidget {
     }
 
     return SafeArea(
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: AppNavigator.back,
-          ),
-          Expanded(
-            child: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.white),
+      child: SizedBox(
+        height: 52,
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(
+                FontAwesomeIcons.arrowLeft,
+                size: 15,
+                color: Colors.white,
+              ),
+              onPressed: AppNavigator.back,
             ),
-          ),
+            Expanded(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
           SizedBox(
             width: 40,
             height: 34,
@@ -459,6 +467,26 @@ class _OttoPlayerHeader extends StatelessWidget {
               icon: const Icon(
                 Icons.comment_outlined,
                 size: 19,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 40,
+            height: 34,
+            child: IconButton(
+              tooltip: '弹幕设置',
+              style: IconButton.styleFrom(padding: EdgeInsets.zero),
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => DanmakuSettingsSheet(
+                  notFullscreen: !player.isFullScreen,
+                ),
+              ),
+              icon: const Icon(
+                CustomIcons.dm_settings,
+                size: 20,
                 color: Colors.white,
               ),
             ),
@@ -491,6 +519,7 @@ class _OttoPlayerHeader extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

@@ -234,7 +234,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: _historyController.onReload),
+            // 空记录是常态而非错误:弱化空态(勿用默认错误页形态)。
+            : const HttpError(isNotFound: true, errMsg: '还没有观看记录'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _historyController.onReload,

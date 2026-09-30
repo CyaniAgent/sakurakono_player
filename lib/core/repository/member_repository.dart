@@ -62,6 +62,13 @@ abstract class MemberRepository {
   });
 
   /// Get member info.
+  /// 更新个人资料(仅提交传入字段;适配器无对应能力时报错)。
+  Future<LoadingState<void>> updateProfile({
+    String? username,
+    String? intro,
+    String? sex,
+  });
+
   Future<LoadingState<CoreMemberInfoModel>> memberInfo({
     required int mid,
     String token = '',

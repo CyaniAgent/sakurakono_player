@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skf/build_config.dart';
+import 'package:skf/common/assets.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/app_meta.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -55,7 +56,7 @@ class _AboutPageState extends State<AboutPage> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/logo/logo_2.png',
+                  Assets.logo2,
                   width: 96,
                   height: 96,
                 ),

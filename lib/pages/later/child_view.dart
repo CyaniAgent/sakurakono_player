@@ -107,7 +107,7 @@ class _LaterViewChildPageState extends ConsumerState<LaterViewChildPage>
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: _laterController.onReload),
+            : const HttpError(isNotFound: true, errMsg: '还没有稍后再看'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _laterController.onReload,

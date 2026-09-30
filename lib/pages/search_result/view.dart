@@ -32,6 +32,10 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final String _tag = DateTime.now().millisecondsSinceEpoch.toString();
+
+  /// provider 家族键直接用真实搜索词:若用 tag(时间戳)作键,notifier
+  /// 构造时拿到的 keyword 会是 tag,标题与面板首查全部错乱。
+  late final String _keyword = AppNavigator.parameters['keyword'] ?? '';
   final bool _isFromSearch = AppNavigator.arguments?['fromSearch'] ?? false;
   SSearchController? sSearchController;
 
@@ -41,10 +45,9 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
 
     // Register GetX bridge so adapter-based SearchPanelController can still
     // resolve via Get.find<SearchResultController>(tag: tag).
-    final keyword = AppNavigator.arguments?['keyword'] ?? '';
-    final notifier = ref.read(searchResultProvider(_tag).notifier);
+    final notifier = ref.read(searchResultProvider(_keyword).notifier);
     searchResultControllerRegistry[_tag] =
-        SearchResultController(keyword, notifier);
+        SearchResultController(_keyword, notifier);
 
     _tabController = TabController(
       vsync: this,
@@ -90,7 +93,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final resultState = ref.watch(searchResultProvider(_tag));
+    final resultState = ref.watch(searchResultProvider(_keyword));
     final keyword = resultState.keyword;
 
     return Scaffold(
@@ -168,7 +171,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage>
               onTap: (index) {
                 if (!_tabController.indexIsChanging) {
                   ref
-                      .read(searchResultProvider(_tag).notifier)
+                      .read(searchResultProvider(_keyword).notifier)
                       .setToTopIndex(index);
                 }
               },

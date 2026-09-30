@@ -157,12 +157,16 @@ class CoreDetailListReply {
   /// Feed pagination reply (gRPC [FeedPaginationReply]).
   final Object? paginationReply;
 
+  /// Sub-reply list (same map shape as [CoreMainListReply.replies]).
+  final List<Object?>? replies;
+
   const CoreDetailListReply({
     this.cursor,
     this.subjectControl,
     this.root,
     this.mode,
     this.paginationReply,
+    this.replies,
   });
 }
 

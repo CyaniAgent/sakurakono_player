@@ -1599,6 +1599,281 @@ as bool,
 }
 
 /// @nodoc
+mixin _$CoreImFriend {
+
+ int get uid; String get username; String? get intro; String? get avatarUrl; String? get lastTime; String? get lastMessage; int? get newMessageNum;
+/// Create a copy of CoreImFriend
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CoreImFriendCopyWith<CoreImFriend> get copyWith => _$CoreImFriendCopyWithImpl<CoreImFriend>(this as CoreImFriend, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoreImFriend&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.username, username) || other.username == username)&&(identical(other.intro, intro) || other.intro == intro)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.lastTime, lastTime) || other.lastTime == lastTime)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage)&&(identical(other.newMessageNum, newMessageNum) || other.newMessageNum == newMessageNum));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,uid,username,intro,avatarUrl,lastTime,lastMessage,newMessageNum);
+
+@override
+String toString() {
+  return 'CoreImFriend(uid: $uid, username: $username, intro: $intro, avatarUrl: $avatarUrl, lastTime: $lastTime, lastMessage: $lastMessage, newMessageNum: $newMessageNum)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CoreImFriendCopyWith<$Res>  {
+  factory $CoreImFriendCopyWith(CoreImFriend value, $Res Function(CoreImFriend) _then) = _$CoreImFriendCopyWithImpl;
+@useResult
+$Res call({
+ int uid, String username, String? intro, String? avatarUrl, String? lastTime, String? lastMessage, int? newMessageNum
+});
+
+
+
+
+}
+/// @nodoc
+class _$CoreImFriendCopyWithImpl<$Res>
+    implements $CoreImFriendCopyWith<$Res> {
+  _$CoreImFriendCopyWithImpl(this._self, this._then);
+
+  final CoreImFriend _self;
+  final $Res Function(CoreImFriend) _then;
+
+/// Create a copy of CoreImFriend
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? username = null,Object? intro = freezed,Object? avatarUrl = freezed,Object? lastTime = freezed,Object? lastMessage = freezed,Object? newMessageNum = freezed,}) {
+  return _then(_self.copyWith(
+uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,intro: freezed == intro ? _self.intro : intro // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,lastTime: freezed == lastTime ? _self.lastTime : lastTime // ignore: cast_nullable_to_non_nullable
+as String?,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as String?,newMessageNum: freezed == newMessageNum ? _self.newMessageNum : newMessageNum // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CoreImFriend].
+extension CoreImFriendPatterns on CoreImFriend {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CoreImFriend value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CoreImFriend() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CoreImFriend value)  $default,){
+final _that = this;
+switch (_that) {
+case _CoreImFriend():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CoreImFriend value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CoreImFriend() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int uid,  String username,  String? intro,  String? avatarUrl,  String? lastTime,  String? lastMessage,  int? newMessageNum)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CoreImFriend() when $default != null:
+return $default(_that.uid,_that.username,_that.intro,_that.avatarUrl,_that.lastTime,_that.lastMessage,_that.newMessageNum);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int uid,  String username,  String? intro,  String? avatarUrl,  String? lastTime,  String? lastMessage,  int? newMessageNum)  $default,) {final _that = this;
+switch (_that) {
+case _CoreImFriend():
+return $default(_that.uid,_that.username,_that.intro,_that.avatarUrl,_that.lastTime,_that.lastMessage,_that.newMessageNum);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int uid,  String username,  String? intro,  String? avatarUrl,  String? lastTime,  String? lastMessage,  int? newMessageNum)?  $default,) {final _that = this;
+switch (_that) {
+case _CoreImFriend() when $default != null:
+return $default(_that.uid,_that.username,_that.intro,_that.avatarUrl,_that.lastTime,_that.lastMessage,_that.newMessageNum);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _CoreImFriend implements CoreImFriend {
+  const _CoreImFriend({this.uid = 0, this.username = '', this.intro, this.avatarUrl, this.lastTime, this.lastMessage, this.newMessageNum});
+  
+
+@override@JsonKey() final  int uid;
+@override@JsonKey() final  String username;
+@override final  String? intro;
+@override final  String? avatarUrl;
+@override final  String? lastTime;
+@override final  String? lastMessage;
+@override final  int? newMessageNum;
+
+/// Create a copy of CoreImFriend
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CoreImFriendCopyWith<_CoreImFriend> get copyWith => __$CoreImFriendCopyWithImpl<_CoreImFriend>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoreImFriend&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.username, username) || other.username == username)&&(identical(other.intro, intro) || other.intro == intro)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.lastTime, lastTime) || other.lastTime == lastTime)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage)&&(identical(other.newMessageNum, newMessageNum) || other.newMessageNum == newMessageNum));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,uid,username,intro,avatarUrl,lastTime,lastMessage,newMessageNum);
+
+@override
+String toString() {
+  return 'CoreImFriend(uid: $uid, username: $username, intro: $intro, avatarUrl: $avatarUrl, lastTime: $lastTime, lastMessage: $lastMessage, newMessageNum: $newMessageNum)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CoreImFriendCopyWith<$Res> implements $CoreImFriendCopyWith<$Res> {
+  factory _$CoreImFriendCopyWith(_CoreImFriend value, $Res Function(_CoreImFriend) _then) = __$CoreImFriendCopyWithImpl;
+@override @useResult
+$Res call({
+ int uid, String username, String? intro, String? avatarUrl, String? lastTime, String? lastMessage, int? newMessageNum
+});
+
+
+
+
+}
+/// @nodoc
+class __$CoreImFriendCopyWithImpl<$Res>
+    implements _$CoreImFriendCopyWith<$Res> {
+  __$CoreImFriendCopyWithImpl(this._self, this._then);
+
+  final _CoreImFriend _self;
+  final $Res Function(_CoreImFriend) _then;
+
+/// Create a copy of CoreImFriend
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? username = null,Object? intro = freezed,Object? avatarUrl = freezed,Object? lastTime = freezed,Object? lastMessage = freezed,Object? newMessageNum = freezed,}) {
+  return _then(_CoreImFriend(
+uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,intro: freezed == intro ? _self.intro : intro // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,lastTime: freezed == lastTime ? _self.lastTime : lastTime // ignore: cast_nullable_to_non_nullable
+as String?,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as String?,newMessageNum: freezed == newMessageNum ? _self.newMessageNum : newMessageNum // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$CoreImKeywordBlockingItem {
 
  String get keyword; int get id;

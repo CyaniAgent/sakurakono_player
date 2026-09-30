@@ -289,11 +289,17 @@ class _OttoVideoIntroPanelState extends State<OttoVideoIntroPanel> {
             semanticsLabel: '点赞',
             text: NumUtils.numFormat(_likeCount),
           ),
+          // OttoHub 无分享 API:分享=复制完整链接;计数接 stat.share,
+          // 为 0 时不显示文本。
           OttoActionItem(
             icon: const Icon(FontAwesomeIcons.shareFromSquare),
-            onTap: () => Utils.copyText(widget.bvid),
+            onTap: () =>
+                Utils.copyText('https://www.ottohub.cn/v/${widget.bvid}'),
             selectStatus: false,
             semanticsLabel: '分享',
+            text: _statInt(stat, 'share') > 0
+                ? NumUtils.numFormat(_statInt(stat, 'share'))
+                : null,
           ),
         ],
       ),

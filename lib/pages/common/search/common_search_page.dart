@@ -96,7 +96,7 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
       Success(:final response) =>
         response != null && response.isNotEmpty
             ? buildList(response)
-            : HttpError(onReload: controller.onReload),
+            : const HttpError(isNotFound: true, errMsg: '没有找到相关内容'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: controller.onReload,

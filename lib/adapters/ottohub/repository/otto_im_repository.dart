@@ -273,6 +273,37 @@ class OttoImRepository implements ImRepository {
     }
   }
 
+  @override
+  Future<LoadingState<List<CoreImFriend>>> friendList({
+    int? offset,
+    int? num,
+    int? ifTimeDesc,
+  }) async {
+    try {
+      final friends = await _client.oldIm.getFriendList(
+        offset: offset,
+        num: num,
+        ifTimeDesc: ifTimeDesc,
+      );
+      return Success(friends
+          .map(
+            (f) => CoreImFriend(
+              uid: f.uid,
+              username: f.username,
+              intro: f.intro,
+              avatarUrl: f.avatarUrl,
+              lastTime: f.lastTime,
+              lastMessage: f.lastMessage,
+              newMessageNum: f.newMessageNum,
+            ),
+          )
+          .toList());
+    } on ApiException catch (e) {
+      debugPrint('OttoImRepository.friendList ApiException: ${e.errorCode}');
+      return Error(e.errorCode, code: e.httpStatus);
+    }
+  }
+
   /// Parse OttoHub time string to Unix timestamp in seconds.
   int _parseTime(String time) {
     try {

@@ -94,9 +94,10 @@ class OttoActionItem extends StatelessWidget {
 
   Widget _buildText(ThemeData theme) {
     final hasText = text != null;
+    if (!hasText) return const SizedBox.shrink();
     final child = Text(
-      hasText ? text! : '-',
-      key: hasText ? ValueKey(text!) : null,
+      text!,
+      key: ValueKey(text!),
       style: TextStyle(
         color: selectStatus
             ? theme.colorScheme.primary

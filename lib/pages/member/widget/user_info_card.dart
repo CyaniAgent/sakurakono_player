@@ -383,12 +383,10 @@ class UserInfoCard extends StatelessWidget {
                   int mid = int.parse(card.mid.toString());
                   AppNavigator.toNamed(
                     '/whisperDetail',
-                    arguments: {
-                      'talkerId': mid,
-                      'name': card.name,
-                      'face': card.face,
-                      'mid': mid,
-                      'isLive': live?.liveStatus == 1,
+                    parameters: {
+                      'uid': '$mid',
+                      'name': card.name ?? '',
+                      'face': card.face ?? '',
                     },
                   );
                 }

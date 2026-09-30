@@ -1,11 +1,9 @@
-import 'package:skf/common/assets.dart';
 import 'package:skf/common/widgets/image/network_img_layer.dart';
 import 'package:skf/core/models/ui/up_panel_position.dart';
 import 'package:skf/core/models/dynamics_types.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/dynamics/dynamics_host.dart';
 import 'package:skf/router/app_navigator.dart';
-import 'package:skf/utils/extension/num_ext.dart';
 import 'package:skf/utils/feed_back.dart';
 import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -36,12 +34,15 @@ class _UpPanelState extends State<UpPanel> {
     final upData = widget.upData;
     final upList = upData.upList;
     final liveList = upData.liveUsers?.items;
+    // Live 条目按数据门控:适配器未上报 liveUsers(无直播域)时不渲染。
+    final hasLive = upData.liveUsers != null;
     return CustomScrollView(
       scrollDirection: isTop ? .horizontal : .vertical,
       physics: const AlwaysScrollableScrollPhysics(),
       controller: controller.scrollController,
       slivers: [
-        SliverToBoxAdapter(
+        if (hasLive)
+          SliverToBoxAdapter(
           child: InkWell(
             onTap: () => setState(() {
               controller.showLiveUp = !controller.showLiveUp;
@@ -92,7 +93,10 @@ class _UpPanelState extends State<UpPanel> {
             ),
           ),
         ),
-        if (controller.showLiveUp && liveList != null && liveList.isNotEmpty)
+        if (hasLive &&
+            controller.showLiveUp &&
+            liveList != null &&
+            liveList.isNotEmpty)
           SliverList.builder(
             itemCount: liveList.length,
             itemBuilder: (context, index) {
@@ -143,18 +147,15 @@ class _UpPanelState extends State<UpPanel> {
 
     Widget avatar;
     if (isAll) {
-      avatar = DecoratedBox(
+      avatar = Container(
+        width: 38,
+        height: 38,
         decoration: const BoxDecoration(
           shape: .circle,
           color: Color(0xFF5CB67B),
         ),
-        child: Image.asset(
-          width: 38,
-          height: 38,
-          cacheWidth: 38.cacheSize(context),
-          Assets.logo2,
-          color: Colors.white,
-        ),
+        alignment: .center,
+        child: const Icon(Icons.home_rounded, size: 22, color: Colors.white),
       );
     } else {
       avatar = Padding(

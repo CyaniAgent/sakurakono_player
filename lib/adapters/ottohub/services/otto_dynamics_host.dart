@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:skf/adapters/ottohub/services/otto_create_dyn_page.dart';
 import 'package:skf/adapters/ottohub/services/otto_dynamics_pages.dart';
 import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
@@ -27,7 +29,16 @@ class OttoDynamicsHost implements DynamicsHost {
       OttoDynamicsTabPage(type: type);
 
   @override
-  void showCreateDynPanel(BuildContext context) {}
+  void showCreateDynPanel(BuildContext context) {
+    AppNavigator.to<bool>(const CreateDynPage())?.then((published) {
+      if (published == true) {
+        // 发布成功:刷新三个分类的动态流。
+        for (final type in visibleTabs) {
+          OttoDynTabRegistry.refresh(type);
+        }
+      }
+    });
+  }
 
   @override
   bool get isMainDynamicsTab => false;
@@ -96,7 +107,7 @@ class OttoDynamicsHost implements DynamicsHost {
   }
 
   @override
-  void openLiveFollowPage() {}
+  void openLiveFollowPage() => SmartDialog.showToast('暂不支持直播');
 
   @override
   void toLiveRoom(int? roomId) {}

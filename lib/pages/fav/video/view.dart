@@ -88,7 +88,8 @@ class _FavVideoPageState extends State<FavVideoPage>
                 },
                 itemCount: response.length,
               )
-            : HttpError(onReload: _favController.onReload),
+            // 空收藏是常态而非错误:弱化空态(勿用默认错误页形态)。
+            : const HttpError(isNotFound: true, errMsg: '还没有收藏'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _favController.onReload,

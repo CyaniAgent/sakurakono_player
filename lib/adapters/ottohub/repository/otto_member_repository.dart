@@ -163,6 +163,30 @@ class OttoMemberRepository implements MemberRepository {
   }
 
   @override
+  Future<LoadingState<void>> updateProfile({
+    String? username,
+    String? intro,
+    String? sex,
+  }) async {
+    try {
+      // 仅提交传入字段,逐项调用对应 profile 接口。
+      if (username != null) {
+        await _client.oldProfile.updateUsername(username);
+      }
+      if (intro != null) {
+        await _client.oldProfile.updateIntro(intro);
+      }
+      if (sex != null) {
+        await _client.oldProfile.updateSex(sex);
+      }
+      return const Success(null);
+    } on ApiException catch (e) {
+      debugPrint('OttoMemberRepository.updateProfile ApiException: ${e.errorCode}');
+      return _err(e);
+    }
+  }
+
+  @override
   Future<LoadingState<CoreMemberInfoModel>> memberInfo({
     required int mid,
     String token = '',

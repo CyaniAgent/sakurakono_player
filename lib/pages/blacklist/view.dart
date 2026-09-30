@@ -12,6 +12,7 @@ import 'package:skf/utils/global_data.dart';
 import 'package:skf/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:skf/core/container/app_container.dart';
+import 'package:skf/utils/grid.dart';
 
 class BlackListPage extends StatefulWidget {
   const BlackListPage({super.key});
@@ -47,20 +48,27 @@ class _BlackListPageState extends State<BlackListPage> {
       ),
       body: refreshIndicator(
         onRefresh: _blackListController.onRefresh,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: _blackListController.scrollController,
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
-              ),
-              sliver: ListenableBuilder(
-                listenable: _blackListController,
-                builder: (_, _) => _buildBody(_blackListController.loadingState),
-              ),
+        // 宽屏:内容列按「小卡宽 × 2」居中,不全宽铺开。
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: Grid.smallCardWidth * 2),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _blackListController.scrollController,
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
+                  ),
+                  sliver: ListenableBuilder(
+                    listenable: _blackListController,
+                    builder: (_, _) =>
+                        _buildBody(_blackListController.loadingState),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -116,7 +124,8 @@ class _BlackListPageState extends State<BlackListPage> {
                   );
                 },
               )
-            : HttpError(onReload: _blackListController.onReload),
+            // 空黑名单是常态而非错误:弱化空态。
+            : const HttpError(isNotFound: true, errMsg: '还没有拉黑任何用户'),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: _blackListController.onReload,

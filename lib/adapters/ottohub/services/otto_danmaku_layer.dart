@@ -43,6 +43,9 @@ class OttoDanmakuToggle extends ChangeNotifier {
     GStorage.setting.put(SettingBoxKey.enableShowDanmaku, _enabled.value);
     notifyListeners();
   }
+
+  /// 弹幕设置面板改样式后调用:通知弹幕层 updateOption 即时生效。
+  void notifyStyleChanged() => notifyListeners();
 }
 
 /// 传入播放器控制器,监听播放进度,投递对应时间点的弹幕。
@@ -75,6 +78,7 @@ class _OttoPlDanmakuState extends State<OttoPlDanmaku> {
   bool _loaded = false;
   int latestAddedPosition = -1;
   StreamSubscription<DanmakuContentItem<int>>? _busSub;
+  VoidCallback? _styleSub;
 
   @override
   void initState() {
@@ -84,6 +88,17 @@ class _OttoPlDanmakuState extends State<OttoPlDanmaku> {
       ..addStatusLister(playerListener)
       ..addPositionListener(videoPositionListen);
     _busSub = OttoDanmakuBus.stream.listen(_onSelfSent);
+    void onStyleChanged() => _onStyleChanged();
+    _styleSub = onStyleChanged;
+    OttoDanmakuToggle.instance.addListener(onStyleChanged);
+  }
+
+  /// 弹幕设置面板改样式:重算 option 即时生效。
+  void _onStyleChanged() {
+    _controller?.updateOption(
+      DanmakuOptions.get(notFullscreen: widget.notFullscreen),
+    );
+    setState(() {}); // 透明度来自 Pref,需重建 AnimatedOpacity。
   }
 
   Future<void> _queryDanmaku() async {
@@ -173,6 +188,9 @@ class _OttoPlDanmakuState extends State<OttoPlDanmaku> {
       ..removePositionListener(videoPositionListen)
       ..removeStatusLister(playerListener);
     _busSub?.cancel();
+    if (_styleSub != null) {
+      OttoDanmakuToggle.instance.removeListener(_styleSub!);
+    }
     _dmSegMap.clear();
     _controller = null;
     super.dispose();
