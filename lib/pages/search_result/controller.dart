@@ -57,15 +57,6 @@ class SearchResultNotifier extends StateNotifier<SearchResultState> {
   /// Current toTopIndex value.
   int get currentToTopIndex => state.toTopIndex;
 
-  /// 回填真实搜索词:family 以每页实例唯一的 tag(时间戳)为键创建,
-  /// 构造时拿不到 keyword,须由页面 initState 回填,否则标题与面板
-  /// 都会把 tag 当搜索词。
-  void setKeyword(String keyword) {
-    if (state.keyword != keyword) {
-      state = state.copyWith(keyword: keyword);
-    }
-  }
-
   void setCount(int index, int value) {
     final newCount = List<int>.from(state.count);
     newCount[index] = value;

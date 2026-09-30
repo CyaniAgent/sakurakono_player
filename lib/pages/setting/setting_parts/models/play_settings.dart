@@ -197,10 +197,10 @@ List<SettingsModel> get playSettings => [
       defaultVal: false,
     ),
   if (Platform.isAndroid) ...[
-    SwitchModel(
+    const SwitchModel(
       title: '后台画中画',
       subtitle: '进入后台时以小窗形式（PiP）播放',
-      leading: const Icon(Icons.picture_in_picture_outlined),
+      leading: Icon(Icons.picture_in_picture_outlined),
       setKey: SettingBoxKey.autoPiP,
       defaultVal: false,
 

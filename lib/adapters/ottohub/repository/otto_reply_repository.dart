@@ -166,7 +166,7 @@ class OttoReplyRepository implements ReplyRepository {
     } on ApiException catch (e) {
       // 无更多子评论时服务端报 400:返回空列表而非错误态。
       if (_isNoMoreReplies(e)) {
-        return Success(const CoreDetailListReply(replies: []));
+        return const Success(CoreDetailListReply(replies: []));
       }
       debugPrint(
         'OttoReplyRepository.detailList ApiException: ${e.errorCode}',

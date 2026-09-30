@@ -108,7 +108,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
   }
 
   /// 「最新」分类数据:站内最新博客列表 → 图文动态卡(可翻页)。
-  Future<LoadingState<CoreDynamicsDataModel>> blogFeed({String? offset}) async =>
+  Future<LoadingState<CoreDynamicsDataModel>> blogFeed({String? offset}) =>
       _blogFeedOf(
         fetch: (limit) => _client.oldBlog.getNewBlogList(
           offset: offset != null ? int.tryParse(offset) : null,
@@ -119,7 +119,7 @@ class OttoDynamicsRepository implements DynamicsRepository {
 
   /// 「推荐」分类数据:随机博客推荐(服务端无 offset 参数,
   /// 单批返回;下拉刷新即换一批)。
-  Future<LoadingState<CoreDynamicsDataModel>> randomBlogFeed() async =>
+  Future<LoadingState<CoreDynamicsDataModel>> randomBlogFeed() =>
       _blogFeedOf(
         fetch: (limit) => _client.oldBlog.getRandomBlogList(num: limit),
         paged: false,

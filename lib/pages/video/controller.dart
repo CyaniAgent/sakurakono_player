@@ -100,7 +100,7 @@ class VideoDetailController extends ChangeNotifier {
   late VideoDecodeFormatType currentDecodeFormats;
 
   // 是否开始自动播放 存在多p的情况下，第二p需要为true
-  bool _autoPlay = Pref.autoPlayEnable;
+  bool autoPlay = Pref.autoPlayEnable;
 
   final videoPlayerKey = GlobalKey();
   final childKey = GlobalKey<ScaffoldState>();
@@ -460,8 +460,6 @@ class VideoDetailController extends ChangeNotifier {
   late String videoLabel = '';
   int? get timeLength => data.timeLength;
   bool get isFullScreen => plPlayerController.isFullScreen;
-  bool get autoPlay => _autoPlay;
-  set autoPlay(bool value) => _autoPlay = value;
   bool get preInitPlayer => plPlayerController.preInitPlayer;
   int get currPosInMilliseconds =>
       defaultST?.inMilliseconds ?? plPlayerController.positionInMilliseconds;
@@ -496,7 +494,7 @@ class VideoDetailController extends ChangeNotifier {
       return;
     }
     final isPlaying =
-        _autoPlay && plPlayerController.playerStatus.isPlaying;
+        autoPlay && plPlayerController.playerStatus.isPlaying;
     if (isPlaying) {
       await plPlayerController.pause();
     }
@@ -519,7 +517,7 @@ class VideoDetailController extends ChangeNotifier {
   void updatePlayer() {
     final currentVideoQa = this.currentVideoQa;
     if (currentVideoQa == null) return;
-    _autoPlay = true;
+    autoPlay = true;
     playedTime = plPlayerController.videoPlayerController?.state.position;
     plPlayerController
       ..isBuffering = false
@@ -544,13 +542,13 @@ class VideoDetailController extends ChangeNotifier {
   }
 
   Future<void>? _initPlayerIfNeeded(bool autoFullScreenFlag) {
-    if (_autoPlay ||
+    if (autoPlay ||
         (plPlayerController.preInitPlayer && !plPlayerController.processing) &&
             (isFileSource
                 ? true
                 : videoPlayerKey.currentState?.mounted == true)) {
       return playerInit(
-        autoFullScreenFlag: autoFullScreenFlag && _autoPlay,
+        autoFullScreenFlag: autoFullScreenFlag && autoPlay,
       );
     }
     return null;
@@ -584,7 +582,7 @@ class VideoDetailController extends ChangeNotifier {
       aid: aid,
       bvid: bvid,
       cid: cid,
-      autoplay: autoplay ?? _autoPlay,
+      autoplay: autoplay ?? autoPlay,
       epid: isUgc ? null : epId,
       seasonId: isUgc ? null : seasonId,
       pgcType: isUgc ? null : pgcType,
@@ -720,7 +718,7 @@ class VideoDetailController extends ChangeNotifier {
       }
       if (data.dashData == null) {
         SmartDialog.showToast('视频资源不存在');
-        _autoPlay = false;
+        autoPlay = false;
         videoState = false;
         if (plPlayerController.isFullScreen) {
           plPlayerController.triggerFullScreen(status: false);
@@ -745,7 +743,7 @@ class VideoDetailController extends ChangeNotifier {
       _setVideoHeight();
       await _initPlayerIfNeeded(autoFullScreenFlag);
     } else {
-      _autoPlay = false;
+      autoPlay = false;
       videoState = false;
       if (plPlayerController.isFullScreen) {
         plPlayerController.triggerFullScreen(status: false);

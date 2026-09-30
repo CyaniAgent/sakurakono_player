@@ -12,6 +12,7 @@ import 'package:skf/pages/common/msg_unread_type.dart';
 import 'package:skf/pages/dynamics/controller.dart';
 import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/main_host.dart';
+import 'package:skf/pages/msg_feed_top/message_page.dart';
 import 'package:skf/pages/mine/view.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/extension/iterable_ext.dart';
@@ -163,6 +164,17 @@ class MainControllerNotifier extends ChangeNotifier
       lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
       queryUnreadMsg();
     }
+
+    // 消息页打开/离开/选中会话后广播,home 徽章与 mine 徽章同步重查。
+    MessagePage.unreadRefresh.addListener(_onUnreadRefresh);
+  }
+
+  void _onUnreadRefresh() => queryUnreadMsg();
+
+  @override
+  void dispose() {
+    MessagePage.unreadRefresh.removeListener(_onUnreadRefresh);
+    super.dispose();
   }
 
   // -- Navigation bars --
@@ -171,6 +183,7 @@ class MainControllerNotifier extends ChangeNotifier
 
   // -- Msg & dynamic badge --
 
+  /// 未读数查询;-1 表示请求失败(调用方保留旧徽章,不闪没)。
   Future<int> _msgUnread() async {
     if (msgUnReadTypes.contains(MsgUnReadType.pm)) {
       final res = await appRead(msgRepositoryProvider).msgUnread();
@@ -182,10 +195,12 @@ class MainControllerNotifier extends ChangeNotifier
             response.unfollowPushMsg +
             response.customUnread;
       }
+      return -1;
     }
     return 0;
   }
 
+  /// 未读数查询;-1 表示请求失败(调用方保留旧徽章,不闪没)。
   Future<int> _msgFeedUnread() async {
     int count = 0;
     final remainTypes = Set<MsgUnReadType>.from(msgUnReadTypes)
@@ -207,6 +222,8 @@ class MainControllerNotifier extends ChangeNotifier
               count += response.sysMsg;
           }
         }
+      } else {
+        return -1;
       }
     }
     return count;
@@ -218,6 +235,8 @@ class MainControllerNotifier extends ChangeNotifier
       return;
     }
     final res = await Future.wait([_msgUnread(), _msgFeedUnread()]);
+    // 任一请求失败保留旧值,避免服务端故障把已显示的徽章清掉。
+    if (res.contains(-1)) return;
     final count = res.sum;
     final countStr = count == 0
         ? ''

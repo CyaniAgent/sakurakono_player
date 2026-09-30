@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/set_int_adapter.dart';
@@ -16,7 +15,6 @@ abstract final class GStorage {
   static late Box<dynamic> setting;
   static late Box<dynamic> video;
   static late Box<int> watchProgress;
-  static late Box<Uint8List>? reply;
 
   static Future<void> init() async {
     Hive.init(path.join(appSupportDirPath, 'hive'));
@@ -62,18 +60,6 @@ abstract final class GStorage {
         },
       ).then((res) => watchProgress = res),
     ]);
-
-    if (setting.get('saveReply', defaultValue: true) as bool) {
-      reply = await Hive.openBox<Uint8List>(
-        'reply',
-        keyComparator: _intStrDescKeyComparator,
-        compactionStrategy: (entries, deletedEntries) {
-          return deletedEntries > 10;
-        },
-      );
-    } else {
-      reply = null;
-    }
   }
 
   /// 防御性恢复：init() 失败时把受损 Hive 数据目录隔离（重命名备份）后重试。
@@ -152,7 +138,6 @@ abstract final class GStorage {
       video.compact(),
       _accountBox.compact(),
       watchProgress.compact(),
-      ?reply?.compact(),
     ]);
   }
 
@@ -165,7 +150,6 @@ abstract final class GStorage {
       video.close(),
       _accountBox.close(),
       watchProgress.close(),
-      ?reply?.close(),
     ]);
   }
 
@@ -178,7 +162,6 @@ abstract final class GStorage {
       video.clear(),
       _accountBox.clear(),
       watchProgress.clear(),
-      ?reply?.clear(),
     ]);
   }
 

@@ -19,9 +19,6 @@ class FavNoteController
 
 
   @override
-  bool allSelected = false;
-
-  @override
   void handleSelect({bool checked = false, bool disableSelect = true}) {
     allSelected = checked;
     super.handleSelect(checked: checked, disableSelect: disableSelect);

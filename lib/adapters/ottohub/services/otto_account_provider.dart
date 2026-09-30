@@ -24,11 +24,6 @@ class OttoAccountProvider extends AccountProvider {
   OttoAccountProvider(this._client);
 
   @override
-  bool rxIsLogin = false;
-  @override
-  String rxFace = '';
-
-  @override
   int? get userId => int.tryParse(_loggedInUid ?? '');
   @override
   String? get displayName => _loggedInName;

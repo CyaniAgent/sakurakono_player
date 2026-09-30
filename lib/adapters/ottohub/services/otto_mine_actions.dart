@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/adapters/ottohub/services/otto_account_provider.dart';
 import 'package:skf/common/widgets/custom_icon.dart';
-import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/container/app_container.dart';
-import 'package:skf/core/result/loading_state.dart';
-import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/models/fav_types.dart';
-import 'package:skf/pages/msg_feed_top/message_page.dart' show MessagePage;
+import 'package:skf/pages/main/controller.dart' show mainControllerProvider;
 import 'package:skf/pages/mine/mine_actions.dart';
 import 'package:skf/router/app_navigator.dart';
 
@@ -111,54 +108,43 @@ class OttoMineActions implements MineActions {
   Color? vipNameColor(ThemeData theme) => null;
 }
 
-/// 「我的」页消息入口徽章:登录态监听 + getNewMessageNum 未读数,
-/// 样式对齐 home 页 msgBadge(数字 >99 显示 99+)。
-class _MineMsgBadge extends StatefulWidget {
+/// 「我的」页消息入口徽章:与 home 页 msgBadge 完全同源——读
+/// MainController 的 msgUnReadCount(经 MainController 监听
+/// MessagePage.unreadRefresh 保持新鲜),并遵循同一 msgBadgeMode
+/// 设置(点/数字/隐藏);进入消息页同样乐观清零。
+class _MineMsgBadge extends StatelessWidget {
   const _MineMsgBadge();
 
   @override
-  State<_MineMsgBadge> createState() => _MineMsgBadgeState();
-}
-
-class _MineMsgBadgeState extends State<_MineMsgBadge> {
-  int? _unread;
-
-  @override
-  void initState() {
-    super.initState();
-    _query();
-    // 会话页打开/离开/选中会话后重查未读数(piliotto: 打开消息页即刷新)。
-    MessagePage.unreadRefresh.addListener(_query);
-  }
-
-  @override
-  void dispose() {
-    MessagePage.unreadRefresh.removeListener(_query);
-    super.dispose();
-  }
-
-  Future<void> _query() async {
-    final res = await appRead(imRepositoryProvider).getTotalUnread();
-    if (!mounted) return;
-    if (res case Success(:final response)) {
-      setState(() => _unread = response.totalUnread);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isLogin = appRead(accountProvider).isLogin;
-    if (!isLogin) return const SizedBox.shrink();
-    final count = _unread ?? 0;
-    return IconButton(
-      tooltip: '消息',
-      onPressed: () => AppNavigator.toNamed('/whisper'),
-      icon: Badge(
-        isLabelVisible: count > 0,
-        label: Text(count > 99 ? '99+' : '$count'),
-        alignment: const Alignment(1.0, -0.85),
-        child: const Icon(Icons.notifications_none),
-      ),
+    final mainController = appRead(mainControllerProvider);
+    return ListenableBuilder(
+      listenable: mainController,
+      builder: (_, _) {
+        if (!mainController.accountService.isLogin) {
+          return const SizedBox.shrink();
+        }
+        final count = mainController.msgUnReadCount;
+        final isNumBadge = mainController.msgBadgeMode == .number;
+        return IconButton(
+          tooltip: '消息',
+          onPressed: () {
+            mainController
+              ..msgUnReadCount = ''
+              ..lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
+            AppNavigator.toNamed('/whisper');
+          },
+          icon: Badge(
+            isLabelVisible:
+                mainController.msgBadgeMode != .hidden && count.isNotEmpty,
+            alignment: isNumBadge
+                ? const Alignment(0.0, -0.85)
+                : const Alignment(1.0, -0.85),
+            label: isNumBadge && count.isNotEmpty ? Text(count) : null,
+            child: const Icon(Icons.notifications_none),
+          ),
+        );
+      },
     );
   }
 }

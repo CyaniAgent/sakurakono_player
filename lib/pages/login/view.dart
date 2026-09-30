@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text('登录 ${AppMeta.appName}')),
+      appBar: AppBar(title: const Text('登录 ${AppMeta.appName}')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),

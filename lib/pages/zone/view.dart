@@ -182,7 +182,7 @@ class _ZoneCategoryPageState extends State<_ZoneCategoryPage>
           itemBuilder: (context, index) => HotVideoCard(item: response[index]),
         ),
       // 单批数据:空列表即该分区暂无内容,不是骨架屏。
-      Success() => HttpError(errMsg: '该分区暂无内容'),
+      Success() => const HttpError(errMsg: '该分区暂无内容'),
     };
   }
 }

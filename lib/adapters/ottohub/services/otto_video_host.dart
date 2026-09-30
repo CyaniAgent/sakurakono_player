@@ -441,8 +441,8 @@ class _OttoPlayerHeader extends StatelessWidget {
         height: 52,
         child: Row(
           children: [
-            IconButton(
-              icon: const Icon(
+            const IconButton(
+              icon: Icon(
                 FontAwesomeIcons.arrowLeft,
                 size: 15,
                 color: Colors.white,

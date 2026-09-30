@@ -42,7 +42,7 @@ class MarkdownText extends StatelessWidget {
           margin: Margins.zero,
           padding: HtmlPaddings.zero,
           fontSize: FontSize(baseStyle?.fontSize ?? 15),
-          lineHeight: LineHeight(1.6),
+          lineHeight: const LineHeight(1.6),
           color: baseStyle?.color ?? Theme.of(context).colorScheme.onSurface,
         ),
         'img': Style(width: Width.auto()),

@@ -497,11 +497,11 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
 
   /// 本地排序(服务端无排序参数):热度 = like 降序,时间 = ctime 降序。
   List<CoreReplyItem> _sorted(List<CoreReplyItem> items) {
-    final list = [...items];
-    list.sort(
-      (a, b) =>
-          _sortByHot ? b.like.compareTo(a.like) : b.ctime.compareTo(a.ctime),
-    );
+    final list = [...items]
+      ..sort(
+        (a, b) =>
+            _sortByHot ? b.like.compareTo(a.like) : b.ctime.compareTo(a.ctime),
+      );
     return list;
   }
 
@@ -845,8 +845,8 @@ class _OttoDynListTabState extends State<OttoDynListTab>
         child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            const SliverFillRemaining(
+          slivers: const [
+            SliverFillRemaining(
               hasScrollBody: false,
               child: Center(child: Text('暂无内容')),
             ),

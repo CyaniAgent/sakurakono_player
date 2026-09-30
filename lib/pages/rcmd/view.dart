@@ -210,15 +210,15 @@ class _RcmdCard extends StatelessWidget {
                             ),
                           ),
                           if ((item.owner?['mid'] as int?) != null)
-                            PopupMenuItem(
+                            const PopupMenuItem(
                               value: 'member',
                               height: 42,
                               child: Row(
                                 spacing: 10,
                                 mainAxisSize: .min,
                                 children: [
-                                  const Icon(Icons.person_outline, size: 16),
-                                  const Text('作者主页'),
+                                  Icon(Icons.person_outline, size: 16),
+                                  Text('作者主页'),
                                 ],
                               ),
                             ),

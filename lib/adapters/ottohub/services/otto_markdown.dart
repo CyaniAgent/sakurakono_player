@@ -17,11 +17,11 @@ String stripMarkdownToPlain(String source) {
   text = text.replaceAllMapped(RegExp(r'`([^`]+)`'), (m) => m.group(1)!);
   text = text.replaceAllMapped(
     RegExp(r'\*\*(.+?)\*\*|__(.+?)__'),
-    (m) => '${m.group(1) ?? m.group(2) ?? ''}',
+    (m) => m.group(1) ?? m.group(2) ?? '',
   );
   text = text.replaceAllMapped(
     RegExp(r'(?<!\*)\*(?!\*)([^*]+)(?<!\*)\*(?!\*)'),
-    (m) => '${m.group(1)!}',
+    (m) => m.group(1)!,
   );
   text = text.replaceAllMapped(RegExp(r'^#{1,6}\s+', multiLine: true), (m) => '');
   text = text.replaceAllMapped(RegExp(r'^>\s?', multiLine: true), (m) => '');

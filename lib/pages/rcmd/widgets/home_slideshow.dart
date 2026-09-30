@@ -53,6 +53,11 @@ class _HomeSlideshowState extends State<HomeSlideshow> {
   /// 索引即条目序号,目标 = leading + 1(infinite 由 SDK 取模)。
   int _leading = 0;
 
+  /// 上一次构建使用的 weights 键:样式切换/窗口跨档导致 CarouselView
+  /// 经 ValueKey 重建后,滚动位置回到 0,而 _leading 残留旧值会让
+  /// 自动轮播瞬间跳页——检测到键变化即重置基准。
+  String? _weightsKey;
+
   @override
   void initState() {
     super.initState();
@@ -187,12 +192,23 @@ class _HomeSlideshowState extends State<HomeSlideshow> {
               consumeMax = false;
             }
           }
+          final weightsKey = weights.join('_');
+          if (_weightsKey != weightsKey) {
+            _weightsKey = weightsKey;
+            // CarouselView 将随键重建、滚动位置归零:帧后重置基准,
+            // 避免自动轮播从残留 _leading 瞬间跳页。
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              _leading = 0;
+              _restartAutoTimer();
+            });
+          }
           return SizedBox(
             height: height,
             child: CarouselView.weighted(
               // flexWeights 变化(窗口缩放/样式切换)时 SDK didUpdateWidget 会在
               // position 未 attach 时断言(carousel.dart:555),改用 key 重建。
-              key: ValueKey<String>(weights.join('_')),
+              key: ValueKey<String>(weightsKey),
               controller: _controller,
               flexWeights: weights,
               consumeMaxWeight: consumeMax,
