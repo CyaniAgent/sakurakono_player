@@ -1,0 +1,14 @@
+diff --git a/packages/flutter_tools/gradle/settings.gradle.kts b/packages/flutter_tools/gradle/settings.gradle.kts
+index 2b81856588a..15968713cc1 100644
+--- a/packages/flutter_tools/gradle/settings.gradle.kts
++++ b/packages/flutter_tools/gradle/settings.gradle.kts
+@@ -1,6 +1,9 @@
+ dependencyResolutionManagement {
+     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+     repositories {
++        // 中国网络镜像优先(本机 patch,勿覆盖;上游为 google() + mavenCentral())。
++        maven("https://maven.aliyun.com/repository/google")
++        maven("https://maven.aliyun.com/repository/public")
+         google()
+         mavenCentral()
+     }

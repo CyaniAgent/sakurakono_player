@@ -66,6 +66,10 @@ $ModalBarrierPatch = "lib/scripts/modal_barrier.patch"
 # https://github.com/flutter/flutter/issues/182466
 $MouseCursorPatch = "lib/scripts/mouse_cursor.patch"
 
+# 本机 Android 构建:中国网络镜像优先于 google()/mavenCentral()
+# (直连 repo.maven.apache.org 会被本机代理拦截,PKIX 失败)。
+$FlutterToolsGradleMirrorsPatch = "lib/scripts/flutter_tools_gradle_mirrors.patch"
+
 if ($platform.ToLower() -eq "ios") {
     git apply $BottomSheetIOSAppPatch
     if ($LASTEXITCODE -eq 0) {
@@ -94,6 +98,7 @@ switch ($platform.ToLower()) {
         $patches += $BottomSheetAndroidPatch
         $patches += $ScrollViewPatch
         $patches += $NavigatorPatch
+        $patches += $FlutterToolsGradleMirrorsPatch
     }
     "ios" {
         $patches += $ScrollViewPatch

@@ -151,7 +151,11 @@ abstract final class ThemeUtils {
       ),
       pageTransitionsTheme: PageTransitionsTheme(
         builders: Pref.pageTransition == AppPageTransition.native
-            ? const {TargetPlatform.android: ZoomPageTransitionsBuilder()}
+            // PredictiveBack 转场 = zoom 前进 + 返回时跟随手势的预览动画
+            // (Android 13- / 未开系统开关时自动回退,观感与 zoom 一致)。
+            ? const {
+                TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+              }
             : {
                 for (final platform in TargetPlatform.values)
                   platform: Pref.pageTransition.builder,

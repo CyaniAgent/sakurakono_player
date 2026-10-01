@@ -2,8 +2,23 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 allprojects {
     repositories {
+        // 中国网络镜像优先(否则直连 mavenCentral 会被本机代理拦截 PKIX)。
+        maven("https://maven.aliyun.com/repository/google")
+        maven("https://maven.aliyun.com/repository/public")
         google()
         mavenCentral()
+    }
+}
+
+subprojects {
+    buildscript {
+        repositories {
+            // 插件子工程自带的 buildscript 仓库直连会失败,镜像列表置前兜底。
+            maven("https://maven.aliyun.com/repository/google")
+            maven("https://maven.aliyun.com/repository/public")
+            google()
+            mavenCentral()
+        }
     }
 }
 
