@@ -52,11 +52,25 @@ class _MainAppState extends PopScopeState<MainApp>
   PageController? _pageController;
 
   @override
-  bool get initCanPop => false;
+  bool get initCanPop => _rootCanPop();
+
+  /// 根页 canPop 动态化:回桌面退出(首页 tab 或开启 directExitOnBack)
+  /// 时放行给系统——Android 15 预测性返回才有「预览桌面」动画;
+  /// 非 home tab 的「返回先回首页」仍需拦截(canPop=false)。
+  bool _rootCanPop() =>
+      _mainController.directExitOnBack || _mainController.selectedIndex == 0;
+
+  void _syncRootCanPop() {
+    if (canPopNotifier.value != _rootCanPop()) {
+      canPopNotifier.value = _rootCanPop();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _mainController.addListener(_syncRootCanPop);
+    _syncRootCanPop();
     addObserverMobile(this);
     // 主壳翻页控制器由 view 创建并注入 notifier（setIndex 依赖它驱动跳页）。
     if (_mainController.mainTabBarView) {
@@ -133,6 +147,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   void dispose() {
+    _mainController.removeListener(_syncRootCanPop);
     _tabController?.dispose();
     _pageController?.dispose();
     if (PlatformUtils.isDesktop) {

@@ -69,7 +69,8 @@ class _SettingPageState extends ConsumerState<SettingPage> {
 
   void _toPage(SettingMenuItem item) {
     if (_isPortrait) {
-      AppNavigator.to(() => item.contentBuilder(true));
+      // 传求值后的 Widget;传闭包会在 AppNavigator.to 的 as Widget 处崩溃。
+      AppNavigator.to(item.contentBuilder(true));
     } else {
       _type = item;
       setState(() {});

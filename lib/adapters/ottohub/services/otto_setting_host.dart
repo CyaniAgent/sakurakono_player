@@ -13,8 +13,13 @@ import 'package:skf/pages/setting/pages/play_speed_set.dart';
 import 'package:skf/pages/setting/setting_host.dart';
 import 'package:skf/pages/setting/setting_parts/models/play_settings.dart';
 import 'package:skf/pages/setting/widgets/select_dialog.dart';
+import 'package:skf/pages/mine/theme_type.dart';
 import 'package:skf/router/app_navigator.dart';
+import 'package:skf/utils/app_refresh.dart';
+import 'package:skf/utils/storage.dart';
+import 'package:skf/utils/storage_key.dart';
 import 'package:skf/utils/storage_pref.dart';
+import 'package:skf/utils/theme_utils.dart';
 import 'package:skf/utils/utils.dart';
 
 /// OttoHub 的设置域宿主实现。
@@ -42,12 +47,37 @@ class OttoSettingHost implements SettingHost {
           ),
         ),
         SettingMenuItem(
-          icon: const Icon(Icons.view_carousel_outlined),
-          title: '首页轮播',
-          subtitle: '轮播样式',
+          icon: const Icon(Icons.palette_outlined),
+          title: '外观',
+          subtitle: '主题模式、首页轮播、动态页布局',
           contentBuilder: (showAppBar) => CommonSetting(
-            title: '首页轮播',
+            title: '外观',
             settings: [
+              NormalModel(
+                title: '主题模式',
+                leading: const Icon(Icons.brightness_6_outlined),
+                getSubtitle: () =>
+                    '当前:「${ThemeType.values[Pref.themeType].desc}」',
+                onTap: (context, setState) async {
+                  final result = await showDialog<int>(
+                    context: context,
+                    builder: (context) => SelectDialog<int>(
+                      title: '主题模式',
+                      value: Pref.themeType,
+                      values: ThemeType.values
+                          .map((e) => (e.index, e.desc))
+                          .toList(),
+                    ),
+                  );
+                  if (result != null) {
+                    final type = ThemeType.values[result];
+                    GStorage.setting.put(SettingBoxKey.themeMode, type.index);
+                    ThemeUtils.themeMode = type.toThemeMode;
+                    appRefresh.refresh();
+                    setState();
+                  }
+                },
+              ),
               NormalModel(
                 title: '轮播样式',
                 leading: const Icon(Icons.style),
@@ -73,17 +103,6 @@ class OttoSettingHost implements SettingHost {
                   }
                 },
               ),
-            ],
-            showAppBar: showAppBar,
-          ),
-        ),
-        SettingMenuItem(
-          icon: const Icon(Icons.view_week_outlined),
-          title: '动态页布局',
-          subtitle: 'UP 关注面板位置',
-          contentBuilder: (showAppBar) => CommonSetting(
-            title: '动态页布局',
-            settings: [
               NormalModel(
                 title: 'UP 面板位置',
                 leading: const Icon(Icons.group_outlined),
