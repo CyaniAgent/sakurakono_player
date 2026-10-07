@@ -86,17 +86,26 @@ abstract class CommonDataControllerRiverpod<R, T>
   Future<void> queryData([bool isRefresh = true]) async {
     if (isLoading) return;
     isLoading = true;
-    final LoadingState<R> res = await customGetData();
-    if (res case Success()) {
-      if (!customHandleResponse(isRefresh, res)) {
-        loadingState = res as LoadingState<T>;
+    try {
+      final LoadingState<R> res = await customGetData();
+      if (res case Success()) {
+        if (!customHandleResponse(isRefresh, res)) {
+          loadingState = res as LoadingState<T>;
+        }
+      } else {
+        if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
+          loadingState = res as Error;
+        }
       }
-    } else {
-      if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
-        loadingState = res as Error;
+    } catch (_) {
+      // customGetData 链路逃逸的非 ApiException 异常（反序列化 TypeError 等）：
+      // 置为错误态而非让 isLoading 永久卡死。
+      if (isRefresh && !handleError('data_format_error')) {
+        loadingState = const Error('data_format_error');
       }
+    } finally {
+      isLoading = false;
     }
-    isLoading = false;
   }
 
   @override
@@ -136,37 +145,45 @@ abstract class CommonListControllerRiverpod<R, T>
   Future<void> queryData([bool isRefresh = true]) async {
     if (isLoading || (!isRefresh && isEnd)) return;
     isLoading = true;
-    final LoadingState<R> res = await customGetData();
-    if (res case Success(:final response)) {
-      if (!customHandleResponse(isRefresh, res)) {
-        final dataList = getDataList(response);
-        if (dataList == null || dataList.isEmpty) {
-          isEnd = true;
+    try {
+      final LoadingState<R> res = await customGetData();
+      if (res case Success(:final response)) {
+        if (!customHandleResponse(isRefresh, res)) {
+          final dataList = getDataList(response);
+          if (dataList == null || dataList.isEmpty) {
+            isEnd = true;
+            if (isRefresh) {
+              loadingState = Success(dataList);
+            } else if (hasFooter == true) {
+              notifyListeners();
+            }
+            return;
+          }
+          handleListResponse(dataList);
           if (isRefresh) {
+            checkIsEnd(dataList.length);
             loadingState = Success(dataList);
-          } else if (hasFooter == true) {
+          } else if (loadingState case Success(:final response)) {
+            response!.addAll(dataList);
+            checkIsEnd(response.length);
             notifyListeners();
           }
-          isLoading = false;
-          return;
         }
-        handleListResponse(dataList);
-        if (isRefresh) {
-          checkIsEnd(dataList.length);
-          loadingState = Success(dataList);
-        } else if (loadingState case Success(:final response)) {
-          response!.addAll(dataList);
-          checkIsEnd(response.length);
-          notifyListeners();
+        page++;
+      } else {
+        if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
+          loadingState = res as Error;
         }
       }
-      page++;
-    } else {
-      if (isRefresh && !handleError(res is Error ? res.errMsg : null)) {
-        loadingState = res as Error;
+    } catch (_) {
+      // customGetData 链路逃逸的非 ApiException 异常（反序列化 TypeError 等）：
+      // 置为错误态而非让 isLoading 永久卡死、刷新静默失效。
+      if (isRefresh && !handleError('data_format_error')) {
+        loadingState = const Error('data_format_error');
       }
+    } finally {
+      isLoading = false;
     }
-    isLoading = false;
   }
 
   @override

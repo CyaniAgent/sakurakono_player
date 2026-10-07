@@ -1,4 +1,3 @@
-import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/core/models/follow_item.dart' show CoreFollowItemModel;
 import 'package:skf/pages/fan/controller.dart';
 import 'package:skf/pages/follow/follow_models.dart' show UserModel;
@@ -6,7 +5,6 @@ import 'package:skf/pages/follow_type/view.dart';
 import 'package:skf/pages/follow_type/widgets/item.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/utils/parse_int.dart';
-import 'package:skf/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 
 class FansPage extends StatefulWidget {
@@ -65,11 +63,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
 
   @override
   Widget buildItem(int index, CoreFollowItemModel item) {
-    void onRemove() => showConfirmDialog(
-      context: context,
-      title: Text('确定移除 ${item.uname} ？'),
-      onConfirm: () => controller.onRemoveFan(index, item.mid),
-    );
+    // OttoHub 服务端无「移除粉丝」API：按能力降级隐藏长按/右键入口。
 
     return FollowTypeItem(
       item: item,
@@ -87,8 +81,6 @@ class _FansPageState extends FollowTypePageState<FansPage> {
         }
         AppNavigator.toNamed('/member?mid=${item.mid}');
       },
-      onLongPress: flag ? onRemove : null,
-      onSecondaryTap: flag && !PlatformUtils.isMobile ? onRemove : null,
     );
   }
 }

@@ -107,6 +107,8 @@ typedef SSearchParams = ({String tag, String? hintText, String? text});
 
 class SSearchController extends ChangeNotifier
     with DebounceStreamMixin<String> {
+  bool _disposed = false;
+  bool get isDisposed => _disposed;
   SSearchController(this._ref, this._params)
       : _baseCtr = _ref.read(baseSearchProvider) {
     hintText = _params.hintText;
@@ -261,6 +263,7 @@ class SSearchController extends ChangeNotifier
   Future<void> onValueChanged(String value) async {
     final res =
         await _ref.read(searchRepositoryProvider).searchSuggest(term: value);
+    if (isDisposed) return; // 防抖窗口内页面已关闭
     if (res case Success(:final response)) {
       if (response.tag?.isNotEmpty == true) {
         _searchSuggestList = response.tag!;
@@ -298,6 +301,10 @@ class SSearchController extends ChangeNotifier
 
   @override
   void dispose() {
+    // 注册表条目随控制器释放（tag 为随机串，不清理即会话内无界增长，
+    // 持有已 dispose 的 FocusNode/TextEditingController）。
+    _disposed = true;
+    sSearchByTagRegistry.remove(_params.tag);
     subDispose();
     _searchFocusNode.dispose();
     _textEditingController.dispose();

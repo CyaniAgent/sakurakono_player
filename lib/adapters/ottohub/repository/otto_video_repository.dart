@@ -131,6 +131,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.rcmdVideoList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -166,6 +169,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.rcmdVideoListApp ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -207,6 +213,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.hotVideoList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -256,6 +265,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.videoUrl ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -271,6 +283,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.videoIntro ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -295,6 +310,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.relatedVideoList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -357,6 +375,9 @@ class OttoVideoRepository implements VideoRepository {
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.likeVideo ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -608,6 +629,8 @@ class OttoVideoRepository implements VideoRepository {
       }
     } on ApiException catch (e) {
       debugPrint('OttoVideoRepository.heartBeat ApiException: ${e.errorCode}');
+    } on TypeError catch (e) {
+      debugPrint('OttoVideoRepository TypeError: $e');
     }
   }
 

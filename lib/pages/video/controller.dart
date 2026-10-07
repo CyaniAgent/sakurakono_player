@@ -644,113 +644,117 @@ class VideoDetailController extends ChangeNotifier {
       return;
     }
     isQuerying = true;
-    if (VideoHost.of().segmentSkip.enableSponsorBlock && isBlock && !fromReset) {
-      querySponsorBlock(bvid: bvid, cid: cid);
-    }
-    if (plPlayerController.cacheVideoQa == null) {
-      final isWiFi = await ConnectivityUtils.isWiFi;
-      plPlayerController
-        ..cacheVideoQa = isWiFi
-            ? Pref.defaultVideoQa
-            : Pref.defaultVideoQaCellular
-        ..cacheAudioQa = isWiFi
-            ? Pref.defaultAudioQa
-            : Pref.defaultAudioQaCellular;
-    }
+    try {
+      if (VideoHost.of().segmentSkip.enableSponsorBlock && isBlock && !fromReset) {
+        querySponsorBlock(bvid: bvid, cid: cid);
+      }
+      if (plPlayerController.cacheVideoQa == null) {
+        final isWiFi = await ConnectivityUtils.isWiFi;
+        plPlayerController
+          ..cacheVideoQa = isWiFi
+              ? Pref.defaultVideoQa
+              : Pref.defaultVideoQaCellular
+          ..cacheAudioQa = isWiFi
+              ? Pref.defaultAudioQa
+              : Pref.defaultAudioQaCellular;
+      }
 
-    final result = await (appRead(videoRepositoryProvider)).videoUrl(
-      cid: cid,
-      bvid: bvid,
-      epid: epId?.toString(),
-      seasonId: seasonId?.toString(),
-      tryLook: false,
-      videoType: _actualVideoType ?? videoType,
-      language: currLang,
-      voiceBalance: VideoHost.of().playerHost.enableAudioNormalization,
-    );
+      final result = await (appRead(videoRepositoryProvider)).videoUrl(
+        cid: cid,
+        bvid: bvid,
+        epid: epId?.toString(),
+        seasonId: seasonId?.toString(),
+        tryLook: false,
+        videoType: _actualVideoType ?? videoType,
+        language: currLang,
+        voiceBalance: VideoHost.of().playerHost.enableAudioNormalization,
+      );
 
-    if (result case Success(:final response)) {
-      data = response;
+      if (result case Success(:final response)) {
+        data = response;
 
-      languages = (data.language?['items'] as List?)
-          ?.map((e) => VideoLanguageItem.fromMap(e as Map<String, dynamic>))
-          .toList();
-      currLang = data.curLanguage;
+        languages = (data.language?['items'] as List?)
+            ?.map((e) => VideoLanguageItem.fromMap(e as Map<String, dynamic>))
+            .toList();
+        currLang = data.curLanguage;
 
-      volume = data.volume == null ? null : VideoVolume.fromMap(data.volume!);
+        volume = data.volume == null ? null : VideoVolume.fromMap(data.volume!);
 
-      if (!fromReset) {
-        final progress = args.remove('progress');
-        if (progress != null) {
-          defaultST = Duration(milliseconds: progress);
-        } else {
-          defaultST = Duration(milliseconds: data.lastPlayTime ?? 0);
+        if (!fromReset) {
+          final progress = args.remove('progress');
+          if (progress != null) {
+            defaultST = Duration(milliseconds: progress);
+          } else {
+            defaultST = Duration(milliseconds: data.lastPlayTime ?? 0);
+          }
         }
-      }
 
-      if (!isUgc && !fromReset && VideoHost.of().series.enablePgcSkip) {
-        VideoHost.of().series.applyClipInfo(heroTag, data.clipInfoList);
-      }
+        if (!isUgc && !fromReset && VideoHost.of().series.enablePgcSkip) {
+          VideoHost.of().series.applyClipInfo(heroTag, data.clipInfoList);
+        }
 
-      if (data.acceptDesc?.contains('试看') == true) {
-        SmartDialog.showToast(
-          '该视频为专属视频，仅提供试看',
-          displayTime: const Duration(seconds: 3),
+        if (data.acceptDesc?.contains('试看') == true) {
+          SmartDialog.showToast(
+            '该视频为专属视频，仅提供试看',
+            displayTime: const Duration(seconds: 3),
+          );
+        }
+        if (data.dashData == null && data.durlList != null) {
+          final first = data.durlList!.first;
+          videoUrl = [
+            if (first.url != null) first.url!,
+            ...?first.backupUrl,
+          ].first;
+          audioUrl = '';
+
+          // 实际为FLV/MP4格式，但已被淘汰，这里仅做兜底处理
+          final videoQuality = VideoQuality.fromCode(data.quality ?? 0);
+          firstVideoQaCode = data.quality;
+          _setVideoHeight();
+          currentDecodeFormats = VideoDecodeFormatType.AVC;
+          currentVideoQa = videoQuality;
+          await _initPlayerIfNeeded(autoFullScreenFlag);
+          return;
+        }
+        if (data.dashData == null) {
+          SmartDialog.showToast('视频资源不存在');
+          autoPlay = false;
+          videoState = false;
+          if (plPlayerController.isFullScreen) {
+            plPlayerController.triggerFullScreen(status: false);
+          }
+          return;
+        }
+        final config = VideoHost.of().playbackSource.selectPlayback(
+          data: data,
+          cacheVideoQa: plPlayerController.cacheVideoQa,
+          cacheAudioQa: plPlayerController.cacheAudioQa,
         );
-      }
-      if (data.dashData == null && data.durlList != null) {
-        final first = data.durlList!.first;
-        videoUrl = [
-          if (first.url != null) first.url!,
-          ...?first.backupUrl,
-        ].first;
-        audioUrl = '';
-
-        // 实际为FLV/MP4格式，但已被淘汰，这里仅做兜底处理
-        final videoQuality = VideoQuality.fromCode(data.quality ?? 0);
-        firstVideoQaCode = data.quality;
+        videoUrl = config.videoUrl;
+        audioUrl = config.audioUrl;
+        firstVideoWidth = config.width;
+        firstVideoHeight = config.height;
+        currentVideoQa = VideoQuality.fromCode(config.videoQaCode);
+        currentAudioQa = config.audioQaCode == null
+            ? null
+            : AudioQuality.fromCode(config.audioQaCode!);
+        currentDecodeFormats = config.decodeFormat;
         _setVideoHeight();
-        currentDecodeFormats = VideoDecodeFormatType.AVC;
-      currentVideoQa = videoQuality;
         await _initPlayerIfNeeded(autoFullScreenFlag);
-        isQuerying = false;
-        return;
-      }
-      if (data.dashData == null) {
-        SmartDialog.showToast('视频资源不存在');
+      } else {
         autoPlay = false;
         videoState = false;
         if (plPlayerController.isFullScreen) {
           plPlayerController.triggerFullScreen(status: false);
         }
-        isQuerying = false;
-        return;
+        result.toast();
       }
-      final config = VideoHost.of().playbackSource.selectPlayback(
-        data: data,
-        cacheVideoQa: plPlayerController.cacheVideoQa,
-        cacheAudioQa: plPlayerController.cacheAudioQa,
-      );
-      videoUrl = config.videoUrl;
-      audioUrl = config.audioUrl;
-      firstVideoWidth = config.width;
-      firstVideoHeight = config.height;
-      currentVideoQa = VideoQuality.fromCode(config.videoQaCode);
-      currentAudioQa = config.audioQaCode == null
-          ? null
-          : AudioQuality.fromCode(config.audioQaCode!);
-      currentDecodeFormats = config.decodeFormat;
-      _setVideoHeight();
-      await _initPlayerIfNeeded(autoFullScreenFlag);
-    } else {
-      autoPlay = false;
-      videoState = false;
-      if (plPlayerController.isFullScreen) {
-        plPlayerController.triggerFullScreen(status: false);
-      }
-      result.toast();
+    } finally {
+      // 任何异常路径都必须复位互斥标志，否则同页所有后续
+      // queryVideoUrl（换清晰度/语言、重试）在入口静默 return，
+      // 视频永久停在加载态。
+      isQuerying = false;
     }
-    isQuerying = false;
   }
 
   late final List<CorePostSegmentModel> postList = <CorePostSegmentModel>[];
@@ -1130,39 +1134,42 @@ class VideoDetailController extends ChangeNotifier {
   @pragma('vm:notify-debugger-on-exception')
   Future<void> onCast() async {
     SmartDialog.showLoading();
-    final res = await (appRead(videoRepositoryProvider)).tvPlayUrl(
-      cid: cid,
-      objectId: epId ?? aid,
-      playurlType: epId != null ? 2 : 1,
-      qn: currentVideoQa?.code,
-    );
-    SmartDialog.dismiss();
-    if (res case Success(:final response)) {
-      final first = response.durl?.firstOrNull;
-      if (first == null || (first['url'] as String?)?.isEmpty != false) {
-        SmartDialog.showToast('不支持投屏');
-        return;
-      }
-      final List<String> playUrls = [
-        first['url'] as String,
-        if (first['backup_url'] is List)
-          ...(first['backup_url'] as List).cast<String>(),
-      ];
-      final url = playUrls.first;
-
-      final title = VideoHost.of().videoTitle(heroTag);
-      if (kDebugMode) {
-        debugPrint(title);
-      }
-      AppNavigator.toNamed(
-        '/dlna',
-        parameters: {
-          'url': url,
-          'title': ?title,
-        },
+    try {
+      final res = await (appRead(videoRepositoryProvider)).tvPlayUrl(
+        cid: cid,
+        objectId: epId ?? aid,
+        playurlType: epId != null ? 2 : 1,
+        qn: currentVideoQa?.code,
       );
-    } else {
-      res.toast();
+      if (res case Success(:final response)) {
+        final first = response.durl?.firstOrNull;
+        if (first == null || (first['url'] as String?)?.isEmpty != false) {
+          SmartDialog.showToast('不支持投屏');
+          return;
+        }
+        final List<String> playUrls = [
+          first['url'] as String,
+          if (first['backup_url'] is List)
+            ...(first['backup_url'] as List).cast<String>(),
+        ];
+        final url = playUrls.first;
+
+        final title = VideoHost.of().videoTitle(heroTag);
+        if (kDebugMode) {
+          debugPrint(title);
+        }
+        AppNavigator.toNamed(
+          '/dlna',
+          parameters: {
+            'url': url,
+            'title': ?title,
+          },
+        );
+      } else {
+        res.toast();
+      }
+    } finally {
+      SmartDialog.dismiss();
     }
   }
 }

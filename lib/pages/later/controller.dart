@@ -103,7 +103,8 @@ class LaterController extends MultiSelectController<CoreLaterData, CoreLaterItem
     _asc = value;
     notifyListeners();
   }
-  late final int mid = (appRead(accountProvider).userId) ?? 0;
+  // 实时读取：keepAlive 单例跨账号复用，构造期捕获会沿用旧 uid。
+  int get mid => appRead(accountProvider).userId ?? 0;
   final LaterActions? actions;
   final LaterViewType laterViewType;
 

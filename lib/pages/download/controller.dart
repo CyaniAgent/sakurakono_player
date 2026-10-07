@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DownloadPageController extends ChangeNotifier
     with BaseMultiSelectMixin<DownloadPageInfo> {
-  final bool _isDisposed = false;
+  bool _isDisposed = false;
   bool get isClosed => _isDisposed;
 
   final _downloadActions = DownloadActions.of();
@@ -38,6 +38,7 @@ class DownloadPageController extends ChangeNotifier
 
   @override
   void dispose() {
+    _isDisposed = true;
     _downloadActions.removeFlagListener(_loadList);
     super.dispose();
   }

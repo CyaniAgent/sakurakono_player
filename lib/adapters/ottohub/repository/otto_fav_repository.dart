@@ -74,6 +74,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.favFavFolder ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -89,6 +92,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.unfavFavFolder ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -119,6 +125,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.favVideo ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -160,6 +169,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.userfavFolder ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -168,6 +180,9 @@ class OttoFavRepository implements FavRepository {
       return await _client.oldCollection.getUserVideoCollections(uid);
     } on ApiException catch (e) {
       if (_isNoCollection(e)) return const <String>[];
+      rethrow;
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
       rethrow;
     }
   }
@@ -191,6 +206,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.allFavFolders ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -216,6 +234,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.sortFav ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -276,6 +297,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.userFavFolderDetail ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -307,6 +331,9 @@ class OttoFavRepository implements FavRepository {
         } else {
           rethrow;
         }
+      } on TypeError catch (e) {
+        debugPrint('OttoFavRepository TypeError: $e');
+        return const Error('data_format_error');
       }
       final total = detail.videoList.length;
       final start = (pn - 1) * ps;
@@ -339,6 +366,9 @@ class OttoFavRepository implements FavRepository {
         '${e.errorCode}',
       );
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -459,6 +489,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.userNoteList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -482,6 +515,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.noteList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -514,6 +550,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.delNote ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -595,6 +634,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.addOrEditFolder ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -619,6 +661,9 @@ class OttoFavRepository implements FavRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFavRepository.favFolderInfo ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFavRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

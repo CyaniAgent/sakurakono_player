@@ -334,18 +334,6 @@ class _MemberPageState extends State<MemberPage> {
               ],
             ),
           ),
-          if (_userController.isFollowed == 1)
-            PopupMenuItem(
-              onTap: _userController.onRemoveFan,
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.remove_circle_outline_outlined, size: 19),
-                  SizedBox(width: 10),
-                  Text('移除粉丝'),
-                ],
-              ),
-            ),
         ],
         PopupMenuItem(
           onTap: _userController.shareUser,

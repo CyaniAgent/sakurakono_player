@@ -128,6 +128,7 @@ class FollowControllerNotifier extends StateNotifier<FollowState> {
 
   Future<void> _queryUserName() async {
     final res = await _memberRepo.memberCardInfo(mid: state.mid);
+    if (!mounted) return; // autoDispose 后写 state 抛 StateError
     final fetchedName = res.dataOrNull?.card?.name;
     if (fetchedName != null) {
       state = state.copyWith(name: fetchedName);

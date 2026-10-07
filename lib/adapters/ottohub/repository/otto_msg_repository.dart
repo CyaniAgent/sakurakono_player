@@ -81,6 +81,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.msgFeedReplyMe ApiException: \${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -116,6 +119,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.msgFeedAtMe ApiException: \${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -162,6 +168,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.msgFeedNotify ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -175,6 +184,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.msgSysUpdateCursor ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -216,6 +228,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.createTextDynamic ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -239,6 +254,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.removeMsg ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -252,6 +270,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.delMsgfeed ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -265,6 +286,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.delSysMsg ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -288,6 +312,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.ackSessionMsg ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -349,6 +376,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.imUserInfos ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -385,6 +415,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.msgUnread ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -401,6 +434,9 @@ class OttoMsgRepository implements MsgRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMsgRepository.msgFeedUnread ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMsgRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

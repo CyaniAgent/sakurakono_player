@@ -50,6 +50,9 @@ class OttoFollowRepository implements FollowRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFollowRepository.followings ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFollowRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -64,6 +67,9 @@ class OttoFollowRepository implements FollowRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFollowRepository.toggleFollow ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFollowRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -77,6 +83,9 @@ class OttoFollowRepository implements FollowRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFollowRepository.followStatus ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFollowRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

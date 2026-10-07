@@ -99,6 +99,9 @@ class OttoAuthRepository implements AuthRepository {
     } on ApiException catch (e) {
       debugPrint('OttoAuthRepository.loginByPassword ApiException: ${e.errorCode}');
       return _errMap(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoAuthRepository TypeError: $e');
+      return <String, dynamic>{'status': 'error', 'message': 'data_format_error'};
     }
   }
 

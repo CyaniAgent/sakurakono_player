@@ -58,6 +58,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.publishBlog ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -69,6 +72,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.uploadImage ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -95,6 +101,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.userInfo ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -109,6 +118,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.userStatOwner ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -163,6 +175,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.historyList ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -212,6 +227,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.userRelation ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -247,6 +265,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.userSubFolder ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -319,6 +340,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.spaceSetting ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -372,6 +396,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.getUserRealName ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -403,6 +430,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.followedUp ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -430,6 +460,9 @@ class OttoUserRepository implements UserRepository {
     } on ApiException catch (e) {
       debugPrint('OttoUserRepository.sameFollowing ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoUserRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 }

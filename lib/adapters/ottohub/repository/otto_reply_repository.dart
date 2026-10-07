@@ -66,6 +66,9 @@ class OttoReplyRepository implements ReplyRepository {
       return _err(e);
     } on DioException catch (e) {
       return _dioErr(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoReplyRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -176,6 +179,9 @@ class OttoReplyRepository implements ReplyRepository {
       return _err(e);
     } on DioException catch (e) {
       return _dioErr(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoReplyRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -265,6 +271,9 @@ class OttoReplyRepository implements ReplyRepository {
       return _err(e);
     } on DioException catch (e) {
       return _dioErr(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoReplyRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -314,6 +323,9 @@ class OttoReplyRepository implements ReplyRepository {
       return _err(e);
     } on DioException catch (e) {
       return _dioErr(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoReplyRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -341,6 +353,9 @@ class OttoReplyRepository implements ReplyRepository {
       return _err(e);
     } on DioException catch (e) {
       return _dioErr(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoReplyRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

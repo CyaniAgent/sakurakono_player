@@ -65,10 +65,8 @@ abstract final class FollowActions {
   }) async {
     feedBack();
     if (!isFollow) {
-      final res = await (ref?.read(videoRepositoryProvider) ?? appRead(videoRepositoryProvider)).relationMod(
-        mid: mid,
-        act: 1,
-        reSrc: 11,
+      final res = await (ref?.read(followRepositoryProvider) ?? appRead(followRepositoryProvider)).toggleFollow(
+        fid: mid,
       );
       if (res.isSuccess) {
         SmartDialog.showToast('关注成功');
@@ -155,10 +153,8 @@ abstract final class FollowActions {
               DialogOption(
                 onPressed: () async {
                   AppNavigator.back();
-                  final res = await (ref?.read(videoRepositoryProvider) ?? appRead(videoRepositoryProvider)).relationMod(
-                    mid: mid,
-                    act: 2,
-                    reSrc: 11,
+                  final res = await (ref?.read(followRepositoryProvider) ?? appRead(followRepositoryProvider)).toggleFollow(
+                    fid: mid,
                   );
                   if (res.isSuccess) {
                     SmartDialog.showToast('取消关注成功');

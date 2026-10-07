@@ -40,6 +40,9 @@ import 'package:skf/adapters/riverpod_adapter_overrides.dart';
 import 'package:skf/pages/home/controller.dart';
 import 'package:skf/pages/main/controller.dart';
 import 'package:skf/pages/providers.dart';
+import 'package:skf/pages/fav/article/controller.dart';
+import 'package:skf/pages/fav/cheese/controller.dart';
+import 'package:skf/pages/fav/topic/controller.dart';
 import 'package:skf/pages/hot/view.dart';
 import 'package:skf/pages/webview/view.dart';
 import 'package:skf/pages/video/view.dart';
@@ -215,6 +218,12 @@ class OttoAdapter implements AppAdapter {
       zoneHostProvider.overrideWithValue(OttoZoneHost()),
       mineActionsProvider.overrideWithValue(OttoMineActions()),
       downloadActionsProvider.overrideWithValue(OttoDownloadActions()),
+      // Fav tab controllers (framework stubs, zero-arg constructors).
+      // overrideWith keeps construction lazy — the constructor kicks off
+      // queryData(), which must not run before the page actually builds.
+      favArticleControllerProvider.overrideWith((ref) => FavArticleController()),
+      favTopicControllerProvider.overrideWith((ref) => FavTopicController()),
+      favCheeseControllerProvider.overrideWith((ref) => FavCheeseController()),
       // Generic page bar-state bridges: interface -> Riverpod notifiers.
       mainBarStateProvider.overrideWith((ref) => appRead(mainControllerProvider)),
       homeBarStateProvider.overrideWith((ref) => appRead(homeControllerProvider)),

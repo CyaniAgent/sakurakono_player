@@ -73,6 +73,9 @@ class OttoSearchRepository implements SearchRepository {
     } on ApiException catch (e) {
       debugPrint('OttoSearchRepository.searchAll ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoSearchRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

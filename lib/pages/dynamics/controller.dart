@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:skf/core/account/account_provider.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
@@ -219,4 +220,12 @@ class DynamicsController
 }
 
 /// Dynamics page controller (single instance).
-final dynamicsControllerProvider = Provider<DynamicsController>((ref) => DynamicsController());
+final dynamicsControllerProvider = Provider<DynamicsController>((ref) {
+  final controller = DynamicsController();
+  ref.listen<AccountState>(accountProvider, (prev, next) {
+    if (prev?.isLogin != next.isLogin || prev?.userId != next.userId) {
+      Future.microtask(() => controller.onChangeAccount(next.isLogin));
+    }
+  });
+  return controller;
+});

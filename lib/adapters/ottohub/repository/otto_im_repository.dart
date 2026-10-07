@@ -31,6 +31,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.sendMsg ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -67,6 +70,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.syncFetchSessionMsgs ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -96,6 +102,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.sessionMain ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -119,6 +128,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.clearUnread ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -178,6 +190,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.deleteSessionList ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -229,6 +244,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.getTotalUnread ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -270,6 +288,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.sessionDetail ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -301,6 +322,9 @@ class OttoImRepository implements ImRepository {
     } on ApiException catch (e) {
       debugPrint('OttoImRepository.friendList ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoImRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

@@ -65,6 +65,9 @@ class OttoDownloadRepository implements DownloadRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDownloadRepository.getVideoUrl ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoDownloadRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

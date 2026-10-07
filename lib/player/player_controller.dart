@@ -1285,6 +1285,7 @@ class PlayerController extends ChangeNotifier implements CorePlayerService {
       AndroidHelper$ToDart.onUserLeaveHint = null;
     }
     _timer?.cancel();
+    volumeTimer?.cancel();
     if (PlatformUtils.isDesktop && isAlwaysOnTop) {
       windowManager.setAlwaysOnTop(false);
     }

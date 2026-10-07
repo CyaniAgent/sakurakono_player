@@ -90,6 +90,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.spaceArchive ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -159,6 +162,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.space ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -183,6 +189,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.updateProfile ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -203,6 +212,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberInfo ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -219,6 +231,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberStat ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -236,6 +251,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberCardInfo ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -274,6 +292,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.searchArchive ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -307,6 +328,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberDynamic ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -345,6 +369,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.specialAction ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -383,6 +410,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.followUpGroup ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -426,6 +456,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.memberView ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -453,6 +486,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.getfollowSearch ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -485,6 +521,9 @@ class OttoMemberRepository implements MemberRepository {
     } on ApiException catch (e) {
       debugPrint('OttoMemberRepository.spaceOpus ApiException: ${e.errorCode}');
       return Error(e.errorCode, code: e.httpStatus);
+    } on TypeError catch (e) {
+      debugPrint('OttoMemberRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

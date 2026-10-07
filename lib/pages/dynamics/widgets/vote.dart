@@ -1,4 +1,5 @@
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/utils/extension/size_ext.dart';
 import 'package:skf/router/app_navigator.dart';
 import 'package:skf/core/container/app_container.dart';
 
@@ -72,7 +73,7 @@ class _VotePanelState extends State<VotePanel> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.sizeOf(context);
-    final usePortrait = size.width < 600 || size.shortestSide >= 600;
+    final usePortrait = size.isPortrait;
     final right = [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,10 +1,12 @@
 import 'package:skf/common/widgets/dialog/dialog.dart';
 import 'package:skf/common/widgets/flutter/refresh_indicator.dart';
 import 'package:skf/common/widgets/loading_widget/http_error.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/fav_types.dart';
 import 'package:skf/pages/fav/article/controller.dart';
 import 'package:skf/pages/fav/article/widget/item.dart';
+import 'package:skf/pages/providers.dart';
 import 'package:skf/utils/grid.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +19,8 @@ class FavArticlePage extends StatefulWidget {
 
 class _FavArticlePageState extends State<FavArticlePage>
     with AutomaticKeepAliveClientMixin, GridMixin {
-  final FavArticleController _favArticleController = FavArticleController();
+  final FavArticleController _favArticleController =
+      appRead(favArticleControllerProvider);
 
   @override
   bool get wantKeepAlive => true;

@@ -59,6 +59,9 @@ class OttoFanRepository implements FanRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFanRepository.fans ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFanRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -70,6 +73,9 @@ class OttoFanRepository implements FanRepository {
     } on ApiException catch (e) {
       debugPrint('OttoFanRepository.activeFollower ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoFanRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 }

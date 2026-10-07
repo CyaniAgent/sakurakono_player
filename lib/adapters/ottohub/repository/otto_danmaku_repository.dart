@@ -80,6 +80,9 @@ class OttoDanmakuRepository implements DanmakuRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDanmakuRepository.shootDanmaku ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDanmakuRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -129,6 +132,9 @@ class OttoDanmakuRepository implements DanmakuRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDanmakuRepository.danmakuRecall ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDanmakuRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -154,6 +160,9 @@ class OttoDanmakuRepository implements DanmakuRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDanmakuRepository.dmSegMobile ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDanmakuRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 

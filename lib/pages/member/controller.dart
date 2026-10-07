@@ -14,6 +14,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skf/core/repository/repository_providers.dart';
+import 'package:skf/core/repository/repository_providers_batch2.dart';
 import 'package:skf/core/container/app_container.dart';
 
 class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreSpaceData?>
@@ -236,13 +237,14 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
 
   Future<void> _onBlock() async {
     final isBlocked = relation == 128;
-    final res = await (appRead(videoRepositoryProvider)).relationMod(
-      mid: mid,
-      act: isBlocked ? 6 : 5,
-      reSrc: 11,
-    );
+    final blackRepo = appRead(blackRepositoryProvider);
+    final res = await (isBlocked
+        ? blackRepo.removeBlack(uid: mid)
+        : blackRepo.addBlack(uid: mid));
     if (res.isSuccess) {
       relation = isBlocked ? 0 : 128;
+    } else {
+      res.toast();
     }
   }
 
@@ -272,19 +274,6 @@ class MemberController extends CommonDataControllerRiverpod<CoreSpaceData, CoreS
       if (ticker.isActive) ticker.dispose();
     }
     super.dispose();
-  }
-
-  Future<void> onRemoveFan() async {
-    final res = await (appRead(videoRepositoryProvider)).relationMod(mid: mid, act: 7, reSrc: 11);
-    if (res.isSuccess) {
-      isFollowed = null;
-      if (relation == 4) {
-        relation = 2;
-      }
-      SmartDialog.showToast('移除成功');
-    } else {
-      res.toast();
-    }
   }
 
   void onTapTab(int value) {

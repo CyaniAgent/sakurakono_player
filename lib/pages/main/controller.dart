@@ -410,5 +410,11 @@ class MainControllerNotifier extends ChangeNotifier
 
 final mainControllerProvider =
     ChangeNotifierProvider<MainControllerNotifier>((ref) {
-  return MainControllerNotifier();
+  final controller = MainControllerNotifier();
+  ref.listen<AccountState>(accountProvider, (prev, next) {
+    if (prev?.isLogin != next.isLogin) {
+      controller.onChangeAccount(next.isLogin);
+    }
+  });
+  return controller;
 });

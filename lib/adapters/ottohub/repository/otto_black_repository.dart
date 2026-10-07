@@ -58,6 +58,9 @@ class OttoBlackRepository implements BlackRepository {
     } on ApiException catch (e) {
       debugPrint('OttoBlackRepository.blackList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoBlackRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -69,6 +72,9 @@ class OttoBlackRepository implements BlackRepository {
     } on ApiException catch (e) {
       debugPrint('OttoBlackRepository.addBlack ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoBlackRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -80,6 +86,9 @@ class OttoBlackRepository implements BlackRepository {
     } on ApiException catch (e) {
       debugPrint('OttoBlackRepository.removeBlack ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoBlackRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -91,6 +100,9 @@ class OttoBlackRepository implements BlackRepository {
     } on ApiException catch (e) {
       debugPrint('OttoBlackRepository.checkBlack ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoBlackRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 }

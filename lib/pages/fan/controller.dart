@@ -3,7 +3,6 @@ import 'package:skf/core/result/loading_state.dart';
 import 'package:skf/core/models/follow_data.dart';
 import 'package:skf/pages/follow_type/controller.dart';
 import 'package:skf/core/account/account_provider.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:skf/core/repository/repository_providers.dart';
 
 class FansController extends FollowTypeController {
@@ -40,22 +39,5 @@ class FansController extends FollowTypeController {
       Success(:final response) => Success(response),
       Error(:final errMsg, :final code) => Error(errMsg, code: code),
     };
-  }
-
-  Future<void> onRemoveFan(int index, int mid) async {
-    final res = await (repoRef!.read(videoRepositoryProvider)).relationMod(
-      mid: mid,
-      act: 7,
-      reSrc: 11,
-    );
-    if (res.isSuccess) {
-      if (loadingState case Success(:final response)) {
-        response!.removeAt(index);
-      }
-      notifyListeners();
-      SmartDialog.showToast('移除成功');
-    } else {
-      res.toast();
-    }
   }
 }

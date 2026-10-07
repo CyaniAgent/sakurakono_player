@@ -12,6 +12,7 @@ import 'package:skf/common/widgets/route_aware_mixin.dart';
 import 'package:skf/common/widgets/scroll_physics.dart' show tabBarView;
 import 'package:skf/common/widgets/sliver/video_header.dart';
 import 'package:skf/common/widgets/svg/play_icon.dart';
+import 'package:skf/core/container/app_container.dart';
 import 'package:skf/pages/video/controller.dart';
 import 'package:skf/pages/video/video_host.dart';
 import 'package:skf/player/models/fullscreen_mode.dart';
@@ -249,6 +250,9 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       host.disposeIntro(heroTag);
     }
     videoDetailRegistry.remove(heroTag);
+    // family provider 非 autoDispose：不 invalidate 会在容器生命周期内
+    // 永久缓存已 dispose 的控制器（每次进视频页泄漏一条）。
+    appContainer.invalidate(videoDetailControllerProvider(heroTag));
     videoDetailController.dispose();
     plPlayerController
       ..removeStatusLister(playerListener)

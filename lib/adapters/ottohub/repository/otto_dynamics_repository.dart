@@ -144,6 +144,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.blogFeed ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -210,6 +213,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.userDynFeed ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -238,6 +244,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.followDynamic ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -277,6 +286,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.followUp ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -303,6 +315,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.dynUpList ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -329,6 +344,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.followings ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -369,10 +387,16 @@ class OttoDynamicsRepository implements DynamicsRepository {
           debugPrint('OttoDynamicsRepository.thumbDynamic inner ApiException: ${inner.errorCode}');
           return _err(e);
         }
+      } on TypeError catch (e) {
+        debugPrint('OttoDynamicsRepository TypeError: $e');
+        return const Error('data_format_error');
       }
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.thumbDynamic getDetail ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -477,6 +501,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
       }
       debugPrint('OttoDynamicsRepository.dynamicDetail ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -528,6 +555,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.articleInfo ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
@@ -576,6 +606,9 @@ class OttoDynamicsRepository implements DynamicsRepository {
     } on ApiException catch (e) {
       debugPrint('OttoDynamicsRepository.opusDetail ApiException: ${e.errorCode}');
       return _err(e);
+    } on TypeError catch (e) {
+      debugPrint('OttoDynamicsRepository TypeError: $e');
+      return const Error('data_format_error');
     }
   }
 
