@@ -261,6 +261,9 @@ class CoreReplyMember {
   /// Official verify info (role/type/desc), may be absent.
   final Map<String, dynamic>? officialVerify;
 
+  /// OttoHub 头衔(逗号分隔多个), may be absent.
+  final String? honour;
+
   const CoreReplyMember({
     this.mid = 0,
     this.uname = '',
@@ -269,6 +272,7 @@ class CoreReplyMember {
     this.level,
     this.vipStatus,
     this.officialVerify,
+    this.honour,
   });
 
   /// Lenient parse: missing or mistyped fields fall back to defaults,
@@ -281,6 +285,7 @@ class CoreReplyMember {
     level: _firstIntOrNull(map, ['level']),
     vipStatus: _firstIntOrNull(map, ['vip_status', 'vipStatus']),
     officialVerify: _firstMap(map, ['official_verify', 'officialVerify']),
+    honour: _firstString(map, ['honour']),
   );
 }
 

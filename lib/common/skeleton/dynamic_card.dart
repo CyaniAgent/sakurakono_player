@@ -8,7 +8,11 @@ class DynamicCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final color = theme.colorScheme.onInverseSurface;
+    // surfaceContainerHighest 在明暗两套主题下都与背景保持可见对比
+    // (onInverseSurface 在深色主题下是深色块贴深底,几乎不可见)。
+    final color = theme.colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.55,
+    );
     final buttonStyle = TextButton.styleFrom(
       tapTargetSize: .padded,
       padding: const .symmetric(horizontal: 15),

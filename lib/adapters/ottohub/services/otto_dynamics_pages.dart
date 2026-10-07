@@ -11,6 +11,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'package:skf/common/skeleton/dynamic_card.dart';
+import 'package:skf/common/skeleton/skeleton.dart';
 import 'package:skf/common/skeleton/video_reply.dart';
 import 'package:skf/common/widgets/view_safe_area.dart';
 import 'package:skf/common/widgets/sliver/sliver_pinned_header.dart';
@@ -579,8 +580,8 @@ class _OttoDynDetailPageState extends State<OttoDynDetailPage> {
                 SliverToBoxAdapter(
                   child: switch (_state) {
                     Loading() => const Padding(
-                      padding: EdgeInsets.all(48),
-                      child: DynamicCardSkeleton(),
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: BlogContentSkeleton(),
                     ),
                     Error() => HttpError(
                       isSliver: false,
@@ -894,6 +895,74 @@ class _OttoDynListTabState extends State<OttoDynListTab>
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+/// 动态详情(博客正文)的加载骨架:正文内容形(头像行 + 正文行 + 图文
+/// 占位),与 DynamicPanel isDetail 版式对应;不用列表卡片骨架
+/// (头像+操作行形状与正文页不符)。
+class BlogContentSkeleton extends StatelessWidget {
+  const BlogContentSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final color = theme.colorScheme.surfaceContainerHighest.withValues(
+      alpha: 0.55,
+    );
+    Widget bar(double width, {double height = 13, double bottom = 8}) =>
+        Container(
+          width: width,
+          height: height,
+          margin: EdgeInsets.only(bottom: bottom),
+          color: color,
+        );
+    return Skeleton(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    bar(100, height: 13, bottom: 5),
+                    bar(50, height: 11, bottom: 0),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            bar(double.infinity),
+            bar(double.infinity),
+            bar(double.infinity),
+            bar(280),
+            Container(
+              width: double.infinity,
+              height: 140,
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+              ),
+            ),
+            bar(180, bottom: 0),
+          ],
+        ),
       ),
     );
   }

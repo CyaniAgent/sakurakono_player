@@ -81,6 +81,7 @@ class OttoReplyRepository implements ReplyRepository {
             'mid': c.uid,
             'uname': c.username ?? '',
             'avatar': c.avatarUrl ?? '',
+            'honour': c.honour,
           },
           'like': 0,
           'rcount': c.childCommentNum ?? 0,
@@ -125,6 +126,7 @@ class OttoReplyRepository implements ReplyRepository {
               'mid': uid,
               'uname': c['username'],
               'avatar': c['avatar_url'],
+              'honour': c['honour'],
             },
           };
         })
