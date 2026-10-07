@@ -131,7 +131,11 @@ void main() async {
   // Activate the active adapter (DI bindings + routes).
   await AdapterRegistry.activate(adapterName);
   appContainer = ProviderContainer(overrides: adapterOverrides);
-  HttpOverrides.global = _CustomHttpOverrides();
+  // 证书校验绕过仅在用户显式开启时安装（debug 构建不再无条件放行，
+  // 避免开发期 MITM 顺带截获登录凭据；关闭时进程内不存在任何放行路径）。
+  if (Pref.badCertificateCallback) {
+    HttpOverrides.global = _CustomHttpOverrides();
+  }
 
   if (PlatformUtils.isMobile) {
     if (Platform.isAndroid) MaxScreenSize.init();
@@ -394,7 +398,7 @@ class _CustomHttpOverrides extends HttpOverrides {
     // ..maxConnectionsPerHost = 32
     /// The default value is 15 seconds.
     //   ..idleTimeout = const Duration(seconds: 15);
-    if (kDebugMode || Pref.badCertificateCallback) {
+    if (Pref.badCertificateCallback) {
       client.badCertificateCallback = (cert, host, port) => true;
     }
     return client;

@@ -162,6 +162,8 @@ class OttoAdapter implements AppAdapter {
           );
           // SDK 把 token 注入在 query(GET/DELETE)或 body(POST/PUT),
           // 重试前替换为新 token,否则原请求仍携带失效 token。
+          // 安全注记:token 随 URL query 传输是 OttoHub 服务端契约(无法客户端单方
+          // 更改),会进入服务端/中间代理访问日志;风险归属服务端协议设计(SEC-003)。
           if (request.method == 'GET' || request.method == 'DELETE') {
             request.queryParameters['token'] = result.token;
           } else if (request.data is Map) {

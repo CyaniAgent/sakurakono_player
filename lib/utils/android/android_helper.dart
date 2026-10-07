@@ -1,59 +1,11 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:skf/utils/android/bindings.g.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:jni/jni.dart';
 
 abstract final class PiliAndroidHelper {
   @pragma('vm:prefer-inline')
   static void back() => AndroidHelper.back();
-
-  static void biliSendCommAntifraud(
-    int action,
-    int oid,
-    int type,
-    int rpId,
-    int root,
-    int parent,
-    int ctime,
-    String commentText,
-    List pictures,
-    String sourceId,
-    int uid,
-    String cookie,
-  ) {
-    final jCommentText = commentText.toJString();
-    final jSourceId = sourceId.toJString();
-    final jCookie = cookie.toJString();
-    final jPictures = pictures.isEmpty
-        ? null
-        : jsonEncode(pictures).toJString();
-
-    try {
-      AndroidHelper.biliSendCommAntifraud(
-        action,
-        oid,
-        type,
-        rpId,
-        root,
-        parent,
-        ctime,
-        jCommentText,
-        jPictures,
-        jSourceId,
-        uid,
-        jCookie,
-      );
-    } catch (e) {
-      Utils.reportError(e);
-    } finally {
-      jCommentText.release();
-      jSourceId.release();
-      jCookie.release();
-      jPictures?.release();
-    }
-  }
 
   @pragma('vm:prefer-inline')
   static void openLinkVerifySettings() =>

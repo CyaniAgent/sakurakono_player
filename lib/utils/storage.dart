@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/set_int_adapter.dart';
 import 'package:skf/utils/utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as path;
 
@@ -20,14 +22,12 @@ abstract final class GStorage {
     Hive.init(path.join(appSupportDirPath, 'hive'));
     regAdapter();
 
+    // userInfo 独立打开：凭证(账密/token)落盘加密，含旧明文数据一次性迁移。
+    userInfo = await _openUserInfoBox();
+    // 历史故障备份含明文凭据副本：仅保留最近 2 份，失败不影响启动。
+    unawaited(_cleanupHiveBackups());
+
     await Future.wait([
-      // 登录用户信息
-      Hive.openBox<dynamic>(
-        'userInfo',
-        compactionStrategy: (int entries, int deletedEntries) {
-          return deletedEntries > 2;
-        },
-      ).then((res) => userInfo = res),
       // 本地缓存
       Hive.openBox(
         'localCache',
@@ -60,6 +60,122 @@ abstract final class GStorage {
         },
       ).then((res) => watchProgress = res),
     ]);
+  }
+
+  static bool _userInfoCompaction(int entries, int deletedEntries) =>
+      deletedEntries > 2;
+
+  /// 从系统安全存储读取 userInfo 加密密钥；不存在则生成并写回。
+  /// 任何失败由调用方兜底（回退明文，不阻断启动）。
+  static Future<List<int>> _loadCipherKey(FlutterSecureStorage secure) async {
+    const keyName = 'skf_hive_userinfo_cipher';
+    final stored = await secure.read(key: keyName);
+    if (stored != null && stored.isNotEmpty) {
+      final key = base64Decode(stored);
+      if (key.length == 32) {
+        return key;
+      }
+    }
+    final key = Hive.generateSecureKey();
+    await secure.write(key: keyName, value: base64Encode(key));
+    return key;
+  }
+
+  static Future<Box<dynamic>> _openUserInfoPlain() {
+    return Hive.openBox<dynamic>(
+      'userInfo',
+      compactionStrategy: _userInfoCompaction,
+    );
+  }
+
+  /// userInfo Box：HiveAesCipher 加密（密钥在系统安全存储）。
+  /// 旧明文 box 在首次运行时一次性迁移；任何一步失败都回退明文打开，
+  /// 保持旧行为且不阻断启动（迁移标记不写，下次启动自动重试）。
+  static Future<Box<dynamic>> _openUserInfoBox() async {
+    const secure = FlutterSecureStorage();
+    const flagKey = 'skf_userinfo_encrypted';
+    bool wasEncrypted;
+    List<int>? key;
+    try {
+      wasEncrypted = await secure.read(key: flagKey) == '1';
+      key = await _loadCipherKey(secure);
+    } catch (e) {
+      stderr.writeln('[SKF] secure storage unavailable, userInfo falls back '
+          'to plaintext: $e');
+      return _openUserInfoPlain();
+    }
+    final cipher = HiveAesCipher(key);
+
+    // 一次性迁移：存在旧明文 box 且从未启用加密。
+    if (!wasEncrypted && await Hive.boxExists('userInfo')) {
+      try {
+        final legacy = await Hive.openBox<dynamic>('userInfo');
+        final legacyData = legacy.toMap();
+        await legacy.close();
+        await legacy.deleteFromDisk();
+        final box = await Hive.openBox<dynamic>(
+          'userInfo',
+          encryptionCipher: cipher,
+          compactionStrategy: _userInfoCompaction,
+        );
+        if (legacyData.isNotEmpty) {
+          await box.putAll(legacyData);
+        }
+        await secure.write(key: flagKey, value: '1');
+        return box;
+      } catch (e) {
+        stderr.writeln('[SKF] userInfo encryption migration failed, '
+            'falling back to plaintext: $e');
+        try {
+          await Hive.close();
+        } catch (_) {}
+        return _openUserInfoPlain();
+      }
+    }
+
+    try {
+      final box = await Hive.openBox<dynamic>(
+        'userInfo',
+        encryptionCipher: cipher,
+        compactionStrategy: _userInfoCompaction,
+      );
+      if (!wasEncrypted) {
+        await secure.write(key: flagKey, value: '1');
+      }
+      return box;
+    } catch (e) {
+      if (!wasEncrypted) {
+        // 可能是历史明文残留：按明文打开（迁移标记未写，下次启动重试加密迁移）。
+        stderr.writeln('[SKF] userInfo encrypted open failed, falling back '
+            'to plaintext: $e');
+        try {
+          await Hive.close();
+        } catch (_) {}
+        return _openUserInfoPlain();
+      }
+      rethrow;
+    }
+  }
+
+  /// 清理 recoverInit 隔离出来的历史备份目录（含明文凭据副本），保留最近 2 份。
+  static Future<void> _cleanupHiveBackups() async {
+    try {
+      final hiveDir = Directory(path.join(appSupportDirPath, 'hive'));
+      final parent = hiveDir.parent;
+      if (!parent.existsSync()) {
+        return;
+      }
+      final backups =
+          parent.listSync().whereType<Directory>().where((d) {
+            return path.basename(d.path).startsWith('hive.bak-');
+          }).toList()
+            ..sort((a, b) => b.path.compareTo(a.path));
+      for (final dir in backups.skip(2)) {
+        await dir.delete(recursive: true);
+      }
+    } catch (_) {
+      // 清理失败不影响启动
+    }
   }
 
   /// 防御性恢复：init() 失败时把受损 Hive 数据目录隔离（重命名备份）后重试。
@@ -116,9 +232,19 @@ abstract final class GStorage {
   static Future<List<void>> importAllJsonSettings(
     Map<String, dynamic> map,
   ) {
+    // 先校验后清空：导入数据缺任一 Box 或非 Map 时直接失败，
+    // 避免 clear() 已执行而 putAll 抛错导致设置不可逆丢失。
+    for (final box in [setting, video]) {
+      final data = map[box.name];
+      if (data is! Map) {
+        throw ArgumentError(
+          '导入数据缺少 "${box.name}" 字段或其类型不是 Map',
+        );
+      }
+    }
     return Future.wait([
-      setting.clear().then((_) => setting.putAll(map[setting.name])),
-      video.clear().then((_) => video.putAll(map[video.name])),
+      setting.clear().then((_) => setting.putAll(map[setting.name]!.cast<String, dynamic>())),
+      video.clear().then((_) => video.putAll(map[video.name]!.cast<String, dynamic>())),
     ]);
   }
 
