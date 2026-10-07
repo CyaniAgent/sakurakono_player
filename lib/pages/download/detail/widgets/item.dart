@@ -152,6 +152,11 @@ class DetailItem extends StatelessWidget {
           )
         : null;
 
+    // 封面存在性判定移出 LayoutBuilder：原实现在每次布局回调里同步
+    // stat 磁盘，滚动/键盘等 relayout 反复触发；这里每次 build 只判一次。
+    final cover = File(path.join(entry.entryDirPath, PathUtils.coverName));
+    final hasCover = cover.existsSync();
+
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
@@ -205,9 +210,6 @@ class DetailItem extends StatelessWidget {
                     aspectRatio: Style.aspectRatio,
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        final cover = File(
-                          path.join(entry.entryDirPath, PathUtils.coverName),
-                        );
                         final maxWidth = constraints.maxWidth;
                         final maxHeight = constraints.maxHeight;
                         int? cacheWidth, cacheHeight;
@@ -216,7 +218,7 @@ class DetailItem extends StatelessWidget {
                         } else {
                           cacheHeight = maxHeight.cacheSize(context);
                         }
-                        return cover.existsSync()
+                        return hasCover
                             ? ClipRRect(
                                 borderRadius: Style.mdRadius,
                                 child: Image.file(

@@ -56,6 +56,13 @@ class _HistoryPageState extends ConsumerState<HistoryPage>
 
   @override
   void dispose() {
+    // 注册表条目与控制器随页面释放（PERF-002：原实现只写不删，
+    // 反复进出历史页持续泄漏旧控制器与其数据列表）。
+    final key = widget.type ?? 'all';
+    if (identical(historyControllerRegistry[key], _historyController)) {
+      historyControllerRegistry.remove(key);
+      _historyController.dispose();
+    }
     super.dispose();
   }
 

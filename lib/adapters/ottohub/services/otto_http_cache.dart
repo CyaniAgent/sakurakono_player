@@ -49,10 +49,17 @@ class OttoHttpCache {
   }
 
   void _write(String key, String value) {
-    _memFallback[key] = value;
+    // 仅 Hive 不可用(单测/初始化前)时写内存回退；正常路径不再把响应体
+    // 常驻复制进无上限的进程内 Map。
+    if (_box == null) {
+      _memFallback[key] = value;
+      return;
+    }
     try {
-      _box?.put(key, value);
-    } catch (_) {}
+      _box.put(key, value);
+    } catch (_) {
+      _memFallback[key] = value;
+    }
   }
 
   void _delete(String key) {

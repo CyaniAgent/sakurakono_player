@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:ottohub_sdk_dart/ottohub_sdk_dart.dart';
 import 'package:skf/core/models/danmaku_types.dart';
@@ -21,7 +23,7 @@ class OttoDanmakuRepository implements DanmakuRepository {
 
   // ---- Core model conversion ----
 
-  CoreDanmakuElement _toCoreDanmakuElement(DanmakuItem d) =>
+  static CoreDanmakuElement _toCoreDanmakuElement(DanmakuItem d) =>
       CoreDanmakuElement(
         id: d.danmakuId,
         content: d.text,
@@ -45,10 +47,23 @@ class OttoDanmakuRepository implements DanmakuRepository {
     }
   }
 
-  CoreDanmakuSegmentReply _toCoreSegment(List<DanmakuItem> items) =>
-      CoreDanmakuSegmentReply(
+  /// 全量弹幕逐条映射放后台 isolate（长视频打开瞬间的主线程卡顿热点）；
+  /// isolate 不可用时回退主线程执行。
+  static Future<CoreDanmakuSegmentReply> _toCoreSegment(
+    List<DanmakuItem> items,
+  ) async {
+    try {
+      return await Isolate.run(() {
+        return CoreDanmakuSegmentReply(
+          elems: items.map(_toCoreDanmakuElement).toList(),
+        );
+      });
+    } catch (_) {
+      return CoreDanmakuSegmentReply(
         elems: items.map(_toCoreDanmakuElement).toList(),
       );
+    }
+  }
 
   @override
   Future<LoadingState<CoreDanmakuPost>> shootDanmaku({
@@ -156,7 +171,7 @@ class OttoDanmakuRepository implements DanmakuRepository {
   }) async {
     try {
       final result = await _api.getDanmaku(cid);
-      return _ok(_toCoreSegment(result));
+      return _ok(await _toCoreSegment(result));
     } on ApiException catch (e) {
       debugPrint('OttoDanmakuRepository.dmSegMobile ApiException: ${e.errorCode}');
       return _err(e);
