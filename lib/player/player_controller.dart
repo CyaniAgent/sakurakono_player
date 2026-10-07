@@ -1262,16 +1262,11 @@ class PlayerController extends ChangeNotifier implements CorePlayerService {
 
   @override
   Future<void> dispose() async {
-    // 每次减1，最后销毁
+    // playerCount 引用计数已移除：唯一运行态适配器恒赋 1，
+    // 「>1 仅减一」分支不可达（多宿主共享由 currentInstance 切换语义承担）。
     resetScreenRotation();
     cancelLongPressTimer();
     _cancelSubForSeek();
-    if (!_isCloseAll && playerCount > 1) {
-      playerCount -= 1;
-      heartDuration = 0;
-      return;
-    }
-
     playerCount = 0;
     if (removeSafeArea) {
       showSystemBar();

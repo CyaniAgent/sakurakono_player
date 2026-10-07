@@ -168,3 +168,4 @@ analyze_host.txt
 
 # ZCode 会话本地文件
 .zcode/
+.cache/

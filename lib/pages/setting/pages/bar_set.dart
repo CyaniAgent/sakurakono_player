@@ -1,4 +1,4 @@
-import 'package:skf/common/widgets/pair.dart';
+import 'package:skf/core/utils/pair.dart';
 import 'package:skf/common/widgets/reorder_mixin.dart';
 import 'package:skf/player/models/enum_with_label.dart';
 import 'package:skf/router/app_navigator.dart';

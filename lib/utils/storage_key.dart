@@ -147,11 +147,6 @@ abstract final class SettingBoxKey {
       subtitleFontScaleFS = 'subtitleFontScaleFS',
       subtitleFontWeight = 'subtitleFontWeight';
 
-  static const String webdavUri = 'webdavUri',
-      webdavUsername = 'webdavUsername',
-      webdavPassword = 'webdavPassword',
-      webdavDirectory = 'webdavDirectory';
-
   static const String enableSponsorBlock = 'enableSponsorBlock',
       blockSettings = 'blockSettings',
       blockLimit = 'blockLimit',
@@ -166,7 +161,6 @@ abstract final class SettingBoxKey {
       pipNoDanmaku = 'pipNoDanmaku',
       showVipDanmaku = 'showVipDanmaku',
       mergeDanmaku = 'mergeDanmaku',
-      danmakuWeight = 'danmakuWeight',
       danmakuBlockType = 'danmakuBlockType',
       danmakuShowArea = 'danmakuShowArea',
       danmakuOpacity = 'danmakuOpacity',

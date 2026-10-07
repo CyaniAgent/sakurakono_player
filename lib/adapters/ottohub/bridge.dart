@@ -16,7 +16,6 @@ import 'package:skf/adapters/ottohub/repository/otto_reply_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_user_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_video_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_download_repository.dart';
-import 'package:skf/adapters/ottohub/repository/otto_progress_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_sponsor_block_repository.dart';
 import 'package:skf/adapters/ottohub/repository/otto_search_repository.dart';
 import 'package:skf/adapters/ottohub/services/otto_whisper_detail_page.dart';
@@ -204,7 +203,6 @@ class OttoAdapter implements AppAdapter {
       replyRepositoryProvider.overrideWithValue(OttoReplyRepository(client)),
       searchRepositoryProvider.overrideWithValue(OttoSearchRepository(client)),
       imRepositoryProvider.overrideWithValue(OttoImRepository(client)),
-      progressRepositoryProvider.overrideWithValue(OttoProgressRepository()),
       sponsorBlockRepositoryProvider.overrideWithValue(OttoSponsorBlockRepository()),
       downloadRepositoryProvider.overrideWithValue(OttoDownloadRepository(client)),
       appRepositoryProvider.overrideWithValue(OttoAppRepository(client)),

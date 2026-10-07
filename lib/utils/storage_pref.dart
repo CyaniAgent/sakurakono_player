@@ -469,18 +469,6 @@ abstract final class Pref {
   static bool get recordSearchHistory =>
       _setting.get(SettingBoxKey.recordSearchHistory, defaultValue: true);
 
-  static String get webdavUri =>
-      _setting.get(SettingBoxKey.webdavUri, defaultValue: '');
-
-  static String get webdavUsername =>
-      _setting.get(SettingBoxKey.webdavUsername, defaultValue: '');
-
-  static String get webdavPassword =>
-      _setting.get(SettingBoxKey.webdavPassword, defaultValue: '');
-
-  static String get webdavDirectory =>
-      _setting.get(SettingBoxKey.webdavDirectory, defaultValue: '/');
-
 
 
 
@@ -634,9 +622,6 @@ abstract final class Pref {
   static Set<int> get danmakuBlockType => Set<int>.from(
     _setting.get(SettingBoxKey.danmakuBlockType, defaultValue: const <int>{}),
   );
-
-  static int get danmakuWeight =>
-      _setting.get(SettingBoxKey.danmakuWeight, defaultValue: 0);
 
   static double get danmakuShowArea =>
       _setting.get(SettingBoxKey.danmakuShowArea, defaultValue: 0.5);

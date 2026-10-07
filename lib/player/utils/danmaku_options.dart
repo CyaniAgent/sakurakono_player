@@ -8,7 +8,6 @@ abstract final class DanmakuOptions {
   static final Set<int> blockTypes = Pref.danmakuBlockType;
   static bool blockColorful = blockTypes.contains(6);
 
-  static int danmakuWeight = Pref.danmakuWeight;
   static double danmakuFontScaleFS = Pref.danmakuFontScaleFS;
   static double danmakuFontScale = Pref.danmakuFontScale;
   static int danmakuFontWeight = Pref.danmakuFontWeight;
@@ -60,7 +59,6 @@ abstract final class DanmakuOptions {
       SettingBoxKey.danmakuMassiveMode: danmakuMassiveMode,
       SettingBoxKey.danmakuStatic2Scroll: danmakuStatic2Scroll,
       SettingBoxKey.danmakuFixedV: danmakuFixedV,
-      SettingBoxKey.danmakuWeight: danmakuWeight,
       SettingBoxKey.danmakuOpacity: danmakuOpacity,
     });
   }

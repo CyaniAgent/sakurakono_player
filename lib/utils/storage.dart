@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:skf/utils/path_utils.dart';
 import 'package:skf/utils/set_int_adapter.dart';
-import 'package:skf/utils/utils.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:path/path.dart' as path;
@@ -217,35 +216,6 @@ abstract final class GStorage {
       report('GStorage init failed again after isolation: $retryError');
       return false;
     }
-  }
-
-  static String exportAllSettings() {
-    return Utils.jsonEncoder.convert({
-      setting.name: setting.toMap(),
-      video.name: video.toMap(),
-    });
-  }
-
-  static Future<void> importAllSettings(String data) =>
-      importAllJsonSettings(jsonDecode(data));
-
-  static Future<List<void>> importAllJsonSettings(
-    Map<String, dynamic> map,
-  ) {
-    // 先校验后清空：导入数据缺任一 Box 或非 Map 时直接失败，
-    // 避免 clear() 已执行而 putAll 抛错导致设置不可逆丢失。
-    for (final box in [setting, video]) {
-      final data = map[box.name];
-      if (data is! Map) {
-        throw ArgumentError(
-          '导入数据缺少 "${box.name}" 字段或其类型不是 Map',
-        );
-      }
-    }
-    return Future.wait([
-      setting.clear().then((_) => setting.putAll(map[setting.name]!.cast<String, dynamic>())),
-      video.clear().then((_) => video.putAll(map[video.name]!.cast<String, dynamic>())),
-    ]);
   }
 
   static void regAdapter() {

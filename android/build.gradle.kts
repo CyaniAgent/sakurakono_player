@@ -7,6 +7,8 @@ allprojects {
         maven("https://maven.aliyun.com/repository/public")
         google()
         mavenCentral()
+        // chat_bottom_container 的 AAR(com.github.LinXunFeng)仅发布在 JitPack。
+        maven("https://jitpack.io")
     }
 }
 
