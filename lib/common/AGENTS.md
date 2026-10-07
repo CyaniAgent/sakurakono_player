@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-128 Dart files of reusable widgets with ZERO adapter imports (verified). The adapter-decoupled UI building-block layer. common⇄utils bidirectionally coupled; both import core.
+115 Dart files of reusable widgets with ZERO adapter imports (verified). The adapter-decoupled UI building-block layer. common⇄utils bidirectionally coupled; both import core.
 
 ## STRUCTURE
 

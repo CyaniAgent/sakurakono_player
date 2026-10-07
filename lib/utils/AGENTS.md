@@ -16,7 +16,7 @@ CHILD of root AGENTS.md. Global rules, CI, and dependency forks live there — n
 
 ## STORAGE LAYER (critical)
 
-- **GStorage** (storage.dart), `abstract final class`. `init()`: `Hive.init(appSupportDirPath/hive)` → `regAdapter()` (SetIntAdapter) → `Future.wait` opens **7 boxes in PARALLEL**: userInfo, localCache, setting, historyWord, video, account (private), watchProgress (`Box<int>` with custom desc-key comparator); conditionally opens reply (`Box<Uint8List>`) if `setting['saveReply']==true`. Also `exportAllSettings`/`importAllJsonSettings`, `compact()`, `close()`, `clear()`.
+- **GStorage** (storage.dart), `abstract final class`. `init()`: `Hive.init(appSupportDirPath/hive)` → `regAdapter()` (SetIntAdapter) → userInfo 单独打开(**HiveAesCipher 加密**,密钥在 flutter_secure_storage,旧明文一次性迁移+失败回退明文) → `Future.wait` opens **6 boxes in PARALLEL**: localCache, setting, historyWord, video, account (private), watchProgress (`Box<int>` with custom desc-key comparator). `compact()`, `close()`, `clear()`;`_cleanupHiveBackups` 保留最近 2 份 hive.bak-*。
 - **Init order** (main.dart): `_initAppPath()` → `adapter.onAppStartPreStorage()` (TypeAdapters MUST precede box opens; OttoHub: none) → `GStorage.init()` → `adapter.onAppStart()` → `_initDownPath`/`_initTmpPath`/`CacheManager.ensureInitialized()` in parallel → `AdapterRegistry.register+activate`.
 - **Pref** (storage_pref.dart, ~860ln): typed getters/setters over GStorage boxes — THE way to read/write settings (Pref.themeMode, Pref.uiScale, Pref.downloadPath, Pref.themeMode…). Never touch raw boxes from feature code.
 - **Keys** (storage_key.dart): SettingBoxKey const keys(已去 B 站专属键), LocalCacheKey 4, VideoBoxKey 5.

@@ -76,7 +76,7 @@ class ImageGridView extends StatelessWidget {
   final bool fullScreen;
 
   /// Optional delegate for adapter-specific image actions.
-  /// Defaults to [DefaultImageActionDelegate] which wraps Bilibili adapter.
+  /// Defaults to [DefaultImageActionDelegate] (lib/utils/image_action_delegate_impl.dart).
   final CoreImageActionDelegate? actionDelegate;
 
   static bool horizontalPreview = Pref.horizontalPreview;

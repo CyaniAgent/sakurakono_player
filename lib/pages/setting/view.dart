@@ -9,8 +9,8 @@ import 'package:skf/utils/extension/size_ext.dart';
 
 /// 通用设置页框架：搜索 + 菜单列表 + 播放链接/切换账号/退出登录 + 底部菜单。
 ///
-/// 菜单项、账号操作与搜索入口均由 [SettingHost] 注入（B站: [BiliSettingHost]；
-/// OttoHub: [OttoSettingHost]），本页零适配器依赖。
+/// 菜单项、账号操作与搜索入口均由 [SettingHost] 注入
+/// （OttoHub: [OttoSettingHost]），本页零适配器依赖。
 class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
 

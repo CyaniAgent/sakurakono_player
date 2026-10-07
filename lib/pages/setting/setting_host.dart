@@ -25,13 +25,11 @@ class SettingMenuItem {
 /// 设置页渲染通用框架（搜索 + 菜单列表 + 播放链接/切换账号/退出登录 +
 /// 底部菜单），菜单项、账号操作与纯数字 ID 播放分派均来自
 /// [SettingHost.of()] 的实现：
-/// - Bilibili: [BiliSettingHost]（bridge `register()` 注入；B站 专属设置项
-///   经 [SettingMenuItem.contentBuilder] 提供）
-/// - OttoHub: [OttoSettingHost]（通用项，账号操作 stub）
+/// - OttoHub: [OttoSettingHost]（唯一运行态实现）
 abstract class SettingHost {
   static SettingHost of() => appRead(settingHostProvider);
 
-  /// 主菜单项（隐私/推荐/音视频/播放器/外观/其它/WebDAV 等）。
+  /// 主菜单项（隐私/推荐/音视频/播放器/外观/其它等）。
   List<SettingMenuItem> get menuItems;
 
   /// 底部菜单项（渲染在「退出登录」之后，B站: 关于）。

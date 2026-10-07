@@ -8,8 +8,7 @@ import 'package:skf/pages/providers.dart';
 /// download 页渲染通用下载管理 UI（列表/正在下载/详情/搜索）；下载服务
 /// （[CoreDownloadEntryInfo] 队列与文件操作）与本地文件播放导航来自
 /// [DownloadActions.of()] 的实现：
-/// - Bilibili: `BiliDownloadActions`（bridge `register()` 注入，委托 DownloadService）
-/// - OttoHub: `OttoDownloadActions`（stub，空状态防崩溃）
+/// - OttoHub: `OttoDownloadActions`（stub，空状态防崩溃；/download 页当前无导航入口）
 abstract class DownloadActions extends ChangeNotifier {
   static DownloadActions of() => appRead(downloadActionsProvider);
 

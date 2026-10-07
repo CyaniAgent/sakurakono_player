@@ -18,9 +18,8 @@ final imRepositoryProvider = Provider<ImRepository>(
   (ref) => throw UnimplementedError('Override in adapter'),
 );
 
-/// PGC (anime / drama / movie) catalog and detail.
-
 /// Watch progress (viewing position persistence).
+/// 当前无适配器注册此 provider（真实进度读写走 watchProgress Box 直连）。
 final progressRepositoryProvider = Provider<ProgressRepository>(
   (ref) => throw UnimplementedError('Override in adapter'),
 );

@@ -51,7 +51,7 @@ lib/
 │   ├── utils/ result/ app_meta.dart
 ├── adapters/
 │   ├── ottohub/                # 唯一真实适配器(repo 大半真实现 + Host 桩)
-│   │   ├── bridge.dart         # OttoAdapter:overrides + routes(28 条)
+│   │   ├── bridge.dart         # OttoAdapter:overrides + routes(29 条)
 │   │   ├── repository/ models/ services/
 │   └── example/                # ExampleAdapter 骨架(新适配器模板)
 ├── pages/                      # 框架 UI(通用页:video/member/fav/history/search/
@@ -82,7 +82,7 @@ lib/
 
 ## Testing
 
-- **217 tests 全绿**:`test/repository/` envelope 测试(18 repo)、`test/adapters/ottohub/`(otto 真实现测试)、router/helpers 测试。
+- **212 tests 全绿(2026-10-07)**:`test/adapters/ottohub/`(otto 实现级测试,FakeHttpAdapter)、`test/repository/`(注:mock 接口自身的弱覆盖结构,待改造)、router/helpers 测试;已接入 CI(build.yml analyze job 含 build_runner + flutter test)。
 - mocks 由 build_runner 生成;删除 repo 时同步删对应 test 与 .mocks.dart。
 - 无 widget/integration 测试。
 
@@ -97,12 +97,12 @@ lib/
 
 ## Build & release
 
-- Flutter SDK patching:`lib/scripts/patch.ps1`(17 个 .patch,索引 Flutter 3.47.0;非 bilibili 专用,保留)。
+- Flutter SDK patching:`lib/scripts/patch.ps1`(18 个 .patch,索引 Flutter 3.47.0;非 bilibili 专用,保留)。
 - CI:`.github/workflows/build.yml`(android + ottohub_analyze + 各平台 reusable);产物命名已去 Bilibili。
 
 ## Dependencies
 
-- git 分叉依赖(forks)大幅保留;删除的 11 个:Brotli/protobuf/http2/dio_http2_adapter/super_sliver_list/waterfall_flow/chat_bottom_container/flutter_sortable_wrap/live_photo_maker/dlna_dart/web_socket_channel。
+- git 分叉依赖(forks)大幅保留;删除的 15 个:Brotli/protobuf/http2/dio_http2_adapter/super_sliver_list/waterfall_flow/flutter_sortable_wrap/live_photo_maker/dlna_dart/web_socket_channel(2026-10 批次追加:app_links/archive/cookie_jar/encrypt/fixnum/fl_chart/json_annotation/material_color_utilities/mime/pretty_qr_code/synchronized/uuid/webdav_client 与插件 audio_service/audio_session/battery_plus/desktop_webview_window/image_cropper/package_info_plus)。
 - `ottohub_sdk_dart` 为 git 依赖(`github.com/SakuraCake/ottohub_sdk_dart`,包在子目录 `ottohub_sdk_dart/`,本地克隆于 `D:\...\GitHub\ottohub_sdk_dart`);**0.0.14** 已对齐 2026-09 服务端 REST 迁移(0.0.12 解包 /profile data 载荷、0.0.13 following num 钳制、0.0.14 列表载荷兼容 data 层级 + blog favorite-list num 必传),SDK 改动须在该仓库提交并推版。
 - `flutter_html` 3.0.0 需 `html: 0.15.5+1` pin(**勿删**)。
 

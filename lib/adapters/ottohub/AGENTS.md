@@ -20,7 +20,7 @@ Thin DI overlay adapter (26 files): swaps in OttoHub repositories/account under 
 
 - `registerDependencies()`: creates ONE `OttohubClient()` (vendored SDK), then assigns `adapterOverrides` (Riverpod overrides, direct instantiation: `OttoXxxRepository(client)`). Registers ottoAccountProvider→OttoAccountProvider, plus private `_StubDownloadService` exposed via downloadServiceProvider.
 - Repository coverage:
-  - 14 REAL (client-backed): Video, Auth, Danmaku, Follow, Black, User, Member, Dynamics, Reply, Fav, Msg, Im, Fan, Download (DownloadRepository.getVideoUrl implemented 2026-08).
+  - 14 REAL (client-backed): Video, Auth, Danmaku, Follow, Black, User, Member, Dynamics, Reply, Fav, Msg, Im, Fan, Download (注: getVideoUrl 已实现但无生产调用方,下载域整体桩化).
   - 2 PARTIAL (client-backed, partially implemented): Search (searchAll/ab2c real, 5 methods stub), Space (searchArchive real, opusSpaceFlow stub).
   - 8 STUBS (every method returns `Error('not_implemented')`): Audio, DanmakuFilter, Live, Match, Music, Pgc, SponsorBlock, Validate.
   - All 24 registered so shared pages never read an unimplemented provider.
@@ -32,7 +32,7 @@ Thin DI overlay adapter (26 files): swaps in OttoHub repositories/account under 
 
 ## Vendored SDK
 
-- `lib/ottohub_sdk_fix/` (root-level, path override for `ottohub_sdk_dart ^0.0.2`): pure Dart, dio ^5.10.0 + json_annotation, its OWN codegen stack (json_serializable + build_runner 2.15.1 + mocktail), own analysis_options.yaml. EXCLUDED from project analysis. SDK fixes go here, never pub.dev. OttohubClient exposes ~17 API modules (7 modern: video/auth/danmaku/following/moderation/... + 10 `old_*` modules).
+- SDK 以 git 依赖 + dependency_overrides 引入(`SakuraCake/ottohub_sdk_dart`,锁定 ed14a5e)。
 
 ## Conventions
 

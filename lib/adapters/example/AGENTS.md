@@ -5,7 +5,9 @@ CHILD of root AGENTS.md.
 ## 用途
 
 新适配器的复制起点。复制本目录 → 改名 → 在 `lib/adapters/adapters.dart` 注册 →
-`--dart-define=ADAPTER=example` 即可启动一个"全能力不支持"的最小应用。
+复制后在 `lib/adapters/adapters.dart` 注册 ExampleAdapter 并以
+`--dart-define=ADAPTER=example` 启动"全能力不支持"的最小应用
+（当前默认仅注册 OttoAdapter，未注册直接启动会抛 ArgumentError）。
 
 ## 结构
 
