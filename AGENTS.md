@@ -86,6 +86,17 @@ lib/
 - mocks 由 build_runner 生成;删除 repo 时同步删对应 test 与 .mocks.dart。
 - 无 widget/integration 测试。
 
+## 验证门与提交规范
+
+- **每批 commit 前全过适用门**(详表 `~/.agents/skills/audit-fix-workflow/references/gates.md`):
+  - 所有批次:`flutter analyze` 0/0/0(不新增 ignore 豁免)+ 尾逗号 preserve 不增删 + diff 无调试残留。
+  - 触碰被测逻辑/测试:`flutter test` 全绿;重写类用例数与断言密度不低于改前,删配套用例须在 commit 消息披露。
+  - 触碰 pubspec/lock:`flutter pub get` 解析成功,lock 变更符合预期。
+  - 触碰原生/依赖/构建脚本:至少 Android debug 构建通过(iOS 无法本地验证时以配置解析替代并注明)。
+  - 触碰 plist/manifest/yaml/json:解析器实测(plistlib/yaml 解析),不目测。
+  - 触碰凭据/CI secrets:grep 确认无新硬编码密钥。
+- **commit 规范**:`<type>(<scope>): 中文主题`(fix/feat/docs/chore/refactor/perf/test),正文列 finding/任务 ID;单主题单批,可独立 revert;push 前由用户审阅。
+
 ## Key dev commands
 
 | Action | Command |
@@ -105,6 +116,7 @@ lib/
 - git 分叉依赖(forks)大幅保留;删除的 15 个:Brotli/protobuf/http2/dio_http2_adapter/super_sliver_list/waterfall_flow/flutter_sortable_wrap/live_photo_maker/dlna_dart/web_socket_channel(2026-10 批次追加:app_links/archive/cookie_jar/encrypt/fixnum/fl_chart/json_annotation/material_color_utilities/mime/pretty_qr_code/synchronized/uuid/webdav_client 与插件 audio_service/audio_session/battery_plus/desktop_webview_window/image_cropper/package_info_plus)。
 - `ottohub_sdk_dart` 为 git 依赖(`github.com/SakuraCake/ottohub_sdk_dart`,包在子目录 `ottohub_sdk_dart/`,本地克隆于 `D:\...\GitHub\ottohub_sdk_dart`);**0.0.14** 已对齐 2026-09 服务端 REST 迁移(0.0.12 解包 /profile data 载荷、0.0.13 following num 钳制、0.0.14 列表载荷兼容 data 层级 + blog favorite-list num 必传),SDK 改动须在该仓库提交并推版。
 - `flutter_html` 3.0.0 需 `html: 0.15.5+1` pin(**勿删**)。
+- **依赖浮动登记(单点风险,2026-10-08 用户裁决保持现状)**:`ottohub_sdk_dart` override 无 ref 跟踪 HEAD(兜底:pubspec.lock 钉 resolved-ref `ed14a5e`,重生成 lock 时会漂到最新);另有约 11 个 git 依赖钉分支而非 tag(main/dev/develop/mod/master/const,指向 bggRGjQaUbCoE / My-Responsitories fork)。更新 SDK 后须跑 `flutter pub get` 刷新 lock 并提交。
 
 ## Gotchas
 
