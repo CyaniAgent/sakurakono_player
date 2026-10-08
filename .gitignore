@@ -169,3 +169,10 @@ analyze_host.txt
 # ZCode 会话本地文件
 .zcode/
 .cache/
+
+# AI 工具产物(Mimosa 安全扫描状态 / video-agent 插件状态)
+.mimosa/
+.video_agent/
+
+# 宣传片管线构建产物(脚本 promo/*.py 暂留本地,产物一律不入库)
+promo/out/
