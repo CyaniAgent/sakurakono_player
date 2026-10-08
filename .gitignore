@@ -174,5 +174,5 @@ analyze_host.txt
 .mimosa/
 .video_agent/
 
-# 宣传片管线构建产物(脚本 promo/*.py 暂留本地,产物一律不入库)
-promo/out/
+# 宣传片管线(独立工作目录,非项目文件,整体不入库)
+promo/

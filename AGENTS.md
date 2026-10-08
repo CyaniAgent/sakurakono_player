@@ -121,7 +121,7 @@ lib/
 ## Gotchas
 
 - **存储初始化**:`GStorage.init()` 失败(如 typeId 未知——跨适配器读取旧 Box)会走 `recoverInit`(备份损坏目录后重试);**Hive Box 内残留其他适配器 typeId 数据时启动会隔离重置**。
-- `.gitignore`:`test_results/`、`*.mocks.dart`、`skf_release.json`。
+- `.gitignore`:`test_results/`、`*.mocks.dart`、`skf_release.json`、`promo/`(宣传片工作目录,非项目文件)、`.mimosa/`/`.video_agent/`/`.zcode/`/`.cache/`(AI 工具产物)。
 - `distribute_options.yaml`:fastforge 输出 `dist/`。
 - 历史遗留:部分 core 模型仍是 B 站 API 形状(member_types 等),深度净化见下方路线图。
 
