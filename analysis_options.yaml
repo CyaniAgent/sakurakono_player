@@ -11,7 +11,6 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - lib/ottohub_sdk_fix/**
     - build/**
     - android/**
     - ios/**
